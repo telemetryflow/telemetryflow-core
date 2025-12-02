@@ -3,8 +3,9 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
-import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
+import { ConsoleSpanExporter } from '@opentelemetry/sdk-trace-node';
+import { ConsoleMetricExporter, PeriodicExportingMetricReader, MeterProvider } from '@opentelemetry/sdk-metrics';
+import { BatchLogRecordProcessor, ConsoleLogRecordExporter } from '@opentelemetry/sdk-logs';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
@@ -17,20 +18,20 @@ const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
 
 const traceExporter = endpoint
   ? new OTLPTraceExporter({ url: `${endpoint}/v1/traces` })
-  : undefined;
+  : new ConsoleSpanExporter();
 
-const metricReader = endpoint
-  ? new PeriodicExportingMetricReader({
-      exporter: new OTLPMetricExporter({ url: `${endpoint}/v1/metrics` }),
-      exportIntervalMillis: 60000,
-    })
-  : undefined;
+const metricReader = new PeriodicExportingMetricReader({
+  exporter: endpoint
+    ? new OTLPMetricExporter({ url: `${endpoint}/v1/metrics` })
+    : new ConsoleMetricExporter(),
+  exportIntervalMillis: 60000,
+});
 
-const logProcessor = endpoint
-  ? new BatchLogRecordProcessor(
-      new OTLPLogExporter({ url: `${endpoint}/v1/logs` })
-    )
-  : undefined;
+const logProcessor = new BatchLogRecordProcessor(
+  endpoint
+    ? new OTLPLogExporter({ url: `${endpoint}/v1/logs` })
+    : new ConsoleLogRecordExporter()
+);
 
 export const otelSDK = new NodeSDK({
   resource,
@@ -47,7 +48,10 @@ export const otelSDK = new NodeSDK({
 export function startTracing() {
   if (process.env.OTEL_ENABLED === 'true') {
     otelSDK.start();
-    console.log('[OTEL] ✓ OpenTelemetry started (traces, metrics, logs)');
+    console.log('[OTEL] ✓ OpenTelemetry SDK started');
+    console.log(`[OTEL] ✓ Service: ${process.env.OTEL_SERVICE_NAME || 'telemetryflow-core'}`);
+    console.log(`[OTEL] ✓ Endpoint: ${endpoint || 'console'}`);
+    console.log('[OTEL] ✓ Exporting: traces, metrics, logs');
   }
 }
 

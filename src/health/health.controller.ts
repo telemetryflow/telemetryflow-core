@@ -52,13 +52,24 @@ export class HealthController {
   }
 
   @Get('metrics')
-  @ApiOperation({ summary: 'OTEL metrics export info' })
+  @ApiOperation({ summary: 'OpenTelemetry metrics information' })
   @ApiResponse({ status: 200, description: 'Metrics export information' })
-  metrics() {
+  async metrics() {
+    const otelEnabled = process.env.OTEL_ENABLED === 'true';
+    const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
+    
     return {
-      status: 'ok',
-      message: 'Metrics are exported to OTEL Collector',
-      endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318',
+      status: otelEnabled ? 'enabled' : 'disabled',
+      exporter: 'OTLP',
+      endpoints: {
+        traces: `${endpoint}/v1/traces`,
+        metrics: `${endpoint}/v1/metrics`,
+        logs: `${endpoint}/v1/logs`,
+      },
+      exportInterval: '60s',
+      message: otelEnabled 
+        ? 'Metrics are automatically exported to OTEL Collector. View in Prometheus at http://localhost:9090'
+        : 'OpenTelemetry is disabled. Set OTEL_ENABLED=true to enable metrics export.',
     };
   }
 }

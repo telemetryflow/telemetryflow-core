@@ -77,8 +77,8 @@ service:
   telemetry:
     logs:
       level: info
-      development: false
-      encoding: json
+      development: true
+      encoding: console
     metrics:
       level: detailed
       readers:
