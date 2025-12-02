@@ -3,6 +3,10 @@ set -e
 
 echo "🚀 Starting TelemetryFlow Core..."
 
+# Initialize volume directories
+echo "📁 Initializing volume directories..."
+bash scripts/init-volumes.sh
+
 # Start services
 echo "📦 Starting Docker services..."
 docker-compose up -d

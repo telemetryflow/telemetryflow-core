@@ -20,12 +20,28 @@ networks:
 volumes:
   vol_postgres_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/data/docker/telemetryflow-core/postgres
   vol_clickhouse_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/data/docker/telemetryflow-core/clickhouse/data
   vol_clickhouse_logs:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/data/docker/telemetryflow-core/clickhouse/logs
   vol_prometheus_data:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/data/docker/telemetryflow-core/prometheus
 
 #================================================================================================
 # SERVICES
