@@ -64,7 +64,7 @@ prometheus:
     - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
   networks:
     telemetryflow_core_net:
-      ipv4_address: 172.151.150.50
+      ipv4_address: 172.151.151.50
 ```
 
 ### OTEL Collector (`config/otel/`)
@@ -114,7 +114,7 @@ prometheus:
     - vol_prometheus_data:/prometheus
   networks:
     telemetryflow_core_net:
-      ipv4_address: 172.151.150.50
+      ipv4_address: 172.151.151.50
 ```
 
 ### Updated Services
@@ -146,7 +146,7 @@ PORT_OTEL_ZPAGES=55679
 # Prometheus
 PROMETHEUS_VERSION=latest
 CONTAINER_PROMETHEUS=telemetryflow_core_prometheus
-CONTAINER_IP_PROMETHEUS=172.151.150.50
+CONTAINER_IP_PROMETHEUS=172.151.151.50
 PORT_PROMETHEUS=9090
 ```
 
@@ -154,11 +154,11 @@ PORT_PROMETHEUS=9090
 
 ```
 172.151.0.0/16 (telemetryflow_core_net)
-├── 172.151.150.10 - Backend (NestJS)
-├── 172.151.150.20 - PostgreSQL
-├── 172.151.150.30 - OTEL Collector
-├── 172.151.150.40 - ClickHouse
-└── 172.151.150.50 - Prometheus (NEW)
+├── 172.151.151.10 - Backend (NestJS)
+├── 172.151.151.20 - PostgreSQL
+├── 172.151.151.30 - OTEL Collector
+├── 172.151.151.40 - ClickHouse
+└── 172.151.151.50 - Prometheus (NEW)
 ```
 
 ## Service Ports

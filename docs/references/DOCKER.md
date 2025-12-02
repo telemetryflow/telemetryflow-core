@@ -9,19 +9,19 @@ TelemetryFlow Core can be deployed using Docker Compose with PostgreSQL and the 
 ### 1. PostgreSQL
 - **Image**: postgres:16-alpine
 - **Port**: 5432
-- **IP**: 172.151.150.20
+- **IP**: 172.151.151.20
 - **Health Check**: pg_isready
 
 ### 2. Backend (NestJS)
 - **Build**: From Dockerfile
 - **Port**: 3000
-- **IP**: 172.151.150.10
+- **IP**: 172.151.151.10
 - **Health Check**: /health endpoint
 
 ### 3. OTEL Collector
 - **Image**: otel/opentelemetry-collector:latest
 - **Ports**: 4317 (gRPC), 4318 (HTTP), 8889 (metrics)
-- **IP**: 172.151.150.30
+- **IP**: 172.151.151.30
 - **Config**: config/otel/otel-collector-config.yaml
 
 ## Quick Start
@@ -187,8 +187,8 @@ FROM node:22-alpine
 ```
 
 ### IP Addresses
-- PostgreSQL: 172.151.150.20
-- Backend: 172.151.150.10
+- PostgreSQL: 172.151.151.20
+- Backend: 172.151.151.10
 
 ### Why Custom Network?
 - Predictable IPs
@@ -373,10 +373,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Build
         run: docker-compose build
-      
+
       - name: Deploy
         run: docker-compose up -d
 ```

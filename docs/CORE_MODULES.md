@@ -634,16 +634,16 @@ flowchart TD
 graph TB
     subgraph "Docker Network: 172.151.0.0/16"
         subgraph "Backend Service"
-            BE[NestJS Backend<br/>172.151.150.10:3000]
+            BE[NestJS Backend<br/>172.151.151.10:3000]
         end
 
         subgraph "Data Layer"
-            PG[(PostgreSQL<br/>172.151.150.20:5432<br/>IAM Data)]
-            CH[(ClickHouse<br/>172.151.150.40:8123<br/>Audit Logs)]
+            PG[(PostgreSQL<br/>172.151.151.20:5432<br/>IAM Data)]
+            CH[(ClickHouse<br/>172.151.151.40:8123<br/>Audit Logs)]
         end
 
         subgraph "Observability"
-            OTEL[OTEL Collector<br/>172.151.150.30:4317/4318]
+            OTEL[OTEL Collector<br/>172.151.151.30:4317/4318]
         end
     end
 

@@ -69,7 +69,7 @@ services:
       - vol_postgres_data:/var/lib/postgresql/data
     networks:
       telemetryflow_core_net:
-        ipv4_address: ${CONTAINER_IP_POSTGRES:-172.151.150.20}
+        ipv4_address: ${CONTAINER_IP_POSTGRES:-172.151.151.20}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME:-postgres} -d ${POSTGRES_DB:-telemetryflow_core}"]
       interval: 10s
@@ -84,7 +84,7 @@ services:
 **Added:**
 - Custom network: `telemetryflow_core_net`
 - Custom subnet: `172.151.0.0/16`
-- Static IP for PostgreSQL: `172.151.150.20`
+- Static IP for PostgreSQL: `172.151.151.20`
 
 **Benefits:**
 - Better network isolation
@@ -97,7 +97,7 @@ services:
 ```env
 POSTGRES_VERSION=16-alpine
 CONTAINER_POSTGRES=telemetryflow_core_postgres
-CONTAINER_IP_POSTGRES=172.151.150.20
+CONTAINER_IP_POSTGRES=172.151.151.20
 PORT_POSTGRES=5432
 POSTGRES_USERNAME=postgres
 POSTGRES_PASSWORD=postgres
@@ -186,7 +186,7 @@ POSTGRES_VERSION=15-alpine docker-compose up -d
 ## Network Details
 
 ### Subnet: 172.151.0.0/16
-- PostgreSQL: 172.151.150.20
+- PostgreSQL: 172.151.151.20
 - Available IPs: 172.151.0.1 - 172.151.255.254
 
 ### Why Different from Platform?
@@ -243,7 +243,7 @@ docker-compose up -d
 psql -h localhost -p 5432 -U postgres -d telemetryflow_core
 
 # Or use container IP
-psql -h 172.151.150.20 -p 5432 -U postgres -d telemetryflow_core
+psql -h 172.151.151.20 -p 5432 -U postgres -d telemetryflow_core
 ```
 
 ## What's NOT Included
@@ -275,7 +275,7 @@ redis:
     - "6379:6379"
   networks:
     telemetryflow_core_net:
-      ipv4_address: 172.151.150.30
+      ipv4_address: 172.151.151.30
 ```
 
 ### Add pgAdmin

@@ -7,15 +7,15 @@ Quick visual reference for system architecture and data flows.
 ```mermaid
 C4Context
     title System Context - TelemetryFlow Core
-    
+
     Person(user, "User", "System user with role-based access")
     Person(admin, "Administrator", "System administrator")
-    
+
     System(core, "TelemetryFlow Core", "IAM & Audit System")
-    
+
     System_Ext(monitoring, "Monitoring", "Prometheus/Grafana")
     System_Ext(external, "External Systems", "Third-party integrations")
-    
+
     Rel(user, core, "Uses", "HTTPS/REST")
     Rel(admin, core, "Manages", "HTTPS/REST")
     Rel(core, monitoring, "Exports metrics", "Prometheus")
@@ -27,17 +27,17 @@ C4Context
 ```mermaid
 C4Container
     title Container Diagram - TelemetryFlow Core
-    
+
     Person(user, "User")
-    
+
     Container(api, "API Application", "NestJS", "REST API with JWT auth")
     Container(iam, "IAM Module", "TypeScript", "Identity & Access Management")
     Container(audit, "Audit Module", "TypeScript", "Audit logging service")
-    
+
     ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16", "IAM data storage")
     ContainerDb(clickhouse, "ClickHouse", "ClickHouse", "Audit log storage")
     Container(otel, "OTEL Collector", "OpenTelemetry", "Telemetry collection")
-    
+
     Rel(user, api, "Uses", "HTTPS")
     Rel(api, iam, "Uses")
     Rel(api, audit, "Logs to")
@@ -51,33 +51,33 @@ C4Container
 ```mermaid
 C4Component
     title Component Diagram - IAM Module
-    
+
     Container(api, "API Layer", "Controllers")
-    
+
     Component(userCtrl, "User Controller", "REST", "User management")
     Component(roleCtrl, "Role Controller", "REST", "Role management")
     Component(permCtrl, "Permission Controller", "REST", "Permission management")
-    
+
     Component(cmdBus, "Command Bus", "CQRS", "Command handling")
     Component(queryBus, "Query Bus", "CQRS", "Query handling")
-    
+
     Component(userAgg, "User Aggregate", "Domain", "User business logic")
     Component(roleAgg, "Role Aggregate", "Domain", "Role business logic")
     Component(permAgg, "Permission Aggregate", "Domain", "Permission logic")
-    
+
     ComponentDb(repo, "Repositories", "Infrastructure", "Data access")
-    
+
     Rel(api, userCtrl, "Routes to")
     Rel(api, roleCtrl, "Routes to")
     Rel(api, permCtrl, "Routes to")
-    
+
     Rel(userCtrl, cmdBus, "Executes")
     Rel(userCtrl, queryBus, "Queries")
-    
+
     Rel(cmdBus, userAgg, "Invokes")
     Rel(cmdBus, roleAgg, "Invokes")
     Rel(queryBus, repo, "Reads from")
-    
+
     Rel(userAgg, repo, "Persists via")
     Rel(roleAgg, repo, "Persists via")
 ```
@@ -87,21 +87,21 @@ C4Component
 ```mermaid
 C4Deployment
     title Deployment Diagram - Docker Compose
-    
+
     Deployment_Node(docker, "Docker Host", "Docker Engine") {
         Deployment_Node(network, "telemetryflow_core_net", "Bridge Network") {
-            Container(backend, "Backend", "NestJS", "172.151.150.10:3000")
-            ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16", "172.151.150.20:5432")
-            ContainerDb(clickhouse, "ClickHouse", "ClickHouse", "172.151.150.40:8123")
-            Container(otel, "OTEL Collector", "OpenTelemetry", "172.151.150.30:4317")
-            Container(prometheus, "Prometheus", "Metrics", "172.151.150.50:9090")
+            Container(backend, "Backend", "NestJS", "172.151.151.10:3000")
+            ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16", "172.151.151.20:5432")
+            ContainerDb(clickhouse, "ClickHouse", "ClickHouse", "172.151.151.40:8123")
+            Container(otel, "OTEL Collector", "OpenTelemetry", "172.151.151.30:4317")
+            Container(prometheus, "Prometheus", "Metrics", "172.151.151.50:9090")
         }
     }
-    
+
     Deployment_Node(client, "Client", "Browser/API Client") {
         Container(browser, "Web Browser", "Chrome/Firefox")
     }
-    
+
     Rel(browser, backend, "HTTPS", "Port 3000")
     Rel(backend, postgres, "SQL", "Port 5432")
     Rel(backend, clickhouse, "HTTP", "Port 8123")
@@ -124,7 +124,7 @@ sequenceDiagram
     participant AuditService
     participant ClickHouse
     participant EventBus
-    
+
     Admin->>API: POST /users
     API->>Controller: createUser(dto)
     Controller->>CommandBus: execute(CreateUserCommand)
@@ -162,11 +162,11 @@ flowchart TD
     Has -->|No| Audit2[Log: AUTHZ DENIED]
     Has -->|Yes| Execute[Execute Operation]
     Execute --> Audit3[Log: DATA SUCCESS]
-    
+
     Audit1 --> Return1[401 Unauthorized]
     Audit2 --> Return2[403 Forbidden]
     Audit3 --> Return3[200 OK]
-    
+
     style Audit1 fill:#ff6b6b
     style Audit2 fill:#ffa500
     style Audit3 fill:#51cf66
@@ -186,14 +186,14 @@ erDiagram
     ROLE ||--o{ USER_ROLE : "assigned_to"
     ROLE }o--o{ PERMISSION : "has"
     PERMISSION ||--o{ USER_PERMISSION : "granted_to"
-    
+
     REGION {
         uuid id PK
         string name
         string code
         boolean active
     }
-    
+
     TENANT {
         uuid id PK
         string name
@@ -202,7 +202,7 @@ erDiagram
         boolean active
         timestamp created_at
     }
-    
+
     ORGANIZATION {
         uuid id PK
         string name
@@ -211,7 +211,7 @@ erDiagram
         boolean active
         timestamp created_at
     }
-    
+
     WORKSPACE {
         uuid id PK
         string name
@@ -220,7 +220,7 @@ erDiagram
         boolean active
         timestamp created_at
     }
-    
+
     USER {
         uuid id PK
         string email UK
@@ -232,7 +232,7 @@ erDiagram
         timestamp last_login
         timestamp created_at
     }
-    
+
     ROLE {
         uuid id PK
         string name UK
@@ -241,7 +241,7 @@ erDiagram
         boolean system_role
         timestamp created_at
     }
-    
+
     PERMISSION {
         uuid id PK
         string name UK
@@ -250,7 +250,7 @@ erDiagram
         string description
         timestamp created_at
     }
-    
+
     GROUP {
         uuid id PK
         string name
@@ -258,13 +258,13 @@ erDiagram
         uuid organization_id FK
         timestamp created_at
     }
-    
+
     USER_ROLE {
         uuid user_id FK
         uuid role_id FK
         timestamp assigned_at
     }
-    
+
     USER_PERMISSION {
         uuid user_id FK
         uuid permission_id FK
@@ -298,21 +298,21 @@ erDiagram
         uint32 duration_ms
         datetime64 created_at
     }
-    
+
     AUDIT_LOGS_STATS {
         date date
         enum event_type
         enum result
         uint64 count
     }
-    
+
     AUDIT_LOGS_USER_ACTIVITY {
         date date
         string user_id
         enum event_type
         uint64 count
     }
-    
+
     AUDIT_LOGS ||--o{ AUDIT_LOGS_STATS : "aggregates_to"
     AUDIT_LOGS ||--o{ AUDIT_LOGS_USER_ACTIVITY : "aggregates_to"
 ```
@@ -331,17 +331,17 @@ stateDiagram-v2
     Active --> Deleted: Delete
     Inactive --> Deleted: Delete
     Deleted --> [*]
-    
+
     note right of Created
         User created but not activated
         Cannot login
     end note
-    
+
     note right of Active
         User can login
         Full access based on roles
     end note
-    
+
     note right of Inactive
         User cannot login
         Data preserved
@@ -358,12 +358,12 @@ stateDiagram-v2
     HasRole --> NoRole: Revoke All Roles
     HasRole --> [*]: User Deleted
     NoRole --> [*]: User Deleted
-    
+
     note right of NoRole
         User has no roles
         No permissions
     end note
-    
+
     note right of HasRole
         User has one or more roles
         Permissions inherited
@@ -377,28 +377,28 @@ graph TB
     subgraph "External"
         Client[Client<br/>Browser/API]
     end
-    
+
     subgraph "Docker Network: 172.151.0.0/16"
         subgraph "Application Tier"
-            BE[Backend<br/>172.151.150.10<br/>Port 3000]
+            BE[Backend<br/>172.151.151.10<br/>Port 3000]
         end
-        
+
         subgraph "Data Tier"
-            PG[(PostgreSQL<br/>172.151.150.20<br/>Port 5432)]
-            CH[(ClickHouse<br/>172.151.150.40<br/>Port 8123/9000)]
+            PG[(PostgreSQL<br/>172.151.151.20<br/>Port 5432)]
+            CH[(ClickHouse<br/>172.151.151.40<br/>Port 8123/9000)]
         end
-        
+
         subgraph "Observability Tier"
-            OTEL[OTEL Collector<br/>172.151.150.30<br/>Port 4317/4318]
-            PROM[Prometheus<br/>172.151.150.50<br/>Port 9090]
+            OTEL[OTEL Collector<br/>172.151.151.30<br/>Port 4317/4318]
+            PROM[Prometheus<br/>172.151.151.50<br/>Port 9090]
         end
     end
-    
+
     Client -->|:3000| BE
     BE -->|:5432| PG
     BE -->|:8123| CH
     BE -->|:4317| OTEL
-    
+
     style BE fill:#4ecdc4
     style PG fill:#336791
     style CH fill:#ffa500
@@ -412,35 +412,35 @@ graph LR
     subgraph "Frontend"
         Swagger[Swagger UI<br/>OpenAPI 3.0]
     end
-    
+
     subgraph "Backend"
         NestJS[NestJS 11<br/>TypeScript 5.9]
         Node[Node.js 18+]
     end
-    
+
     subgraph "Data Layer"
         PG[PostgreSQL 16<br/>IAM Data]
         CH[ClickHouse<br/>Audit Logs]
     end
-    
+
     subgraph "Architecture"
         DDD[Domain-Driven Design]
         CQRS[CQRS Pattern]
         Events[Event-Driven]
     end
-    
+
     subgraph "Security"
         JWT[JWT Auth]
         Argon2[Argon2 Hashing]
         RBAC[5-Tier RBAC]
     end
-    
+
     subgraph "Observability"
         OTEL[OpenTelemetry]
         Winston[Winston Logger]
         Health[Health Checks]
     end
-    
+
     Swagger --> NestJS
     NestJS --> Node
     NestJS --> PG
@@ -465,7 +465,7 @@ graph TB
         PG1[(PostgreSQL)]
         CH1[(ClickHouse)]
     end
-    
+
     subgraph "Future - Horizontal Scaling"
         LB[Load Balancer]
         BE2[Backend Instance 1]
@@ -476,10 +476,10 @@ graph TB
         CH2[(ClickHouse<br/>Cluster)]
         Redis[(Redis<br/>Cache)]
     end
-    
+
     BE1 --> PG1
     BE1 --> CH1
-    
+
     LB --> BE2
     LB --> BE3
     LB --> BE4
@@ -504,22 +504,22 @@ graph TB
         CH[ClickHouse<br/>:9363/metrics]
         OTEL[OTEL<br/>:8889/metrics]
     end
-    
+
     subgraph "Collection"
         Prom[Prometheus]
     end
-    
+
     subgraph "Visualization"
         Graf[Grafana]
     end
-    
+
     subgraph "Dashboards"
         D1[System Health]
         D2[API Performance]
         D3[Audit Statistics]
         D4[User Activity]
     end
-    
+
     BE --> Prom
     CH --> Prom
     OTEL --> Prom
@@ -551,10 +551,10 @@ graph TB
 
 | Service | IP Address |
 |---------|-----------|
-| Backend | 172.151.150.10 |
-| PostgreSQL | 172.151.150.20 |
-| OTEL Collector | 172.151.150.30 |
-| ClickHouse | 172.151.150.40 |
+| Backend | 172.151.151.10 |
+| PostgreSQL | 172.151.151.20 |
+| OTEL Collector | 172.151.151.30 |
+| ClickHouse | 172.151.151.40 |
 
 ### Key Metrics
 

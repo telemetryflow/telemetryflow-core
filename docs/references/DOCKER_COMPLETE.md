@@ -9,7 +9,7 @@ Added ClickHouse service with:
 - HTTP port: 8123
 - Native port: 9000
 - Prometheus metrics: 9363
-- IP: 172.151.150.40
+- IP: 172.151.151.40
 - Volumes for data and logs
 - Health check
 - Configuration files mounted
@@ -21,7 +21,7 @@ Added ClickHouse configuration:
 ```env
 CLICKHOUSE_VERSION=latest
 CONTAINER_CLICKHOUSE=telemetryflow_core_clickhouse
-CONTAINER_IP_CLICKHOUSE=172.151.150.40
+CONTAINER_IP_CLICKHOUSE=172.151.151.40
 PORT_CLICKHOUSE_HTTP=8123
 PORT_CLICKHOUSE_NATIVE=9000
 PORT_CLICKHOUSE_METRICS=9363
@@ -66,7 +66,7 @@ One-command startup that:
 - Shows service URLs
 
 ### 7. Documentation
-**Files**: 
+**Files**:
 - `DOCKER_SETUP.md` - Complete Docker documentation
 - `DOCKER_COMPLETE.md` - This file
 - Updated `README.md` - Quick start instructions
@@ -74,11 +74,11 @@ One-command startup that:
 ## Services Overview
 
 | Service | Port | IP | Purpose |
-|---------|------|----|---------| 
-| **Backend** | 3000 | 172.151.150.10 | NestJS API |
-| **PostgreSQL** | 5432 | 172.151.150.20 | IAM data |
-| **OTEL Collector** | 4317/4318 | 172.151.150.30 | Telemetry |
-| **ClickHouse** | 8123/9000 | 172.151.150.40 | Audit logs |
+|---------|------|----|---------|
+| **Backend** | 3000 | 172.151.151.10 | NestJS API |
+| **PostgreSQL** | 5432 | 172.151.151.20 | IAM data |
+| **OTEL Collector** | 4317/4318 | 172.151.151.30 | Telemetry |
+| **ClickHouse** | 8123/9000 | 172.151.151.40 | Audit logs |
 
 ## Quick Start
 

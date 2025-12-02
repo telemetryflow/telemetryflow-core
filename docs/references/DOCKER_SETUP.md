@@ -4,7 +4,7 @@
 
 ### 1. PostgreSQL (IAM Data)
 - **Port**: 5432
-- **IP**: 172.151.150.20
+- **IP**: 172.151.151.20
 - **Database**: telemetryflow_core
 - **User**: postgres
 - **Purpose**: IAM module data storage
@@ -13,21 +13,21 @@
 - **HTTP Port**: 8123
 - **Native Port**: 9000
 - **Metrics Port**: 9363
-- **IP**: 172.151.150.40
+- **IP**: 172.151.151.40
 - **Database**: telemetry
 - **User**: default
 - **Purpose**: High-volume audit log storage
 
 ### 3. Backend (NestJS)
 - **Port**: 3000
-- **IP**: 172.151.150.10
+- **IP**: 172.151.151.10
 - **Purpose**: API server
 
 ### 4. OTEL Collector
 - **gRPC Port**: 4317
 - **HTTP Port**: 4318
 - **Metrics Port**: 8889
-- **IP**: 172.151.150.30
+- **IP**: 172.151.151.30
 - **Purpose**: OpenTelemetry data collection
 
 ## Quick Start
@@ -96,14 +96,14 @@ SELECT count() FROM telemetry.audit_logs;
 SELECT * FROM telemetry.audit_logs ORDER BY timestamp DESC LIMIT 10;
 
 -- Audit logs by event type
-SELECT event_type, count() as count 
-FROM telemetry.audit_logs 
+SELECT event_type, count() as count
+FROM telemetry.audit_logs
 GROUP BY event_type;
 
 -- Failed operations
-SELECT * FROM telemetry.audit_logs 
-WHERE result = 'FAILURE' 
-ORDER BY timestamp DESC 
+SELECT * FROM telemetry.audit_logs
+WHERE result = 'FAILURE'
+ORDER BY timestamp DESC
 LIMIT 10;
 
 -- User activity
@@ -181,10 +181,10 @@ docker exec telemetryflow_core_clickhouse clickhouse-client --query "SHOW TABLES
 All services are on the same network: `telemetryflow_core_net` (172.151.0.0/16)
 
 Service IPs:
-- Backend: 172.151.150.10
-- PostgreSQL: 172.151.150.20
-- OTEL Collector: 172.151.150.30
-- ClickHouse: 172.151.150.40
+- Backend: 172.151.151.10
+- PostgreSQL: 172.151.151.20
+- OTEL Collector: 172.151.151.30
+- ClickHouse: 172.151.151.40
 
 ## Production Considerations
 
