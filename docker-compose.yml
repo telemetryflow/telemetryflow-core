@@ -1,0 +1,206 @@
+#================================================================================================
+# TelemetryFlow Core - Docker Compose Configuration
+# IAM Module Only (PostgreSQL + Backend)
+#================================================================================================
+
+#================================================================================================
+# NETWORK SETUP
+#================================================================================================
+networks:
+  telemetryflow_core_net:
+    name: telemetryflow_core_net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.151.0.0/16
+
+#================================================================================================
+# VOLUME SETUP
+#================================================================================================
+volumes:
+  vol_postgres_data:
+    driver: local
+  vol_clickhouse_data:
+    driver: local
+  vol_clickhouse_logs:
+    driver: local
+  vol_prometheus_data:
+    driver: local
+
+#================================================================================================
+# SERVICES
+#================================================================================================
+services:
+  #----------------------------------------------------------------------------------------------
+  # POSTGRESQL - IAM Data Storage
+  #----------------------------------------------------------------------------------------------
+  postgres:
+    platform: linux/amd64
+    image: postgres:${POSTGRES_VERSION:-16-alpine}
+    container_name: ${CONTAINER_POSTGRES:-telemetryflow_core_postgres}
+    restart: unless-stopped
+    ports:
+      - "${PORT_POSTGRES:-5432}:5432"
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_USER=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-telemetryflow_core}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - vol_postgres_data:/var/lib/postgresql/data
+      - ./config/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_POSTGRES:-172.151.150.20}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME:-postgres} -d ${POSTGRES_DB:-telemetryflow_core}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  #----------------------------------------------------------------------------------------------
+  # BACKEND - NestJS API
+  #----------------------------------------------------------------------------------------------
+  backend:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${CONTAINER_BACKEND:-telemetryflow_core_backend}
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=3000
+      - TZ=${TZ:-UTC}
+      
+      # PostgreSQL
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-telemetryflow_core}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      
+      # ClickHouse
+      - CLICKHOUSE_HOST=clickhouse
+      - CLICKHOUSE_PORT=8123
+      - CLICKHOUSE_DATABASE=${CLICKHOUSE_DB:-telemetry}
+      - CLICKHOUSE_USERNAME=${CLICKHOUSE_USER:-default}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
+      
+      # JWT
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-24h}
+      - SESSION_SECRET=${SESSION_SECRET}
+      
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_PRETTY_PRINT=${LOG_PRETTY_PRINT:-false}
+      
+      # OpenTelemetry
+      - OTEL_ENABLED=${OTEL_ENABLED:-true}
+      - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME:-telemetryflow-core}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_BACKEND:-172.151.150.10}
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  #----------------------------------------------------------------------------------------------
+  # CLICKHOUSE - Audit Log Storage
+  #----------------------------------------------------------------------------------------------
+  clickhouse:
+    platform: linux/amd64
+    image: clickhouse/clickhouse-server:${CLICKHOUSE_VERSION:-latest}
+    container_name: ${CONTAINER_CLICKHOUSE:-telemetryflow_core_clickhouse}
+    restart: unless-stopped
+    ports:
+      - "${PORT_CLICKHOUSE_HTTP:-8123}:8123"   # HTTP
+      - "${PORT_CLICKHOUSE_NATIVE:-9000}:9000" # Native
+      - "${PORT_CLICKHOUSE_METRICS:-9363}:9363" # Prometheus metrics
+    environment:
+      - TZ=${TZ:-UTC}
+      - CLICKHOUSE_DB=${CLICKHOUSE_DB:-telemetry}
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
+    volumes:
+      - vol_clickhouse_data:/var/lib/clickhouse
+      - vol_clickhouse_logs:/var/log/clickhouse-server
+      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.xml:ro
+      - ./config/clickhouse/users.xml:/etc/clickhouse-server/users.xml:ro
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_CLICKHOUSE:-172.151.150.40}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  #----------------------------------------------------------------------------------------------
+  # OTEL COLLECTOR - OpenTelemetry Collector
+  #----------------------------------------------------------------------------------------------
+  otel-collector:
+    platform: linux/amd64
+    image: otel/opentelemetry-collector:${OTEL_VERSION:-latest}
+    container_name: ${CONTAINER_OTEL:-telemetryflow_core_otel}
+    restart: unless-stopped
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./config/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "${PORT_OTEL_GRPC:-4317}:4317"   # OTLP gRPC
+      - "${PORT_OTEL_HTTP:-4318}:4318"   # OTLP HTTP
+      - "${PORT_OTEL_METRICS:-8889}:8889" # Prometheus metrics
+      - "${PORT_OTEL_HEALTH:-13133}:13133" # Health check
+      - "${PORT_OTEL_ZPAGES:-55679}:55679" # zPages
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_OTEL:-172.151.150.30}
+
+  #----------------------------------------------------------------------------------------------
+  # PROMETHEUS - Metrics Collection
+  #----------------------------------------------------------------------------------------------
+  prometheus:
+    platform: linux/amd64
+    image: prom/prometheus:${PROMETHEUS_VERSION:-latest}
+    container_name: ${CONTAINER_PROMETHEUS:-telemetryflow_core_prometheus}
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "${PORT_PROMETHEUS:-9090}:9090"
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - vol_prometheus_data:/prometheus
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_PROMETHEUS:-172.151.150.50}
+    depends_on:
+      - otel-collector
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+

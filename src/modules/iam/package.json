@@ -1,0 +1,12 @@
+{
+  "name": "@telemetryflow/iam-module",
+  "version": "1.0.0",
+  "description": "Self-contained IAM module with DDD architecture",
+  "private": true,
+  "scripts": {
+    "migration:run": "typeorm migration:run -d ./infrastructure/persistence/data-source.ts",
+    "migration:revert": "typeorm migration:revert -d ./infrastructure/persistence/data-source.ts",
+    "seed": "ts-node ./infrastructure/persistence/seeds/index.ts",
+    "test": "jest"
+  }
+}

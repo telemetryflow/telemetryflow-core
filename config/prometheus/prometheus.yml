@@ -1,0 +1,25 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'telemetryflow-core-monitor'
+
+scrape_configs:
+  # OTEL Collector metrics
+  - job_name: 'otel-collector'
+    static_configs:
+      - targets: ['telemetryflow_core_otel:8889']
+        labels:
+          service: 'otel-collector'
+
+  # OTEL Collector internal metrics
+  - job_name: 'otel-collector-internal'
+    static_configs:
+      - targets: ['telemetryflow_core_otel:8888']
+        labels:
+          service: 'otel-collector-internal'
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

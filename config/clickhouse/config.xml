@@ -1,0 +1,343 @@
+<?xml version="1.0"?>
+<!--
+  ClickHouse Configuration for TelemetryFlow Platform
+  ====================================================
+  This configuration is optimized for OTLP telemetry data storage (metrics, logs, traces)
+
+  Key Features:
+  - High-performance time-series data ingestion
+  - Automatic data partitioning and TTL management
+  - Optimized compression for telemetry data
+  - Query performance tuning for observability use cases
+-->
+<clickhouse>
+    <!--
+      Network Configuration
+      =====================
+      Allow connections from all interfaces in Docker environment
+    -->
+    <listen_host>::</listen_host>
+
+    <!--
+      HTTP and Native Protocol Ports
+      ===============================
+    -->
+    <http_port>8123</http_port>
+    <tcp_port>9000</tcp_port>
+
+    <!-- Optional: Enable HTTPS -->
+    <!-- <https_port>8443</https_port> -->
+
+    <!--
+      Logging Configuration
+      ======================
+    -->
+    <logger>
+        <!-- Logging level: trace, debug, information, warning, error -->
+        <level>information</level>
+        <log>/var/log/clickhouse-server/clickhouse-server.log</log>
+        <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
+        <size>1000M</size>
+        <count>10</count>
+    </logger>
+
+    <!--
+      Performance and Memory Settings
+      =================================
+      Adjust based on available system resources
+    -->
+
+    <!-- Maximum memory usage for queries (per server) -->
+    <max_server_memory_usage>0</max_server_memory_usage>
+
+    <!-- Maximum memory usage for individual query -->
+    <max_memory_usage>10000000000</max_memory_usage>
+
+    <!-- Maximum concurrent queries -->
+    <max_concurrent_queries>100</max_concurrent_queries>
+
+    <!-- Number of threads for query processing -->
+    <max_thread_pool_size>10000</max_thread_pool_size>
+
+    <!--
+      Query Complexity Limits
+      ========================
+    -->
+    <max_query_size>262144</max_query_size>
+    <max_ast_depth>1000</max_ast_depth>
+    <max_ast_elements>50000</max_ast_elements>
+
+    <!--
+      Background Task Pool Sizes
+      ===========================
+      Optimized for telemetry data processing
+    -->
+    <background_pool_size>16</background_pool_size>
+    <background_schedule_pool_size>16</background_schedule_pool_size>
+    <background_fetches_pool_size>8</background_fetches_pool_size>
+    <background_move_pool_size>8</background_move_pool_size>
+    <background_merges_mutations_concurrency_ratio>2</background_merges_mutations_concurrency_ratio>
+
+    <!--
+      Data Storage and Paths
+      =======================
+    -->
+    <path>/var/lib/clickhouse/</path>
+    <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>
+    <user_files_path>/var/lib/clickhouse/user_files/</user_files_path>
+    <format_schema_path>/var/lib/clickhouse/format_schemas/</format_schema_path>
+
+    <!--
+      Users and Access Control
+      =========================
+      Default user configuration
+      IMPORTANT: Change passwords in production!
+    -->
+    <users_config>users.xml</users_config>
+
+    <!--
+      Compression Settings
+      =====================
+      Optimized for telemetry data (mostly strings and timestamps)
+    -->
+    <compression>
+        <case>
+            <!-- Compress all data by default -->
+            <min_part_size>10485760</min_part_size>
+            <min_part_size_ratio>0.01</min_part_size_ratio>
+            <method>lz4</method>
+        </case>
+    </compression>
+
+    <!--
+      Distributed DDL
+      ================
+      For cluster setups (optional)
+    -->
+    <!-- <distributed_ddl>
+        <path>/clickhouse/task_queue/ddl</path>
+    </distributed_ddl> -->
+
+    <!--
+      ZooKeeper Configuration
+      ========================
+      Required for ReplicatedMergeTree tables and distributed setups
+      Uncomment for production clusters
+    -->
+    <!-- <zookeeper>
+        <node>
+            <host>zookeeper</host>
+            <port>2181</port>
+        </node>
+    </zookeeper> -->
+
+    <!--
+      Dictionaries
+      =============
+    -->
+    <dictionaries_config>*_dictionary.xml</dictionaries_config>
+
+    <!--
+      Query Log
+      ==========
+      Track query performance for monitoring
+    -->
+    <query_log>
+        <database>system</database>
+        <table>query_log</table>
+        <partition_by>toYYYYMM(event_date)</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </query_log>
+
+    <!--
+      Query Thread Log
+      =================
+      Detailed thread-level query information
+    -->
+    <query_thread_log>
+        <database>system</database>
+        <table>query_thread_log</table>
+        <partition_by>toYYYYMM(event_date)</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </query_thread_log>
+
+    <!--
+      Part Log
+      =========
+      Track data part operations (merges, mutations, etc.)
+    -->
+    <part_log>
+        <database>system</database>
+        <table>part_log</table>
+        <partition_by>toYYYYMM(event_date)</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </part_log>
+
+    <!--
+      Trace Log
+      ==========
+      For profiling and debugging
+    -->
+    <trace_log>
+        <database>system</database>
+        <table>trace_log</table>
+        <partition_by>toYYYYMM(event_date)</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </trace_log>
+
+    <!--
+      Metric Log
+      ===========
+      System metrics for monitoring ClickHouse itself
+    -->
+    <metric_log>
+        <database>system</database>
+        <table>metric_log</table>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+        <collect_interval_milliseconds>1000</collect_interval_milliseconds>
+    </metric_log>
+
+    <!--
+      Asynchronous Metrics
+      =====================
+    -->
+    <asynchronous_metric_log>
+        <database>system</database>
+        <table>asynchronous_metric_log</table>
+        <flush_interval_milliseconds>7000</flush_interval_milliseconds>
+    </asynchronous_metric_log>
+
+    <!--
+      Session Log
+      ============
+      Track user sessions
+    -->
+    <session_log>
+        <database>system</database>
+        <table>session_log</table>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </session_log>
+
+    <!--
+      Timezone
+      =========
+    -->
+    <timezone>UTC</timezone>
+
+    <!--
+      Performance Optimizations
+      ==========================
+      Tuned for OTLP telemetry workloads
+    -->
+
+    <!-- Merge tree settings -->
+    <merge_tree>
+        <!-- Maximum number of parts before forced merge -->
+        <max_parts_in_total>10000</max_parts_in_total>
+
+        <!-- Maximum delay to insert into table -->
+        <max_delay_to_insert>1</max_delay_to_insert>
+
+        <!-- Number of free entries in pool to execute mutation -->
+        <number_of_free_entries_in_pool_to_execute_mutation>10</number_of_free_entries_in_pool_to_execute_mutation>
+
+        <!-- Time to live for temporary data -->
+        <temporary_directories_lifetime>86400</temporary_directories_lifetime>
+    </merge_tree>
+
+    <!--
+      Distributed Settings
+      =====================
+    -->
+    <distributed_product_mode>allow</distributed_product_mode>
+
+    <!--
+      Remote Servers (Clusters)
+      ===========================
+      Uncomment for distributed/clustered setup
+    -->
+    <!-- <remote_servers>
+        <telemetry_cluster>
+            <shard>
+                <replica>
+                    <host>clickhouse-1</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>clickhouse-2</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </telemetry_cluster>
+    </remote_servers> -->
+
+    <!--
+      Builtin Dictionaries
+      =====================
+    -->
+    <builtin_dictionaries_reload_interval>3600</builtin_dictionaries_reload_interval>
+
+    <!--
+      Interserver HTTP Settings
+      ===========================
+      For replication between ClickHouse servers
+    -->
+    <interserver_http_host>clickhouse</interserver_http_host>
+    <interserver_http_port>9009</interserver_http_port>
+
+    <!--
+      OpenTelemetry Settings
+      =======================
+      Enable OpenTelemetry for ClickHouse itself
+    -->
+    <!-- <opentelemetry>
+        <trace_log>
+            <database>system</database>
+            <table>opentelemetry_span_log</table>
+            <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+        </trace_log>
+    </opentelemetry> -->
+
+    <!--
+      Prometheus Exporter
+      ====================
+      Expose ClickHouse metrics in Prometheus format
+    -->
+    <prometheus>
+        <endpoint>/metrics</endpoint>
+        <port>9363</port>
+        <metrics>true</metrics>
+        <events>true</events>
+        <asynchronous_metrics>true</asynchronous_metrics>
+    </prometheus>
+
+    <!--
+      Quotas and Limits
+      ==================
+      Prevent resource exhaustion
+    -->
+    <quotas_config>quotas.xml</quotas_config>
+
+    <!--
+      Data Retention
+      ===============
+      Automatic cleanup of old data
+      Note: TTL is also configured per table in migrations
+    -->
+    <default_database>default</default_database>
+
+    <!--
+      Security
+      =========
+      IMPORTANT: Configure properly for production
+    -->
+
+    <!-- Disable access from other networks by default -->
+    <!-- <access_management_path>/var/lib/clickhouse/access/</access_management_path> -->
+
+    <!-- Enable/disable specific features -->
+    <allow_experimental_live_view>0</allow_experimental_live_view>
+    <allow_experimental_window_view>0</allow_experimental_window_view>
+    <allow_experimental_geo_types>0</allow_experimental_geo_types>
+
+</clickhouse>
