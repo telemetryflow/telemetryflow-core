@@ -15,7 +15,7 @@ import { GetRoleUsersQuery } from '../../application/queries/GetRoleUsers.query'
 import { RoleResponseDto } from '../../application/dto/RoleResponse.dto';
 import { CreateRoleDto, UpdateRoleDto, ListRolesDto, AssignPermissionDto } from '../dto/Role.dto';
 
-@ApiTags('IAM - Roles')
+@ApiTags('iam-roles')
 @ApiBearerAuth()
 @Controller('roles')
 @UseGuards(JwtAuthGuard, PermissionsGuard)

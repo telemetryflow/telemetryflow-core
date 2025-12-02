@@ -12,7 +12,7 @@ import { ListRegionsQuery } from '../../application/queries/ListRegions.query';
 import { RegionResponseDto } from '../../application/dto/RegionResponse.dto';
 import { CreateRegionDto, UpdateRegionDto } from '../dto/Region.dto';
 
-@ApiTags('IAM - Regions')
+@ApiTags('iam-regions')
 @ApiBearerAuth()
 @Controller('iam/regions')
 @UseGuards(JwtAuthGuard, PermissionsGuard)

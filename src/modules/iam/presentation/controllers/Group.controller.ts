@@ -14,7 +14,7 @@ import { ListGroupsQuery } from '../../application/queries/ListGroups.query';
 import { GroupResponseDto } from '../../application/dto/GroupResponse.dto';
 import { CreateGroupDto, UpdateGroupDto, AddUserDto } from '../dto/Group.dto';
 
-@ApiTags('IAM - Groups')
+@ApiTags('iam-groups')
 @ApiBearerAuth()
 @Controller('iam/groups')
 @UseGuards(JwtAuthGuard, PermissionsGuard)

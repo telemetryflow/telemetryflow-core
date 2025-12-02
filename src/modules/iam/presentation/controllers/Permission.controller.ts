@@ -12,7 +12,7 @@ import { ListPermissionsQuery } from '../../application/queries/ListPermissions.
 import { PermissionResponseDto } from '../../application/dto/PermissionResponse.dto';
 import { CreatePermissionDto, UpdatePermissionDto, ListPermissionsDto } from '../dto/Permission.dto';
 
-@ApiTags('IAM - Permissions')
+@ApiTags('iam-permissions')
 @ApiBearerAuth()
 @Controller('permissions')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
