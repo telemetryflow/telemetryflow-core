@@ -1,19 +1,16 @@
 #!/bin/bash
 
 # ClickHouse Migration Runner
-# Runs all SQL migrations in order
+# Runs all SQL migrations in order via Docker
 
 set -e
 
-CLICKHOUSE_HOST="${CLICKHOUSE_HOST:-localhost}"
-CLICKHOUSE_PORT="${CLICKHOUSE_PORT:-8123}"
-CLICKHOUSE_USER="${CLICKHOUSE_USER:-default}"
-CLICKHOUSE_PASSWORD="${CLICKHOUSE_PASSWORD:-}"
+CLICKHOUSE_CONTAINER="${CLICKHOUSE_CONTAINER:-telemetryflow_core_clickhouse}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "🔄 Running ClickHouse migrations..."
-echo "   Host: $CLICKHOUSE_HOST:$CLICKHOUSE_PORT"
+echo "   Container: $CLICKHOUSE_CONTAINER"
 echo ""
 
 for migration in "$SCRIPT_DIR"/*.sql; do
@@ -21,14 +18,7 @@ for migration in "$SCRIPT_DIR"/*.sql; do
     filename=$(basename "$migration")
     echo "📝 Running migration: $filename"
     
-    if [ -n "$CLICKHOUSE_PASSWORD" ]; then
-      clickhouse-client --host="$CLICKHOUSE_HOST" --port="$CLICKHOUSE_PORT" \
-        --user="$CLICKHOUSE_USER" --password="$CLICKHOUSE_PASSWORD" \
-        --multiquery < "$migration"
-    else
-      clickhouse-client --host="$CLICKHOUSE_HOST" --port="$CLICKHOUSE_PORT" \
-        --user="$CLICKHOUSE_USER" --multiquery < "$migration"
-    fi
+    docker exec -i "$CLICKHOUSE_CONTAINER" clickhouse-client --multiquery < "$migration"
     
     echo "   ✅ $filename completed"
     echo ""

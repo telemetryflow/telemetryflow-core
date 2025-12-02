@@ -8,13 +8,14 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     // Regions
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS regions (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        region_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         code VARCHAR(50) UNIQUE NOT NULL,
         name VARCHAR(255) NOT NULL,
         description TEXT,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        "isActive" BOOLEAN DEFAULT true,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        "deletedAt" TIMESTAMP
       )
     `);
 

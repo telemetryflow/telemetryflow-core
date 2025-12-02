@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 
 @Entity('regions')
 export class RegionEntity {
-  @PrimaryColumn('uuid', { name: 'region_id' })
+  @PrimaryGeneratedColumn('uuid', { name: 'region_id' })
   id: string;
 
   @Column({ type: 'varchar', length: 100 })
