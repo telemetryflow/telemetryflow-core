@@ -35,6 +35,10 @@ import { UserController } from "./presentation/controllers/User.controller";
 import { RoleController } from "./presentation/controllers/Role.controller";
 import { TenantController } from "./presentation/controllers/Tenant.controller";
 import { OrganizationController } from "./presentation/controllers/Organization.controller";
+import { PermissionController } from "./presentation/controllers/Permission.controller";
+import { WorkspaceController } from "./presentation/controllers/Workspace.controller";
+import { GroupController } from "./presentation/controllers/Group.controller";
+import { RegionController } from "./presentation/controllers/Region.controller";
 import { AuditLogController } from "./presentation/controllers/AuditLog.controller";
 import { IAMEventProcessor } from "./infrastructure/messaging/IAMEventProcessor";
 
@@ -74,8 +78,12 @@ const EventHandlers = [];
   controllers: [
     UserController,
     RoleController,
+    PermissionController,
     TenantController,
     OrganizationController,
+    WorkspaceController,
+    GroupController,
+    RegionController,
     AuditLogController,
   ],
   providers: [
