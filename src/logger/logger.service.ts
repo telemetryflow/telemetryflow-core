@@ -59,11 +59,6 @@ export class LoggerService implements NestLoggerService, OnModuleInit, OnModuleD
   constructor() {
     this.config = loadLoggerConfig();
     this.nestLogger = new Logger('TelemetryFlow');
-
-    // Log initialization message using native logger first
-    this.nestLogger.log(
-      `Logger initializing with type: ${this.config.type}, level: ${this.config.level}`,
-    );
   }
 
   /**
@@ -79,11 +74,9 @@ export class LoggerService implements NestLoggerService, OnModuleInit, OnModuleD
 
     this.initialized = true;
 
-    // Log enabled transports
     const enabledTransports = getEnabledTransportsSummary(this.config);
-    this.log(
-      `Logger initialized. Transports: ${enabledTransports.join(', ')}`,
-      'LoggerService',
+    this.nestLogger.log(
+      `[LoggerService] Logger initialized. Transports: ${enabledTransports.join(', ')}`,
     );
   }
 

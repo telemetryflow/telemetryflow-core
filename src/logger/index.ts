@@ -6,6 +6,7 @@
 // Main service and module
 export { LoggerService } from './logger.service';
 export { LoggerModule } from './logger.module';
+export { HttpLoggingInterceptor } from './http-logging.interceptor';
 
 // Interfaces
 export {

@@ -28,18 +28,13 @@ processors:
     limit_mib: 512
     spike_limit_mib: 128
 
-  resourcedetection:
-    detectors: [env, system, docker]
-    timeout: 5s
-    override: false
-
   attributes:
     actions:
       - key: environment
-        value: ${env:ENVIRONMENT}
+        value: development
         action: upsert
       - key: deployment.environment
-        value: ${env:ENVIRONMENT}
+        value: development
         action: upsert
 
 exporters:
@@ -47,8 +42,8 @@ exporters:
     endpoint: "0.0.0.0:8889"
     namespace: telemetryflow_core
 
-  logging:
-    loglevel: info
+  debug:
+    verbosity: detailed
     sampling_initial: 5
     sampling_thereafter: 200
 
@@ -66,18 +61,18 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, resourcedetection, batch]
-      exporters: [logging]
+      processors: [memory_limiter, batch]
+      exporters: [debug]
 
     metrics:
       receivers: [otlp, prometheus]
-      processors: [memory_limiter, resourcedetection, batch]
-      exporters: [prometheus, logging]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus, debug]
 
     logs:
       receivers: [otlp]
-      processors: [memory_limiter, resourcedetection, batch]
-      exporters: [logging]
+      processors: [memory_limiter, batch]
+      exporters: [debug]
 
   telemetry:
     logs:
@@ -86,4 +81,9 @@ service:
       encoding: json
     metrics:
       level: detailed
-      address: 0.0.0.0:8888
+      readers:
+        - pull:
+            exporter:
+              prometheus:
+                host: 0.0.0.0
+                port: 8888

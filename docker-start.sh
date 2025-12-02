@@ -25,11 +25,22 @@ curl -s http://localhost:8123/ping || echo "⚠ ClickHouse not ready"
 
 # Initialize ClickHouse schema
 echo "📊 Initializing ClickHouse schema..."
-docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < config/clickhouse/migrations/001-audit-logs.sql
+docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < config/clickhouse/migrations/001-audit-logs.sql || echo "⚠ Schema already initialized"
 
-# Seed IAM data
-echo "🌱 Seeding IAM data..."
-docker-compose exec -T backend pnpm run db:seed:iam || echo "⚠ Seeding failed (may already be seeded)"
+# Wait for backend to be ready
+echo "⏳ Waiting for backend to start..."
+sleep 20
+
+# Check backend status
+if docker-compose ps backend | grep -q "Up"; then
+  echo "✓ Backend is running"
+  # Seed IAM data
+  echo "🌱 Seeding IAM data..."
+  docker-compose exec -T backend pnpm run db:seed:iam || echo "⚠ Seeding failed (may already be seeded)"
+else
+  echo "⚠ Backend failed to start. Checking logs..."
+  docker-compose logs --tail=50 backend
+fi
 
 echo ""
 echo "✅ TelemetryFlow Core is ready!"
@@ -40,6 +51,7 @@ echo "   Swagger Docs:   http://localhost:3000/api"
 echo "   Health Check:   http://localhost:3000/health"
 echo "   PostgreSQL:     postgresql://postgres:postgres@localhost:5432/telemetryflow_core"
 echo "   ClickHouse:     http://localhost:8123"
+echo "   Portainer:      http://localhost:9100"
 echo ""
 echo "📝 View logs: docker-compose logs -f"
 echo "🛑 Stop: docker-compose down"

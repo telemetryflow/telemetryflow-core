@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from './logger/logger.module';
+import { HttpLoggingInterceptor } from './logger/http-logging.interceptor';
 import { HealthModule } from './health/health.module';
 import { IAMModule } from './modules/iam/iam.module';
 import { AuditModule } from './modules/audit/audit.module';
@@ -23,6 +25,12 @@ import { AuditModule } from './modules/audit/audit.module';
     }),
     IAMModule,
     AuditModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpLoggingInterceptor,
+    },
   ],
 })
 export class AppModule {}

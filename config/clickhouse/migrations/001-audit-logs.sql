@@ -55,24 +55,25 @@ ORDER BY (timestamp, event_type, user_id)
 TTL timestamp + INTERVAL 90 DAY
 SETTINGS index_granularity = 8192;
 
--- Create indexes for common queries
+-- Create indexes for common queries (skip if already exists)
+-- Note: ClickHouse doesn't support IF NOT EXISTS for indexes, so we skip errors
 -- Index on user_id for user activity queries
-ALTER TABLE audit_logs ADD INDEX idx_user_id user_id TYPE bloom_filter GRANULARITY 1;
+ALTER TABLE audit_logs ADD INDEX IF NOT EXISTS idx_user_id user_id TYPE bloom_filter GRANULARITY 1;
 
 -- Index on event_type for filtering by event type
-ALTER TABLE audit_logs ADD INDEX idx_event_type event_type TYPE set(0) GRANULARITY 1;
+ALTER TABLE audit_logs ADD INDEX IF NOT EXISTS idx_event_type event_type TYPE set(0) GRANULARITY 1;
 
 -- Index on result for filtering by result
-ALTER TABLE audit_logs ADD INDEX idx_result result TYPE set(0) GRANULARITY 1;
+ALTER TABLE audit_logs ADD INDEX IF NOT EXISTS idx_result result TYPE set(0) GRANULARITY 1;
 
 -- Index on action for filtering by action
-ALTER TABLE audit_logs ADD INDEX idx_action action TYPE bloom_filter GRANULARITY 1;
+ALTER TABLE audit_logs ADD INDEX IF NOT EXISTS idx_action action TYPE bloom_filter GRANULARITY 1;
 
 -- Index on tenant_id for multi-tenancy
-ALTER TABLE audit_logs ADD INDEX idx_tenant_id tenant_id TYPE bloom_filter GRANULARITY 1;
+ALTER TABLE audit_logs ADD INDEX IF NOT EXISTS idx_tenant_id tenant_id TYPE bloom_filter GRANULARITY 1;
 
 -- Index on organization_id for multi-tenancy
-ALTER TABLE audit_logs ADD INDEX idx_organization_id organization_id TYPE bloom_filter GRANULARITY 1;
+ALTER TABLE audit_logs ADD INDEX IF NOT EXISTS idx_organization_id organization_id TYPE bloom_filter GRANULARITY 1;
 
 -- Create materialized view for statistics
 CREATE MATERIALIZED VIEW IF NOT EXISTS audit_logs_stats

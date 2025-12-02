@@ -16,6 +16,7 @@ sudo mkdir -p "${BASE_PATH}/postgres"
 sudo mkdir -p "${BASE_PATH}/clickhouse/data"
 sudo mkdir -p "${BASE_PATH}/clickhouse/logs"
 sudo mkdir -p "${BASE_PATH}/prometheus"
+sudo mkdir -p "${BASE_PATH}/portainer"
 
 # Set permissions
 sudo chown -R $(id -u):$(id -g) "${BASE_PATH}"
@@ -26,3 +27,4 @@ echo "  - ${BASE_PATH}/postgres"
 echo "  - ${BASE_PATH}/clickhouse/data"
 echo "  - ${BASE_PATH}/clickhouse/logs"
 echo "  - ${BASE_PATH}/prometheus"
+echo "  - ${BASE_PATH}/portainer"
