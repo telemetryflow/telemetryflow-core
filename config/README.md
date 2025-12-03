@@ -35,7 +35,7 @@ config/
 - **Port**: 5432
 - **Purpose**: IAM data storage
 - **Config**: `postgresql/postgresql.conf`
-- **Database**: telemetryflow_core
+- **Database**: telemetryflow_db
 
 ### OTEL Collector
 - **Ports**: 4317 (gRPC), 4318 (HTTP), 8889 (Prometheus), 13133 (Health)
