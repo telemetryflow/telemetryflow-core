@@ -1,96 +1,114 @@
-# PostgreSQL Seeds
+# Database Seeds
 
-Sample data for TelemetryFlow Core IAM module.
+This directory contains database seeding scripts for the TelemetryFlow Core 5-Tier RBAC system.
 
-## Seed Files
+## 🎯 5-Tier RBAC System
+
+The seeding implements a complete 5-tier Role-Based Access Control system:
+
+1. **Super Administrator** (Tier 1) - Platform management across all organizations
+2. **Administrator** (Tier 2) - Full CRUD within organization  
+3. **Developer** (Tier 3) - Create/Read/Update (no delete)
+4. **Viewer** (Tier 4) - Read-only access
+5. **Demo** (Tier 5) - Demo access in demo organization only
+
+## 📁 Seed Files
 
 ### 001-iam-roles-permissions.seed.ts
-Creates foundational IAM data:
-- ✅ Default region (ap-southeast-3)
-- ✅ Default organization (DevOpsCorner)
-- ✅ Default workspace (TelemetryFlow POC)
-- ✅ Default tenant (DevOpsCorner)
-- ✅ 22 permissions (users, roles, tenants, organizations, workspaces, platform)
-- ✅ 5 roles (5-Tier RBAC: Super Admin, Admin, Developer, Viewer, Demo)
+**Complete IAM System Setup**
+- ✅ 3 Regions (APS3, USE1, EUW1)
+- ✅ 3 Organizations (DevOpsCorner, TelemetryFlow, Demo)
+- ✅ 3 Workspaces (one per organization)
+- ✅ 3 Tenants (one per workspace)
+- ✅ 22 Permissions (platform, users, roles, permissions, tenants, organizations, workspaces)
+- ✅ 5 Roles (5-tier RBAC with proper permission assignments)
+- ✅ 5 Default Users (one per role tier)
 
-### 002-iam-data.seed.ts
-Alternative comprehensive seed (includes users):
-- ✅ 3 regions (Jakarta, Virginia, Ireland)
-- ✅ Organization, workspace, tenant
-- ✅ 22 permissions
-- ✅ 5 roles (5-Tier RBAC)
-- ✅ 5 default users with passwords
+### 002-groups.seed.ts
+**User Groups**
+- ✅ Engineering Team
+- ✅ DevOps Team  
+- ✅ Management Team
+- ✅ Demo Users
 
-### 003-auth-test-users.seed.ts
-Creates test users only:
-- ✅ 5 users (Super Admin, Admin, Developer, Viewer, Demo)
-- ✅ Default password: `TelemetryFlow@2024`
+## 🚀 Usage
 
-### 004-groups.seed.ts
-Creates user groups:
-- ✅ 3 groups (Engineering, Operations, Management)
-- ✅ Linked to default organization
-
-## Usage
-
-### Run All Seeds (Recommended)
+### Run All Seeds
 ```bash
+# Using npm script
 pnpm run db:seed:iam
+
+# Direct execution
+npx ts-node src/database/postgres/seeds/run-seeds.ts
 ```
 
-This runs seeds in order:
-1. `001-iam-roles-permissions.seed.ts`
-2. `003-auth-test-users.seed.ts`
-3. `004-groups.seed.ts`
-
-### Run Individual Seeds
-```bash
-# IAM foundation only
-ts-node src/database/postgres/seeds/001-iam-roles-permissions.seed.ts
-
-# Complete IAM with users
-ts-node src/database/postgres/seeds/002-iam-data.seed.ts
-
-# Users only
-ts-node src/database/postgres/seeds/003-auth-test-users.seed.ts
-```
-
-## Default Users
-
-| Email | Password | Role | Tier |
-|-------|----------|------|------|
-| superadmin.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Super Administrator | 1 |
-| administrator.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Administrator | 2 |
-| developer.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Developer | 3 |
-| viewer.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Viewer | 4 |
-| demo.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Demo | 5 |
-
-**Note:** `002-iam-data.seed.ts` uses different passwords (e.g., `SuperAdmin@123456`)
-
-## Idempotency
-
-All seeds check for existing data before inserting:
-- ✅ Skip if data already exists
-- ✅ Safe to run multiple times
-- ✅ No duplicate entries
-
-## Seed Order
-
-Managed by `index.ts`:
+### Import in Code
 ```typescript
-export const SEED_ORDER = [
-  '001-iam-roles-permissions',
-  '003-auth-test-users',
-  '004-groups',
-] as const;
+import { runAllSeeds } from './seeds';
+
+await runAllSeeds(dataSource);
 ```
 
-## Files
+## 👤 Default Users
 
-- `001-iam-roles-permissions.seed.ts` - IAM foundation
-- `002-iam-data.seed.ts` - Complete IAM (alternative)
-- `003-auth-test-users.seed.ts` - Test users
-- `004-groups.seed.ts` - User groups
-- `index.ts` - Seed orchestration
-- `run-seeds.ts` - Seed runner script
-- `README.md` - This file
+| Email | Password | Role | Tier | Organization |
+|-------|----------|------|------|--------------|
+| superadmin.telemetryflow@telemetryflow.id | SuperAdmin@123456 | Super Administrator | 1 | TelemetryFlow |
+| administrator.telemetryflow@telemetryflow.id | Admin@123456 | Administrator | 2 | TelemetryFlow |
+| developer.telemetryflow@telemetryflow.id | Developer@123456 | Developer | 3 | TelemetryFlow |
+| viewer.telemetryflow@telemetryflow.id | Viewer@123456 | Viewer | 4 | TelemetryFlow |
+| demo.telemetryflow@telemetryflow.id | Demo@123456 | Demo | 5 | Demo |
+
+⚠️ **Security Warning**: Change these passwords in production!
+
+## 🔐 Permission Matrix
+
+| Permission | Super Admin | Administrator | Developer | Viewer | Demo |
+|------------|-------------|---------------|-----------|--------|------|
+| platform:manage | ✅ | ❌ | ❌ | ❌ | ❌ |
+| users:* | ✅ | ✅ | Read only | Read only | Read only |
+| roles:* | ✅ | ✅ | Read only | Read only | Read only |
+| organizations:* | ✅ | Read/Update | Read only | Read only | Read only |
+| tenants:* | ✅ | ✅ | Create/Read/Update | Read only | Create/Read/Update |
+| workspaces:* | ✅ | ✅ | Create/Read/Update | Read only | Create/Read/Update |
+
+## 🏗️ Database Structure
+
+```
+Regions (3)
+├── Organizations (3)
+    ├── Workspaces (3)
+        └── Tenants (3)
+
+Permissions (22)
+├── Roles (5)
+    └── Users (5)
+        └── Groups (4)
+```
+
+## 🔄 Execution Order
+
+1. **Regions** → **Organizations** → **Workspaces** → **Tenants**
+2. **Permissions** → **Roles** → **Role-Permission Mappings**
+3. **Users** → **User-Role Assignments**
+4. **Groups**
+
+## ✨ Features
+
+- **Idempotent**: Safe to run multiple times (uses `ON CONFLICT DO NOTHING`)
+- **Consistent UUIDs**: Fixed UUIDs for core entities
+- **Password Hashing**: Argon2 for secure password storage
+- **Multi-tenancy**: Organization-scoped data isolation
+- **Demo Isolation**: Demo users restricted to demo organization
+
+## 🛡️ Security
+
+- All passwords are hashed with Argon2
+- Demo users isolated to demo organization
+- Proper permission inheritance
+- Organization-level data scoping
+- Email verification enabled for all users
+
+---
+
+**Status**: ✅ Complete 5-Tier RBAC System
