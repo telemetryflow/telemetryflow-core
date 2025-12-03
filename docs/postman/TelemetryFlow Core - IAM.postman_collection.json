@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "e134a980-c3d7-48b2-b771-4f71d035f17b",
+		"_postman_id": "c0379891-97ac-4ff8-8b2d-24d3b0bdb000",
 		"name": "TelemetryFlow Core - IAM",
 		"description": "Identity and Access Management API for TelemetryFlow Core",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "260154",
-		"_collection_link": "https://aws-cb-indonesia.postman.co/workspace/TelemetryFlow-BDD~646e4376-cd09-4d4a-ad0c-4eef510baf2a/collection/260154-e134a980-c3d7-48b2-b771-4f71d035f17b?action=share&source=collection_link&creator=260154"
+		"_collection_link": "https://aws-cb-indonesia.postman.co/workspace/TelemetryFlow-BDD~646e4376-cd09-4d4a-ad0c-4eef510baf2a/collection/260154-c0379891-97ac-4ff8-8b2d-24d3b0bdb000?action=share&source=collection_link&creator=260154"
 	},
 	"item": [
 		{

@@ -2,10 +2,14 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateIAMTables1704240000000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    console.log('🔧 Creating IAM tables...');
+    
     // Enable UUID extension
+    console.log('   ✓ Enabling UUID extension');
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
 
     // Regions
+    console.log('   ✓ Creating regions table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS regions (
         region_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -20,6 +24,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // Organizations
+    console.log('   ✓ Creating organizations table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS organizations (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -33,6 +38,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // Workspaces
+    console.log('   ✓ Creating workspaces table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS workspaces (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -48,6 +54,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // Tenants
+    console.log('   ✓ Creating tenants table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS tenants (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -64,6 +71,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // Users
+    console.log('   ✓ Creating users table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -87,6 +95,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // Roles
+    console.log('   ✓ Creating roles table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS roles (
         id VARCHAR(100) PRIMARY KEY,
@@ -100,6 +109,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // Permissions
+    console.log('   ✓ Creating permissions table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS permissions (
         id VARCHAR(100) PRIMARY KEY,
@@ -113,6 +123,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // Groups
+    console.log('   ✓ Creating groups table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS groups (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -127,6 +138,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // User Roles
+    console.log('   ✓ Creating user_roles table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS user_roles (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -141,6 +153,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // User Permissions
+    console.log('   ✓ Creating user_permissions table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS user_permissions (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -154,6 +167,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // Role Permissions
+    console.log('   ✓ Creating role_permissions table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS role_permissions (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -167,6 +181,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     `);
 
     // User Groups
+    console.log('   ✓ Creating user_groups table');
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS user_groups (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -178,9 +193,13 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
       );
       CREATE UNIQUE INDEX IF NOT EXISTS IDX_user_groups_unique ON user_groups(user_id, group_id);
     `);
+    
+    console.log('   ✅ IAM tables created successfully');
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    console.log('🗑️  Dropping IAM tables...');
+    
     await queryRunner.query(`DROP TABLE IF EXISTS user_groups CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS role_permissions CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS user_permissions CASCADE`);
@@ -193,5 +212,7 @@ export class CreateIAMTables1704240000000 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE IF EXISTS workspaces CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS organizations CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS regions CASCADE`);
+    
+    console.log('   ✅ IAM tables dropped successfully');
   }
 }

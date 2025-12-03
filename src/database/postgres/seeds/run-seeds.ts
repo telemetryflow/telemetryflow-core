@@ -9,7 +9,10 @@ import { seedGroups } from './003-groups.seed';
 config();
 
 async function runSeeds() {
-  console.log('🌱 Starting database seeding...\n');
+  console.log('╔════════════════════════════════════════════════════════════╗');
+  console.log('║          PostgreSQL Seeds - TelemetryFlow Core             ║');
+  console.log('╚════════════════════════════════════════════════════════════╝');
+  console.log('');
 
   // Create DataSource connection
   const dataSource = new DataSource({
@@ -28,30 +31,50 @@ async function runSeeds() {
 
   try {
     // Initialize connection
+    console.log('🔌 Connecting to database...');
     await dataSource.initialize();
-    console.log('✅ Database connection established\n');
+    console.log('✅ Database connection established');
+    console.log('');
+    console.log('📋 Configuration:');
+    console.log(`   • Host:     ${process.env.POSTGRES_HOST || 'localhost'}`);
+    console.log(`   • Port:     ${process.env.POSTGRES_PORT || '5432'}`);
+    console.log(`   • Database: ${process.env.POSTGRES_DB || 'telemetryflow_db'}`);
+    console.log('');
+    console.log('🌱 Running 3 seed files...');
+    console.log('');
 
     // Run seed files in order
-    console.log('📦 [01/03]: IAM Roles & Permissions...');
+    console.log('[1/3] 📦 Seeding: IAM Roles & Permissions');
     await seedIAMRolesPermissions(dataSource);
+    console.log('[1/3] ✅ Completed: IAM Roles & Permissions');
     console.log('');
 
-    console.log('📦 [02/03]: Auth Test Users...');
+    console.log('[2/3] 📦 Seeding: Auth Test Users');
     await seedAuthTestUsers(dataSource);
+    console.log('[2/3] ✅ Completed: Auth Test Users');
     console.log('');
 
-    console.log('📦 [03/03]: Groups...');
+    console.log('[3/3] 📦 Seeding: Groups');
     await seedGroups(dataSource);
+    console.log('[3/3] ✅ Completed: Groups');
     console.log('');
 
-    console.log('✅ All seeds completed successfully!\n');
+    console.log('╔════════════════════════════════════════════════════════════╗');
+    console.log('║    ✨ All PostgreSQL seeds completed successfully! ✨      ║');
+    console.log('╚════════════════════════════════════════════════════════════╝');
   } catch (error) {
-    console.error('❌ Error running seeds:', error);
+    console.error('');
+    console.error('╔════════════════════════════════════════════════════════════╗');
+    console.error('║                    ❌ Seeding Failed                       ║');
+    console.error('╚════════════════════════════════════════════════════════════╝');
+    console.error('');
+    console.error('Error details:', error);
     process.exit(1);
   } finally {
     // Close connection
     if (dataSource.isInitialized) {
       await dataSource.destroy();
+      console.log('');
       console.log('🔌 Database connection closed');
     }
   }
@@ -60,10 +83,11 @@ async function runSeeds() {
 // Run seeds
 runSeeds()
   .then(() => {
-    console.log('\n✨ Seeding process completed');
+    console.log('');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('\n💥 Seeding process failed:', error);
+    console.error('');
+    console.error('💥 Fatal error:', error);
     process.exit(1);
   });
