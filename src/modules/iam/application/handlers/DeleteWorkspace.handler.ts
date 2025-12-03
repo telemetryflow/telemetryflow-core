@@ -10,15 +10,12 @@ export class DeleteWorkspaceHandler implements ICommandHandler<DeleteWorkspaceCo
     @Inject('IWorkspaceRepository')
     private readonly workspaceRepository: IWorkspaceRepository,
   ) {}
-
   async execute(command: DeleteWorkspaceCommand): Promise<void> {
     const id = WorkspaceId.create(command.id);
     const workspace = await this.workspaceRepository.findById(id);
-
     if (!workspace) {
       throw new NotFoundException('Workspace not found');
     }
-
     workspace.delete();
     await this.workspaceRepository.delete(id);
   }

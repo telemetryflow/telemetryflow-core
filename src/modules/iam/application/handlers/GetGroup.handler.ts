@@ -11,15 +11,12 @@ export class GetGroupHandler implements IQueryHandler<GetGroupQuery> {
     @Inject('IGroupRepository')
     private readonly groupRepository: IGroupRepository,
   ) {}
-
   async execute(query: GetGroupQuery): Promise<GroupResponseDto> {
     const groupId = GroupId.create(query.id);
     const group = await this.groupRepository.findById(groupId);
-
     if (!group) {
       throw new NotFoundException('Group not found');
     }
-
     return {
       id: group.getId().getValue(),
       name: group.getName(),

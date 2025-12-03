@@ -10,15 +10,12 @@ export class DeletePermissionHandler implements ICommandHandler<DeletePermission
     @Inject('IPermissionRepository')
     private readonly permissionRepository: IPermissionRepository,
   ) {}
-
   async execute(command: DeletePermissionCommand): Promise<void> {
     const permissionId = PermissionId.create(command.id);
     const permission = await this.permissionRepository.findById(permissionId);
-
     if (!permission) {
       throw new NotFoundException('Permission not found');
     }
-
     permission.delete();
     await this.permissionRepository.save(permission);
   }

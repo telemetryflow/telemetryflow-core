@@ -2,7 +2,7 @@ import { IsString, IsEmail, IsOptional, MinLength, MaxLength } from 'class-valid
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateUserDto {
-  @ApiProperty({ example: 'admin@telemetryflow.id', description: 'User email address' })
+  @ApiProperty({ example: 'administrator.telemetryflow@telemetryflow.id', description: 'User email address' })
   @IsEmail()
   email: string;
 
@@ -11,25 +11,25 @@ export class CreateUserDto {
   @MinLength(8)
   password: string;
 
-  @ApiProperty({ example: 'John', description: 'User first name' })
+  @ApiProperty({ example: 'Administrator', description: 'User first name' })
   @IsString()
   @MaxLength(100)
   firstName: string;
 
-  @ApiProperty({ example: 'Doe', description: 'User last name' })
+  @ApiProperty({ example: 'TelemetryFlow', description: 'User last name' })
   @IsString()
   @MaxLength(100)
   lastName: string;
 }
 
 export class UpdateUserDto {
-  @ApiPropertyOptional({ example: 'John', description: 'User first name' })
+  @ApiPropertyOptional({ example: 'Administrator', description: 'User first name' })
   @IsString()
   @IsOptional()
   @MaxLength(100)
   firstName?: string;
 
-  @ApiPropertyOptional({ example: 'Doe', description: 'User last name' })
+  @ApiPropertyOptional({ example: 'TelemetryFlow', description: 'User last name' })
   @IsString()
   @IsOptional()
   @MaxLength(100)

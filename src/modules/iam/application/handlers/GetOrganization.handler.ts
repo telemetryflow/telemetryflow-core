@@ -11,15 +11,12 @@ export class GetOrganizationHandler implements IQueryHandler<GetOrganizationQuer
     @Inject('IOrganizationRepository')
     private readonly organizationRepository: IOrganizationRepository,
   ) {}
-
   async execute(query: GetOrganizationQuery): Promise<OrganizationResponseDto> {
     const id = OrganizationId.create(query.id);
     const organization = await this.organizationRepository.findById(id);
-
     if (!organization) {
       throw new NotFoundException('Organization not found');
     }
-
     return {
       id: organization.id.getValue(),
       name: organization.name,

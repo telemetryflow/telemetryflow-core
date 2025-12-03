@@ -11,22 +11,18 @@ export class CreatePermissionHandler implements ICommandHandler<CreatePermission
     @Inject('IPermissionRepository')
     private readonly permissionRepository: IPermissionRepository,
   ) {}
-
   async execute(command: CreatePermissionCommand): Promise<PermissionResponseDto> {
     const existing = await this.permissionRepository.findByName(command.name);
     if (existing) {
       throw new ConflictException('Permission already exists');
     }
-
     const permission = Permission.create(
       command.name,
       command.description,
       command.resource,
       command.action,
     );
-
     await this.permissionRepository.save(permission);
-
     return {
       id: permission.getId().getValue(),
       name: permission.getName(),

@@ -11,18 +11,14 @@ export class UpdateGroupHandler implements ICommandHandler<UpdateGroupCommand> {
     @Inject('IGroupRepository')
     private readonly groupRepository: IGroupRepository,
   ) {}
-
   async execute(command: UpdateGroupCommand): Promise<GroupResponseDto> {
     const groupId = GroupId.create(command.id);
     const group = await this.groupRepository.findById(groupId);
-
     if (!group) {
       throw new NotFoundException('Group not found');
     }
-
     group.update(command.name, command.description);
     await this.groupRepository.save(group);
-
     return {
       id: group.getId().getValue(),
       name: group.getName(),

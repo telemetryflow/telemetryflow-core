@@ -10,15 +10,12 @@ export class UpdateTenantHandler implements ICommandHandler<UpdateTenantCommand>
     @Inject('ITenantRepository')
     private readonly tenantRepository: ITenantRepository,
   ) {}
-
   async execute(command: UpdateTenantCommand): Promise<void> {
     const id = TenantId.create(command.id);
     const tenant = await this.tenantRepository.findById(id);
-
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
     }
-
     tenant.update(command.name, command.domain);
     await this.tenantRepository.save(tenant);
   }

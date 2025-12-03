@@ -11,16 +11,13 @@ export class CreateRegionHandler implements ICommandHandler<CreateRegionCommand>
     @Inject('IRegionRepository')
     private readonly regionRepository: IRegionRepository,
   ) {}
-
   async execute(command: CreateRegionCommand): Promise<RegionResponseDto> {
     const existing = await this.regionRepository.findByCode(command.code);
     if (existing) {
       throw new ConflictException('Region code already exists');
     }
-
     const region = Region.create(command.name, command.code, command.description);
     await this.regionRepository.save(region);
-
     return {
       id: region.getId().getValue(),
       name: region.getName(),

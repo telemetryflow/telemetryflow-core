@@ -10,10 +10,8 @@ export class ListGroupsHandler implements IQueryHandler<ListGroupsQuery> {
     @Inject('IGroupRepository')
     private readonly groupRepository: IGroupRepository,
   ) {}
-
   async execute(query: ListGroupsQuery): Promise<GroupResponseDto[]> {
     const groups = await this.groupRepository.findAll();
-
     return groups
       .filter(g => !query.organizationId || g.getOrganizationId()?.getValue() === query.organizationId)
       .map(group => ({

@@ -14,13 +14,10 @@ export class AssignPermissionToUserHandler implements ICommandHandler<AssignPerm
     private readonly userPermissionRepository: IUserPermissionRepository,
     private readonly eventBus: EventBus,
   ) {}
-
   async execute(command: AssignPermissionToUserCommand): Promise<void> {
     const userId = UserId.fromString(command.userId);
     const permissionId = PermissionId.create(command.permissionId);
-
     await this.userPermissionRepository.assignPermission(userId, permissionId);
-
     this.eventBus.publish(new PermissionDirectlyAssignedEvent(userId.getValue(), permissionId.getValue()));
   }
 }

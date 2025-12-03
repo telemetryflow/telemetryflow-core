@@ -10,23 +10,19 @@ import { RegionId } from '../../../domain/value-objects/RegionId';
 describe('GetOrganizationHandler', () => {
   let handler: GetOrganizationHandler;
   let repository: jest.Mocked<IOrganizationRepository>;
-
   beforeEach(async () => {
     const mockRepository = {
       findById: jest.fn(),
     };
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GetOrganizationHandler,
         { provide: 'IOrganizationRepository', useValue: mockRepository },
       ],
     }).compile();
-
     handler = module.get<GetOrganizationHandler>(GetOrganizationHandler);
     repository = module.get('IOrganizationRepository');
   });
-
   it('should return organization', async () => {
     const query = new GetOrganizationQuery('org-1');
     const mockOrg = {
@@ -38,19 +34,11 @@ describe('GetOrganizationHandler', () => {
       isActive: true,
       regionId: RegionId.create('region-1'),
     } as Organization;
-
     repository.findById.mockResolvedValue(mockOrg);
-
     const result = await handler.execute(query);
-
     expect(result.name).toBe('DevOpsCorner');
     expect(result.code).toBe('devopscorner');
-  });
-
   it('should throw NotFoundException if organization not found', async () => {
-    const query = new GetOrganizationQuery('org-1');
     repository.findById.mockResolvedValue(null);
-
     await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
-  });
 });

@@ -11,18 +11,14 @@ export class UpdateRegionHandler implements ICommandHandler<UpdateRegionCommand>
     @Inject('IRegionRepository')
     private readonly regionRepository: IRegionRepository,
   ) {}
-
   async execute(command: UpdateRegionCommand): Promise<RegionResponseDto> {
     const regionId = RegionId.create(command.id);
     const region = await this.regionRepository.findById(regionId);
-
     if (!region) {
       throw new NotFoundException('Region not found');
     }
-
     region.update(command.name, command.description);
     await this.regionRepository.save(region);
-
     return {
       id: region.getId().getValue(),
       name: region.getName(),

@@ -10,15 +10,12 @@ export class UpdateOrganizationHandler implements ICommandHandler<UpdateOrganiza
     @Inject('IOrganizationRepository')
     private readonly organizationRepository: IOrganizationRepository,
   ) {}
-
   async execute(command: UpdateOrganizationCommand): Promise<void> {
     const id = OrganizationId.create(command.id);
     const organization = await this.organizationRepository.findById(id);
-
     if (!organization) {
       throw new NotFoundException('Organization not found');
     }
-
     organization.update(command.name, command.description, command.domain);
     await this.organizationRepository.save(organization);
   }

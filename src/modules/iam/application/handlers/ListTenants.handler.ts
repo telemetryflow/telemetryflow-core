@@ -11,12 +11,10 @@ export class ListTenantsHandler implements IQueryHandler<ListTenantsQuery> {
     @Inject('ITenantRepository')
     private readonly tenantRepository: ITenantRepository,
   ) {}
-
   async execute(query: ListTenantsQuery): Promise<TenantResponseDto[]> {
     const tenants = query.workspaceId
       ? await this.tenantRepository.findByWorkspace(WorkspaceId.create(query.workspaceId))
       : await this.tenantRepository.findAll();
-
     return tenants.map(t => ({
       id: t.getId().getValue(),
       name: t.getName(),

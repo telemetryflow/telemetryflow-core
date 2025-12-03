@@ -11,7 +11,6 @@ export class CreateOrganizationHandler implements ICommandHandler<CreateOrganiza
     @Inject('IOrganizationRepository')
     private readonly organizationRepository: IOrganizationRepository,
   ) {}
-
   async execute(command: CreateOrganizationCommand): Promise<string> {
     const regionId = RegionId.create(command.regionId);
     const organization = Organization.create(
@@ -21,7 +20,6 @@ export class CreateOrganizationHandler implements ICommandHandler<CreateOrganiza
       command.description,
       command.domain,
     );
-
     await this.organizationRepository.save(organization);
     return organization.id.getValue();
   }

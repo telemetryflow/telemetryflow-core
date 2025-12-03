@@ -12,19 +12,15 @@ export class RemovePermissionHandler implements ICommandHandler<RemovePermission
     @Inject('IRoleRepository')
     private readonly roleRepository: IRoleRepository,
   ) {}
-
   async execute(command: RemovePermissionCommand): Promise<RoleResponseDto> {
     const roleId = RoleId.create(command.roleId);
     const role = await this.roleRepository.findById(roleId);
-
     if (!role) {
       throw new NotFoundException('Role not found');
     }
-
     const permissionId = PermissionId.create(command.permissionId);
     role.removePermission(permissionId);
     await this.roleRepository.save(role);
-
     return {
       id: role.getId().getValue(),
       name: role.getName(),

@@ -14,15 +14,12 @@ export class GetUserRolesHandler implements IQueryHandler<GetUserRolesQuery> {
     @Inject('IRoleRepository')
     private readonly roleRepository: IRoleRepository,
   ) {}
-
   async execute(query: GetUserRolesQuery): Promise<RoleResponseDto[]> {
     const userId = UserId.create(query.userId);
     const roleIds = await this.userRoleRepository.getUserRoles(userId);
-
     const roles = await Promise.all(
       roleIds.map(roleId => this.roleRepository.findById(roleId))
     );
-
     return roles
       .filter(role => role !== null)
       .map(role => ({

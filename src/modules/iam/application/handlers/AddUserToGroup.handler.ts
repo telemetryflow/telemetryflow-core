@@ -12,19 +12,15 @@ export class AddUserToGroupHandler implements ICommandHandler<AddUserToGroupComm
     @Inject('IGroupRepository')
     private readonly groupRepository: IGroupRepository,
   ) {}
-
   async execute(command: AddUserToGroupCommand): Promise<GroupResponseDto> {
     const groupId = GroupId.create(command.groupId);
     const group = await this.groupRepository.findById(groupId);
-
     if (!group) {
       throw new NotFoundException('Group not found');
     }
-
     const userId = UserId.create(command.userId);
     group.addUser(userId);
     await this.groupRepository.save(group);
-
     return {
       id: group.getId().getValue(),
       name: group.getName(),

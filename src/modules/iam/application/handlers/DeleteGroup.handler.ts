@@ -10,15 +10,12 @@ export class DeleteGroupHandler implements ICommandHandler<DeleteGroupCommand> {
     @Inject('IGroupRepository')
     private readonly groupRepository: IGroupRepository,
   ) {}
-
   async execute(command: DeleteGroupCommand): Promise<void> {
     const groupId = GroupId.create(command.id);
     const group = await this.groupRepository.findById(groupId);
-
     if (!group) {
       throw new NotFoundException('Group not found');
     }
-
     group.delete();
     await this.groupRepository.save(group);
   }

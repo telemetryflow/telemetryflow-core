@@ -11,15 +11,12 @@ export class GetRegionHandler implements IQueryHandler<GetRegionQuery> {
     @Inject('IRegionRepository')
     private readonly regionRepository: IRegionRepository,
   ) {}
-
   async execute(query: GetRegionQuery): Promise<RegionResponseDto> {
     const regionId = RegionId.create(query.id);
     const region = await this.regionRepository.findById(regionId);
-
     if (!region) {
       throw new NotFoundException('Region not found');
     }
-
     return {
       id: region.getId().getValue(),
       name: region.getName(),

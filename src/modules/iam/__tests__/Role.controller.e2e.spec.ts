@@ -19,7 +19,7 @@ describe('RoleController (e2e)', () => {
     // Login to get auth token
     const loginResponse = await request(app.getHttpServer())
       .post('/api/v2/auth/login')
-      .send({ email: 'admin@telemetryflow.id', password: 'Admin@123456' });
+      .send({ email: 'administrator.telemetryflow@telemetryflow.id', password: 'Admin@123456' });
 
     authToken = loginResponse.body.accessToken;
   });

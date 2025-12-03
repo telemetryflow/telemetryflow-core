@@ -14,15 +14,12 @@ export class GetUserPermissionsHandler implements IQueryHandler<GetUserPermissio
     @Inject('IPermissionRepository')
     private readonly permissionRepository: IPermissionRepository,
   ) {}
-
   async execute(query: GetUserPermissionsQuery): Promise<PermissionResponseDto[]> {
     const userId = UserId.fromString(query.userId);
     const permissionIds = await this.userPermissionRepository.getUserPermissions(userId);
-
     const permissions = await Promise.all(
       permissionIds.map(id => this.permissionRepository.findById(id))
     );
-
     return permissions.filter(p => p !== null).map(p => ({
       id: p.getId().getValue(),
       name: p.getName(),

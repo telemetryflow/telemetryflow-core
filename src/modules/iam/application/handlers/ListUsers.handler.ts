@@ -11,14 +11,10 @@ export class ListUsersHandler implements IQueryHandler<ListUsersQuery> {
     @InjectRepository(UserEntity)
     private readonly repo: Repository<UserEntity>,
   ) {}
-
   async execute(query: ListUsersQuery): Promise<UserResponseDto[]> {
     const qb = this.repo.createQueryBuilder('user').where('user.deletedAt IS NULL');
-
     if (query.email) qb.andWhere('user.email = :email', { email: query.email });
-
     const users = await qb.getMany();
-
     return users.map(u => ({
       id: u.id,
       email: u.email,

@@ -13,7 +13,6 @@ export class CreateRoleHandler implements ICommandHandler<CreateRoleCommand> {
     @Inject('IRoleRepository')
     private readonly roleRepository: IRoleRepository,
   ) {}
-
   async execute(command: CreateRoleCommand): Promise<RoleResponseDto> {
     const tenantId = command.tenantId ? TenantId.create(command.tenantId) : null;
     
@@ -21,12 +20,9 @@ export class CreateRoleHandler implements ICommandHandler<CreateRoleCommand> {
     if (exists) {
       throw new ConflictException('Role name already exists');
     }
-
     const permissionIds = command.permissionIds.map(id => PermissionId.create(id));
     const role = Role.create(command.name, command.description, permissionIds, tenantId);
-
     await this.roleRepository.save(role);
-
     return {
       id: role.getId().getValue(),
       name: role.getName(),

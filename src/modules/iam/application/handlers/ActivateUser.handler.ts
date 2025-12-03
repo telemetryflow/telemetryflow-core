@@ -10,11 +10,9 @@ export class ActivateUserHandler implements ICommandHandler<ActivateUserCommand>
     @Inject('IUserRepository')
     private readonly repository: IUserRepository,
   ) {}
-
   async execute(command: ActivateUserCommand): Promise<void> {
     const user = await this.repository.findById(UserId.create(command.userId));
     if (!user) throw new Error('User not found');
-
     user.activate();
     await this.repository.save(user);
   }

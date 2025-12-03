@@ -11,11 +11,9 @@ export class ChangePasswordHandler implements ICommandHandler<ChangePasswordComm
     @Inject('IUserRepository')
     private readonly repository: IUserRepository,
   ) {}
-
   async execute(command: ChangePasswordCommand): Promise<void> {
     const user = await this.repository.findById(UserId.fromString(command.userId));
     if (!user) throw new Error('User not found');
-
     const hashedPassword = await bcrypt.hash(command.newPassword, 10);
     user.changePassword(hashedPassword);
     await this.repository.save(user);

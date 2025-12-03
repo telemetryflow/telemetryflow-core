@@ -15,7 +15,7 @@ describe('Group Aggregate', () => {
   describe('addUser', () => {
     it('should add user to group', () => {
       const group = Group.create('Engineering', 'Team', null);
-      const userId = UserId.create();
+      const userId = UserId.generate();
       
       group.addUser(userId);
       
@@ -24,7 +24,7 @@ describe('Group Aggregate', () => {
 
     it('should throw error if user already in group', () => {
       const group = Group.create('Engineering', 'Team', null);
-      const userId = UserId.create();
+      const userId = UserId.generate();
       
       group.addUser(userId);
       
@@ -35,7 +35,7 @@ describe('Group Aggregate', () => {
   describe('removeUser', () => {
     it('should remove user from group', () => {
       const group = Group.create('Engineering', 'Team', null);
-      const userId = UserId.create();
+      const userId = UserId.generate();
       
       group.addUser(userId);
       group.removeUser(userId);

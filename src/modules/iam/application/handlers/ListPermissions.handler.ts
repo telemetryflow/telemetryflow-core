@@ -10,10 +10,8 @@ export class ListPermissionsHandler implements IQueryHandler<ListPermissionsQuer
     @Inject('IPermissionRepository')
     private readonly permissionRepository: IPermissionRepository,
   ) {}
-
   async execute(query: ListPermissionsQuery): Promise<PermissionResponseDto[]> {
     const permissions = await this.permissionRepository.findAll();
-
     return permissions
       .filter(p => !query.resource || p.getResource() === query.resource)
       .map(permission => ({

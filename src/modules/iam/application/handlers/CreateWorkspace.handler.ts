@@ -11,13 +11,11 @@ export class CreateWorkspaceHandler implements ICommandHandler<CreateWorkspaceCo
     @Inject('IWorkspaceRepository')
     private readonly workspaceRepository: IWorkspaceRepository,
   ) {}
-
   async execute(command: CreateWorkspaceCommand): Promise<string> {
     const existing = await this.workspaceRepository.findByCode(command.code);
     if (existing) {
       throw new ConflictException('Workspace code already exists');
     }
-
     const organizationId = OrganizationId.create(command.organizationId);
     const workspace = Workspace.create(
       command.name,
@@ -26,7 +24,6 @@ export class CreateWorkspaceHandler implements ICommandHandler<CreateWorkspaceCo
       command.description,
       command.datasourceConfig,
     );
-
     await this.workspaceRepository.save(workspace);
     return workspace.id.getValue();
   }

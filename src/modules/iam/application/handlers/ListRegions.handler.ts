@@ -10,10 +10,8 @@ export class ListRegionsHandler implements IQueryHandler<ListRegionsQuery> {
     @Inject('IRegionRepository')
     private readonly regionRepository: IRegionRepository,
   ) {}
-
   async execute(query: ListRegionsQuery): Promise<RegionResponseDto[]> {
     const regions = await this.regionRepository.findAll();
-
     return regions
       .filter(r => !query.activeOnly || r.getIsActive())
       .map(region => ({

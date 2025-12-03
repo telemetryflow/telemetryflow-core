@@ -11,12 +11,10 @@ export class ListOrganizationsHandler implements IQueryHandler<ListOrganizations
     @Inject('IOrganizationRepository')
     private readonly organizationRepository: IOrganizationRepository,
   ) {}
-
   async execute(query: ListOrganizationsQuery): Promise<OrganizationResponseDto[]> {
     const organizations = query.regionId
       ? await this.organizationRepository.findByRegion(RegionId.create(query.regionId))
       : await this.organizationRepository.findAll();
-
     return organizations.map(org => ({
       id: org.id.getValue(),
       name: org.name,

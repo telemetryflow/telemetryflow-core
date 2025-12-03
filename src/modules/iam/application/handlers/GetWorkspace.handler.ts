@@ -11,15 +11,12 @@ export class GetWorkspaceHandler implements IQueryHandler<GetWorkspaceQuery> {
     @Inject('IWorkspaceRepository')
     private readonly workspaceRepository: IWorkspaceRepository,
   ) {}
-
   async execute(query: GetWorkspaceQuery): Promise<WorkspaceResponseDto> {
     const id = WorkspaceId.create(query.id);
     const workspace = await this.workspaceRepository.findById(id);
-
     if (!workspace) {
       throw new NotFoundException('Workspace not found');
     }
-
     return {
       id: workspace.id.getValue(),
       name: workspace.name,

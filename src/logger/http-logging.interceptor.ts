@@ -10,6 +10,8 @@ import { Request, Response } from 'express';
 import { LoggerService } from './logger.service';
 import { AuditService, AuditEventType, AuditEventResult } from '../modules/audit/audit.service';
 
+const MODULE_NAME = 'HttpLogging';
+
 /**
  * HTTP Logging Interceptor
  * Logs HTTP requests and records to audit
@@ -35,7 +37,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
     const user = (request as any).user;
 
     this.logger.log(
-      `[HTTP] Incoming request: ${method} ${url} from ${ip} [${requestId}]`,
+      `[${MODULE_NAME}] Incoming request: ${method} ${url} from ${ip} [${requestId}]`,
       this.context,
     );
 
@@ -45,7 +47,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
         const { statusCode } = response;
 
         this.logger.log(
-          `[HTTP] ✓ Request completed: ${method} ${url} - ${statusCode} (${duration}ms) [${requestId}]`,
+          `[${MODULE_NAME}] ✓ Request completed: ${method} ${url} - ${statusCode} (${duration}ms) [${requestId}]`,
           this.context,
         );
 
@@ -69,7 +71,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
         const statusCode = error.status || 500;
 
         this.logger.error(
-          `[HTTP] ✗ Request failed: ${method} ${url} - ${statusCode} (${duration}ms) - ${error.message} [${requestId}]`,
+          `[${MODULE_NAME}] ✗ Request failed: ${method} ${url} - ${statusCode} (${duration}ms) - ${error.message} [${requestId}]`,
           error.stack,
           this.context,
         );

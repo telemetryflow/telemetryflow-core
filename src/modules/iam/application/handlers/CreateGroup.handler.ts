@@ -12,13 +12,10 @@ export class CreateGroupHandler implements ICommandHandler<CreateGroupCommand> {
     @Inject('IGroupRepository')
     private readonly groupRepository: IGroupRepository,
   ) {}
-
   async execute(command: CreateGroupCommand): Promise<GroupResponseDto> {
     const organizationId = command.organizationId ? OrganizationId.create(command.organizationId) : null;
     const group = Group.create(command.name, command.description, organizationId);
-
     await this.groupRepository.save(group);
-
     return {
       id: group.getId().getValue(),
       name: group.getName(),

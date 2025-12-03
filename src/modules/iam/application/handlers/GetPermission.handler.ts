@@ -11,15 +11,12 @@ export class GetPermissionHandler implements IQueryHandler<GetPermissionQuery> {
     @Inject('IPermissionRepository')
     private readonly permissionRepository: IPermissionRepository,
   ) {}
-
   async execute(query: GetPermissionQuery): Promise<PermissionResponseDto> {
     const permissionId = PermissionId.create(query.id);
     const permission = await this.permissionRepository.findById(permissionId);
-
     if (!permission) {
       throw new NotFoundException('Permission not found');
     }
-
     return {
       id: permission.getId().getValue(),
       name: permission.getName(),

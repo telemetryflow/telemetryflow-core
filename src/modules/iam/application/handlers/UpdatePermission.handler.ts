@@ -11,18 +11,14 @@ export class UpdatePermissionHandler implements ICommandHandler<UpdatePermission
     @Inject('IPermissionRepository')
     private readonly permissionRepository: IPermissionRepository,
   ) {}
-
   async execute(command: UpdatePermissionCommand): Promise<PermissionResponseDto> {
     const permissionId = PermissionId.create(command.id);
     const permission = await this.permissionRepository.findById(permissionId);
-
     if (!permission) {
       throw new NotFoundException('Permission not found');
     }
-
     permission.update(command.name, command.description, command.resource, command.action);
     await this.permissionRepository.save(permission);
-
     return {
       id: permission.getId().getValue(),
       name: permission.getName(),

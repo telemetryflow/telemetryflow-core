@@ -14,11 +14,9 @@ export class ListRolesHandler implements IQueryHandler<ListRolesQuery> {
     @Inject('IPermissionRepository')
     private readonly permissionRepository: IPermissionRepository,
   ) {}
-
   async execute(query: ListRolesQuery): Promise<RoleResponseDto[]> {
     const tenantId = query.tenantId ? TenantId.create(query.tenantId) : undefined;
     const roles = await this.roleRepository.findAll(tenantId, query.includeSystem);
-
     const result = [];
     for (const role of roles) {
       const permissionIds = role.getPermissions();
@@ -28,7 +26,6 @@ export class ListRolesHandler implements IQueryHandler<ListRolesQuery> {
           return perm?.getName() || '';
         })
       );
-
       result.push({
         id: role.getId().getValue(),
         name: role.getName(),
@@ -40,7 +37,6 @@ export class ListRolesHandler implements IQueryHandler<ListRolesQuery> {
         updatedAt: role.getUpdatedAt(),
       });
     }
-
     return result;
   }
 }

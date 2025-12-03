@@ -10,15 +10,12 @@ export class DeleteOrganizationHandler implements ICommandHandler<DeleteOrganiza
     @Inject('IOrganizationRepository')
     private readonly organizationRepository: IOrganizationRepository,
   ) {}
-
   async execute(command: DeleteOrganizationCommand): Promise<void> {
     const id = OrganizationId.create(command.id);
     const organization = await this.organizationRepository.findById(id);
-
     if (!organization) {
       throw new NotFoundException('Organization not found');
     }
-
     organization.delete();
     await this.organizationRepository.delete(id);
   }

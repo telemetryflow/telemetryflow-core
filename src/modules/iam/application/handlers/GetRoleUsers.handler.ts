@@ -10,7 +10,6 @@ export class GetRoleUsersHandler implements IQueryHandler<GetRoleUsersQuery> {
     @Inject('IUserRoleRepository')
     private readonly userRoleRepository: IUserRoleRepository,
   ) {}
-
   async execute(query: GetRoleUsersQuery): Promise<string[]> {
     const roleId = RoleId.create(query.roleId);
     const userIds = await this.userRoleRepository.getRoleUsers(roleId);

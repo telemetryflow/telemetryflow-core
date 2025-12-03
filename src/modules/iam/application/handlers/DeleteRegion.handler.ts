@@ -10,15 +10,12 @@ export class DeleteRegionHandler implements ICommandHandler<DeleteRegionCommand>
     @Inject('IRegionRepository')
     private readonly regionRepository: IRegionRepository,
   ) {}
-
   async execute(command: DeleteRegionCommand): Promise<void> {
     const regionId = RegionId.create(command.id);
     const region = await this.regionRepository.findById(regionId);
-
     if (!region) {
       throw new NotFoundException('Region not found');
     }
-
     region.delete();
     await this.regionRepository.save(region);
   }

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '../../logger/logger.service';
 import { createClient, ClickHouseClient } from '@clickhouse/client';
 
+const MODULE_NAME = 'Audit';
+
 export enum AuditEventType {
   AUTH = 'AUTH',
   AUTHZ = 'AUTHZ',
@@ -39,7 +41,7 @@ export class AuditService {
     const host = process.env.CLICKHOUSE_HOST || 'localhost';
     const port = process.env.CLICKHOUSE_PORT || '8123';
     const url = host.startsWith('http') ? host : `http://${host}:${port}`;
-    
+
     this.clickhouse = createClient({
       url,
       database: process.env.CLICKHOUSE_DB || 'telemetry',
@@ -53,11 +55,11 @@ export class AuditService {
       const logLevel = options.result === AuditEventResult.SUCCESS ? 'log' : 'warn';
       const resource = options.resource ? ` ${options.resource}` : '';
       const message = `[${options.eventType}] ${options.action}${resource} - ${options.result}`;
-      
+
       if (logLevel === 'log') {
-        this.logger.log(`[Audit] ✓ ${message}`, this.context);
+        this.logger.log(`[${MODULE_NAME}] ✓ ${message}`, this.context);
       } else {
-        this.logger.warn(`[Audit] ⚠ ${message}`, this.context);
+        this.logger.warn(`[${MODULE_NAME}] ⚠ ${message}`, this.context);
       }
 
       // Insert to ClickHouse
@@ -85,7 +87,7 @@ export class AuditService {
         format: 'JSONEachRow',
       });
     } catch (error) {
-      this.logger.error(`[Audit] ✗ Failed to create audit log: ${error.message}`, error.stack, this.context);
+      this.logger.error(`[${MODULE_NAME}] ✗ Failed to create audit log: ${error.message}`, error.stack, this.context);
     }
   }
 
@@ -109,22 +111,22 @@ export class AuditService {
     try {
       const { limit = 50, offset = 0, userId, action } = options;
       let query = `SELECT * FROM audit_logs WHERE 1=1`;
-      
+
       if (userId) query += ` AND user_id = '${userId}'`;
       if (action) query += ` AND action = '${action}'`;
-      
+
       query += ` ORDER BY timestamp DESC LIMIT ${limit} OFFSET ${offset}`;
-      
-      console.log('[Audit] Executing query:', query);
-      console.log('[Audit] ClickHouse database:', process.env.CLICKHOUSE_DB);
-      
+
+      console.log('[${MODULE_NAME}] Executing query:', query);
+      console.log('[${MODULE_NAME}] ClickHouse database:', process.env.CLICKHOUSE_DB);
+
       const result = await this.clickhouse.query({ query, format: 'JSONEachRow' });
       const data = await result.json();
-      console.log('[Audit] Query returned:', data.length, 'rows');
+      console.log('[${MODULE_NAME}] Query returned:', data.length, 'rows');
       return data;
     } catch (error) {
-      console.error('[Audit] Query error:', error);
-      this.logger.error(`[Audit] Failed to query logs: ${error.message}`, error.stack, this.context);
+      console.error('[${MODULE_NAME}] Query error:', error);
+      this.logger.error(`[${MODULE_NAME}] Failed to query logs: ${error.message}`, error.stack, this.context);
       return [];
     }
   }
@@ -136,7 +138,7 @@ export class AuditService {
       const rows = await result.json();
       return rows[0] || null;
     } catch (error) {
-      this.logger.error(`[Audit] Failed to get log: ${error.message}`, error.stack, this.context);
+      this.logger.error(`[${MODULE_NAME}] Failed to get log: ${error.message}`, error.stack, this.context);
       return null;
     }
   }
@@ -148,7 +150,7 @@ export class AuditService {
       const rows: any = await result.json();
       return { count: rows[0]?.count || 0 };
     } catch (error) {
-      this.logger.error(`[Audit] Failed to count logs: ${error.message}`, error.stack, this.context);
+      this.logger.error(`[${MODULE_NAME}] Failed to count logs: ${error.message}`, error.stack, this.context);
       return { count: 0 };
     }
   }
@@ -156,7 +158,7 @@ export class AuditService {
   async getStatistics(): Promise<any> {
     try {
       const query = `
-        SELECT 
+        SELECT
           event_type,
           result,
           COUNT(*) as count
@@ -166,7 +168,7 @@ export class AuditService {
       const result = await this.clickhouse.query({ query, format: 'JSONEachRow' });
       return await result.json();
     } catch (error) {
-      this.logger.error(`[Audit] Failed to get statistics: ${error.message}`, error.stack, this.context);
+      this.logger.error(`[${MODULE_NAME}] Failed to get statistics: ${error.message}`, error.stack, this.context);
       return [];
     }
   }

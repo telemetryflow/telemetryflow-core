@@ -10,23 +10,19 @@ import { WorkspaceId } from '../../../domain/value-objects/WorkspaceId';
 describe('GetTenantHandler', () => {
   let handler: GetTenantHandler;
   let repository: jest.Mocked<ITenantRepository>;
-
   beforeEach(async () => {
     const mockRepository = {
       findById: jest.fn(),
     };
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GetTenantHandler,
         { provide: 'ITenantRepository', useValue: mockRepository },
       ],
     }).compile();
-
     handler = module.get<GetTenantHandler>(GetTenantHandler);
     repository = module.get('ITenantRepository');
   });
-
   it('should return tenant', async () => {
     const query = new GetTenantQuery('tenant-1');
     const mockTenant = new Tenant(
@@ -36,19 +32,11 @@ describe('GetTenantHandler', () => {
       WorkspaceId.create('ws-1'),
       'default.example.com',
     );
-
     repository.findById.mockResolvedValue(mockTenant);
-
     const result = await handler.execute(query);
-
     expect(result.name).toBe('Default Tenant');
     expect(result.code).toBe('default');
-  });
-
   it('should throw NotFoundException if tenant not found', async () => {
-    const query = new GetTenantQuery('tenant-1');
     repository.findById.mockResolvedValue(null);
-
     await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
-  });
 });

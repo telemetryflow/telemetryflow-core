@@ -10,15 +10,12 @@ export class UpdateWorkspaceHandler implements ICommandHandler<UpdateWorkspaceCo
     @Inject('IWorkspaceRepository')
     private readonly workspaceRepository: IWorkspaceRepository,
   ) {}
-
   async execute(command: UpdateWorkspaceCommand): Promise<void> {
     const id = WorkspaceId.create(command.id);
     const workspace = await this.workspaceRepository.findById(id);
-
     if (!workspace) {
       throw new NotFoundException('Workspace not found');
     }
-
     workspace.update(command.name, command.description, command.datasourceConfig);
     await this.workspaceRepository.save(workspace);
   }

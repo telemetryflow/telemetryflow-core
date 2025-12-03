@@ -14,15 +14,12 @@ export class GetRoleHandler implements IQueryHandler<GetRoleQuery> {
     @Inject('IPermissionRepository')
     private readonly permissionRepository: IPermissionRepository,
   ) {}
-
   async execute(query: GetRoleQuery): Promise<RoleResponseDto> {
     const roleId = RoleId.create(query.id);
     const role = await this.roleRepository.findById(roleId);
-
     if (!role) {
       throw new NotFoundException('Role not found');
     }
-
     const permissionIds = role.getPermissions();
     const permissions = await Promise.all(
       permissionIds.map(async (pid) => {
@@ -30,7 +27,6 @@ export class GetRoleHandler implements IQueryHandler<GetRoleQuery> {
         return perm?.getName() || '';
       })
     );
-
     return {
       id: role.getId().getValue(),
       name: role.getName(),

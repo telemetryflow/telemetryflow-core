@@ -14,11 +14,9 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     private readonly repository: IUserRepository,
     private readonly eventBus: EventBus,
   ) {}
-
   async execute(command: CreateUserCommand): Promise<string> {
     const email = Email.create(command.email);
     const passwordHash = await bcrypt.hash(command.password, 10);
-
     const user = User.create(
       email,
       passwordHash,
@@ -28,7 +26,6 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
       null  // organizationId
     );
     await this.repository.save(user);
-
     user.domainEvents.forEach(event => this.eventBus.publish(event));
     return user.getId().getValue();
   }

@@ -11,15 +11,12 @@ export class GetTenantHandler implements IQueryHandler<GetTenantQuery> {
     @Inject('ITenantRepository')
     private readonly tenantRepository: ITenantRepository,
   ) {}
-
   async execute(query: GetTenantQuery): Promise<TenantResponseDto> {
     const id = TenantId.create(query.id);
     const tenant = await this.tenantRepository.findById(id);
-
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
     }
-
     return {
       id: tenant.getId().getValue(),
       name: tenant.getName(),

@@ -11,12 +11,10 @@ export class ListWorkspacesHandler implements IQueryHandler<ListWorkspacesQuery>
     @Inject('IWorkspaceRepository')
     private readonly workspaceRepository: IWorkspaceRepository,
   ) {}
-
   async execute(query: ListWorkspacesQuery): Promise<WorkspaceResponseDto[]> {
     const workspaces = query.organizationId
       ? await this.workspaceRepository.findByOrganization(OrganizationId.create(query.organizationId))
       : await this.workspaceRepository.findAll();
-
     return workspaces.map(w => ({
       id: w.id.getValue(),
       name: w.name,

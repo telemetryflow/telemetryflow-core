@@ -14,13 +14,10 @@ export class RevokePermissionFromUserHandler implements ICommandHandler<RevokePe
     private readonly userPermissionRepository: IUserPermissionRepository,
     private readonly eventBus: EventBus,
   ) {}
-
   async execute(command: RevokePermissionFromUserCommand): Promise<void> {
     const userId = UserId.fromString(command.userId);
     const permissionId = PermissionId.create(command.permissionId);
-
     await this.userPermissionRepository.revokePermission(userId, permissionId);
-
     this.eventBus.publish(new PermissionDirectlyRevokedEvent(userId.getValue(), permissionId.getValue()));
   }
 }

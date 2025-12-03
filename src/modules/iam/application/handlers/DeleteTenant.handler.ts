@@ -10,15 +10,12 @@ export class DeleteTenantHandler implements ICommandHandler<DeleteTenantCommand>
     @Inject('ITenantRepository')
     private readonly tenantRepository: ITenantRepository,
   ) {}
-
   async execute(command: DeleteTenantCommand): Promise<void> {
     const id = TenantId.create(command.id);
     const tenant = await this.tenantRepository.findById(id);
-
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
     }
-
     tenant.delete();
     await this.tenantRepository.delete(id);
   }

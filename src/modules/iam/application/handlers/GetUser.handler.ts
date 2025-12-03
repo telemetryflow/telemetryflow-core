@@ -11,11 +11,9 @@ export class GetUserHandler implements IQueryHandler<GetUserQuery> {
     @Inject('IUserRepository')
     private readonly repository: IUserRepository,
   ) {}
-
   async execute(query: GetUserQuery): Promise<UserResponseDto> {
     const user = await this.repository.findById(UserId.fromString(query.userId));
     if (!user) throw new Error('User not found');
-
     return {
       id: user.getId().getValue(),
       email: user.getEmail().getValue(),

@@ -4,7 +4,7 @@ export class UserResponseDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
   id: string;
 
-  @ApiProperty({ example: 'admin@telemetryflow.id' })
+  @ApiProperty({ example: 'administrator.telemetryflow@telemetryflow.id' })
   email: string;
 
   @ApiProperty({ example: 'John' })

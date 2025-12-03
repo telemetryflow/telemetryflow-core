@@ -27,7 +27,7 @@ async function bootstrap() {
       '- Developer: developer.telemetryflow@telemetryflow.id / Developer@123456\n' +
       '- Viewer: viewer.telemetryflow@telemetryflow.id / Viewer@123456\n' +
       '- Demo: demo.telemetryflow@telemetryflow.id / Demo@123456')
-    .setVersion('1.0.0')
+    .setVersion('1.1.0')
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',
@@ -45,11 +45,11 @@ async function bootstrap() {
     .addTag('iam-audit', 'Audit log operations')
     .addServer('http://localhost:3000', 'Development')
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config, {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   });
-  
+
   SwaggerModule.setup('api', app, document, {
     swaggerOptions: {
       persistAuthorization: true,

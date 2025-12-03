@@ -12,19 +12,15 @@ export class RemoveUserFromGroupHandler implements ICommandHandler<RemoveUserFro
     @Inject('IGroupRepository')
     private readonly groupRepository: IGroupRepository,
   ) {}
-
   async execute(command: RemoveUserFromGroupCommand): Promise<GroupResponseDto> {
     const groupId = GroupId.create(command.groupId);
     const group = await this.groupRepository.findById(groupId);
-
     if (!group) {
       throw new NotFoundException('Group not found');
     }
-
     const userId = UserId.create(command.userId);
     group.removeUser(userId);
     await this.groupRepository.save(group);
-
     return {
       id: group.getId().getValue(),
       name: group.getName(),

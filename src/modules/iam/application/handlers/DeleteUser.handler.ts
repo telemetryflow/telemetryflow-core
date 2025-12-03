@@ -10,7 +10,6 @@ export class DeleteUserHandler implements ICommandHandler<DeleteUserCommand> {
     @Inject('IUserRepository')
     private readonly repository: IUserRepository,
   ) {}
-
   async execute(command: DeleteUserCommand): Promise<void> {
     await this.repository.delete(UserId.create(command.userId));
   }
