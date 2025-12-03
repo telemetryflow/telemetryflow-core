@@ -62,14 +62,15 @@ export class CreateIAMTables1733191200000 implements MigrationInterface {
             CREATE TABLE "workspaces" (
                 "id" uuid NOT NULL,
                 "name" character varying NOT NULL,
-                "slug" character varying NOT NULL,
+                "code" character varying NOT NULL,
                 "description" character varying,
                 "organization_id" uuid,
-                "is_active" boolean NOT NULL DEFAULT true,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                CONSTRAINT "PK_workspaces" PRIMARY KEY ("id")
+                "isActive" boolean NOT NULL DEFAULT true,
+                "createdAt" timestamp without time zone NOT NULL DEFAULT now(),
+                "updatedAt" timestamp without time zone NOT NULL DEFAULT now(),
+                "deletedAt" timestamp without time zone,
+                CONSTRAINT "PK_workspaces" PRIMARY KEY ("id"),
+                CONSTRAINT "UQ_workspaces_code" UNIQUE ("code")
             )
         `);
 

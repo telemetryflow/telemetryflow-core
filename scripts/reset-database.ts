@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
-import { seedIAMRolesPermissions } from '../src/database/postgres/seeds/001-iam-roles-permissions.seed.js';
-import { seedAuthTestUsers } from '../src/database/postgres/seeds/003-auth-test-users.seed.js';
+import { seedIAMRolesPermissions } from '../src/database/postgres/seeds/001-iam-roles-permissions.seed';
+import { seedAuthTestUsers } from '../src/database/postgres/seeds/003-auth-test-users.seed';
 
 config();
 
