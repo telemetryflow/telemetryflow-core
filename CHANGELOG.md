@@ -5,6 +5,82 @@ All notable changes to TelemetryFlow Core will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-12-03
+
+### Summary
+
+Enhanced database management, BDD testing automation, and improved developer experience with comprehensive migration/seed scripts and automated API testing.
+
+**Key Highlights:**
+- 🧪 **BDD Testing**: 33 automated test scenarios with Newman (100% API coverage)
+- 📊 **Enhanced Logging**: Detailed migration and seed logs with progress tracking
+- 🔧 **Improved Scripts**: Organized package.json scripts for all database operations
+- ✅ **Fixed Issues**: ClickHouse health check, endpoint paths, and bootstrap script improvements
+
+### Added
+
+#### BDD Testing Suite
+- Newman-based BDD test automation with 33 test scenarios
+- Given-When-Then format for all IAM endpoints
+- HTML and JSON test reports with interactive dashboard
+- Test scripts: `pnpm test:bdd`, `pnpm test:bdd:verbose`, `pnpm test:bdd:users`, `pnpm test:bdd:roles`
+- Complete BDD documentation in `docs/postman/BDD_TESTS.md`
+- Quick start guide in `docs/postman/QUICK_START_BDD.md`
+- CI/CD integration examples (GitHub Actions, GitLab CI)
+- 100% API coverage (54 requests across 10 modules)
+
+#### Enhanced Database Scripts
+- Informative migration logs with boxed headers and progress counters
+- Enhanced seed logs with detailed step-by-step execution
+- PostgreSQL migration script with configuration display
+- ClickHouse migration script with environment variable substitution
+- Unified `db:migrate:seed` command for full database setup
+- Separate commands for PostgreSQL and ClickHouse operations
+
+#### Package.json Scripts
+- Reorganized scripts following Platform structure
+- Added `db:migrate` for both PostgreSQL and ClickHouse
+- Added `db:migrate:seed` for migrations + seeds
+- Added `db:seed` for both databases
+- Added `db:seed:postgres` and `db:seed:clickhouse` for individual seeding
+- Added `test:bdd*` commands for BDD testing
+- Added `docker:*` commands for container management
+- Added `clean` command for cleanup
+
+### Changed
+
+#### Bootstrap Script
+- Fixed ClickHouse health check using `docker exec` instead of `curl`
+- Updated CLICKHOUSE_HOST display value to show IP (172.151.151.40)
+- Added `/metrics` endpoint to access information
+- Updated IAM endpoint paths to match Swagger:
+  - Workspaces: `/api/v2/iam/workspaces`
+  - Tenants: `/api/v2/iam/tenants`
+  - Groups: `/api/v2/iam/groups`
+  - Regions: `/api/v2/iam/regions`
+- Added Groups and Regions to endpoint list
+
+#### Documentation
+- Updated README.md with BDD testing section
+- Updated README.md with complete script list
+- Updated Postman README with BDD automation instructions
+- Added BDD test coverage table (33 scenarios, 100% coverage)
+- Enhanced API testing section with Newman commands
+
+### Fixed
+
+- ClickHouse health check timeout in bootstrap script
+- Endpoint paths now match Swagger documentation exactly
+- Migration and seed scripts now show detailed progress
+- Package.json scripts organized and consistent with Platform
+
+### Testing
+
+- **BDD Scenarios**: 33 test scenarios covering all modules
+- **Test Coverage**: 100% API coverage (Health, Users, Roles, Permissions, Organizations, Tenants, Workspaces, Groups, Regions, Audit)
+- **Test Reports**: HTML and JSON formats with detailed results
+- **CI/CD Ready**: Examples for GitHub Actions and GitLab CI
+
 ## [1.0.0] - 2025-12-02
 
 ### Summary

@@ -1,10 +1,22 @@
 # TelemetryFlow Core
 
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/devopscorner/telemetryflow-core)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/typescript-5.9.3-blue.svg)](https://www.typescriptlang.org)
+[![NestJS](https://img.shields.io/badge/nestjs-11.x-red.svg)](https://nestjs.com)
+[![PostgreSQL](https://img.shields.io/badge/postgresql-16-blue.svg)](https://www.postgresql.org)
+[![ClickHouse](https://img.shields.io/badge/clickhouse-latest-yellow.svg)](https://clickhouse.com)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com)
+[![Test Coverage](https://img.shields.io/badge/coverage-90%25%20target-yellow.svg)](docs/TEST_STATUS.md)
+[![API Coverage](https://img.shields.io/badge/API%20coverage-100%25-brightgreen.svg)](docs/postman/BDD_TESTS.md)
+[![BDD Tests](https://img.shields.io/badge/BDD%20tests-33%20scenarios-success.svg)](docs/postman/BDD_TESTS.md)
+
 Backend-only application with IAM (Identity and Access Management) module following Domain-Driven Design (DDD) pattern.
 
 ## Overview
 
-TelemetryFlow Core is a lightweight, production-ready IAM service extracted from the TelemetryFlow Platform. It provides complete identity and access management with a 5-tier RBAC system, multi-tenancy support, and enterprise-grade security features.
+**TelemetryFlow Core** is a lightweight, production-ready IAM service extracted from the TelemetryFlow Platform. It provides complete identity and access management with a 5-tier RBAC system, multi-tenancy support, and enterprise-grade security features.
 
 ## Features
 
@@ -96,10 +108,10 @@ graph TB
         Postman[Postman/API Client]
         Swagger[Swagger UI]
     end
-    
+
     subgraph "Backend Application"
         API[NestJS API<br/>:3000]
-        
+
         subgraph "IAM Module - DDD"
             Domain[Domain Layer<br/>Aggregates, Entities, VOs]
             App[Application Layer<br/>Commands, Queries, Handlers]
@@ -107,37 +119,37 @@ graph TB
             Pres[Presentation Layer<br/>Controllers, DTOs]
         end
     end
-    
+
     subgraph "Observability Stack"
         OTEL[OTEL Collector<br/>:4318]
         Jaeger[Jaeger UI<br/>:16686]
         Prom[Prometheus<br/>:9090]
         Winston[Winston Logger<br/>File + OTEL]
     end
-    
+
     subgraph "Data Layer"
         PG[(PostgreSQL<br/>IAM Data)]
         CH[(ClickHouse<br/>Audit Logs)]
     end
-    
+
     Postman --> API
     Swagger --> API
-    
+
     API --> Pres
     Pres --> App
     App --> Domain
     App --> Infra
     Infra --> PG
-    
+
     API -->|Traces| OTEL
     API -->|Metrics| OTEL
     API -->|Logs| OTEL
     API -->|Audit| CH
-    
+
     OTEL -->|Export| Jaeger
     OTEL -->|Scrape| Prom
     Winston -->|Export| OTEL
-    
+
     style API fill:#e1f5ff
     style Domain fill:#ffe1f5
     style OTEL fill:#fff4e1
@@ -156,26 +168,26 @@ graph LR
         EVT[Domain Events<br/>UserCreated, RoleAssigned]
         SVC[Domain Services<br/>Business Logic]
     end
-    
+
     subgraph "Application Layer"
         CMD[Commands<br/>33 Write Operations]
         QRY[Queries<br/>18 Read Operations]
         HDL[Handlers<br/>51 Total]
         DTO[DTOs<br/>Request/Response]
     end
-    
+
     subgraph "Infrastructure Layer"
         REPO[Repositories<br/>TypeORM Implementation]
         MSG[Messaging<br/>Event Processors]
         EXT[External Services<br/>Email, SMS]
     end
-    
+
     subgraph "Presentation Layer"
         CTRL[Controllers<br/>9 REST APIs]
         GRD[Guards<br/>Authorization]
         DEC[Decorators<br/>Custom Metadata]
     end
-    
+
     CTRL --> HDL
     HDL --> CMD
     HDL --> QRY
@@ -185,7 +197,7 @@ graph LR
     HDL --> REPO
     REPO --> AGG
     EVT --> MSG
-    
+
     style AGG fill:#e1f5ff
     style CMD fill:#ffe1f5
     style REPO fill:#fff4e1
@@ -287,10 +299,27 @@ Once running, access Swagger UI at: `http://localhost:3000/api`
 ### API Testing
 
 **Postman Collection** (Recommended):
-- Import `docs/postman/TelemetryFlow-Core.postman_collection.json`
-- Import `docs/postman/TelemetryFlow-Core.postman_environment.json`
-- 30+ pre-configured requests with default credentials
+- Import `docs/postman/TelemetryFlow Core - IAM.postman_collection.json`
+- Import `docs/postman/TelemetryFlow Core - Local.postman_environment.json`
+- 54+ pre-configured requests with default credentials
 - See [docs/postman/README.md](./docs/postman/README.md)
+
+**BDD Automated Testing** (Newman):
+```bash
+# Run all BDD tests
+pnpm test:bdd
+
+# Run specific module
+pnpm test:bdd:users
+pnpm test:bdd:roles
+
+# With detailed output
+pnpm test:bdd:verbose
+```
+- 33 BDD test scenarios with Given-When-Then format
+- 100% API coverage
+- HTML and JSON reports
+- See [docs/postman/BDD_TESTS.md](./docs/postman/BDD_TESTS.md)
 
 **Export OpenAPI Spec**:
 ```bash
@@ -301,34 +330,52 @@ Once running, access Swagger UI at: `http://localhost:3000/api`
 
 ```bash
 # Development
-pnpm run dev              # Start with hot reload
-pnpm run start:debug      # Start with debugger
+pnpm dev              # Start with hot reload
+pnpm start:debug      # Start with debugger
 
 # Build & Run
-pnpm run build            # Build for production
-pnpm run start            # Start production server
+pnpm build            # Build for production
+pnpm start            # Start production server
 
 # Database
-pnpm run db:seed          # Seed all data
-pnpm run db:seed:iam      # Seed IAM only
-pnpm run db:generate-sample --count 50  # Generate sample data
-
-# Security
-pnpm run generate:secrets # Generate JWT & Session secrets
+pnpm db:migrate              # Run all migrations (PostgreSQL + ClickHouse)
+pnpm db:migrate:postgres     # Run PostgreSQL migrations only
+pnpm db:migrate:clickhouse   # Run ClickHouse migrations only
+pnpm db:migrate:seed         # Run migrations + seeds (full setup)
+pnpm db:seed                 # Seed all data (PostgreSQL + ClickHouse)
+pnpm db:seed:postgres        # Seed PostgreSQL only
+pnpm db:seed:iam             # Seed IAM data only
+pnpm db:seed:clickhouse      # Seed ClickHouse only
+pnpm db:init-clickhouse      # Initialize ClickHouse schema
+pnpm db:generate-sample      # Generate sample data (50 records)
+pnpm db:reset                # Reset database
 
 # Testing
-pnpm run test             # Run tests
-pnpm run test:watch       # Watch mode
-pnpm run test:cov         # Coverage report
+pnpm test                    # Run unit tests
+pnpm test:watch              # Watch mode
+pnpm test:cov                # Coverage report
+pnpm test:bdd                # Run BDD API tests (Newman)
+pnpm test:bdd:verbose        # Run BDD tests with detailed output
+pnpm test:bdd:users          # Run Users module BDD tests
+pnpm test:bdd:roles          # Run Roles module BDD tests
+
+# Security
+pnpm generate:secrets        # Generate JWT & Session secrets
 
 # Code Quality
-pnpm run lint             # Lint and fix
+pnpm lint                    # Lint and fix
+
+# Docker
+pnpm docker:up               # Start all containers
+pnpm docker:down             # Stop all containers
+pnpm docker:logs             # View logs
+pnpm docker:clean            # Clean volumes
+
+# Bootstrap
+pnpm bootstrap               # Full setup (dependencies, Docker, migrations, seeds)
 
 # API Documentation
 ./scripts/export-swagger-docs.sh  # Export OpenAPI spec
-
-# Bootstrap
-bash scripts/bootstrap.sh # Full setup
 ```
 
 ## Docker Deployment
@@ -431,30 +478,26 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ## Documentation
 
 ### Core Documentation
-- [CORE_MODULES.md](./docs/CORE_MODULES.md) - Complete modules documentation with Mermaid diagrams
-- [ARCHITECTURE_DIAGRAMS.md](./docs/ARCHITECTURE_DIAGRAMS.md) - Visual architecture guide (35+ diagrams)
+- [README.md](./README.md) - Main documentation (this file)
+- [CHANGELOG.md](./CHANGELOG.md) - Version history and changes
+- [RELEASE_NOTES_v1.1.0.md](./RELEASE_NOTES_v1.1.0.md) - Latest release notes
+- [DIAGRAMS.md](./docs/references/DIAGRAMS.md) - Architecture diagrams (20+ Mermaid diagrams)
 
-### Setup & Deployment
-- [SETUP.md](./SETUP.md) - Detailed setup guide
-- [DOCKER.md](./DOCKER.md) - Docker deployment guide
-- [DOCKER_SETUP.md](./DOCKER_SETUP.md) - Complete Docker documentation
-- [DOCKER_COMPLETE.md](./DOCKER_COMPLETE.md) - Docker setup summary
-- [BOOTSTRAP.md](./BOOTSTRAP.md) - Bootstrap script documentation
-
-### Features
+### Features & Observability
 - [OBSERVABILITY.md](./docs/OBSERVABILITY.md) - Observability features (OTEL, Prometheus, Swagger)
-- [SECRETS.md](./SECRETS.md) - Secret generation guide
-- [5-TIER-RBAC.md](./5-TIER-RBAC.md) - RBAC system overview
 - [WINSTON_LOGGER.md](./docs/WINSTON_LOGGER.md) - Winston logger documentation
+- [CLICKHOUSE_LOGGING.md](./docs/CLICKHOUSE_LOGGING.md) - ClickHouse logging (logs, metrics, traces)
 
 ### API & Testing
-- [Postman Collection](./docs/postman/README.md) - API testing with Postman (30+ requests)
+- [TESTING.md](./docs/TESTING.md) - Comprehensive testing guide (90%+ coverage target)
+- [TEST_STATUS.md](./docs/TEST_STATUS.md) - Current test coverage status and action plan
+- [Postman Collection](./docs/postman/README.md) - API testing with Postman (54+ requests)
+- [BDD Tests](./docs/postman/BDD_TESTS.md) - 33 BDD test scenarios (100% coverage)
+- [BDD Quick Start](./docs/postman/QUICK_START_BDD.md) - Quick reference for automated testing
 - [Swagger Export Script](./scripts/export-swagger-docs.sh) - Export OpenAPI specification
 
 ### Modules
 - [IAM Module](./src/modules/iam/README.md) - Identity and Access Management
-- [Audit Module](./src/modules/audit/README.md) - Audit logging system
-- [Audit Quick Start](./src/modules/audit/QUICK_START.md) - Quick reference guide
 
 ### Configuration
 - [Configuration Overview](./config/README.md) - All service configurations
@@ -462,38 +505,35 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 - [ClickHouse Config](./config/clickhouse/README.md) - ClickHouse settings
 - [OTEL Config](./config/otel/README.md) - OpenTelemetry Collector
 - [Prometheus Config](./config/prometheus/README.md) - Metrics collection
-- [CONFIG_SYNC.md](./docs/CONFIG_SYNC.md) - Configuration synchronization from Platform
 
-### Integration
-- [IAM_AUDIT_INTEGRATION.md](./docs/IAM_AUDIT_INTEGRATION.md) - IAM-Audit integration guide (51 points)
-- [IAM_AUDIT_SYNC.md](./IAM_AUDIT_SYNC.md) - Integration summary
-
-### Comparison
-- [PLATFORM_VS_CORE.md](./PLATFORM_VS_CORE.md) - Platform comparison
-- [PLATFORM_SYNC.md](./PLATFORM_SYNC.md) - Platform synchronization status
-- [CHANGELOG.md](./CHANGELOG.md) - Version history
+### Database
+- [Database README](./src/database/README.md) - Database structure and migrations
+- [PostgreSQL Seeds](./src/database/postgres/seeds/README.md) - Seed data documentation
+- [ClickHouse Seeds](./src/database/clickhouse/seeds/README.md) - ClickHouse seed data
 
 ## Project Statistics
 
-- **Total Files**: 200+
-- **Lines of Code**: ~15,000+
-- **Aggregates**: 8
-- **Commands**: 33
-- **Queries**: 18
-- **Handlers**: 51
-- **Controllers**: 9
-- **Entities**: 13
-- **Domain Events**: 25+
-- **Tests**: 18+
+| Metric              | Count    |
+|---------------------|----------|
+| Total Files         | 200+     |
+| Lines of Code       | ~15,000+ |
+| Aggregates          | 8        |
+| Commands            | 33       |
+| Queries             | 18       |
+| Handlers            | 51       |
+| Controllers         | 9        |
+| Entities            | 13       |
+| Domain Events       | 25+      |
+| BDD Test Scenarios  | 33       |
+| API Requests        | 54+      |
 
-## Comparison with Platform
+## Comparison with **TelemetryFlow Platform**
 
 | Feature | Platform | Core |
 |---------|----------|------|
 | **Modules** | 25+ | 1 (IAM) |
 | **Services** | 15+ | 5 (PostgreSQL, ClickHouse, Backend, OTEL, Prometheus) |
 | **Size** | 150K+ LOC | 15K+ LOC |
-| **Cost** | $260-1100/mo | $50-250/mo |
 | **Startup** | 10-15s | 2-3s |
 | **Memory** | 500MB-1GB | 100-200MB |
 
