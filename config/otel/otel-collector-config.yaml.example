@@ -52,6 +52,36 @@ exporters:
     sampling_initial: 5
     sampling_thereafter: 200
 
+  # Loki - Log aggregation (Grafana)
+  # Uncomment to enable
+  # loki:
+  #   endpoint: http://loki:3100/loki/api/v1/push
+  #   labels:
+  #     attributes:
+  #       service.name: "service_name"
+  #       level: "level"
+  #     resource:
+  #       service.name: "service_name"
+
+  # OpenSearch - Log storage and search
+  # Uncomment to enable
+  # opensearch:
+  #   http:
+  #     endpoint: http://opensearch:9200
+  #     auth:
+  #       authenticator: basicauth
+  #   logs_index: telemetryflow-logs
+  #   dataset: logs
+
+  # File - Export to local files
+  # Uncomment to enable
+  # file:
+  #   path: /var/log/otel/telemetry.json
+  #   rotation:
+  #     max_megabytes: 100
+  #     max_days: 7
+  #     max_backups: 3
+
 extensions:
   health_check:
     endpoint: 0.0.0.0:13133
@@ -78,6 +108,8 @@ service:
       receivers: [otlp]
       processors: [memory_limiter, batch, attributes]
       exporters: [debug]
+      # Add more exporters as needed:
+      # exporters: [debug, loki, opensearch, file]
 
   telemetry:
     logs:

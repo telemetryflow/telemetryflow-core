@@ -1,0 +1,66 @@
+# OTEL Collector - OpenSearch Exporter Configuration
+# Export logs to OpenSearch for full-text search and analytics
+#
+# Usage:
+# 1. Add this exporter to otel-collector-config.yaml
+# 2. Add 'opensearch' to logs pipeline exporters
+# 3. Ensure OpenSearch service is running
+
+exporters:
+  opensearch:
+    # OpenSearch endpoint
+    http:
+      endpoint: http://opensearch:9200
+      
+      # Authentication
+      auth:
+        authenticator: basicauth
+      
+      # TLS configuration
+      # tls:
+      #   insecure: false
+      #   ca_file: /path/to/ca.crt
+    
+    # Index configuration
+    logs_index: telemetryflow-logs
+    dataset: logs
+    namespace: production
+    
+    # Index template
+    index: "telemetryflow-logs-%{+yyyy.MM.dd}"
+    
+    # Bulk indexing
+    flush_interval: 5s
+    flush_bytes: 5242880  # 5MB
+    
+    # Retry configuration
+    retry:
+      enabled: true
+      initial_interval: 1s
+      max_interval: 30s
+      max_elapsed_time: 5m
+
+# Extensions for basic auth
+extensions:
+  basicauth/opensearch:
+    client_auth:
+      username: admin
+      password: admin
+
+# Add to service.pipelines.logs.exporters:
+# logs:
+#   receivers: [otlp]
+#   processors: [memory_limiter, batch, attributes]
+#   exporters: [debug, opensearch]
+
+# Docker Compose service example:
+# opensearch:
+#   image: opensearchproject/opensearch:latest
+#   environment:
+#     - discovery.type=single-node
+#     - OPENSEARCH_INITIAL_ADMIN_PASSWORD=Admin@123
+#   ports:
+#     - "9200:9200"
+#     - "9600:9600"
+#   networks:
+#     - telemetryflow_core_net

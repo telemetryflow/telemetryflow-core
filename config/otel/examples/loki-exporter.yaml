@@ -1,0 +1,45 @@
+# OTEL Collector - Loki Exporter Configuration
+# Export logs to Grafana Loki for log aggregation and visualization
+#
+# Usage:
+# 1. Add this exporter to otel-collector-config.yaml
+# 2. Add 'loki' to logs pipeline exporters
+# 3. Ensure Loki service is running
+
+exporters:
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+    
+    # Labels to attach to logs
+    labels:
+      attributes:
+        service.name: "service_name"
+        level: "level"
+        http.method: "http_method"
+      resource:
+        service.name: "service_name"
+        deployment.environment: "environment"
+    
+    # Optional: Authentication
+    # headers:
+    #   X-Scope-OrgID: "tenant-id"
+    
+    # Optional: Basic auth
+    # auth:
+    #   authenticator: basicauth
+
+# Add to service.pipelines.logs.exporters:
+# logs:
+#   receivers: [otlp]
+#   processors: [memory_limiter, batch, attributes]
+#   exporters: [debug, loki]
+
+# Docker Compose service example:
+# loki:
+#   image: grafana/loki:latest
+#   ports:
+#     - "3100:3100"
+#   volumes:
+#     - ./config/loki/loki-config.yaml:/etc/loki/local-config.yaml
+#   networks:
+#     - telemetryflow_core_net

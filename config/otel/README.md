@@ -2,6 +2,46 @@
 
 OTEL Collector configuration for TelemetryFlow Core observability.
 
+## Architecture
+
+```mermaid
+graph LR
+    subgraph "Receivers"
+        OTLP_GRPC[OTLP gRPC<br/>:4317]
+        OTLP_HTTP[OTLP HTTP<br/>:4318]
+        Prom_Scrape[Prometheus<br/>Self-Scrape]
+    end
+    
+    subgraph "Processors"
+        Batch[Batch<br/>10s timeout]
+        MemLimit[Memory Limiter<br/>512MB]
+        Attrs[Attributes<br/>Add env labels]
+    end
+    
+    subgraph "Exporters"
+        Debug[Debug<br/>Console]
+        Jaeger[Jaeger<br/>:4317]
+        PromExp[Prometheus<br/>:8889]
+    end
+    
+    OTLP_GRPC --> Batch
+    OTLP_HTTP --> Batch
+    Prom_Scrape --> Batch
+    
+    Batch --> MemLimit
+    MemLimit --> Attrs
+    
+    Attrs -->|Traces| Jaeger
+    Attrs -->|Traces| Debug
+    Attrs -->|Metrics| PromExp
+    Attrs -->|Metrics| Debug
+    Attrs -->|Logs| Debug
+    
+    style Batch fill:#fff4e1
+    style MemLimit fill:#ffe1f5
+    style Attrs fill:#e1f5ff
+```
+
 ## Files
 
 - `otel-collector-config.yaml` - OTEL Collector configuration
