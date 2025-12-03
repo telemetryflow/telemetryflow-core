@@ -55,8 +55,13 @@ export function createConsoleTransport(
  * Create OpenTelemetry transport for Winston
  */
 export function createOtelTransport(): winston.transport | null {
-  // OpenTelemetry transport disabled - package not installed
-  return null;
+  try {
+    const { OpenTelemetryTransportV3 } = require('@opentelemetry/winston-transport');
+    return new OpenTelemetryTransportV3();
+  } catch (error) {
+    console.warn('[Logger] OpenTelemetry transport not available:', error.message);
+    return null;
+  }
 }
 
 /**
@@ -71,7 +76,6 @@ export async function createFileTransport(
 
   try {
     // Dynamic import to avoid requiring the package if not used
-    // @ts-expect-error - Optional package
     const DailyRotateFile = await import('winston-daily-rotate-file').then(
       (m) => m.default,
     );

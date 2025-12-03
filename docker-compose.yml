@@ -119,13 +119,19 @@ services:
       - SESSION_SECRET=${SESSION_SECRET}
 
       # Logging
+      - LOGGER_TYPE=${LOGGER_TYPE:-winston}
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - LOG_PRETTY_PRINT=${LOG_PRETTY_PRINT:-false}
+      - LOG_FILE_ENABLED=${LOG_FILE_ENABLED:-true}
+      - LOG_FILE_DIRNAME=logs
+      - LOG_FILE_FILENAME=app-%DATE%.log
 
       # OpenTelemetry
       - OTEL_ENABLED=${OTEL_ENABLED:-true}
       - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME:-telemetryflow-core}
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy

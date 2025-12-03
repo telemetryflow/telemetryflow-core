@@ -88,6 +88,112 @@ bash scripts/bootstrap.sh --dev
 
 ## Architecture
 
+### System Architecture
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        Postman[Postman/API Client]
+        Swagger[Swagger UI]
+    end
+    
+    subgraph "Backend Application"
+        API[NestJS API<br/>:3000]
+        
+        subgraph "IAM Module - DDD"
+            Domain[Domain Layer<br/>Aggregates, Entities, VOs]
+            App[Application Layer<br/>Commands, Queries, Handlers]
+            Infra[Infrastructure Layer<br/>Repositories, TypeORM]
+            Pres[Presentation Layer<br/>Controllers, DTOs]
+        end
+    end
+    
+    subgraph "Observability Stack"
+        OTEL[OTEL Collector<br/>:4318]
+        Jaeger[Jaeger UI<br/>:16686]
+        Prom[Prometheus<br/>:9090]
+        Winston[Winston Logger<br/>File + OTEL]
+    end
+    
+    subgraph "Data Layer"
+        PG[(PostgreSQL<br/>IAM Data)]
+        CH[(ClickHouse<br/>Audit Logs)]
+    end
+    
+    Postman --> API
+    Swagger --> API
+    
+    API --> Pres
+    Pres --> App
+    App --> Domain
+    App --> Infra
+    Infra --> PG
+    
+    API -->|Traces| OTEL
+    API -->|Metrics| OTEL
+    API -->|Logs| OTEL
+    API -->|Audit| CH
+    
+    OTEL -->|Export| Jaeger
+    OTEL -->|Scrape| Prom
+    Winston -->|Export| OTEL
+    
+    style API fill:#e1f5ff
+    style Domain fill:#ffe1f5
+    style OTEL fill:#fff4e1
+    style PG fill:#90EE90
+    style CH fill:#FFD700
+```
+
+### DDD Layer Structure
+
+```mermaid
+graph LR
+    subgraph "Domain Layer"
+        AGG[Aggregates<br/>User, Role, Permission]
+        ENT[Entities<br/>MFASettings, Profile]
+        VO[Value Objects<br/>UserId, Email, RoleId]
+        EVT[Domain Events<br/>UserCreated, RoleAssigned]
+        SVC[Domain Services<br/>Business Logic]
+    end
+    
+    subgraph "Application Layer"
+        CMD[Commands<br/>33 Write Operations]
+        QRY[Queries<br/>18 Read Operations]
+        HDL[Handlers<br/>51 Total]
+        DTO[DTOs<br/>Request/Response]
+    end
+    
+    subgraph "Infrastructure Layer"
+        REPO[Repositories<br/>TypeORM Implementation]
+        MSG[Messaging<br/>Event Processors]
+        EXT[External Services<br/>Email, SMS]
+    end
+    
+    subgraph "Presentation Layer"
+        CTRL[Controllers<br/>9 REST APIs]
+        GRD[Guards<br/>Authorization]
+        DEC[Decorators<br/>Custom Metadata]
+    end
+    
+    CTRL --> HDL
+    HDL --> CMD
+    HDL --> QRY
+    CMD --> AGG
+    QRY --> AGG
+    AGG --> EVT
+    HDL --> REPO
+    REPO --> AGG
+    EVT --> MSG
+    
+    style AGG fill:#e1f5ff
+    style CMD fill:#ffe1f5
+    style REPO fill:#fff4e1
+    style CTRL fill:#e1ffe1
+```
+
+### Directory Structure
+
 ```
 src/
 ├── main.ts                     # Application entry point
