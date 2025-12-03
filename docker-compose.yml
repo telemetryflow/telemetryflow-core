@@ -152,8 +152,8 @@ services:
     container_name: ${CONTAINER_CLICKHOUSE:-telemetryflow_core_clickhouse}
     restart: unless-stopped
     ports:
-      - "${PORT_CLICKHOUSE_HTTP:-8123}:8123"   # HTTP
-      - "${PORT_CLICKHOUSE_NATIVE:-9000}:9000" # Native
+      - "${PORT_CLICKHOUSE_HTTP:-8123}:8123"    # HTTP
+      - "${PORT_CLICKHOUSE_NATIVE:-9000}:9000"  # Native
       - "${PORT_CLICKHOUSE_METRICS:-9363}:9363" # Prometheus metrics
     environment:
       - TZ=${TZ:-UTC}
@@ -163,7 +163,7 @@ services:
     volumes:
       - vol_clickhouse_data:/var/lib/clickhouse
       - vol_clickhouse_logs:/var/log/clickhouse-server
-      - ./config/clickhouse/config.d:/etc/clickhouse-server/config.d
+    # - ./config/clickhouse/config.d:/etc/clickhouse-server/config.d
     networks:
       telemetryflow_core_net:
         ipv4_address: ${CONTAINER_IP_CLICKHOUSE:-172.151.151.40}
@@ -186,9 +186,9 @@ services:
     volumes:
       - ./config/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
     ports:
-      - "${PORT_OTEL_GRPC:-4317}:4317"   # OTLP gRPC
-      - "${PORT_OTEL_HTTP:-4318}:4318"   # OTLP HTTP
-      - "${PORT_OTEL_METRICS:-8889}:8889" # Prometheus metrics
+      - "${PORT_OTEL_GRPC:-4317}:4317"     # OTLP gRPC
+      - "${PORT_OTEL_HTTP:-4318}:4318"     # OTLP HTTP
+      - "${PORT_OTEL_METRICS:-8889}:8889"  # Prometheus metrics
       - "${PORT_OTEL_HEALTH:-13133}:13133" # Health check
       - "${PORT_OTEL_ZPAGES:-55679}:55679" # zPages
     networks:

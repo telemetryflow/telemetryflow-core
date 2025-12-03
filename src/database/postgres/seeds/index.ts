@@ -1,30 +1,37 @@
 import { DataSource } from 'typeorm';
 import { seedIAMRolesPermissions } from './001-iam-roles-permissions.seed';
-import { seedGroups } from './002-groups.seed';
+import { seedAuthTestUsers } from './002-auth-test-users.seed';
+import { seedGroups } from './003-groups.seed';
 
 export const SEED_ORDER = [
   '001-iam-roles-permissions',
-  '002-groups',
+  '002-auth-test-users',
+  '003-groups',
 ] as const;
 
 /**
  * Run all seeds in order
  */
 export async function runAllSeeds(dataSource: DataSource): Promise<void> {
-  console.log('🌱 Starting 5-Tier RBAC seeding...\n');
+  console.log('🌱 Starting database seeding...\n');
 
   try {
-    // 1. Complete IAM System (Regions, Orgs, Workspaces, Tenants, Permissions, Roles, Users)
-    console.log('📋 [01/02]: Seeding complete IAM system...');
+    // 1. IAM Roles & Permissions (Regions, Orgs, Workspaces, Tenants, Permissions, Roles)
+    console.log('📋 [01/03]: Seeding IAM roles & permissions...');
     await seedIAMRolesPermissions(dataSource);
-    console.log('✅ Complete IAM system seeded\n');
+    console.log('✅ IAM roles & permissions seeded\n');
 
-    // 2. Groups
-    console.log('👥 [02/02]: Seeding groups...');
+    // 2. Test Users (5-Tier RBAC)
+    console.log('👥 [02/03]: Seeding test users...');
+    await seedAuthTestUsers(dataSource);
+    console.log('✅ Test users seeded\n');
+
+    // 3. Groups
+    console.log('👥 [03/03]: Seeding groups...');
     await seedGroups(dataSource);
     console.log('✅ Groups seeded\n');
 
-    console.log('🎉 5-Tier RBAC seeding completed successfully!');
+    console.log('🎉 Database seeding completed successfully!');
   } catch (error) {
     console.error('❌ Seeding failed:', error);
     throw error;
@@ -33,5 +40,6 @@ export async function runAllSeeds(dataSource: DataSource): Promise<void> {
 
 export {
   seedIAMRolesPermissions,
+  seedAuthTestUsers,
   seedGroups,
 };

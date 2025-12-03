@@ -12,9 +12,6 @@ export class RoleEntity {
   @Column({ type: 'varchar', nullable: true })
   description: string;
 
-  @Column({ type: 'uuid', nullable: true })
-  tenant_id: string | null;
-
   @Column({ type: 'boolean', default: false })
   is_system: boolean;
 
@@ -26,12 +23,12 @@ export class RoleEntity {
   })
   permissions: PermissionEntity[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updated_at: Date;
 
-  @DeleteDateColumn({ nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deleted_at: Date | null;
 }

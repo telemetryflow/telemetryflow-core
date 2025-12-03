@@ -16,4 +16,13 @@ export class AppController {
       },
     };
   }
+
+  @Get('version')
+  getVersion() {
+    return {
+      name: 'TelemetryFlow Core',
+      version: '1.0.0',
+      environment: process.env.NODE_ENV || 'development',
+    };
+  }
 }

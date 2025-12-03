@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "f5126b5b-ce75-4c94-83d7-055e56a28036",
+		"_postman_id": "e134a980-c3d7-48b2-b771-4f71d035f17b",
 		"name": "TelemetryFlow Core - IAM",
 		"description": "Identity and Access Management API for TelemetryFlow Core",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "260154",
-		"_collection_link": "https://aws-cb-indonesia.postman.co/workspace/TelemetryFlow-BDD~646e4376-cd09-4d4a-ad0c-4eef510baf2a/collection/260154-f5126b5b-ce75-4c94-83d7-055e56a28036?action=share&source=collection_link&creator=260154"
+		"_collection_link": "https://aws-cb-indonesia.postman.co/workspace/TelemetryFlow-BDD~646e4376-cd09-4d4a-ad0c-4eef510baf2a/collection/260154-e134a980-c3d7-48b2-b771-4f71d035f17b?action=share&source=collection_link&creator=260154"
 	},
 	"item": [
 		{
@@ -20,10 +20,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/health",
+							"raw": "http://localhost:3000/health",
+							"protocol": "http",
 							"host": [
-								"{{base_url}}"
+								"localhost"
 							],
+							"port": "3000",
 							"path": [
 								"health"
 							]
@@ -40,15 +42,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/",
+							"raw": "http://localhost:3000",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "3000",
-							"path": [
-								""
-							]
+							"port": "3000"
 						}
 					},
 					"response": []
@@ -554,7 +553,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "{{role_id}}"
 								}
 							]
 						}
@@ -772,7 +771,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "{{permission_id}}"
 								}
 							]
 						}
@@ -949,7 +948,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "{{tenant_id}}"
 								}
 							]
 						}
@@ -1024,7 +1023,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "{{workspace_id}}"
 								}
 							]
 						}
@@ -1099,7 +1098,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "{{group_id}}"
 								}
 							]
 						}

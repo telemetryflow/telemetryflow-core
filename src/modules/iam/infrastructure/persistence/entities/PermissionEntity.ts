@@ -17,12 +17,12 @@ export class PermissionEntity {
   @Column({ type: 'varchar', nullable: true })
   action: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: 'updatedAt' })
+  updatedAt: Date;
 
-  @DeleteDateColumn({ nullable: true })
-  deleted_at: Date | null;
+  @DeleteDateColumn({ name: 'deletedAt', nullable: true })
+  deletedAt: Date | null;
 }

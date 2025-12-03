@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# ClickHouse Migration Runner
-# Runs all SQL migrations in order via Docker
+# ClickHouse Seed Runner
+# Runs all SQL seed files in order via Docker
 
 set -e
 
@@ -15,18 +15,18 @@ CLICKHOUSE_DB="${CLICKHOUSE_DB:-telemetry}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "🔄 Running ClickHouse migrations..."
+echo "🌱 Running ClickHouse seeds..."
 echo "   Container: $CLICKHOUSE_CONTAINER"
 echo "   Database: $CLICKHOUSE_DB"
 echo ""
 
-for migration in "$SCRIPT_DIR"/*.sql; do
-  if [ -f "$migration" ]; then
-    filename=$(basename "$migration")
-    echo "📝 Running migration: $filename"
+for seed in "$SCRIPT_DIR"/*.sql; do
+  if [ -f "$seed" ]; then
+    filename=$(basename "$seed")
+    echo "📝 Running seed: $filename"
     
     # Substitute environment variables in SQL
-    sed "s/\${CLICKHOUSE_DB}/$CLICKHOUSE_DB/g" "$migration" | \
+    sed "s/\${CLICKHOUSE_DB}/$CLICKHOUSE_DB/g" "$seed" | \
       docker exec -i "$CLICKHOUSE_CONTAINER" clickhouse-client --multiquery
     
     echo "   ✅ $filename completed"
@@ -34,4 +34,4 @@ for migration in "$SCRIPT_DIR"/*.sql; do
   fi
 done
 
-echo "🎉 All ClickHouse migrations completed successfully!"
+echo "🎉 All ClickHouse seeds completed successfully!"

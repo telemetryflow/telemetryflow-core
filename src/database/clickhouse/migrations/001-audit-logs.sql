@@ -2,10 +2,10 @@
 -- TelemetryFlow Core - Audit Module
 
 -- Create database if not exists
-CREATE DATABASE IF NOT EXISTS telemetry;
+CREATE DATABASE IF NOT EXISTS ${CLICKHOUSE_DB};
 
 -- Use database
-USE telemetry;
+USE ${CLICKHOUSE_DB};
 
 -- Create audit_logs table
 CREATE TABLE IF NOT EXISTS audit_logs (

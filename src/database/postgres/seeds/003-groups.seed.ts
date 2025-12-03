@@ -40,9 +40,9 @@ export async function seedGroups(dataSource: DataSource): Promise<void> {
 
   for (const group of groups) {
     await dataSource.query(`
-      INSERT INTO groups (id, name, description, organization_id, "isActive")
-      VALUES ($1, $2, $3, $4, $5)
-    `, [group.id, group.name, group.description, group.organizationId, true]);
+      INSERT INTO groups (id, name, description, "organizationId", "createdAt", "updatedAt")
+      VALUES ($1, $2, $3, $4, NOW(), NOW())
+    `, [group.id, group.name, group.description, group.organizationId]);
     
     console.log(`   ✓ Created group: ${group.name}`);
   }

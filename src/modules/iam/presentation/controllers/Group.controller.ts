@@ -79,6 +79,15 @@ export class GroupController {
     return await this.commandBus.execute(command);
   }
 
+  @Get(':id/users')
+  @RequirePermissions('group:read')
+  @ApiOperation({ summary: 'Get users in group' })
+  @ApiResponse({ status: 200, type: GroupResponseDto })
+  async getUsers(@Param('id') id: string): Promise<GroupResponseDto> {
+    const query = new GetGroupQuery(id);
+    return await this.queryBus.execute(query);
+  }
+
   @Delete(':id/users/:userId')
   @RequirePermissions('group:write')
   @ApiOperation({ summary: 'Remove user from group' })

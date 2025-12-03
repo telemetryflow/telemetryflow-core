@@ -27,7 +27,6 @@ export class RoleMapper {
     entity.id = role.getId().getValue();
     entity.name = role.getName();
     entity.description = role.getDescription();
-    entity.tenant_id = role.getTenantId()?.getValue() || null;
     entity.is_system = role.getIsSystem();
     entity.created_at = role.getCreatedAt();
     entity.updated_at = role.getUpdatedAt();
