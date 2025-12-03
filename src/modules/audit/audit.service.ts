@@ -42,7 +42,9 @@ export class AuditService {
     
     this.clickhouse = createClient({
       url,
-      database: process.env.CLICKHOUSE_DB || 'telemetryflow_db',
+      database: process.env.CLICKHOUSE_DB || 'telemetry',
+      username: process.env.CLICKHOUSE_USER || 'default',
+      password: process.env.CLICKHOUSE_PASSWORD || '',
     });
   }
 
@@ -98,5 +100,75 @@ export class AuditService {
 
   async logSystem(action: string, result: AuditEventResult, options: Partial<CreateAuditLogOptions> = {}): Promise<void> {
     return this.log({ eventType: AuditEventType.SYSTEM, action, result, ...options });
+  }
+
+  async query(options: { limit?: number; offset?: number; userId?: string; action?: string }): Promise<any[]> {
+    try {
+      const { limit = 50, offset = 0, userId, action } = options;
+      let query = `SELECT * FROM audit_logs WHERE 1=1`;
+      
+      if (userId) query += ` AND user_id = '${userId}'`;
+      if (action) query += ` AND action = '${action}'`;
+      
+      query += ` ORDER BY timestamp DESC LIMIT ${limit} OFFSET ${offset}`;
+      
+      console.log('[Audit] Executing query:', query);
+      console.log('[Audit] ClickHouse database:', process.env.CLICKHOUSE_DB);
+      
+      const result = await this.clickhouse.query({ query, format: 'JSONEachRow' });
+      const data = await result.json();
+      console.log('[Audit] Query returned:', data.length, 'rows');
+      return data;
+    } catch (error) {
+      console.error('[Audit] Query error:', error);
+      this.logger.error(`[Audit] Failed to query logs: ${error.message}`, error.stack, this.context);
+      return [];
+    }
+  }
+
+  async getById(id: string): Promise<any> {
+    try {
+      const query = `SELECT * FROM audit_logs WHERE id = '${id}' LIMIT 1`;
+      const result = await this.clickhouse.query({ query, format: 'JSONEachRow' });
+      const rows = await result.json();
+      return rows[0] || null;
+    } catch (error) {
+      this.logger.error(`[Audit] Failed to get log: ${error.message}`, error.stack, this.context);
+      return null;
+    }
+  }
+
+  async count(): Promise<{ count: number }> {
+    try {
+      const query = `SELECT COUNT(*) as count FROM audit_logs`;
+      const result = await this.clickhouse.query({ query, format: 'JSONEachRow' });
+      const rows: any = await result.json();
+      return { count: rows[0]?.count || 0 };
+    } catch (error) {
+      this.logger.error(`[Audit] Failed to count logs: ${error.message}`, error.stack, this.context);
+      return { count: 0 };
+    }
+  }
+
+  async getStatistics(): Promise<any> {
+    try {
+      const query = `
+        SELECT 
+          event_type,
+          result,
+          COUNT(*) as count
+        FROM audit_logs
+        GROUP BY event_type, result
+      `;
+      const result = await this.clickhouse.query({ query, format: 'JSONEachRow' });
+      return await result.json();
+    } catch (error) {
+      this.logger.error(`[Audit] Failed to get statistics: ${error.message}`, error.stack, this.context);
+      return [];
+    }
+  }
+
+  async export(format: string): Promise<any[]> {
+    return this.query({ limit: 10000, offset: 0 });
   }
 }

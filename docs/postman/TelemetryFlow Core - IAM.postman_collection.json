@@ -1403,7 +1403,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "{{auditlog_id}}"
 								}
 							]
 						}

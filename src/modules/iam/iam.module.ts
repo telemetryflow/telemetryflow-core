@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { AuditModule } from "../audit/audit.module";
 
 import { UserEntity } from "./infrastructure/persistence/entities/User.entity";
 import { RoleEntity } from "./infrastructure/persistence/entities/RoleEntity";
@@ -92,6 +93,7 @@ const EventHandlers = [];
 @Module({
   imports: [
     CqrsModule,
+    AuditModule,
     TypeOrmModule.forFeature([
       UserEntity,
       RoleEntity,
