@@ -69,7 +69,7 @@ async function bootstrap() {
 
   const logger = app.get(LoggerService);
   app.useLogger(logger);
-  
+
   logger.log('Application started', 'Bootstrap');
 }
 ```
@@ -291,17 +291,17 @@ Winston logger is:
    ```typescript
    // ❌ Don't log passwords, tokens, etc.
    logger.log(`Password: ${password}`);
-   
+
    // ✅ Log safe information
    logger.log(`User authenticated: ${userId}`);
    ```
 
 ## Summary
 
-✅ **Winston logger is now the default** in TelemetryFlow Core
-✅ **Same implementation as platform** (without optional transports)
-✅ **Production-ready** structured logging
-✅ **Easy to extend** with more transports later
-✅ **Better debugging** with contextual logs
+- ✅ **Winston logger is now the default** in TelemetryFlow Core
+- ✅ **Same implementation as platform** (without optional transports)
+- ✅ **Production-ready** structured logging
+- ✅ **Easy to extend** with more transports later
+- ✅ **Better debugging** with contextual logs
 
 The logger is minimal but production-ready and fully compatible with the platform!

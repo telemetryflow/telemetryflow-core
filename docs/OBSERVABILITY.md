@@ -2,6 +2,55 @@
 
 TelemetryFlow Core includes built-in observability features with OpenTelemetry, Prometheus, and comprehensive logging.
 
+## Architecture Overview
+
+```mermaid
+graph TB
+    subgraph "Application"
+        App[NestJS Backend]
+        OTEL_SDK[OTEL SDK<br/>Auto-Instrumentation]
+        Winston[Winston Logger]
+    end
+
+    subgraph "Collection & Processing"
+        Collector[OTEL Collector<br/>:4318]
+        Processor[Processors<br/>Batch, Filter, Transform]
+    end
+
+    subgraph "Storage & Visualization"
+        Jaeger[Jaeger<br/>:16686<br/>Traces]
+        Prometheus[Prometheus<br/>:9090<br/>Metrics]
+        Files[Log Files<br/>logs/*.log]
+    end
+
+    subgraph "Access Points"
+        Swagger[Swagger UI<br/>:3000/api]
+        JaegerUI[Jaeger UI<br/>Trace Viewer]
+        PromUI[Prometheus UI<br/>Metrics Query]
+    end
+
+    App --> OTEL_SDK
+    App --> Winston
+
+    OTEL_SDK -->|Traces| Collector
+    OTEL_SDK -->|Metrics| Collector
+    Winston -->|Logs| Collector
+    Winston -->|Write| Files
+
+    Collector --> Processor
+    Processor -->|Export| Jaeger
+    Processor -->|Scrape :8889| Prometheus
+
+    Jaeger --> JaegerUI
+    Prometheus --> PromUI
+    App --> Swagger
+
+    style App fill:#e1f5ff
+    style Collector fill:#fff4e1
+    style Jaeger fill:#90EE90
+    style Prometheus fill:#FFD700
+```
+
 ## Features
 
 ### ✅ Swagger/OpenAPI
@@ -362,10 +411,10 @@ open http://localhost:3000/api
 
 ## Summary
 
-✅ **Swagger/OpenAPI** - Built-in, always available at `/api`
-✅ **OpenTelemetry** - Optional, enable with `OTEL_ENABLED=true`
-✅ **Winston Logging** - Always enabled, configurable levels
-✅ **Production Ready** - All features production-tested
-✅ **Easy Setup** - Minimal configuration required
+- ✅ **Swagger/OpenAPI** - Built-in, always available at `/api`
+- ✅ **OpenTelemetry** - Optional, enable with `OTEL_ENABLED=true`
+- ✅ **Winston Logging** - Always enabled, configurable levels
+- ✅ **Production Ready** - All features production-tested
+- ✅ **Easy Setup** - Minimal configuration required
 
 The observability stack is **complete** and **ready to use**! 🎉
