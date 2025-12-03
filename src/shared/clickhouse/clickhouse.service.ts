@@ -76,7 +76,7 @@ export class ClickHouseService implements OnModuleInit {
       password,
     });
 
-    this.logger.log(`[${MODULE_NAME}] ClickHouse client initialized: ${host}/${database}`);
+    this.logger.log(`ClickHouse client initialized: ${host}/${database}`);
   }
 
   getClient(): ClickHouseClient {
@@ -93,7 +93,7 @@ export class ClickHouseService implements OnModuleInit {
         format: 'JSONEachRow',
       });
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] Failed to insert log: ${error.message}`, error.stack);
+      this.logger.error(`Failed to insert log: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -108,7 +108,7 @@ export class ClickHouseService implements OnModuleInit {
         format: 'JSONEachRow',
       });
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] Failed to insert logs: ${error.message}`, error.stack);
+      this.logger.error(`Failed to insert logs: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -164,7 +164,7 @@ export class ClickHouseService implements OnModuleInit {
         format: 'JSONEachRow',
       });
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] Failed to insert metric: ${error.message}`, error.stack);
+      this.logger.error(`Failed to insert metric: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -179,7 +179,7 @@ export class ClickHouseService implements OnModuleInit {
         format: 'JSONEachRow',
       });
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] Failed to insert metrics: ${error.message}`, error.stack);
+      this.logger.error(`Failed to insert metrics: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -223,7 +223,7 @@ export class ClickHouseService implements OnModuleInit {
         format: 'JSONEachRow',
       });
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] Failed to insert trace: ${error.message}`, error.stack);
+      this.logger.error(`Failed to insert trace: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -238,7 +238,7 @@ export class ClickHouseService implements OnModuleInit {
         format: 'JSONEachRow',
       });
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] Failed to insert traces: ${error.message}`, error.stack);
+      this.logger.error(`Failed to insert traces: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -279,13 +279,13 @@ export class ClickHouseService implements OnModuleInit {
       await this.client.ping();
       return true;
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] ClickHouse ping failed: ${error.message}`);
+      this.logger.error(`ClickHouse ping failed: ${error.message}`);
       return false;
     }
   }
 
   async close(): Promise<void> {
     await this.client.close();
-    this.logger.log(`[${MODULE_NAME}] ClickHouse client closed`);
+    this.logger.log(`ClickHouse client closed`);
   }
 }

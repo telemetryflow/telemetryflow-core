@@ -8,8 +8,6 @@ import { RoleRevokedEvent } from '../../domain/events/RoleRevoked.event';
 import { CacheService } from '../../../cache/cache.service';
 import { LoggerService } from '../../../../logger/logger.service';
 
-const MODULE_NAME = 'RevokeRoleFromUser';
-
 @CommandHandler(RevokeRoleFromUserCommand)
 export class RevokeRoleFromUserHandler implements ICommandHandler<RevokeRoleFromUserCommand> {
   private readonly context = RevokeRoleFromUserHandler.name;
@@ -31,7 +29,7 @@ export class RevokeRoleFromUserHandler implements ICommandHandler<RevokeRoleFrom
     // Invalidate permission cache for this user
     await this.cacheService.del(`rbac:permissions:${command.userId}`);
     this.logger.log(
-      `[${MODULE_NAME}] ✓ Invalidated permission cache for user ${command.userId} after role revocation`,
+      `✓ Invalidated permission cache for user ${command.userId} after role revocation`,
       this.context,
     );
     this.eventBus.publish(new RoleRevokedEvent(command.userId, command.roleId));

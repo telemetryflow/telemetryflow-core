@@ -8,8 +8,6 @@ import { RoleAssignedEvent } from '../../domain/events/RoleAssigned.event';
 import { CacheService } from '../../../cache/cache.service';
 import { LoggerService } from '../../../../logger/logger.service';
 
-const MODULE_NAME = 'AssignRoleToUser';
-
 @CommandHandler(AssignRoleToUserCommand)
 export class AssignRoleToUserHandler implements ICommandHandler<AssignRoleToUserCommand> {
   private readonly context = AssignRoleToUserHandler.name;
@@ -31,7 +29,7 @@ export class AssignRoleToUserHandler implements ICommandHandler<AssignRoleToUser
     // Invalidate permission cache for this user
     await this.cacheService.del(`rbac:permissions:${command.userId}`);
     this.logger.log(
-      `[${MODULE_NAME}] ✓ Invalidated permission cache for user ${command.userId} after role assignment`,
+      `✓ Invalidated permission cache for user ${command.userId} after role assignment`,
       this.context,
     );
     this.eventBus.publish(new RoleAssignedEvent(command.userId, command.roleId));

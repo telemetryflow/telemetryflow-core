@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '../../logger/logger.service';
 import { createClient, ClickHouseClient } from '@clickhouse/client';
 
-const MODULE_NAME = 'Audit';
-
 export enum AuditEventType {
   AUTH = 'AUTH',
   AUTHZ = 'AUTHZ',
@@ -57,9 +55,9 @@ export class AuditService {
       const message = `[${options.eventType}] ${options.action}${resource} - ${options.result}`;
 
       if (logLevel === 'log') {
-        this.logger.log(`[${MODULE_NAME}] ✓ ${message}`, this.context);
+        this.logger.log(`✓ ${message}`, this.context);
       } else {
-        this.logger.warn(`[${MODULE_NAME}] ⚠ ${message}`, this.context);
+        this.logger.warn(`⚠ ${message}`, this.context);
       }
 
       // Insert to ClickHouse
@@ -87,7 +85,7 @@ export class AuditService {
         format: 'JSONEachRow',
       });
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] ✗ Failed to create audit log: ${error.message}`, error.stack, this.context);
+      this.logger.error(`✗ Failed to create audit log: ${error.message}`, error.stack, this.context);
     }
   }
 
@@ -117,16 +115,16 @@ export class AuditService {
 
       query += ` ORDER BY timestamp DESC LIMIT ${limit} OFFSET ${offset}`;
 
-      console.log('[${MODULE_NAME}] Executing query:', query);
-      console.log('[${MODULE_NAME}] ClickHouse database:', process.env.CLICKHOUSE_DB);
+      console.log('Executing query:', query);
+      console.log('ClickHouse database:', process.env.CLICKHOUSE_DB);
 
       const result = await this.clickhouse.query({ query, format: 'JSONEachRow' });
       const data = await result.json();
-      console.log('[${MODULE_NAME}] Query returned:', data.length, 'rows');
+      console.log('Query returned:', data.length, 'rows');
       return data;
     } catch (error) {
-      console.error('[${MODULE_NAME}] Query error:', error);
-      this.logger.error(`[${MODULE_NAME}] Failed to query logs: ${error.message}`, error.stack, this.context);
+      console.error('Query error:', error);
+      this.logger.error(`Failed to query logs: ${error.message}`, error.stack, this.context);
       return [];
     }
   }
@@ -138,7 +136,7 @@ export class AuditService {
       const rows = await result.json();
       return rows[0] || null;
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] Failed to get log: ${error.message}`, error.stack, this.context);
+      this.logger.error(`Failed to get log: ${error.message}`, error.stack, this.context);
       return null;
     }
   }
@@ -150,7 +148,7 @@ export class AuditService {
       const rows: any = await result.json();
       return { count: rows[0]?.count || 0 };
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] Failed to count logs: ${error.message}`, error.stack, this.context);
+      this.logger.error(`Failed to count logs: ${error.message}`, error.stack, this.context);
       return { count: 0 };
     }
   }
@@ -168,7 +166,7 @@ export class AuditService {
       const result = await this.clickhouse.query({ query, format: 'JSONEachRow' });
       return await result.json();
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] Failed to get statistics: ${error.message}`, error.stack, this.context);
+      this.logger.error(`Failed to get statistics: ${error.message}`, error.stack, this.context);
       return [];
     }
   }

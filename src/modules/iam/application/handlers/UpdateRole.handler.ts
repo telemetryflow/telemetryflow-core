@@ -7,8 +7,6 @@ import { RoleResponseDto } from '../dto/RoleResponse.dto';
 import { CacheService } from '../../../cache/cache.service';
 import { LoggerService } from '../../../../logger/logger.service';
 
-const MODULE_NAME = 'UpdateRoleHandler';
-
 @CommandHandler(UpdateRoleCommand)
 export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand> {
   private readonly context = UpdateRoleHandler.name;
@@ -30,7 +28,7 @@ export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand> {
     // This affects all users with this role
     const deletedCount = await this.cacheService.delPattern('rbac:permissions:*');
     this.logger.log(
-      `[${MODULE_NAME}] ✓ Invalidated ${deletedCount} permission cache entries after role update (role: ${command.id})`,
+      `✓ Invalidated ${deletedCount} permission cache entries after role update (role: ${command.id})`,
       this.context,
     );
     return {

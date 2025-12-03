@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '../../../../logger/logger.service';
 
-const MODULE_NAME = 'IAMEvent';
-
 export interface IAMJobData {
   eventType: string;
   entityType: 'user' | 'role' | 'permission' | 'group' | 'organization' | 'tenant' | 'workspace' | 'region';
@@ -25,10 +23,10 @@ export class IAMEventProcessor {
       // Process IAM event
       await this.processIAMEvent(eventType, entityType, entityId, tenantId, data);
 
-      this.logger.debug(`[${MODULE_NAME}] Processed IAM event: ${eventType} for ${entityType}:${entityId}`, this.context);
+      this.logger.debug(`Processed IAM event: ${eventType} for ${entityType}:${entityId}`, this.context);
 
     } catch (error) {
-      this.logger.error(`[${MODULE_NAME}] ✗ IAM event processing failed: ${error.message}`, error.stack, this.context);
+      this.logger.error(`✗ IAM event processing failed: ${error.message}`, error.stack, this.context);
       throw error;
     }
   }
@@ -55,22 +53,22 @@ export class IAMEventProcessor {
         await this.handlePermissionEvent(eventType, entityId, tenantId, data);
         break;
       default:
-        this.logger.debug(`[${MODULE_NAME}] Unhandled IAM event type: ${eventType}`, this.context);
+        this.logger.debug(`Unhandled IAM event type: ${eventType}`, this.context);
     }
   }
 
   private async handleUserEvent(eventType: string, userId: string, tenantId: string, data: any): Promise<void> {
     // Handle user-specific processing
-    this.logger.debug(`[${MODULE_NAME}] Processing user event: ${eventType} for user ${userId}`, this.context);
+    this.logger.debug(`Processing user event: ${eventType} for user ${userId}`, this.context);
   }
 
   private async handleRoleEvent(eventType: string, roleId: string, tenantId: string, data: any): Promise<void> {
     // Handle role-specific processing
-    this.logger.debug(`[${MODULE_NAME}] Processing role event: ${eventType} for role ${roleId}`, this.context);
+    this.logger.debug(`Processing role event: ${eventType} for role ${roleId}`, this.context);
   }
 
   private async handlePermissionEvent(eventType: string, permissionId: string, tenantId: string, data: any): Promise<void> {
     // Handle permission-specific processing
-    this.logger.debug(`[${MODULE_NAME}] Processing permission event: ${eventType} for permission ${permissionId}`, this.context);
+    this.logger.debug(`Processing permission event: ${eventType} for permission ${permissionId}`, this.context);
   }
 }
