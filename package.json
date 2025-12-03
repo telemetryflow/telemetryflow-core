@@ -11,9 +11,11 @@
     "test": "jest",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "db:seed": "ts-node src/database/postgres/seeds/run-seeds.ts",
-    "db:seed:iam": "ts-node src/database/postgres/seeds/run-seeds.ts",
+    "db:seed:iam": "node dist/database/postgres/seeds/run-seeds.js || ts-node src/database/postgres/seeds/run-seeds.ts",
+    "db:migrate": "ts-node scripts/run-migration.ts",
     "db:migrate:clickhouse": "bash src/database/clickhouse/migrations/run-migrations.sh",
     "db:generate-sample": "bash scripts/generate-sample-data.sh",
+    "db:reset": "ts-node scripts/reset-database.ts",
     "bootstrap": "bash scripts/bootstrap.sh",
     "generate:secrets": "node scripts/generate-secrets.js",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/database/typeorm.config.ts",
@@ -21,6 +23,7 @@
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/typeorm.config.ts"
   },
   "dependencies": {
+    "@clickhouse/client": "^1.14.0",
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.1.9",
     "@nestjs/config": "^4.0.2",
@@ -59,7 +62,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "typeorm": "^0.3.27",
-    "uuid": "^13.0.0",
+    "uuid": "^9.0.1",
     "winston": "^3.18.3",
     "winston-transport": "^4.9.0"
   },

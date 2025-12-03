@@ -36,6 +36,20 @@ export class Workspace {
     return workspace;
   }
 
+  static reconstitute(
+    id: WorkspaceId,
+    name: string,
+    code: string,
+    organizationId: OrganizationId,
+    description?: string,
+    datasourceConfig?: Record<string, any>,
+    isActive: boolean = true,
+    createdAt: Date = new Date(),
+    updatedAt: Date = new Date(),
+  ): Workspace {
+    return new Workspace(id, name, code, organizationId, description, datasourceConfig, isActive, createdAt, updatedAt);
+  }
+
   update(name?: string, description?: string, datasourceConfig?: Record<string, any>): void {
     if (name) this.name = name;
     if (description !== undefined) this.description = description;

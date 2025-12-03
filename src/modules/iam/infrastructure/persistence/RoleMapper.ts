@@ -5,9 +5,9 @@ import { TenantId } from '../../domain/value-objects/TenantId';
 import { RoleEntity } from './entities/RoleEntity';
 
 export class RoleMapper {
-  static toDomain(entity: RoleEntity): Role {
-    const permissionIds = entity.permissions?.map(p => PermissionId.create(p.id)) || [];
-    const tenantId = entity.tenantId ? TenantId.create(entity.tenantId) : null;
+  static toDomain(entity: any): Role {
+    const permissionIds = (entity.permissions || []).map(p => PermissionId.create(p.id));
+    const tenantId = entity.tenant_id ? TenantId.create(entity.tenant_id) : null;
 
     return Role.reconstitute(
       RoleId.create(entity.id),
@@ -15,10 +15,10 @@ export class RoleMapper {
       entity.description,
       permissionIds,
       tenantId,
-      entity.isSystem,
-      entity.createdAt,
-      entity.updatedAt,
-      entity.deletedAt,
+      entity.is_system ?? false,
+      entity.created_at || new Date(),
+      entity.updated_at || new Date(),
+      entity.deleted_at || null,
     );
   }
 
@@ -27,11 +27,11 @@ export class RoleMapper {
     entity.id = role.getId().getValue();
     entity.name = role.getName();
     entity.description = role.getDescription();
-    entity.tenantId = role.getTenantId()?.getValue() || null;
-    entity.isSystem = role.getIsSystem();
-    entity.createdAt = role.getCreatedAt();
-    entity.updatedAt = role.getUpdatedAt();
-    entity.deletedAt = role.getDeletedAt();
+    entity.tenant_id = role.getTenantId()?.getValue() || null;
+    entity.is_system = role.getIsSystem();
+    entity.created_at = role.getCreatedAt();
+    entity.updated_at = role.getUpdatedAt();
+    entity.deleted_at = role.getDeletedAt();
     return entity;
   }
 }

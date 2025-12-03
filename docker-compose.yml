@@ -66,8 +66,8 @@ services:
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-telemetryflow_core}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-telemetryflow123}
+      - POSTGRES_DB=${POSTGRES_DB:-telemetryflow_db}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - vol_postgres_data:/var/lib/postgresql/data
@@ -102,16 +102,16 @@ services:
       # PostgreSQL
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=${POSTGRES_DB:-telemetryflow_core}
+      - POSTGRES_DB=${POSTGRES_DB:-telemetryflow_db}
       - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-telemetryflow123}
 
       # ClickHouse
       - CLICKHOUSE_HOST=clickhouse
       - CLICKHOUSE_PORT=8123
-      - CLICKHOUSE_DATABASE=${CLICKHOUSE_DB:-telemetry}
+      - CLICKHOUSE_DATABASE=${CLICKHOUSE_DB:-telemetryflow_db}
       - CLICKHOUSE_USERNAME=${CLICKHOUSE_USER:-default}
-      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-telemetryflow123}
 
       # JWT
       - JWT_SECRET=${JWT_SECRET}
@@ -157,12 +157,13 @@ services:
       - "${PORT_CLICKHOUSE_METRICS:-9363}:9363" # Prometheus metrics
     environment:
       - TZ=${TZ:-UTC}
-      - CLICKHOUSE_DB=${CLICKHOUSE_DB:-telemetry}
+      - CLICKHOUSE_DB=${CLICKHOUSE_DB:-telemetryflow_db}
       - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
-      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-telemetryflow123}
     volumes:
       - vol_clickhouse_data:/var/lib/clickhouse
       - vol_clickhouse_logs:/var/log/clickhouse-server
+      - ./config/clickhouse/config.d:/etc/clickhouse-server/config.d
     networks:
       telemetryflow_core_net:
         ipv4_address: ${CONTAINER_IP_CLICKHOUSE:-172.151.151.40}
@@ -248,4 +249,3 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-

@@ -59,7 +59,7 @@ PORT=3000
 # PostgreSQL
 POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
-POSTGRES_DB=telemetryflow_core
+POSTGRES_DB=telemetryflow_db
 POSTGRES_USERNAME=postgres
 POSTGRES_PASSWORD=your-secure-password
 
@@ -127,7 +127,7 @@ docker-compose restart backend
 docker-compose exec backend sh
 
 # PostgreSQL shell
-docker-compose exec postgres psql -U postgres -d telemetryflow_core
+docker-compose exec postgres psql -U postgres -d telemetryflow_db
 
 # Run seed
 docker-compose exec backend pnpm run db:seed:iam
@@ -316,7 +316,7 @@ docker-compose ps postgres
 docker-compose logs postgres
 
 # Test connection
-docker-compose exec postgres psql -U postgres -d telemetryflow_core -c "SELECT 1"
+docker-compose exec postgres psql -U postgres -d telemetryflow_db -c "SELECT 1"
 ```
 
 ### Port Already in Use
@@ -350,12 +350,12 @@ docker-compose up -d
 
 ### Backup Database
 ```bash
-docker-compose exec postgres pg_dump -U postgres telemetryflow_core > backup.sql
+docker-compose exec postgres pg_dump -U postgres telemetryflow_db > backup.sql
 ```
 
 ### Restore Database
 ```bash
-cat backup.sql | docker-compose exec -T postgres psql -U postgres telemetryflow_core
+cat backup.sql | docker-compose exec -T postgres psql -U postgres telemetryflow_db
 ```
 
 ## CI/CD Integration

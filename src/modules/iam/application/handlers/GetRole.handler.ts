@@ -2,6 +2,7 @@ import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { GetRoleQuery } from '../queries/GetRole.query';
 import { IRoleRepository } from '../../domain/repositories/IRoleRepository';
+import { IPermissionRepository } from '../../domain/repositories/IPermissionRepository';
 import { RoleId } from '../../domain/value-objects/RoleId';
 import { RoleResponseDto } from '../dto/RoleResponse.dto';
 
@@ -10,6 +11,8 @@ export class GetRoleHandler implements IQueryHandler<GetRoleQuery> {
   constructor(
     @Inject('IRoleRepository')
     private readonly roleRepository: IRoleRepository,
+    @Inject('IPermissionRepository')
+    private readonly permissionRepository: IPermissionRepository,
   ) {}
 
   async execute(query: GetRoleQuery): Promise<RoleResponseDto> {
@@ -20,11 +23,19 @@ export class GetRoleHandler implements IQueryHandler<GetRoleQuery> {
       throw new NotFoundException('Role not found');
     }
 
+    const permissionIds = role.getPermissions();
+    const permissions = await Promise.all(
+      permissionIds.map(async (pid) => {
+        const perm = await this.permissionRepository.findById(pid);
+        return perm?.getName() || '';
+      })
+    );
+
     return {
       id: role.getId().getValue(),
       name: role.getName(),
       description: role.getDescription(),
-      permissions: role.getPermissions().map(p => p.getValue()),
+      permissions: permissions.filter(p => p),
       tenantId: role.getTenantId()?.getValue(),
       isSystem: role.getIsSystem(),
       createdAt: role.getCreatedAt(),

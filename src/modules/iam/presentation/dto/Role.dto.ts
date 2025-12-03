@@ -39,10 +39,10 @@ export class ListRolesDto {
   @IsOptional()
   tenantId?: string;
 
-  @ApiPropertyOptional({ example: false })
+  @ApiPropertyOptional({ example: true, default: true })
   @IsBoolean()
   @IsOptional()
-  includeSystem?: boolean;
+  includeSystem?: boolean = true;
 }
 
 export class AssignPermissionDto {

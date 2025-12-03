@@ -13,6 +13,7 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
+  app.setGlobalPrefix('api/v2', { exclude: ['', 'health', 'metrics', 'version'] });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.enableCors();
 

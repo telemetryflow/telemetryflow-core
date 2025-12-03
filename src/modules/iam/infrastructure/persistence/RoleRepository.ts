@@ -34,9 +34,18 @@ export class RoleRepository implements IRoleRepository {
   async findById(id: RoleId): Promise<Role | null> {
     const entity = await this.roleRepo.findOne({
       where: { id: id.getValue() },
-      relations: ['permissions'],
     });
-    return entity ? RoleMapper.toDomain(entity) : null;
+    
+    if (!entity) return null;
+    
+    // Manually load permissions
+    const rolePermissions = await this.roleRepo.query(
+      'SELECT p.* FROM permissions p INNER JOIN role_permissions rp ON p.id = rp.permission_id WHERE rp.role_id = $1',
+      [entity.id]
+    );
+    entity.permissions = rolePermissions;
+    
+    return RoleMapper.toDomain(entity);
   }
 
   async findByName(name: string, tenantId?: TenantId): Promise<Role | null> {
@@ -47,24 +56,33 @@ export class RoleRepository implements IRoleRepository {
     
     const entity = await this.roleRepo.findOne({
       where,
-      relations: ['permissions'],
     });
     return entity ? RoleMapper.toDomain(entity) : null;
   }
 
   async findAll(tenantId?: TenantId, includeSystem = false): Promise<Role[]> {
-    const where: any = {};
+    let query = 'SELECT * FROM roles WHERE 1=1';
+    const params: any[] = [];
+    
     if (tenantId) {
-      where.tenantId = tenantId.getValue();
+      params.push(tenantId.getValue());
+      query += ` AND tenant_id = $${params.length}`;
     }
     if (!includeSystem) {
-      where.isSystem = false;
+      query += ' AND is_system = FALSE';
     }
 
-    const entities = await this.roleRepo.find({
-      where,
-      relations: ['permissions'],
-    });
+    const entities = await this.roleRepo.query(query, params);
+    
+    // Manually load permissions for each role
+    for (const entity of entities) {
+      const rolePermissions = await this.roleRepo.query(
+        'SELECT p.* FROM permissions p INNER JOIN role_permissions rp ON p.id = rp.permission_id WHERE rp.role_id = $1',
+        [entity.id]
+      );
+      entity.permissions = rolePermissions;
+    }
+    
     return entities.map(e => RoleMapper.toDomain(e));
   }
 

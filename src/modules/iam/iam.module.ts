@@ -3,7 +3,7 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserEntity } from "./infrastructure/persistence/entities/User.entity";
-import { RoleEntity } from "./infrastructure/persistence/entities/Role.entity";
+import { RoleEntity } from "./infrastructure/persistence/entities/RoleEntity";
 import { TenantEntity } from "./infrastructure/persistence/entities/Tenant.entity";
 import { UserRoleEntity } from "./infrastructure/persistence/entities/UserRole.entity";
 import { PermissionEntity } from "./infrastructure/persistence/entities/PermissionEntity";
@@ -31,6 +31,21 @@ import { GetUserHandler } from "./application/handlers/GetUser.handler";
 import { ListUsersHandler } from "./application/handlers/ListUsers.handler";
 import { GetOrganizationHandler } from "./application/handlers/GetOrganization.handler";
 import { ListOrganizationsHandler } from "./application/handlers/ListOrganizations.handler";
+import { GetRegionHandler } from "./application/handlers/GetRegion.handler";
+import { ListRegionsHandler } from "./application/handlers/ListRegions.handler";
+import { GetRoleHandler } from "./application/handlers/GetRole.handler";
+import { ListRolesHandler } from "./application/handlers/ListRoles.handler";
+import { GetPermissionHandler } from "./application/handlers/GetPermission.handler";
+import { ListPermissionsHandler } from "./application/handlers/ListPermissions.handler";
+import { GetTenantHandler } from "./application/handlers/GetTenant.handler";
+import { ListTenantsHandler } from "./application/handlers/ListTenants.handler";
+import { GetWorkspaceHandler } from "./application/handlers/GetWorkspace.handler";
+import { ListWorkspacesHandler } from "./application/handlers/ListWorkspaces.handler";
+import { GetGroupHandler } from "./application/handlers/GetGroup.handler";
+import { ListGroupsHandler } from "./application/handlers/ListGroups.handler";
+import { GetUserRolesHandler } from "./application/handlers/GetUserRoles.handler";
+import { GetUserPermissionsHandler } from "./application/handlers/GetUserPermissions.handler";
+import { GetRoleUsersHandler } from "./application/handlers/GetRoleUsers.handler";
 import { UserController } from "./presentation/controllers/User.controller";
 import { RoleController } from "./presentation/controllers/Role.controller";
 import { TenantController } from "./presentation/controllers/Tenant.controller";
@@ -54,7 +69,22 @@ const QueryHandlers = [
   GetUserHandler,
   ListUsersHandler,
   GetOrganizationHandler,
-  ListOrganizationsHandler
+  ListOrganizationsHandler,
+  GetRegionHandler,
+  ListRegionsHandler,
+  GetRoleHandler,
+  ListRolesHandler,
+  GetPermissionHandler,
+  ListPermissionsHandler,
+  GetTenantHandler,
+  ListTenantsHandler,
+  GetWorkspaceHandler,
+  ListWorkspacesHandler,
+  GetGroupHandler,
+  ListGroupsHandler,
+  GetUserRolesHandler,
+  GetUserPermissionsHandler,
+  GetRoleUsersHandler,
 ];
 
 const EventHandlers = [];

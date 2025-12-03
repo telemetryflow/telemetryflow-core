@@ -5,12 +5,16 @@ import { OrganizationId } from '../../domain/value-objects/OrganizationId';
 
 export class WorkspaceMapper {
   static toDomain(entity: WorkspaceEntity): Workspace {
-    return Workspace.create(
+    return Workspace.reconstitute(
+      WorkspaceId.create(entity.workspace_id),
       entity.name,
       entity.code,
       OrganizationId.create(entity.organization_id),
       entity.description,
       entity.datasource_config,
+      entity.isActive,
+      entity.createdAt,
+      entity.updatedAt,
     );
   }
 

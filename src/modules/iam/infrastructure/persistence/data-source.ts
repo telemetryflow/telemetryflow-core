@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { UserEntity } from './entities/User.entity';
-import { RoleEntity } from './entities/Role.entity';
+import { RoleEntity } from './entities/RoleEntity';
 import { TenantEntity } from './entities/Tenant.entity';
 import { OrganizationEntity } from './entities/Organization.entity';
 import { WorkspaceEntity } from './entities/Workspace.entity';

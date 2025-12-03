@@ -12,11 +12,11 @@ export class RoleEntity {
   @Column({ type: 'varchar', nullable: true })
   description: string;
 
-  @Column({ type: 'uuid', nullable: true, name: 'tenant_id' })
-  tenantId: string | null;
+  @Column({ type: 'uuid', nullable: true })
+  tenant_id: string | null;
 
-  @Column({ type: 'boolean', default: false, name: 'isSystem' })
-  isSystem: boolean;
+  @Column({ type: 'boolean', default: false })
+  is_system: boolean;
 
   @ManyToMany(() => PermissionEntity)
   @JoinTable({
@@ -26,12 +26,12 @@ export class RoleEntity {
   })
   permissions: PermissionEntity[];
 
-  @CreateDateColumn({ name: 'createdAt' })
-  createdAt: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
-  @UpdateDateColumn({ name: 'updatedAt' })
-  updatedAt: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 
-  @DeleteDateColumn({ name: 'deletedAt', nullable: true })
-  deletedAt: Date | null;
+  @DeleteDateColumn({ nullable: true })
+  deleted_at: Date | null;
 }

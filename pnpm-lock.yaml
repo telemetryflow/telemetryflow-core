@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@clickhouse/client':
+    specifier: ^1.14.0
+    version: 1.14.0
   '@nestjs/bullmq':
     specifier: ^11.0.4
     version: 11.0.4(@nestjs/common@11.1.9)(@nestjs/core@11.1.9)(bullmq@5.65.1)
@@ -120,8 +123,8 @@ dependencies:
     specifier: ^0.3.27
     version: 0.3.27(pg@8.16.3)(reflect-metadata@0.2.2)(ts-node@10.9.2)
   uuid:
-    specifier: ^13.0.0
-    version: 13.0.0
+    specifier: ^9.0.1
+    version: 9.0.1
   winston:
     specifier: ^3.18.3
     version: 3.18.3
@@ -574,6 +577,17 @@ packages:
 
   /@borewit/text-codec@0.1.1:
     resolution: {integrity: sha512-5L/uBxmjaCIX5h8Z+uu+kA9BQLkc/Wl06UGR5ajNRxu+/XjonB5i8JpgFMrPj3LXTCPA0pv8yxUvbUi+QthGGA==}
+
+  /@clickhouse/client-common@1.14.0:
+    resolution: {integrity: sha512-CyUcv2iCkZ1A++vmOSufYRpHR3aAWVfbrWed7ATzf0yyx/BW/2SEqlL07vBpSRa3BIkQe/DSOHVv8JkWZpUOwQ==}
+    dev: false
+
+  /@clickhouse/client@1.14.0:
+    resolution: {integrity: sha512-co2spjR7wZoZ3Ck0H/jv76bpiuO3oJHtOmq9/gxFiod2DcT9NFg01u/hXcG8MJFnEJuMB6e3vGqS6IOnLwHqRw==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@clickhouse/client-common': 1.14.0
+    dev: false
 
   /@colors/colors@1.5.0:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -7320,11 +7334,6 @@ packages:
 
   /uuid@11.1.0:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
-    hasBin: true
-    dev: false
-
-  /uuid@13.0.0:
-    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
     hasBin: true
     dev: false
 

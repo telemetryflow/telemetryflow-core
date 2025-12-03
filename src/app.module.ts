@@ -7,6 +7,8 @@ import { HttpLoggingInterceptor } from './logger/http-logging.interceptor';
 import { HealthModule } from './health/health.module';
 import { IAMModule } from './modules/iam/iam.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { AuditInterceptor } from './modules/audit/audit.interceptor';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -21,15 +23,20 @@ import { AuditModule } from './modules/audit/audit.module';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV === 'development',
+      synchronize: false,
     }),
     IAMModule,
     AuditModule,
   ],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_INTERCEPTOR,
       useClass: HttpLoggingInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditInterceptor,
     },
   ],
 })

@@ -255,11 +255,11 @@ curl http://localhost:3000/api
 
 ### Services
 
-- **PostgreSQL**: 172.151.150.20:5432
-- **ClickHouse**: 172.151.150.40:8123/9000
-- **Backend**: 172.151.150.10:3000
-- **OTEL Collector**: 172.151.150.30:4317/4318
-- **Prometheus**: 172.151.150.50:9090
+- **PostgreSQL**: 172.151.151.20:5432
+- **ClickHouse**: 172.151.151.40:8123/9000
+- **Backend**: 172.151.151.10:3000
+- **OTEL Collector**: 172.151.151.30:4317/4318
+- **Prometheus**: 172.151.151.50:9090
 
 ## Database Schema
 
@@ -303,9 +303,9 @@ PORT=3000
 # PostgreSQL
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
-POSTGRES_DB=telemetryflow_core
+POSTGRES_DB=telemetryflow_db
 POSTGRES_USERNAME=postgres
-POSTGRES_PASSWORD=postgres
+POSTGRES_PASSWORD=telemetryflow123
 
 # JWT & Session
 JWT_SECRET=your-secret-key-min-32-chars

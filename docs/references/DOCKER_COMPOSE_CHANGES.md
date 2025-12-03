@@ -16,8 +16,8 @@ services:
     container_name: telemetryflow-core-db
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: telemetryflow_core
+      POSTGRES_PASSWORD: telemetryflow123
+      POSTGRES_DB: telemetryflow_db
     ports:
       - "5432:5432"
     volumes:
@@ -62,8 +62,8 @@ services:
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-telemetryflow_core}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-telemetryflow123}
+      - POSTGRES_DB=${POSTGRES_DB:-telemetryflow_db}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - vol_postgres_data:/var/lib/postgresql/data
@@ -71,7 +71,7 @@ services:
       telemetryflow_core_net:
         ipv4_address: ${CONTAINER_IP_POSTGRES:-172.151.151.20}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME:-postgres} -d ${POSTGRES_DB:-telemetryflow_core}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME:-postgres} -d ${POSTGRES_DB:-telemetryflow_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
