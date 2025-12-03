@@ -1,20 +1,43 @@
 # TelemetryFlow Core - Postman Collection
 
-Complete API testing collection for TelemetryFlow Core IAM module.
+Complete API testing collection for TelemetryFlow Core IAM module with BDD test scenarios.
 
 ## Quick Start
 
+### Manual Testing (Postman UI)
+
 1. **Import Collection**
    - Open Postman
-   - Click "Import" → Select `TelemetryFlow-Core.postman_collection.json`
+   - Click "Import" → Select `TelemetryFlow Core - IAM.postman_collection.json`
 
 2. **Import Environment**
-   - Click "Import" → Select `TelemetryFlow-Core.postman_environment.json`
+   - Click "Import" → Select `TelemetryFlow Core - Local.postman_environment.json`
    - Select "TelemetryFlow Core - Local" environment from dropdown
 
 3. **Start Testing**
    - All requests use `{{base_url}}` = `http://localhost:3000/api/v2`
    - Default credentials are pre-configured
+
+### Automated BDD Testing (Newman CLI)
+
+```bash
+# Install Newman
+npm install -g newman newman-reporter-htmlextra
+
+# Run all BDD tests
+bash docs/postman/run-bdd-tests.sh
+
+# Run specific folder
+bash docs/postman/run-bdd-tests.sh --folder Users
+
+# Run with verbose output
+bash docs/postman/run-bdd-tests.sh --verbose
+
+# Stop on first failure
+bash docs/postman/run-bdd-tests.sh --bail
+```
+
+See [BDD_TESTS.md](./BDD_TESTS.md) for complete BDD test scenarios.
 
 ## Environment Variables
 
@@ -225,9 +248,59 @@ All endpoints use the base URL: `http://localhost:3000/api/v2`
 - ✅ Added Audit endpoints (5 requests)
 - ✅ Request examples use environment variables
 - ✅ Query parameters with optional filters
+- ✅ **BDD test automation with Newman**
+- ✅ **33 BDD test scenarios with Given-When-Then format**
+- ✅ **HTML and JSON test reports**
+
+## BDD Testing
+
+### Run BDD Tests
+
+```bash
+# All tests
+bash docs/postman/run-bdd-tests.sh
+
+# Specific folder
+bash docs/postman/run-bdd-tests.sh --folder Users
+bash docs/postman/run-bdd-tests.sh --folder Roles
+bash docs/postman/run-bdd-tests.sh --folder Organizations
+
+# With options
+bash docs/postman/run-bdd-tests.sh --verbose --bail
+```
+
+### Test Reports
+
+Reports are generated in `docs/postman/reports/`:
+- **HTML**: Interactive dashboard with test results
+- **JSON**: Machine-readable format for CI/CD
+
+```bash
+# View latest HTML report
+open docs/postman/reports/report-*.html
+```
+
+### BDD Test Coverage
+
+| Module         | Scenarios | Coverage |
+|----------------|-----------|----------|
+| Health         | 2         | 100%     |
+| Users          | 7         | 100%     |
+| Roles          | 5         | 100%     |
+| Permissions    | 2         | 100%     |
+| Organizations  | 3         | 100%     |
+| Tenants        | 2         | 100%     |
+| Workspaces     | 2         | 100%     |
+| Groups         | 4         | 100%     |
+| Regions        | 2         | 100%     |
+| Audit          | 4         | 100%     |
+| **Total**      | **33**    | **100%** |
+
+See [BDD_TESTS.md](./BDD_TESTS.md) for complete test scenarios.
 
 ---
 
-**Total Requests**: 54
-**Swagger Coverage**: 100%
-**Last Updated**: 2025-12-03
+- **Total Requests**: 54
+- **BDD Scenarios**: 33
+- **Swagger Coverage**: 100%
+- **Last Updated**: 2025-12-03

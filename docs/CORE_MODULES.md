@@ -485,8 +485,8 @@ gantt
     section Data Lifecycle
     Active Data (0-30 days)     :active, 2025-11-01, 30d
     Recent Data (31-60 days)    :2025-11-31, 30d
-    Old Data (61-90 days)       :2025-03-02, 30d
-    Auto-Delete (>90 days)      :crit, 2025-04-01, 1d
+    Old Data (61-90 days)       :2026-01-02, 30d
+    Auto-Delete (>90 days)      :crit, 2026-04-01, 1d
 ```
 
 ---
