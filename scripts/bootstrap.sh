@@ -87,6 +87,7 @@ SKIP_MIGRATION=false
 SKIP_SEED=false
 RUN_DEV=false
 RUN_PROD=false
+DOCKER_PROFILE="all"
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -114,6 +115,10 @@ while [[ $# -gt 0 ]]; do
       RUN_PROD=true
       shift
       ;;
+    --profile)
+      DOCKER_PROFILE="$2"
+      shift 2
+      ;;
     --help)
       echo "TelemetryFlow Core Bootstrap Script"
       echo ""
@@ -126,12 +131,21 @@ while [[ $# -gt 0 ]]; do
       echo "  --skip-seed        Skip database seeding"
       echo "  --dev              Start application in development mode after setup"
       echo "  --prod             Start application in production mode after setup"
+      echo "  --profile PROFILE  Docker profile: core, monitoring, tools, all (default: all)"
       echo "  --help             Show this help message"
       echo ""
+      echo "Docker Profiles:"
+      echo "  core               Backend, PostgreSQL, ClickHouse"
+      echo "  monitoring         OTEL, Jaeger, Prometheus, Grafana"
+      echo "  tools              Portainer"
+      echo "  all                Everything (default)"
+      echo ""
       echo "Examples:"
-      echo "  $0                 # Full bootstrap"
-      echo "  $0 --dev           # Bootstrap and run in dev mode"
-      echo "  $0 --skip-seed     # Skip seed, useful for existing data"
+      echo "  $0                          # Full bootstrap (all services)"
+      echo "  $0 --dev                    # Bootstrap and run in dev mode"
+      echo "  $0 --profile core           # Core services only"
+      echo "  $0 --profile core --dev     # Core + dev mode"
+      echo "  $0 --skip-seed              # Skip seed, useful for existing data"
       exit 0
       ;;
     *)
@@ -203,8 +217,8 @@ if [ "$SKIP_DOCKER" = false ]; then
   echo -e "${BLUE}🐳 Step 2: Starting Docker Containers${NC}"
   echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-  echo -e "${BLUE}Starting Docker containers...${NC}"
-  docker-compose up -d
+  echo -e "${BLUE}Starting Docker containers (profile: ${YELLOW}${DOCKER_PROFILE}${BLUE})...${NC}"
+  docker-compose --profile "$DOCKER_PROFILE" up -d
 
   echo -e "\n${BLUE}Waiting for services to be ready...${NC}"
 
@@ -303,6 +317,18 @@ echo -e "\n${YELLOW}Access the application:${NC}"
 echo -e "  ${CYAN}API Documentation:${NC} http://localhost:${PORT}/api"
 echo -e "  ${CYAN}Health Check:${NC}      http://localhost:${PORT}/health"
 echo -e "  ${CYAN}Metrics:${NC}           http://localhost:${PORT}/metrics"
+
+if [[ "$DOCKER_PROFILE" == "all" || "$DOCKER_PROFILE" == "monitoring" ]]; then
+  echo -e "\n${YELLOW}Monitoring & Observability:${NC}"
+  echo -e "  ${CYAN}Grafana (SPM):${NC}     http://localhost:3001 (admin/admin)"
+  echo -e "  ${CYAN}Jaeger (Traces):${NC}   http://localhost:16686"
+  echo -e "  ${CYAN}Prometheus:${NC}        http://localhost:9090"
+fi
+
+if [[ "$DOCKER_PROFILE" == "all" || "$DOCKER_PROFILE" == "tools" ]]; then
+  echo -e "\n${YELLOW}Management Tools:${NC}"
+  echo -e "  ${CYAN}Portainer:${NC}         http://localhost:9100"
+fi
 
 echo -e "\n${YELLOW}IAM Endpoints:${NC}"
 echo -e "  ${CYAN}Users:${NC}             http://localhost:${PORT}/api/v2/users"

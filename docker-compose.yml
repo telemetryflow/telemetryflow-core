@@ -42,6 +42,7 @@ volumes:
       type: none
       o: bind
       device: /opt/data/docker/telemetryflow-core/prometheus
+  vol_grafana_data:
   vol_portainer:
     driver: local
     driver_opts:
@@ -57,6 +58,7 @@ services:
   # POSTGRESQL - IAM Data Storage
   #----------------------------------------------------------------------------------------------
   postgres:
+    profiles: ["core", "all"]
     platform: linux/amd64
     image: postgres:${POSTGRES_VERSION:-16-alpine}
     container_name: ${CONTAINER_POSTGRES:-telemetryflow_core_postgres}
@@ -86,6 +88,7 @@ services:
   # BACKEND - NestJS API
   #----------------------------------------------------------------------------------------------
   backend:
+    profiles: ["core", "all"]
     platform: linux/amd64
     build:
       context: .
@@ -153,6 +156,7 @@ services:
   # CLICKHOUSE - Audit Log Storage
   #----------------------------------------------------------------------------------------------
   clickhouse:
+    profiles: ["core", "all"]
     platform: linux/amd64
     image: clickhouse/clickhouse-server:${CLICKHOUSE_VERSION:-latest}
     container_name: ${CONTAINER_CLICKHOUSE:-telemetryflow_core_clickhouse}
@@ -184,13 +188,14 @@ services:
   # OTEL COLLECTOR - OpenTelemetry Collector
   #----------------------------------------------------------------------------------------------
   otel-collector:
+    profiles: ["monitoring", "all"]
     platform: linux/amd64
     image: otel/opentelemetry-collector-contrib:${OTEL_VERSION:-latest}
     container_name: ${CONTAINER_OTEL:-telemetryflow_core_otel}
     restart: unless-stopped
     command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
-      - ./config/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+      - ./config/otel/otel-collector-config-spm.yaml:/etc/otel-collector-config.yaml:ro
     ports:
       - "${PORT_OTEL_GRPC:-4317}:4317"     # OTLP gRPC
       - "${PORT_OTEL_HTTP:-4318}:4318"     # OTLP HTTP
@@ -202,21 +207,25 @@ services:
         ipv4_address: ${CONTAINER_IP_OTEL:-172.151.151.30}
 
   #----------------------------------------------------------------------------------------------
-  # JAEGER - Distributed Tracing UI
+  # JAEGER V2 - Distributed Tracing UI (OpenTelemetry-based)
   #----------------------------------------------------------------------------------------------
   jaeger:
+    profiles: ["monitoring", "all"]
     platform: linux/amd64
-    image: jaegertracing/all-in-one:${JAEGER_VERSION:-latest}
+    image: jaegertracing/jaeger:${JAEGER_VERSION:-2.2.0}
     container_name: ${CONTAINER_JAEGER:-telemetryflow_core_jaeger}
     restart: unless-stopped
     ports:
-      - "${PORT_JAEGER_UI:-16686}:16686"        # Jaeger UI
-      - "${PORT_JAEGER_COLLECTOR:-14268}:14268" # Jaeger collector HTTP
-    # Note: Ports 4317 (OTLP gRPC) and 4318 (OTLP HTTP) are exposed internally for otel-collector
-    # They don't need host port mapping since communication is within Docker network
+      - "${PORT_JAEGER_UI:-16686}:16686"   # Jaeger UI
     environment:
-      - COLLECTOR_OTLP_ENABLED=true
-      - LOG_LEVEL=info
+      - SPAN_STORAGE_TYPE=memory
+      - METRICS_STORAGE_TYPE=prometheus
+      - PROMETHEUS_SERVER_URL=http://prometheus:9090
+      - PROMETHEUS_QUERY_SUPPORT_SPANMETRICS_CONNECTOR=true
+      - PROMETHEUS_QUERY_NAMESPACE=telemetryflow_core
+      - PROMETHEUS_QUERY_DURATION_UNIT=ms
+      - PROMETHEUS_QUERY_NORMALIZE_CALLS=true
+      - PROMETHEUS_QUERY_NORMALIZE_DURATION=true
     networks:
       telemetryflow_core_net:
         ipv4_address: ${CONTAINER_IP_JAEGER:-172.151.151.60}
@@ -226,11 +235,14 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    depends_on:
+      - prometheus
 
   #----------------------------------------------------------------------------------------------
   # PROMETHEUS - Metrics Collection
   #----------------------------------------------------------------------------------------------
   prometheus:
+    profiles: ["monitoring", "all"]
     platform: linux/amd64
     image: prom/prometheus:${PROMETHEUS_VERSION:-latest}
     container_name: ${CONTAINER_PROMETHEUS:-telemetryflow_core_prometheus}
@@ -258,9 +270,40 @@ services:
       start_period: 10s
 
   #----------------------------------------------------------------------------------------------
+  # GRAFANA - Metrics Visualization & SPM Dashboards
+  #----------------------------------------------------------------------------------------------
+  grafana:
+    profiles: ["monitoring", "all"]
+    platform: linux/amd64
+    image: grafana/grafana:${GRAFANA_VERSION:-latest}
+    container_name: ${CONTAINER_GRAFANA:-telemetryflow_core_grafana}
+    restart: unless-stopped
+    ports:
+      - "${PORT_GRAFANA:-3001}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
+    volumes:
+      - vol_grafana_data:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_GRAFANA:-172.151.151.70}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      - prometheus
+
+  #----------------------------------------------------------------------------------------------
   # PORTAINER - Docker Container Management UI
   #----------------------------------------------------------------------------------------------
   portainer:
+    profiles: ["tools", "all"]
     platform: linux/amd64
     image: portainer/portainer-ce:${PORTAINER_VERSION:-latest}
     container_name: ${CONTAINER_PORTAINER:-telemetryflow_core_portainer}

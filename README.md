@@ -1,6 +1,6 @@
 # TelemetryFlow Core
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/devopscorner/telemetryflow-core)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/telemetryflow/telemetryflow-core)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/typescript-5.9.3-blue.svg)](https://www.typescriptlang.org)
@@ -58,15 +58,29 @@ Backend-only application with IAM (Identity and Access Management) module follow
 ### One-Command Setup
 
 ```bash
-# Start all services (PostgreSQL, ClickHouse, Backend, OTEL)
-./docker-start.sh
+# Start all services
+docker-compose --profile all up -d
+
+# Or start specific profiles
+docker-compose --profile core up -d                       # Core only
+docker-compose --profile core --profile monitoring up -d  # Core + Monitoring
 ```
+
+### Docker Profiles
+
+**Available profiles:**
+- `core` - Backend, PostgreSQL, ClickHouse
+- `monitoring` - OTEL, Jaeger, Prometheus, Grafana
+- `tools` - Portainer
+- `all` - Everything
+
+See [docs/DOCKER_PROFILES.md](./docs/DOCKER_PROFILES.md) for details.
 
 ### Manual Setup
 
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone https://github.com/telemetryflow/telemetryflow-core.git
 cd telemetryflow-core
 
 # Install dependencies
@@ -557,7 +571,7 @@ Apache-2.0 License - see LICENSE file for details
 
 ## Acknowledgments
 
-Extracted from [TelemetryFlow Platform](https://github.com/devopscorner/telemetryflow-platform) - Enterprise Telemetry & Observability Platform.
+Extracted from [TelemetryFlow Platform](https://github.com/telemetryflow/telemetryflow-platform) - Enterprise Telemetry & Observability Platform.
 
 ---
 

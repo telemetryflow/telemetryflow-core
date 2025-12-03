@@ -1,4 +1,11 @@
+import { config } from 'dotenv';
 import { NodeSDK } from '@opentelemetry/sdk-node';
+
+// Load .env file before anything else
+config();
+
+const MODULE_NAME = 'OTELTracing';
+
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
@@ -56,17 +63,23 @@ export const otelSDK = new NodeSDK({
 });
 
 export function startTracing() {
-  if (process.env.OTEL_ENABLED === 'true') {
+  const otelEnabled = process.env.OTEL_ENABLED !== 'false';
+  
+  if (otelEnabled) {
     otelSDK.start();
-    console.log('[OTEL] ✓ OpenTelemetry SDK started');
-    console.log(`[OTEL] ✓ Service: ${process.env.OTEL_SERVICE_NAME || 'telemetryflow-core'}`);
-    console.log(`[OTEL] ✓ Endpoint: ${endpoint || 'console'}`);
-    console.log('[OTEL] ✓ Exporting: traces, metrics, logs');
+    console.log(`[${MODULE_NAME}] ✓ OpenTelemetry SDK started`);
+    console.log(`[${MODULE_NAME}] ✓ Service: ${process.env.OTEL_SERVICE_NAME || 'telemetryflow-core'}`);
+    console.log(`[${MODULE_NAME}] ✓ Endpoint: ${endpoint || 'console'}`);
+    console.log(`[${MODULE_NAME}] ✓ Exporting: traces, metrics, logs`);
+  } else {
+    console.log(`[${MODULE_NAME}] ✗ OpenTelemetry disabled (OTEL_ENABLED=false)`);
   }
 }
 
 export function stopTracing() {
-  if (process.env.OTEL_ENABLED === 'true') {
+  const otelEnabled = process.env.OTEL_ENABLED !== 'false';
+  
+  if (otelEnabled) {
     return otelSDK.shutdown();
   }
 }

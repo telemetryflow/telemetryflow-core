@@ -1,0 +1,40 @@
+{
+  "dashboard": {
+    "title": "Service Performance Monitoring (SPM)",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Request Rate",
+        "targets": [
+          {
+            "expr": "rate(telemetryflow_core_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\"}[5m])",
+            "legendFormat": "{{span_name}}"
+          }
+        ],
+        "type": "graph"
+      },
+      {
+        "id": 2,
+        "title": "Average Latency",
+        "targets": [
+          {
+            "expr": "rate(telemetryflow_core_span_metrics_duration_milliseconds_sum{span_kind=\"SPAN_KIND_SERVER\"}[5m]) / rate(telemetryflow_core_span_metrics_duration_milliseconds_count{span_kind=\"SPAN_KIND_SERVER\"}[5m])",
+            "legendFormat": "{{span_name}}"
+          }
+        ],
+        "type": "graph"
+      },
+      {
+        "id": 3,
+        "title": "P95 Latency",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(telemetryflow_core_span_metrics_duration_milliseconds_bucket{span_kind=\"SPAN_KIND_SERVER\"}[5m]))",
+            "legendFormat": "{{span_name}}"
+          }
+        ],
+        "type": "graph"
+      }
+    ]
+  }
+}

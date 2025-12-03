@@ -1,0 +1,37 @@
+extensions:
+  jaeger_storage:
+    backends:
+      some_storage:
+        memory:
+          max_traces: 100000
+  
+  jaeger_query:
+    storage:
+      traces: some_storage
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  
+  zipkin:
+    endpoint: 0.0.0.0:9411
+
+processors:
+  batch:
+
+exporters:
+  jaeger_storage_exporter:
+    trace_storage: some_storage
+
+service:
+  extensions: [jaeger_storage, jaeger_query]
+  
+  pipelines:
+    traces:
+      receivers: [otlp, zipkin]
+      processors: [batch]
+      exporters: [jaeger_storage_exporter]
