@@ -196,6 +196,32 @@ services:
         ipv4_address: ${CONTAINER_IP_OTEL:-172.151.151.30}
 
   #----------------------------------------------------------------------------------------------
+  # JAEGER - Distributed Tracing UI
+  #----------------------------------------------------------------------------------------------
+  jaeger:
+    platform: linux/amd64
+    image: jaegertracing/all-in-one:${JAEGER_VERSION:-latest}
+    container_name: ${CONTAINER_JAEGER:-telemetryflow_core_jaeger}
+    restart: unless-stopped
+    ports:
+      - "${PORT_JAEGER_UI:-16686}:16686"        # Jaeger UI
+      - "${PORT_JAEGER_COLLECTOR:-14268}:14268" # Jaeger collector HTTP
+    # Note: Ports 4317 (OTLP gRPC) and 4318 (OTLP HTTP) are exposed internally for otel-collector
+    # They don't need host port mapping since communication is within Docker network
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - LOG_LEVEL=info
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_JAEGER:-172.151.151.60}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:16686"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  #----------------------------------------------------------------------------------------------
   # PROMETHEUS - Metrics Collection
   #----------------------------------------------------------------------------------------------
   prometheus:

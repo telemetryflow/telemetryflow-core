@@ -41,6 +41,16 @@ export const otelSDK = new NodeSDK({
   instrumentations: [
     getNodeAutoInstrumentations({
       '@opentelemetry/instrumentation-fs': { enabled: false },
+      '@opentelemetry/instrumentation-http': {
+        requestHook: (span, request) => {
+          // Add route to span name
+          const req = request as any;
+          const route = req.route?.path || req.url || '';
+          if (route && req.method) {
+            span.updateName(`${req.method} ${route}`);
+          }
+        },
+      },
     }),
   ],
 });

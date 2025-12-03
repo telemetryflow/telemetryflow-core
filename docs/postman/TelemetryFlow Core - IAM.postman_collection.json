@@ -1353,14 +1353,6 @@
 							],
 							"query": [
 								{
-									"key": "limit",
-									"value": "50"
-								},
-								{
-									"key": "offset",
-									"value": "0"
-								},
-								{
 									"key": "eventType",
 									"value": "",
 									"disabled": true
@@ -1379,6 +1371,14 @@
 									"key": "endDate",
 									"value": "",
 									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
 								}
 							]
 						}

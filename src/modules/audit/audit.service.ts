@@ -51,7 +51,8 @@ export class AuditService {
   async log(options: CreateAuditLogOptions): Promise<void> {
     try {
       const logLevel = options.result === AuditEventResult.SUCCESS ? 'log' : 'warn';
-      const message = `[${options.eventType}] ${options.action} - ${options.result}`;
+      const resource = options.resource ? ` ${options.resource}` : '';
+      const message = `[${options.eventType}] ${options.action}${resource} - ${options.result}`;
       
       if (logLevel === 'log') {
         this.logger.log(`[Audit] ✓ ${message}`, this.context);
@@ -59,28 +60,30 @@ export class AuditService {
         this.logger.warn(`[Audit] ⚠ ${message}`, this.context);
       }
 
-      // TODO: ClickHouse integration - requires HTTP interface configuration
-      // Uncomment when ClickHouse is properly configured
-      /*
+      // Insert to ClickHouse
       await this.clickhouse.insert({
         table: 'audit_logs',
         values: [{
-          user_id: options.userId || null,
-          user_email: options.userEmail || null,
+          user_id: options.userId || '',
+          user_email: options.userEmail || '',
+          user_first_name: '',
+          user_last_name: '',
           event_type: options.eventType,
           action: options.action,
-          resource: options.resource || null,
+          resource: options.resource || '',
           result: options.result,
-          ip_address: options.ipAddress || null,
-          user_agent: options.userAgent || null,
+          ip_address: options.ipAddress || '',
+          user_agent: options.userAgent || '',
           metadata: JSON.stringify(options.metadata || {}),
-          error_message: options.errorMessage || null,
-          tenant_id: options.tenantId || null,
-          organization_id: options.organizationId || null,
+          error_message: options.errorMessage || '',
+          tenant_id: options.tenantId || '',
+          workspace_id: '',
+          organization_id: options.organizationId || '',
+          session_id: '',
+          duration_ms: options.metadata?.duration || 0,
         }],
         format: 'JSONEachRow',
       });
-      */
     } catch (error) {
       this.logger.error(`[Audit] ✗ Failed to create audit log: ${error.message}`, error.stack, this.context);
     }

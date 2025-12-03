@@ -23,6 +23,10 @@ docker-compose exec -T postgres pg_isready -U postgres || echo "⚠ PostgreSQL n
 echo "✓ Checking ClickHouse..."
 curl -s http://localhost:8123/ping || echo "⚠ ClickHouse not ready"
 
+# Check Jaeger
+echo "✓ Checking Jaeger..."
+curl -s http://localhost:16686 > /dev/null || echo "⚠ Jaeger not ready"
+
 # Initialize ClickHouse schema
 echo "📊 Initializing ClickHouse schema..."
 docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < config/clickhouse/migrations/001-audit-logs.sql || echo "⚠ Schema already initialized"
@@ -51,6 +55,8 @@ echo "   Swagger Docs:   http://localhost:3000/api"
 echo "   Health Check:   http://localhost:3000/health"
 echo "   PostgreSQL:     postgresql://postgres:telemetrfyflow123@localhost:5432/telemetryflow_db"
 echo "   ClickHouse:     http://localhost:8123"
+echo "   Jaeger UI:      http://localhost:16686"
+echo "   Prometheus:     http://localhost:9090"
 echo "   Portainer:      http://localhost:9100"
 echo ""
 echo "📝 View logs: docker-compose logs -f"
