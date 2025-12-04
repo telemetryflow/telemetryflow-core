@@ -24,7 +24,7 @@ import { AppController } from './app.controller';
       database: process.env.POSTGRES_DB,
       autoLoadEntities: true,
       logging: process.env.NODE_ENV === 'development',
-      synchronize: false,
+      synchronize: process.env.NODE_ENV !== 'development',
     }),
     IAMModule,
     AuditModule,
