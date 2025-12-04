@@ -1,6 +1,9 @@
 <div align="center">
-  <img src="docs/assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="400">
-  <img src="docs/assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="400">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tfo-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/tfo-logo-light.svg">
+    <img src="docs/assets/tfo-logo-light.svg" alt="TelemetryFlow Logo" width="400">
+  </picture>
 
   <h1><strong>TelemetryFlow Core</strong></h1>
   <h3>Backend-only IAM service with Domain-Driven Design</h3>
