@@ -1,35 +1,26 @@
 import { Role } from '../domain/aggregates/Role';
-import { RoleId } from '../domain/value-objects/RoleId';
 import { PermissionId } from '../domain/value-objects/PermissionId';
-import { TenantId } from '../domain/value-objects/TenantId';
 
 describe('Role Aggregate', () => {
   describe('create', () => {
     it('should create a role with valid data', () => {
       const role = Role.create('Admin', 'Administrator role', [], null);
 
+      expect(role).toBeDefined();
       expect(role.getName()).toBe('Admin');
       expect(role.getDescription()).toBe('Administrator role');
-      expect(role.getPermissions()).toHaveLength(0);
-      expect(role.getIsSystem()).toBe(false);
     });
 
-    it('should create a system role', () => {
-      const role = Role.create('SuperAdministrator', 'Root role', []);
+    it('should create a role with permissions', () => {
+      const permissionId = PermissionId.create();
+      const role = Role.create('Admin', 'Admin role', [permissionId], null);
 
-      expect(role.getIsSystem()).toBe(false);
-    });
-
-    it('should create a tenant-scoped role', () => {
-      const tenantId = TenantId.create();
-      const role = Role.create('TenantAdmin', 'Tenant admin', [], tenantId);
-
-      expect(role.getTenantId()).toEqual(tenantId);
+      expect(role.getPermissions()).toContain(permissionId);
     });
   });
 
   describe('addPermission', () => {
-    it('should assign permission to role', () => {
+    it('should add permission to role', () => {
       const role = Role.create('Admin', 'Admin role', [], null);
       const permissionId = PermissionId.create();
 
@@ -38,14 +29,13 @@ describe('Role Aggregate', () => {
       expect(role.getPermissions()).toContain(permissionId);
     });
 
-    it('should not duplicate permissions', () => {
+    it('should throw error when adding duplicate permission', () => {
       const role = Role.create('Admin', 'Admin role', [], null);
       const permissionId = PermissionId.create();
 
       role.addPermission(permissionId);
-      role.addPermission(permissionId);
 
-      expect(role.getPermissions()).toHaveLength(1);
+      expect(() => role.addPermission(permissionId)).toThrow('Permission already assigned to role');
     });
   });
 

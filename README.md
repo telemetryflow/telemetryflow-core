@@ -1,16 +1,30 @@
-# TelemetryFlow Core
+<div align="center">
+  <img src="docs/assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="400">
+  <img src="docs/assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="400">
 
-[![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/telemetryflow/telemetryflow-core)
+  <h1><strong>TelemetryFlow Core</strong></h1>
+  <h3>Backend-only IAM service with Domain-Driven Design</h3>
+</div>
+
+<div align="center">
+
+[![Version](https://img.shields.io/badge/version-1.1.3-blue.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/typescript-5.9.3-blue.svg)](https://www.typescriptlang.org)
-[![NestJS](https://img.shields.io/badge/nestjs-11.x-red.svg)](https://nestjs.com)
-[![PostgreSQL](https://img.shields.io/badge/postgresql-16-blue.svg)](https://www.postgresql.org)
-[![ClickHouse](https://img.shields.io/badge/clickhouse-latest-yellow.svg)](https://clickhouse.com)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com)
-[![Test Coverage](https://img.shields.io/badge/coverage-90%25%20target-yellow.svg)](docs/TEST_STATUS.md)
+[![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
+[![ClickHouse](https://img.shields.io/badge/ClickHouse-latest-FFCC00?logo=clickhouse)](https://clickhouse.com/)
+[![OpenTelemetry](https://img.shields.io/badge/OTLP-Enabled-success?logo=opentelemetry)](https://opentelemetry.io/)
+[![DDD](https://img.shields.io/badge/Architecture-DDD%2FCQRS-blueviolet)](src/modules/iam/)
+[![RBAC](https://img.shields.io/badge/Security-5--Tier%20RBAC-red)](README.md#5-tier-rbac-system)
+[![Migrations](https://img.shields.io/badge/migrations-PostgreSQL%208%20%7C%20ClickHouse%204-success.svg)](src/database)
+[![Seeds](https://img.shields.io/badge/seeds-PostgreSQL%203%20%7C%20ClickHouse%204-success.svg)](src/database)
+[![Test Suites](https://img.shields.io/badge/test%20suites-90%25%20passing-brightgreen.svg)](TEST_COVERAGE_REPORT.md)
+[![Tests](https://img.shields.io/badge/tests-99%25%20passing-brightgreen.svg)](TEST_COVERAGE_REPORT.md)
 [![API Coverage](https://img.shields.io/badge/API%20coverage-100%25-brightgreen.svg)](docs/postman/BDD_TESTS.md)
 [![BDD Tests](https://img.shields.io/badge/BDD%20tests-33%20scenarios-success.svg)](docs/postman/BDD_TESTS.md)
+
+</div>
 
 Backend-only application with IAM (Identity and Access Management) module following Domain-Driven Design (DDD) pattern.
 
@@ -495,7 +509,9 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ### Core Documentation
 - [README.md](./README.md) - Main documentation (this file)
 - [CHANGELOG.md](./CHANGELOG.md) - Version history and changes
-- [RELEASE_NOTES_v1.1.0.md](./RELEASE_NOTES_v1.1.0.md) - Latest release notes
+- [RELEASE_NOTES_v1.1.2.md](./docs/RELEASE_NOTES_v1.1.2.md) - Latest release notes (Test improvements)
+- [RELEASE_NOTES_v1.1.1.md](./docs/RELEASE_NOTES_v1.1.1.md) - Database fixes
+- [RELEASE_NOTES_v1.1.0.md](./docs/RELEASE_NOTES_v1.1.0.md) - BDD testing
 - [DIAGRAMS.md](./docs/references/DIAGRAMS.md) - Architecture diagrams (20+ Mermaid diagrams)
 
 ### Features & Observability
@@ -504,6 +520,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 - [CLICKHOUSE_LOGGING.md](./docs/CLICKHOUSE_LOGGING.md) - ClickHouse logging (logs, metrics, traces)
 
 ### API & Testing
+- [TEST_COVERAGE_REPORT.md](./TEST_COVERAGE_REPORT.md) - Comprehensive test coverage analysis
 - [TESTING.md](./docs/TESTING.md) - Comprehensive testing guide (90%+ coverage target)
 - [TEST_STATUS.md](./docs/TEST_STATUS.md) - Current test coverage status and action plan
 - [Postman Collection](./docs/postman/README.md) - API testing with Postman (54+ requests)
