@@ -5,6 +5,54 @@ All notable changes to TelemetryFlow Core will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2025-12-04
+
+### Summary
+
+Fixed database migration and seed runners with proper environment variable loading and improved file filtering. Added database cleanup script for easy testing.
+
+**Key Highlights:**
+- 🔧 **Fixed Migrations**: Resolved duplicate migration detection by filtering non-migration files
+- 🔐 **Fixed ClickHouse Auth**: Added dotenv config to load passwords from .env
+- 🗑️ **Database Cleanup**: New script to clean PostgreSQL and ClickHouse databases
+- 📚 **Updated Docs**: Refreshed all migration and seed README files
+
+### Added
+
+#### Database Cleanup
+- `scripts/db-cleanup.sh` - Automated cleanup script for both databases
+- `pnpm db:cleanup` - Clean all databases (PostgreSQL + ClickHouse)
+- Drops all tables, views, and schemas
+- Safe for development testing and re-seeding
+
+### Changed
+
+#### Migration Fixes
+- Fixed PostgreSQL migration glob pattern from `*.ts` to `[0-9]*.ts`
+- Prevents `index.ts` and `run-migrations.ts` from being treated as migrations
+- Resolves "Duplicate migrations" error
+
+#### ClickHouse Connection
+- Added `dotenv` config to ClickHouse migration runner
+- Added `dotenv` config to ClickHouse seed runner
+- Properly loads `CLICKHOUSE_PASSWORD` from .env file
+- Fixes "REQUIRED_PASSWORD" authentication error
+
+#### Documentation Updates
+- Updated `src/database/postgres/migrations/README.md` with new commands
+- Updated `src/database/postgres/seeds/README.md` with new commands
+- Updated `src/database/clickhouse/migrations/README.md` with actual file names (001-004)
+- Updated `src/database/clickhouse/seeds/README.md` with actual file names (001-003)
+- Added troubleshooting sections for common issues
+- Updated root `README.md` with `db:cleanup` command
+
+### Fixed
+
+- PostgreSQL migrations no longer detect duplicate migrations
+- ClickHouse migrations and seeds now authenticate properly
+- Migration runners only process actual migration files
+- Environment variables properly loaded before database connections
+
 ## [1.1.0] - 2025-12-03
 
 ### Summary

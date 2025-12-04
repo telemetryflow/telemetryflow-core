@@ -1,6 +1,6 @@
 # TelemetryFlow Core
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/telemetryflow/telemetryflow-core)
+[![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/telemetryflow/telemetryflow-core)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/typescript-5.9.3-blue.svg)](https://www.typescriptlang.org)
@@ -352,6 +352,7 @@ pnpm build            # Build for production
 pnpm start            # Start production server
 
 # Database
+pnpm db:cleanup              # Clean all databases (PostgreSQL + ClickHouse)
 pnpm db:migrate              # Run all migrations (PostgreSQL + ClickHouse)
 pnpm db:migrate:postgres     # Run PostgreSQL migrations only
 pnpm db:migrate:clickhouse   # Run ClickHouse migrations only

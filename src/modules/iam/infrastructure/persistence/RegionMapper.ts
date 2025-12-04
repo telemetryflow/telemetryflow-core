@@ -12,7 +12,7 @@ export class RegionMapper {
       entity.isActive,
       entity.createdAt,
       entity.updatedAt,
-      entity.deletedAt,
+      null,
     );
   }
 
@@ -25,7 +25,6 @@ export class RegionMapper {
     entity.isActive = region.getIsActive();
     entity.createdAt = region.getCreatedAt();
     entity.updatedAt = region.getUpdatedAt();
-    entity.deletedAt = region.getDeletedAt();
     return entity;
   }
 }

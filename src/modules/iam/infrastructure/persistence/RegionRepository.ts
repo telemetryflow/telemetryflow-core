@@ -21,26 +21,24 @@ export class RegionRepository implements IRegionRepository {
 
   async findById(id: RegionId): Promise<Region | null> {
     const entity = await this.repository.findOne({
-      where: { id: id.getValue(), deletedAt: null },
+      where: { id: id.getValue() },
     });
     return entity ? RegionMapper.toDomain(entity) : null;
   }
 
   async findByCode(code: string): Promise<Region | null> {
     const entity = await this.repository.findOne({
-      where: { code, deletedAt: null },
+      where: { code },
     });
     return entity ? RegionMapper.toDomain(entity) : null;
   }
 
   async findAll(): Promise<Region[]> {
-    const entities = await this.repository.find({
-      where: { deletedAt: null },
-    });
+    const entities = await this.repository.find();
     return entities.map(RegionMapper.toDomain);
   }
 
   async delete(id: RegionId): Promise<void> {
-    await this.repository.softDelete(id.getValue());
+    await this.repository.delete(id.getValue());
   }
 }
