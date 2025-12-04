@@ -23,8 +23,8 @@ import { AppController } from './app.controller';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV === 'development',
       logging: process.env.NODE_ENV === 'development',
+      synchronize: process.env.NODE_ENV !== 'development',
     }),
     IAMModule,
     AuditModule,
@@ -42,5 +42,3 @@ import { AppController } from './app.controller';
   ],
 })
 export class AppModule {}
-
-
