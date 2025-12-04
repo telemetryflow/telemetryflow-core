@@ -1,28 +1,64 @@
 # ClickHouse Logging - TelemetryFlow Core
 
-Complete guide for storing logs, metrics, and traces in ClickHouse.
+Complete guide for storing logs, metrics, traces, and audit logs in ClickHouse.
 
 ## Overview
 
 TelemetryFlow Core uses ClickHouse as a high-performance storage backend for:
+- **Audit Logs** - IAM audit trail (user actions, entity changes)
 - **Application Logs** - All application and infrastructure logs
 - **Metrics** - Performance and business metrics
-- **Traces** - Distributed tracing data
-- **Audit Logs** - IAM audit trail
+- **Traces** - Distributed tracing data (OpenTelemetry)
 
 ## Architecture
 
 ```
+Application → ClickHouse Client → ClickHouse
 Winston Logger → ClickHouse Transport → ClickHouse
 OTEL Collector → ClickHouse Exporter → ClickHouse
-Application → ClickHouseService → ClickHouse
 ```
 
 ## Database Schema
 
-### 1. Logs Table
+### Migration Files
 
-Stores application and infrastructure logs with OTLP support.
+Located in `src/database/clickhouse/migrations/`:
+
+| Migration | Description | Tables/Views |
+|-----------|-------------|--------------|
+| `1704240000001-CreateAuditLogsTable.ts` | Audit logs with materialized views | audit_logs, audit_logs_stats, audit_logs_user_activity |
+| `1704240000002-CreateLogsTable.ts` | Application logs with error tracking | logs, logs_stats, logs_errors |
+| `1704240000003-CreateMetricsTable.ts` | Metrics with 1m/1h aggregations | metrics, metrics_1m, metrics_1h |
+| `1704240000004-CreateTracesTable.ts` | Distributed traces with statistics | traces, traces_stats, traces_errors |
+
+### 1. Audit Logs Table
+
+Stores IAM audit trail for user actions and entity changes.
+
+**Retention**: 90 days
+**Partition**: Monthly (YYYYMM)
+
+**Key Columns**:
+- `id` - UUID (auto-generated)
+- `timestamp` - Event timestamp (DateTime64)
+- `user_id`, `user_email`, `user_first_name`, `user_last_name` - User info
+- `event_type` - AUTH, AUTHZ, DATA, SYSTEM
+- `action` - Action performed (e.g., CREATE, UPDATE, DELETE)
+- `resource` - Resource affected (e.g., users, roles)
+- `result` - SUCCESS, FAILURE, DENIED
+- `error_message` - Error details if failed
+- `ip_address`, `user_agent` - Request metadata
+- `tenant_id`, `workspace_id`, `organization_id` - Multi-tenancy
+- `session_id` - Session tracking
+- `duration_ms` - Operation duration
+
+**Materialized Views**:
+- `audit_logs_stats` - Statistics by event type and result
+- `audit_logs_user_activity` - User activity summary
+
+### 2. Logs Table
+
+Stores application and infrastructure logs.
 
 **Retention**: 30 days
 **Partition**: Daily (YYYYMMDD)
@@ -105,148 +141,172 @@ See [001-audit-logs.sql](../src/database/clickhouse/migrations/001-audit-logs.sq
 ### 1. Run Migrations
 
 ```bash
-# Run all ClickHouse migrations
+# Run all ClickHouse migrations (recommended)
 pnpm db:migrate:clickhouse
 
-# Or manually
-docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < src/database/clickhouse/migrations/002-logs.sql
-docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < src/database/clickhouse/migrations/003-metrics.sql
-docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < src/database/clickhouse/migrations/004-traces.sql
+# Run all migrations (PostgreSQL + ClickHouse)
+pnpm db:migrate
+
+# Run migrations + seeds
+pnpm db:migrate:seed
 ```
 
-### 2. Configure Environment
+Migrations are TypeScript files that use `@clickhouse/client` and are located in:
+- `src/database/clickhouse/migrations/`
+
+Each migration exports `up()` and `down()` functions for schema changes.
+
+### 2. Seed Sample Data (Optional)
+
+```bash
+# Run all ClickHouse seeds
+pnpm db:seed:clickhouse
+
+# Run all seeds (PostgreSQL + ClickHouse)
+pnpm db:seed
+```
+
+Seeds are located in:
+- `src/database/clickhouse/seeds/`
+
+Sample data includes:
+- 5 audit log entries
+- 240 metrics (last 1 hour)
+- 30 trace spans (10 traces, last 30 minutes)
+
+### 3. Configure Environment
 
 ```env
 # ClickHouse Configuration
-CLICKHOUSE_HOST=http://172.151.151.40:8123
+CLICKHOUSE_HOST=172.151.151.40
+CLICKHOUSE_PORT=8123
 CLICKHOUSE_DB=telemetryflow_db
 CLICKHOUSE_USER=default
-CLICKHOUSE_PASSWORD=
+CLICKHOUSE_PASSWORD=telemetryflow123
 ```
 
-### 3. Import ClickHouse Module
+### 4. Verify Setup
 
-```typescript
-// app.module.ts
-import { ClickHouseModule } from './shared/clickhouse/clickhouse.module';
+```bash
+# Check ClickHouse is running
+docker ps | grep clickhouse
 
-@Module({
-  imports: [
-    ClickHouseModule,
-    // ... other modules
-  ],
-})
-export class AppModule {}
+# Check tables exist
+docker exec telemetryflow_core_clickhouse clickhouse-client \
+  --query "SHOW TABLES FROM telemetryflow_db"
+
+# Expected output:
+# audit_logs
+# audit_logs_stats
+# audit_logs_user_activity
+# logs
+# logs_errors
+# logs_stats
+# metrics
+# metrics_1h
+# metrics_1m
+# traces
+# traces_errors
+# traces_stats
 ```
 
 ## Usage
 
-### Logging with Winston
-
-Winston automatically sends logs to ClickHouse via the ClickHouse transport.
+### Direct ClickHouse Client
 
 ```typescript
-import { Logger } from '@nestjs/common';
+import { createClient } from '@clickhouse/client';
 
-const logger = new Logger('MyService');
-
-logger.log('User created', {
-  organization_id: 'org-123',
-  workspace_id: 'ws-456',
-  tenant_id: 'tenant-789',
+const client = createClient({
+  url: `http://${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`,
+  username: process.env.CLICKHOUSE_USER,
+  password: process.env.CLICKHOUSE_PASSWORD,
 });
 
-logger.error('Failed to process request', {
-  trace_id: 'abc123',
-  span_id: 'def456',
+// Insert audit log
+await client.insert({
+  table: 'telemetryflow_db.audit_logs',
+  values: [{
+    timestamp: new Date().toISOString(),
+    user_id: 'user-123',
+    user_email: 'user@example.com',
+    event_type: 'DATA',
+    action: 'CREATE',
+    resource: 'users',
+    result: 'SUCCESS',
+    tenant_id: 'tenant-123',
+    organization_id: 'org-123',
+  }],
+  format: 'JSONEachRow',
 });
-```
 
-### Direct ClickHouse Service
-
-```typescript
-import { ClickHouseService } from './shared/clickhouse/clickhouse.service';
-
-@Injectable()
-export class MyService {
-  constructor(private readonly clickHouse: ClickHouseService) {}
-
-  async logCustomEvent() {
-    await this.clickHouse.insertLog({
-      timestamp: new Date(),
-      trace_id: 'trace-123',
-      span_id: 'span-456',
-      trace_flags: 0,
-      severity_text: 'INFO',
-      severity_number: 9,
-      service_name: 'telemetryflow-core',
-      organization_id: 'org-123',
-      body: 'Custom event occurred',
-      resource_attributes: {},
-      log_attributes: { custom: 'data' },
-    });
-  }
-
-  async queryLogs() {
-    const logs = await this.clickHouse.queryLogs({
-      startTime: new Date(Date.now() - 3600000), // Last hour
-      service_name: 'telemetryflow-core',
-      severity: 'ERROR',
-      limit: 100,
-    });
-    return logs;
-  }
-}
-```
-
-### Metrics
-
-```typescript
-await this.clickHouse.insertMetric({
-  timestamp: new Date(),
-  metric_name: 'http_requests_total',
-  metric_type: 'counter',
-  value: 1,
-  service_name: 'telemetryflow-core',
-  organization_id: 'org-123',
-  metric_attributes: {
-    method: 'GET',
-    path: '/api/users',
-    status: '200',
-  },
+// Query logs
+const result = await client.query({
+  query: `
+    SELECT * FROM telemetryflow_db.logs
+    WHERE severity_text = 'ERROR'
+    AND timestamp >= now() - INTERVAL 1 HOUR
+    ORDER BY timestamp DESC
+    LIMIT 100
+  `,
+  format: 'JSONEachRow',
 });
-```
 
-### Traces
-
-```typescript
-await this.clickHouse.insertTrace({
-  timestamp: new Date(),
-  trace_id: 'trace-123',
-  span_id: 'span-456',
-  parent_span_id: 'span-parent',
-  span_name: 'GET /api/users',
-  span_kind: 'SERVER',
-  service_name: 'telemetryflow-core',
-  status_code: 'OK',
-  duration_ns: 1500000, // 1.5ms
-  resource_attributes: {},
-  span_attributes: {
-    'http.method': 'GET',
-    'http.url': '/api/users',
-    'http.status_code': '200',
-  },
-});
+const logs = await result.json();
 ```
 
 ## Querying Data
+
+### Query Audit Logs
+
+```sql
+-- Recent audit events
+SELECT
+  timestamp,
+  user_email,
+  event_type,
+  action,
+  resource,
+  result
+FROM telemetryflow_db.audit_logs
+WHERE timestamp >= now() - INTERVAL 1 HOUR
+ORDER BY timestamp DESC
+LIMIT 100;
+
+-- Failed operations
+SELECT
+  timestamp,
+  user_email,
+  action,
+  resource,
+  error_message
+FROM telemetryflow_db.audit_logs
+WHERE result = 'FAILURE'
+  AND timestamp >= today()
+ORDER BY timestamp DESC;
+
+-- User activity summary
+SELECT
+  user_email,
+  event_type,
+  count() AS event_count
+FROM telemetryflow_db.audit_logs
+WHERE timestamp >= now() - INTERVAL 24 HOUR
+GROUP BY user_email, event_type
+ORDER BY event_count DESC;
+
+-- Audit statistics (materialized view)
+SELECT * FROM telemetryflow_db.audit_logs_stats
+WHERE date = today()
+ORDER BY event_count DESC;
+```
 
 ### Query Logs
 
 ```sql
 -- Recent error logs
 SELECT timestamp, service_name, body, trace_id
-FROM logs
+FROM telemetryflow_db.logs
 WHERE severity_text = 'ERROR'
   AND timestamp >= now() - INTERVAL 1 HOUR
 ORDER BY timestamp DESC
@@ -254,82 +314,103 @@ LIMIT 100;
 
 -- Logs by organization
 SELECT timestamp, severity_text, body
-FROM logs
+FROM telemetryflow_db.logs
 WHERE organization_id = 'org-123'
   AND timestamp >= today()
 ORDER BY timestamp DESC;
 
 -- Log statistics
-SELECT 
+SELECT
   toStartOfHour(timestamp) AS hour,
   service_name,
   severity_text,
   count() AS count
-FROM logs
+FROM telemetryflow_db.logs
 WHERE timestamp >= now() - INTERVAL 24 HOUR
 GROUP BY hour, service_name, severity_text
 ORDER BY hour DESC;
+
+-- Error logs (materialized view)
+SELECT * FROM telemetryflow_db.logs_errors
+WHERE date = today()
+ORDER BY timestamp DESC;
 ```
 
 ### Query Metrics
 
 ```sql
 -- Metric values over time
-SELECT 
+SELECT
   toStartOfMinute(timestamp) AS minute,
   metric_name,
   avg(value) AS avg_value,
   max(value) AS max_value
-FROM metrics
+FROM telemetryflow_db.metrics
 WHERE metric_name = 'http_requests_total'
   AND timestamp >= now() - INTERVAL 1 HOUR
 GROUP BY minute, metric_name
 ORDER BY minute DESC;
 
 -- Aggregated metrics (1-minute)
-SELECT 
+SELECT
   timestamp_1m,
   metric_name,
   avgMerge(avg_value) AS avg,
   maxMerge(max_value) AS max
-FROM metrics_1m
+FROM telemetryflow_db.metrics_1m
 WHERE timestamp_1m >= now() - INTERVAL 1 HOUR
 GROUP BY timestamp_1m, metric_name
 ORDER BY timestamp_1m DESC;
+
+-- Aggregated metrics (1-hour)
+SELECT
+  timestamp_1h,
+  metric_name,
+  avgMerge(avg_value) AS avg,
+  maxMerge(max_value) AS max
+FROM telemetryflow_db.metrics_1h
+WHERE timestamp_1h >= now() - INTERVAL 24 HOUR
+GROUP BY timestamp_1h, metric_name
+ORDER BY timestamp_1h DESC;
 ```
 
 ### Query Traces
 
 ```sql
 -- Slow traces
-SELECT 
+SELECT
   timestamp,
   trace_id,
   span_name,
   duration_ns / 1000000 AS duration_ms
-FROM traces
+FROM telemetryflow_db.traces
 WHERE duration_ns > 1000000000 -- > 1 second
   AND timestamp >= now() - INTERVAL 1 HOUR
 ORDER BY duration_ns DESC
 LIMIT 100;
 
--- Error traces
+-- Error traces (materialized view)
 SELECT *
-FROM traces_errors
+FROM telemetryflow_db.traces_errors
 WHERE date = today()
 ORDER BY timestamp DESC;
 
 -- Trace statistics
-SELECT 
+SELECT
   service_name,
   span_name,
   count() AS count,
   avg(duration_ns) / 1000000 AS avg_duration_ms,
   max(duration_ns) / 1000000 AS max_duration_ms
-FROM traces
+FROM telemetryflow_db.traces
 WHERE timestamp >= now() - INTERVAL 1 HOUR
 GROUP BY service_name, span_name
 ORDER BY count DESC;
+
+-- Trace statistics (materialized view)
+SELECT * FROM telemetryflow_db.traces_stats
+WHERE date = today()
+ORDER BY span_count DESC;
 ```
 
 ## Performance Optimization
@@ -339,23 +420,36 @@ ORDER BY count DESC;
 Always use batch inserts for better performance:
 
 ```typescript
-// Good - Batch insert
-const logs = [...]; // Array of 100 logs
-await this.clickHouse.insertLogs(logs);
+import { createClient } from '@clickhouse/client';
 
-// Bad - Individual inserts
+const client = createClient({
+  url: `http://${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`,
+  username: process.env.CLICKHOUSE_USER,
+  password: process.env.CLICKHOUSE_PASSWORD,
+});
+
+// Good - Batch insert
+const logs = [
+  { timestamp: new Date(), severity_text: 'INFO', body: 'Log 1' },
+  { timestamp: new Date(), severity_text: 'INFO', body: 'Log 2' },
+  // ... 100 logs
+];
+
+await client.insert({
+  table: 'telemetryflow_db.logs',
+  values: logs,
+  format: 'JSONEachRow',
+});
+
+// Bad - Individual inserts (slow!)
 for (const log of logs) {
-  await this.clickHouse.insertLog(log); // Slow!
+  await client.insert({
+    table: 'telemetryflow_db.logs',
+    values: [log],
+    format: 'JSONEachRow',
+  });
 }
 ```
-
-### Winston Transport Batching
-
-The Winston ClickHouse transport automatically batches logs:
-
-- **Batch Size**: 100 logs (configurable)
-- **Flush Interval**: 5 seconds (configurable)
-- **Auto-flush**: On batch size reached
 
 ### Materialized Views
 
@@ -363,21 +457,35 @@ Use materialized views for pre-aggregated data:
 
 ```sql
 -- Query pre-aggregated 1-minute metrics (fast)
-SELECT * FROM metrics_1m WHERE timestamp_1m >= now() - INTERVAL 1 HOUR;
+SELECT * FROM telemetryflow_db.metrics_1m
+WHERE timestamp_1m >= now() - INTERVAL 1 HOUR;
 
 -- Instead of aggregating raw data (slow)
 SELECT toStartOfMinute(timestamp), avg(value)
-FROM metrics
+FROM telemetryflow_db.metrics
 WHERE timestamp >= now() - INTERVAL 1 HOUR
 GROUP BY toStartOfMinute(timestamp);
 ```
+
+### Available Materialized Views
+
+| Table | Materialized View | Purpose |
+|-------|-------------------|---------|
+| audit_logs | audit_logs_stats | Event statistics by type and result |
+| audit_logs | audit_logs_user_activity | User activity summary |
+| logs | logs_stats | Log statistics by service and severity |
+| logs | logs_errors | Error logs only (severity >= 17) |
+| metrics | metrics_1m | 1-minute aggregations |
+| metrics | metrics_1h | 1-hour aggregations |
+| traces | traces_stats | Trace statistics by service |
+| traces | traces_errors | Error traces only |
 
 ## Monitoring
 
 ### Check Table Sizes
 
 ```sql
-SELECT 
+SELECT
   table,
   formatReadableSize(sum(bytes)) AS size,
   sum(rows) AS rows
@@ -391,7 +499,7 @@ ORDER BY sum(bytes) DESC;
 ### Check Partitions
 
 ```sql
-SELECT 
+SELECT
   table,
   partition,
   sum(rows) AS rows,
@@ -406,7 +514,7 @@ ORDER BY table, partition DESC;
 ### TTL Status
 
 ```sql
-SELECT 
+SELECT
   table,
   partition,
   min(min_date) AS oldest_data,
@@ -420,42 +528,117 @@ ORDER BY table, oldest_data;
 
 ## Troubleshooting
 
-### Logs Not Appearing
+### ClickHouse Container Unhealthy
+
+**Error**: `container telemetryflow_core_clickhouse is unhealthy`
+
+**Cause**: Old incompatible data from ClickHouse version < 20.7
+
+**Solution**:
+```bash
+# Stop container
+docker stop telemetryflow_core_clickhouse
+
+# Clean data directory
+sudo rm -rf /opt/data/docker/telemetryflow-core/clickhouse/*
+
+# Recreate directories with proper permissions
+sudo mkdir -p /opt/data/docker/telemetryflow-core/clickhouse/{data,logs}
+sudo chown -R 101:101 /opt/data/docker/telemetryflow-core/clickhouse
+sudo chmod -R 777 /opt/data/docker/telemetryflow-core/clickhouse
+
+# Start container
+docker start telemetryflow_core_clickhouse
+
+# Wait for healthy status
+sleep 10 && docker ps --filter name=clickhouse
+
+# Re-run migrations
+pnpm db:migrate:clickhouse
+```
+
+### Migrations Not Running
 
 1. Check ClickHouse is running:
    ```bash
    docker ps | grep clickhouse
    ```
 
-2. Check migrations ran:
+2. Check connection:
    ```bash
-   docker exec telemetryflow_core_clickhouse clickhouse-client -q "SHOW TABLES FROM telemetryflow_db"
+   docker exec telemetryflow_core_clickhouse clickhouse-client --query "SELECT 1"
    ```
 
-3. Check Winston transport is configured:
-   ```typescript
-   // Verify ClickHouseService is injected
+3. Verify environment variables:
+   ```bash
+   grep CLICKHOUSE_ .env
    ```
+
+4. Run migrations manually:
+   ```bash
+   pnpm db:migrate:clickhouse
+   ```
+
+### Tables Not Appearing
+
+1. Check migrations ran successfully:
+   ```bash
+   docker exec telemetryflow_core_clickhouse clickhouse-client \
+     --query "SHOW TABLES FROM telemetryflow_db"
+   ```
+
+2. Expected tables:
+   - audit_logs, audit_logs_stats, audit_logs_user_activity
+   - logs, logs_stats, logs_errors
+   - metrics, metrics_1m, metrics_1h
+   - traces, traces_stats, traces_errors
+
+3. If missing, re-run migrations:
+   ```bash
+   pnpm db:migrate:clickhouse
+   ```
+
+### Permission Denied Errors
+
+**Error**: `mkdir: cannot create directory '/var/lib/clickhouse/': Permission denied`
+
+**Solution**:
+```bash
+# Fix directory permissions
+sudo chown -R 101:101 /opt/data/docker/telemetryflow-core/clickhouse
+sudo chmod -R 777 /opt/data/docker/telemetryflow-core/clickhouse
+
+# Restart container
+docker restart telemetryflow_core_clickhouse
+```
 
 ### High Memory Usage
 
-- Reduce batch size in Winston transport
-- Increase flush interval
-- Check TTL is working (old data being deleted)
+- Check table sizes (see Monitoring section)
+- Verify TTL is working (old data being deleted)
+- Consider reducing retention periods in migrations
 
 ### Slow Queries
 
 - Use materialized views for aggregations
 - Add appropriate indexes
 - Partition by time for better performance
+- Use `LIMIT` clause to restrict result sets
 
 ## Resources
 
 - [ClickHouse Documentation](https://clickhouse.com/docs)
-- [ClickHouse Client](https://github.com/ClickHouse/clickhouse-js)
-- [Winston Transports](https://github.com/winstonjs/winston#transports)
+- [ClickHouse Node.js Client](https://github.com/ClickHouse/clickhouse-js)
+- [ClickHouse SQL Reference](https://clickhouse.com/docs/en/sql-reference)
+- [ClickHouse MergeTree Engine](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree)
+- [ClickHouse Materialized Views](https://clickhouse.com/docs/en/sql-reference/statements/create/view#materialized-view)
+
+## Migration & Seed Documentation
+
+- [ClickHouse Migrations README](../src/database/clickhouse/migrations/README.md)
+- [ClickHouse Seeds README](../src/database/clickhouse/seeds/README.md)
 
 ---
 
-**Last Updated**: 2025-12-03
-**Retention Policies**: Logs (30d), Metrics (90d), Traces (7d), Audit (90d)
+- **Last Updated**: 2025-12-05
+- **Retention Policies**: Audit Logs (90d), Logs (30d), Metrics (90d), Traces (7d)
