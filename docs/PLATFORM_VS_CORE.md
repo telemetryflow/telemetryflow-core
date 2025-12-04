@@ -2,7 +2,7 @@
 
 ## Overview
 
-Comparison between **TelemetryFlow Platform** (monolith) and **TelemetryFlow Core** (IAM-only).
+Comparison between **TelemetryFlow Platform** (Monolith) and **TelemetryFlow Core** (IAM-only).
 
 ---
 
@@ -93,26 +93,50 @@ volumes:
   # + more...
 ```
 
-### Core (60 lines)
+### Core (400+ lines)
 ```yaml
 services:
+  backend:        # NestJS API
   postgres:       # PostgreSQL 16
+  clickhouse:     # ClickHouse latest
+  otel-collector: # OTEL Collector
+  prometheus:     # Prometheus
+  jaeger:         # Jaeger UI
+  grafana:        # Grafana
+  portainer:      # Portainer
+
+profiles:
+  core:         # Backend, PostgreSQL, ClickHouse
+  monitoring:   # OTEL, Jaeger, Prometheus, Grafana
+  tools:        # Portainer
+  all:          # Everything
 
 networks:
   telemetryflow_core_net:
-    subnet: 172.151.0.0/16
+    subnet: 172.151.151.0/24
 
 volumes:
   vol_postgres_data:
+  vol_clickhouse_data:
+  vol_clickhouse_logs:
+  vol_prometheus_data:
+  vol_grafana_data:
+  vol_portainer:
 ```
 
 **Differences**:
-- ❌ No ClickHouse
 - ❌ No Redis
 - ❌ No NATS
-- ❌ No monitoring stack
+- ❌ No Loki
+- ❌ No OpenSearch
+- ❌ No Fluent Bit
+- ❌ No pgAdmin
 - ❌ No frontend
-- ✅ Only PostgreSQL
+- ✅ Has ClickHouse (audit logs)
+- ✅ Has OTEL + Jaeger (tracing)
+- ✅ Has Prometheus + Grafana (metrics)
+- ✅ Has Portainer (management)
+- ✅ Docker profiles for flexible deployment
 - ✅ Different subnet (no conflicts)
 
 ---
@@ -165,12 +189,24 @@ config/
 └── README.md (28KB)
 ```
 
-### Core
+### Core (`config/`)
 ```
-❌ No config directory
+config/
+├── clickhouse/
+│   ├── migrations/
+│   └── README.md
+├── otel/
+│   ├── otel-collector-config.yaml
+│   └── README.md
+├── prometheus/
+│   ├── prometheus.yml
+│   └── README.md
+├── postgresql/
+│   └── README.md
+└── README.md
 ```
 
-**Reason**: Core only needs PostgreSQL, which uses Docker defaults.
+**Reason**: Core includes ClickHouse for audit logs and observability stack (OTEL, Prometheus).
 
 ---
 
@@ -200,18 +236,19 @@ config/
 {
   "dependencies": {
     "@nestjs/*": "10 packages",
+    "@clickhouse/client": "^1.7.0",
     "@opentelemetry/*": "8 packages",
     "winston": "^3.18.3",
     "typeorm": "^0.3.27",
     "pg": "^8.16.3",
     "argon2": "^0.44.0",
-    // ~20 total
+    // ~30 total
   }
 }
 ```
 
 **Differences**:
-- ❌ No ClickHouse client
+- ✅ Has ClickHouse client (audit logs)
 - ❌ No Redis clients
 - ❌ No NATS
 - ❌ No BullMQ
@@ -276,16 +313,21 @@ OTEL_COLLECTOR_ENDPOINT=http://otel-collector:4318
 # + 50+ more categories
 ```
 
-### Core (.env.example - 50 lines)
+### Core (.env.example - 100+ lines)
 ```env
 # Application (3 vars)
 NODE_ENV=development
 PORT=3000
 TZ=UTC
 
-# Docker (4 vars)
+# Docker (15 vars)
 POSTGRES_VERSION=16-alpine
-CONTAINER_POSTGRES=telemetryflow_core_postgres
+CLICKHOUSE_VERSION=latest
+OTEL_VERSION=0.115.1
+PROMETHEUS_VERSION=latest
+JAEGER_VERSION=latest
+GRAFANA_VERSION=latest
+PORTAINER_VERSION=latest
 # ...
 
 # PostgreSQL (5 vars)
@@ -293,24 +335,35 @@ POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 # ...
 
-# JWT (2 vars)
+# ClickHouse (5 vars)
+CLICKHOUSE_HOST=172.151.151.40
+CLICKHOUSE_PORT=8123
+CLICKHOUSE_DB=telemetryflow_db
+CLICKHOUSE_USER=default
+CLICKHOUSE_PASSWORD=telemetryflow123
+
+# JWT (3 vars)
 JWT_SECRET=...
 JWT_EXPIRES_IN=24h
+SESSION_SECRET=...
 
 # OTEL (3 vars)
-OTEL_ENABLED=false
+OTEL_ENABLED=true
 OTEL_SERVICE_NAME=telemetryflow-core
-OTEL_EXPORTER_OTLP_ENDPOINT=
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 
-# Logging (2 vars)
+# Logging (3 vars)
 LOG_LEVEL=info
 LOG_PRETTY_PRINT=true
+LOGGER_TYPE=winston
 ```
 
 **Differences**:
 - Platform: ~100+ variables
-- Core: ~20 variables
-- ✅ Much simpler configuration
+- Core: ~40 variables
+- ✅ Includes ClickHouse config
+- ✅ Includes OTEL config
+- ✅ Much simpler than Platform
 
 ---
 
@@ -319,44 +372,45 @@ LOG_PRETTY_PRINT=true
 ### Platform Backend (25+ modules)
 ```
 backend/src/modules/
-├── iam/              # Identity & Access Management
-├── auth/             # Authentication
-├── mfa/              # Multi-Factor Authentication
-├── sso/              # Single Sign-On
-├── audit/            # Audit Logging
-├── telemetry/        # Telemetry Data (Metrics, Logs, Traces)
-├── alerts/           # Alert Management
-├── dashboard/        # Dashboard Management
-├── monitoring/       # Uptime Monitoring
-├── agent/            # Agent Management
-├── aggregation/      # Data Aggregation
-├── cache/            # Caching Layer
-├── queue/            # Queue Management
-├── messaging/        # NATS Messaging
-├── email/            # Email Service
-├── cors/             # CORS Configuration
-├── api-keys/         # API Key Management
-├── retention-policy/ # Data Retention
-├── export/           # Data Export
-├── query-builder/    # Query Builder
-├── status-page/      # Status Page
-├── subscription/     # Subscription Management
-├── platform/         # Platform Management
-├── ui/               # UI Configuration
-├── alertrule-group/  # Alert Rule Groups
+├── iam/                # Identity & Access Management
+├── auth/               # Authentication
+├── mfa/                # Multi-Factor Authentication
+├── sso/                # Single Sign-On
+├── audit/              # Audit Logging
+├── telemetry/          # Telemetry Data (Metrics, Logs, Traces)
+├── alerts/             # Alert Management
+├── dashboard/          # Dashboard Management
+├── monitoring/         # Uptime Monitoring
+├── agent/              # Agent Management
+├── aggregation/        # Data Aggregation
+├── cache/              # Caching Layer
+├── queue/              # Queue Management
+├── messaging/          # NATS Messaging
+├── email/              # Email Service
+├── cors/               # CORS Configuration
+├── api-keys/           # API Key Management
+├── retention-policy/   # Data Retention
+├── export/             # Data Export
+├── query-builder/      # Query Builder
+├── status-page/        # Status Page
+├── subscription/       # Subscription Management
+├── platform/           # Platform Management
+├── ui/                 # UI Configuration
+├── alertrule-group/    # Alert Rule Groups
 └── notification-group/ # Notification Groups
 ```
 
-### Core (1 module)
+### Core (2 modules)
 ```
 src/modules/
-└── iam/              # Identity & Access Management
+├── iam/              # Identity & Access Management
+└── audit/            # Audit Logging (ClickHouse)
 ```
 
 **Differences**:
 - Platform: 25+ modules
-- Core: 1 module
-- ✅ Focused on IAM only
+- Core: 2 modules
+- ✅ Focused on IAM + Audit only
 
 ---
 
@@ -383,16 +437,23 @@ ClickHouse:
 ### Core
 ```
 PostgreSQL:
-  - IAM data only (users, roles, permissions)
+  - IAM data (users, roles, permissions)
   - Tenants, Organizations, Workspaces
   - Regions
   - Groups
+
+ClickHouse:
+  - Audit logs (IAM audit trail)
+  - Application logs (optional)
+  - Metrics (optional)
+  - Traces (optional)
 ```
 
 **Differences**:
-- ❌ No ClickHouse
+- ✅ Has ClickHouse for audit logs
 - ❌ No telemetry data storage
-- ✅ Only IAM data
+- ❌ No monitoring data
+- ✅ Only IAM + Audit data
 
 ---
 
@@ -416,17 +477,24 @@ docker-volumes-clean.sh         # Clean Docker volumes
 
 ### Core (`scripts/`)
 ```bash
-bootstrap.sh                    # Simple setup (100 lines)
-seed.ts                         # Seed orchestrator
-seed-iam.ts                     # Seed IAM
-generate-sample-data.sh         # Generate IAM samples
-generate-sample-iam-data.ts     # Generate IAM data
+bootstrap.sh                    # Simple setup (200 lines)
+export-swagger-docs.sh          # Export OpenAPI spec
+generate-secrets.ts             # Generate JWT/Session secrets
+```
+
+**Database Scripts** (`src/database/`):
+```bash
+postgres/migrations/run-migrations.ts
+postgres/seeds/run-seeds.ts
+clickhouse/migrations/run-migrations.ts
+clickhouse/seeds/run-seeds.ts
 ```
 
 **Differences**:
 - Platform: 40+ scripts
-- Core: 5 scripts
+- Core: 3 main scripts + 4 database scripts
 - ✅ Minimal but complete
+- ✅ Separate PostgreSQL and ClickHouse scripts
 
 ---
 
@@ -437,8 +505,9 @@ generate-sample-iam-data.ts     # Generate IAM data
 | **IAM** | ✅ Full | ✅ Full (Identical) |
 | **5-Tier RBAC** | ✅ Yes | ✅ Yes |
 | **Multi-Tenancy** | ✅ Yes | ✅ Yes |
-| **Authentication** | ✅ JWT + OAuth + SSO | ❌ No |
+| **Authentication** | ✅ JWT + OAuth + SSO | ✅ JWT only |
 | **MFA** | ✅ TOTP + SMS | ❌ No |
+| **Audit Logs** | ✅ Full (ClickHouse) | ✅ Full (ClickHouse) |
 | **Telemetry** | ✅ Metrics, Logs, Traces | ❌ No |
 | **Dashboards** | ✅ Yes | ❌ No |
 | **Alerts** | ✅ Yes | ❌ No |
@@ -447,14 +516,16 @@ generate-sample-iam-data.ts     # Generate IAM data
 | **Caching** | ✅ L1 + L2 (Redis) | ❌ No |
 | **Queues** | ✅ BullMQ (5 queues) | ❌ No |
 | **Aggregations** | ✅ Hourly/Daily | ❌ No |
-| **Audit Logs** | ✅ Full (ClickHouse) | ❌ No |
 | **API Keys** | ✅ Yes | ❌ No |
 | **SSO** | ✅ SAML, OAuth | ❌ No |
 | **Email** | ✅ Nodemailer | ❌ No |
 | **Frontend** | ✅ Vue 3 | ❌ No |
 | **Swagger** | ✅ Yes | ✅ Yes |
 | **OpenTelemetry** | ✅ Full stack | ✅ Basic tracing |
-| **Winston Logging** | ✅ + Transports | ✅ Console only |
+| **Winston Logging** | ✅ + Transports | ✅ Console + File |
+| **Prometheus** | ✅ Yes | ✅ Yes |
+| **Jaeger** | ✅ Yes | ✅ Yes |
+| **Grafana** | ✅ Yes | ✅ Yes |
 
 ---
 
@@ -464,15 +535,15 @@ generate-sample-iam-data.ts     # Generate IAM data
 |--------|----------|------|
 | **Total Files** | 3000+ | 200+ |
 | **Lines of Code** | 150,000+ | 15,000+ |
-| **Dependencies** | 150+ | 30+ |
-| **Docker Services** | 15+ | 1 |
-| **Config Files** | 50+ | 5 |
-| **Scripts** | 40+ | 5 |
-| **Modules** | 25+ | 1 |
-| **Database Tables** | 50+ | 13 |
+| **Dependencies** | 150+ | 40+ |
+| **Docker Services** | 15+ | 8 |
+| **Config Files** | 50+ | 15+ |
+| **Scripts** | 40+ | 7 |
+| **Modules** | 25+ | 2 |
+| **Database Tables** | 50+ | 13 (PG) + 12 (CH) |
 | **API Endpoints** | 200+ | 50+ |
-| **node_modules** | ~500MB | ~150MB |
-| **Docker Images** | ~5GB | ~500MB |
+| **node_modules** | ~500MB | ~200MB |
+| **Docker Images** | ~5GB | ~2GB |
 
 ---
 
@@ -554,18 +625,27 @@ pnpm run start
 
 ### Core
 ```bash
-# Development
-docker-compose up -d
+# Development (core only)
+docker-compose --profile core up -d
+pnpm run dev
+
+# Development (with monitoring)
+docker-compose --profile core --profile monitoring up -d
+pnpm run dev
+
+# Development (all services)
+docker-compose --profile all up -d
 pnpm run dev
 
 # Production
-docker-compose up -d
+docker-compose --profile all up -d
 pnpm run build
 pnpm run start
 ```
 
 **Differences**:
-- Platform: Requires profiles, more complex
+- Core: Uses Docker profiles for flexible deployment
+- Core: Can run minimal (core) or full (all) stack
 - Core: Simple, straightforward
 
 ---
@@ -606,11 +686,13 @@ Total: $260-1100/month
 ```
 Infrastructure:
 - PostgreSQL: $50-200/month
+- ClickHouse: $50-150/month (smaller dataset)
+- Prometheus: $20-50/month (optional)
 - Load Balancer: $20-50/month (optional)
-Total: $50-250/month
+Total: $100-400/month
 ```
 
-**Savings**: 80-90% infrastructure cost
+**Savings**: 60-75% infrastructure cost
 
 ---
 
