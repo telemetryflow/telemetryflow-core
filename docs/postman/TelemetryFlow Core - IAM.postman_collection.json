@@ -1,0 +1,1520 @@
+{
+	"info": {
+		"_postman_id": "c0379891-97ac-4ff8-8b2d-24d3b0bdb000",
+		"name": "TelemetryFlow Core - IAM",
+		"description": "Identity and Access Management API for TelemetryFlow Core",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "260154",
+		"_collection_link": "https://aws-cb-indonesia.postman.co/workspace/TelemetryFlow-BDD~646e4376-cd09-4d4a-ad0c-4eef510baf2a/collection/260154-c0379891-97ac-4ff8-8b2d-24d3b0bdb000?action=share&source=collection_link&creator=260154"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Root Info",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Version",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/version",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"version"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Metrics",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/metrics",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"metrics"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{admin_email}}",
+									"disabled": true
+								},
+								{
+									"key": "organizationId",
+									"value": "{{organization_id}}",
+									"disabled": true
+								},
+								{
+									"key": "isActive",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"Password@123456\",\n  \"firstName\": \"New\",\n  \"lastName\": \"User\",\n  \"organizationId\": \"{{organization_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate User",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:id/activate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"activate"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate User",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:id/deactivate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"deactivate"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change User Password",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"oldPassword\": \"OldPassword@123\",\n  \"newPassword\": \"NewPassword@123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/:id/password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"password"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:id/roles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"roles"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Role to User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roleId\": \"{{role_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/:id/roles/:roleId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"roles",
+								":roleId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "roleId",
+									"value": "{{role_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke Role from User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:id/roles/:roleId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"roles",
+								":roleId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "roleId",
+									"value": "{{role_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Permissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:id/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"permissions"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Permission to User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"permissionId\": \"{{permission_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/:id/permissions/:permissionId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"permissions",
+								":permissionId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "permissionId",
+									"value": "{{permission_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke Permission from User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:id/permissions/:permissionId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"permissions",
+								":permissionId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "permissionId",
+									"value": "{{permission_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Roles",
+			"item": [
+				{
+					"name": "Get All Roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/roles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Role by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/roles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{role_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Custom Role\",\n  \"description\": \"Custom role description\",\n  \"tier\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/roles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Role to User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"\",\n  \"roleId\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/roles/assign",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Role Permissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/roles/:id/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id",
+								"permissions"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{role_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Permission to Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"permissionId\": \"{{permission_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/roles/:id/permissions/:permissionId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id",
+								"permissions",
+								":permissionId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{role_id}}"
+								},
+								{
+									"key": "permissionId",
+									"value": "{{permission_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke Permission from Role",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/roles/:id/permissions/:permissionId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id",
+								"permissions",
+								":permissionId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{role_id}}"
+								},
+								{
+									"key": "permissionId",
+									"value": "{{permission_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Role Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/roles/:id/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id",
+								"users"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{role_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permissions",
+			"item": [
+				{
+					"name": "Get All Permissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Permission by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/permissions/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{permission_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Permission to Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roleId\": \"\",\n  \"permissionId\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/permissions/assign",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Organizations",
+			"item": [
+				{
+					"name": "Get All Organizations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/organizations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"organizations"
+							],
+							"query": [
+								{
+									"key": "regionId",
+									"value": "{{region_id}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Organization by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/organizations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"organizations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{organization_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Organization",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"New Organization\",\n  \"code\": \"NEWORG\",\n  \"description\": \"New organization description\",\n  \"domain\": \"neworg.example.com\",\n  \"regionId\": \"{{region_id}}\",\n  \"tenantId\": \"{{tenant_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/organizations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"organizations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Organizations by Region",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/organizations?regionId={{region_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"organizations"
+							],
+							"query": [
+								{
+									"key": "regionId",
+									"value": "{{region_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tenants",
+			"item": [
+				{
+					"name": "Get All Tenants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/tenants",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"tenants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tenant by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/tenants/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"tenants",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{tenant_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Tenant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"New Tenant\",\n  \"slug\": \"new-tenant\",\n  \"description\": \"Tenant description\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/iam/tenants",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"tenants"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Workspaces",
+			"item": [
+				{
+					"name": "Get All Workspaces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/workspaces",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"workspaces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Workspace by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/workspaces/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"workspaces",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{workspace_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Workspace",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"New Workspace\",\n  \"description\": \"Workspace description\",\n  \"organizationId\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/iam/workspaces",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"workspaces"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "Get All Groups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Group by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/groups/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"groups",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{group_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"New Group\",\n  \"description\": \"Group description\",\n  \"organizationId\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/iam/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User to Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"\",\n  \"groupId\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/iam/groups/add-user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"groups",
+								"add-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Group Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/groups/:id/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"groups",
+								":id",
+								"users"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{group_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User to Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"{{user_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/iam/groups/:id/users/:userId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"groups",
+								":id",
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{group_id}}"
+								},
+								{
+									"key": "userId",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove User from Group",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/groups/:id/users/:userId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"groups",
+								":id",
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{group_id}}"
+								},
+								{
+									"key": "userId",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Regions",
+			"item": [
+				{
+					"name": "Get All Regions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/regions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Region by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/iam/regions/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"regions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{region_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Region",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"ap-southeast-1\",\n  \"code\": \"APS1\",\n  \"description\": \"Asia Pacific (Singapore)\",\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/iam/regions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"iam",
+								"regions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Audit",
+			"item": [
+				{
+					"name": "Get Audit Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/audit/logs?limit=50&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit",
+								"logs"
+							],
+							"query": [
+								{
+									"key": "eventType",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "userId",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "startDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit Log by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/audit/logs/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit",
+								"logs",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{auditlog_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/audit/count",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit",
+								"count"
+							],
+							"query": [
+								{
+									"key": "eventType",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "userId",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/audit/statistics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit",
+								"statistics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Export Audit Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/audit/export?format=csv",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit",
+								"export"
+							],
+							"query": [
+								{
+									"key": "format",
+									"value": "csv"
+								},
+								{
+									"key": "startDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

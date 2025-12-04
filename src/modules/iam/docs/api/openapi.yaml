@@ -1,0 +1,715 @@
+openapi: 3.0.3
+info:
+  title: IAM Module API
+  version: 3.5.0
+  description: |
+    Identity and Access Management (IAM) API
+    
+    Comprehensive IAM system with 10 core modules:
+    - Users, Roles, Permissions, Groups
+    - Regions, Organizations, Workspaces, Tenants
+    - User-Role, User-Permission mappings
+    
+    Features:
+    - 5-tier RBAC (Super Admin, Admin, Developer, Viewer, Demo)
+    - 70+ granular permissions
+    - Multi-tenancy support
+    - Soft deletion with audit trails
+
+servers:
+  - url: http://localhost:3100/api/v2
+    description: Development
+  - url: https://api.telemetryflow.id/api/v2
+    description: Production
+
+tags:
+  - name: Users
+    description: User management endpoints
+  - name: Roles
+    description: Role management endpoints
+  - name: Permissions
+    description: Permission management endpoints
+  - name: Groups
+    description: Group management endpoints
+  - name: Regions
+    description: Region management endpoints
+  - name: Organizations
+    description: Organization management endpoints
+  - name: Workspaces
+    description: Workspace management endpoints
+  - name: Tenants
+    description: Tenant management endpoints
+  - name: User-Roles
+    description: User-role assignment endpoints
+  - name: User-Permissions
+    description: User-permission assignment endpoints
+
+paths:
+  # ==================== USERS ====================
+  /iam/users:
+    get:
+      tags: [Users]
+      summary: List all users
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/SearchParam'
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    
+    post:
+      tags: [Users]
+      summary: Create new user
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /iam/users/{id}:
+    get:
+      tags: [Users]
+      summary: Get user by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: User retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    patch:
+      tags: [Users]
+      summary: Update user
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    delete:
+      tags: [Users]
+      summary: Delete user (soft delete)
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== ROLES ====================
+  /iam/roles:
+    get:
+      tags: [Roles]
+      summary: List all roles
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Roles retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+    
+    post:
+      tags: [Roles]
+      summary: Create new role
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleRequest'
+      responses:
+        '201':
+          description: Role created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+
+  /iam/roles/{id}:
+    get:
+      tags: [Roles]
+      summary: Get role by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Role retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+    
+    patch:
+      tags: [Roles]
+      summary: Update role
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleRequest'
+      responses:
+        '200':
+          description: Role updated successfully
+    
+    delete:
+      tags: [Roles]
+      summary: Delete role
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Role deleted successfully
+
+  # ==================== PERMISSIONS ====================
+  /iam/permissions:
+    get:
+      tags: [Permissions]
+      summary: List all permissions
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Permissions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+
+  # ==================== ORGANIZATIONS ====================
+  /iam/organizations:
+    get:
+      tags: [Organizations]
+      summary: List all organizations
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Organizations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+    
+    post:
+      tags: [Organizations]
+      summary: Create new organization
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrganizationRequest'
+      responses:
+        '201':
+          description: Organization created successfully
+
+  /iam/organizations/{id}:
+    get:
+      tags: [Organizations]
+      summary: Get organization by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Organization retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+
+  # ==================== WORKSPACES ====================
+  /iam/workspaces:
+    get:
+      tags: [Workspaces]
+      summary: List all workspaces
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Workspaces retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Workspace'
+    
+    post:
+      tags: [Workspaces]
+      summary: Create new workspace
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspaceRequest'
+      responses:
+        '201':
+          description: Workspace created successfully
+
+  # ==================== TENANTS ====================
+  /iam/tenants:
+    get:
+      tags: [Tenants]
+      summary: List all tenants
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Tenants retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tenant'
+    
+    post:
+      tags: [Tenants]
+      summary: Create new tenant
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantRequest'
+      responses:
+        '201':
+          description: Tenant created successfully
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    
+    LimitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    
+    SearchParam:
+      name: search
+      in: query
+      schema:
+        type: string
+
+  schemas:
+    # ==================== USER SCHEMAS ====================
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+        mfaEnabled:
+          type: boolean
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        tenant_id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateUserRequest:
+      type: object
+      required: [email, firstName, lastName, password]
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        password:
+          type: string
+          minLength: 12
+        tenant_id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isActive:
+          type: boolean
+
+    # ==================== ROLE SCHEMAS ====================
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          enum: [super_administrator, administrator, developer, viewer, demo]
+        description:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateRoleRequest:
+      type: object
+      required: [name, description]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        permissionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    UpdateRoleRequest:
+      type: object
+      properties:
+        description:
+          type: string
+        permissionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    # ==================== PERMISSION SCHEMAS ====================
+    Permission:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        resource:
+          type: string
+          example: user
+        action:
+          type: string
+          enum: [create, read, update, delete, manage]
+        description:
+          type: string
+
+    # ==================== ORGANIZATION SCHEMAS ====================
+    Organization:
+      type: object
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+        organization_code:
+          type: string
+          example: org-devopscorner
+        organization_name:
+          type: string
+        description:
+          type: string
+        region_id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateOrganizationRequest:
+      type: object
+      required: [organization_code, organization_name, region_id]
+      properties:
+        organization_code:
+          type: string
+        organization_name:
+          type: string
+        description:
+          type: string
+        region_id:
+          type: string
+          format: uuid
+
+    # ==================== WORKSPACE SCHEMAS ====================
+    Workspace:
+      type: object
+      properties:
+        workspace_id:
+          type: string
+          format: uuid
+        workspace_code:
+          type: string
+          example: ws-production
+        workspace_name:
+          type: string
+        description:
+          type: string
+        organization_id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateWorkspaceRequest:
+      type: object
+      required: [workspace_code, workspace_name, organization_id]
+      properties:
+        workspace_code:
+          type: string
+        workspace_name:
+          type: string
+        description:
+          type: string
+        organization_id:
+          type: string
+          format: uuid
+
+    # ==================== TENANT SCHEMAS ====================
+    Tenant:
+      type: object
+      properties:
+        tenant_id:
+          type: string
+          format: uuid
+        tenant_code:
+          type: string
+          example: tn-customer-001
+        tenant_name:
+          type: string
+        description:
+          type: string
+        workspace_id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateTenantRequest:
+      type: object
+      required: [tenant_code, tenant_name, workspace_id]
+      properties:
+        tenant_code:
+          type: string
+        tenant_name:
+          type: string
+        description:
+          type: string
+        workspace_id:
+          type: string
+          format: uuid
+
+    # ==================== COMMON SCHEMAS ====================
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        error:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Bad request - validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            statusCode: 400
+            message: Validation failed
+            error: Bad Request
+
+    Unauthorized:
+      description: Unauthorized - invalid or missing token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            statusCode: 401
+            message: Unauthorized
+            error: Unauthorized
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            statusCode: 403
+            message: Forbidden resource
+            error: Forbidden
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            statusCode: 404
+            message: Resource not found
+            error: Not Found
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            statusCode: 500
+            message: Internal server error
+            error: Internal Server Error

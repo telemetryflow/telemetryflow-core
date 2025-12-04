@@ -1,0 +1,13 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true
+  },
+  "exclude": [
+    "scripts/**/*",
+    "**/*.spec.ts",
+    "**/*.e2e.spec.ts",
+    "**/__tests__/**/*"
+  ]
+}

@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<!--
+  ClickHouse Users Configuration
+  ================================
+  Define users, passwords, and access controls
+
+  SECURITY WARNING:
+  - Change default passwords in production!
+  - Use strong passwords with special characters
+  - Consider using password hashing (sha256_password)
+  - Restrict network access with allow_databases and allow_dictionaries
+-->
+<clickhouse>
+    <profiles>
+        <!--
+          Default Profile
+          ================
+          Standard user profile with balanced settings
+        -->
+        <default>
+            <!-- Maximum memory per query -->
+            <max_memory_usage>10000000000</max_memory_usage>
+
+            <!-- Use cache for queries -->
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+
+            <!-- Load balancing -->
+            <load_balancing>random</load_balancing>
+
+            <!-- Compression settings -->
+            <network_compression_method>lz4</network_compression_method>
+
+            <!-- Query complexity limits -->
+            <max_query_size>262144</max_query_size>
+            <max_ast_depth>1000</max_ast_depth>
+            <max_ast_elements>50000</max_ast_elements>
+            <max_rows_to_read>0</max_rows_to_read>
+            <max_bytes_to_read>0</max_bytes_to_read>
+
+            <!-- Execution timeout -->
+            <max_execution_time>300</max_execution_time>
+            <timeout_before_checking_execution_speed>10</timeout_before_checking_execution_speed>
+
+            <!-- Join settings -->
+            <max_rows_in_join>0</max_rows_in_join>
+            <max_bytes_in_join>0</max_bytes_in_join>
+
+            <!-- Group by settings -->
+            <max_rows_to_group_by>0</max_rows_to_group_by>
+            <max_bytes_before_external_group_by>0</max_bytes_before_external_group_by>
+
+            <!-- Sort settings -->
+            <max_rows_to_sort>0</max_rows_to_sort>
+            <max_bytes_to_sort>0</max_bytes_to_sort>
+            <max_bytes_before_external_sort>0</max_bytes_before_external_sort>
+
+            <!-- Result size limits -->
+            <max_result_rows>0</max_result_rows>
+            <max_result_bytes>0</max_result_bytes>
+
+            <!-- Overflow behavior -->
+            <result_overflow_mode>throw</result_overflow_mode>
+
+            <!-- Distributed queries -->
+            <max_distributed_connections>1024</max_distributed_connections>
+
+            <!-- Preferred block size for processing -->
+            <max_block_size>65536</max_block_size>
+
+            <!-- Allow experimental features -->
+            <allow_experimental_window_functions>1</allow_experimental_window_functions>
+            <allow_experimental_geo_types>0</allow_experimental_geo_types>
+
+            <!-- Logging -->
+            <log_queries>1</log_queries>
+            <log_query_threads>1</log_query_threads>
+        </default>
+
+        <!--
+          Read Only Profile
+          ==================
+          Restricted profile for read-only access
+        -->
+        <readonly>
+            <readonly>1</readonly>
+            <max_memory_usage>5000000000</max_memory_usage>
+            <max_execution_time>60</max_execution_time>
+            <max_rows_to_read>1000000000</max_rows_to_read>
+            <max_bytes_to_read>100000000000</max_bytes_to_read>
+        </readonly>
+    </profiles>
+
+    <!--
+      Quotas
+      =======
+      Resource limits per user/key
+    -->
+    <quotas>
+        <!-- Default quota: unlimited -->
+        <default>
+            <interval>
+                <duration>3600</duration>
+                <queries>0</queries>
+                <errors>0</errors>
+                <result_rows>0</result_rows>
+                <read_rows>0</read_rows>
+                <execution_time>0</execution_time>
+            </interval>
+        </default>
+    </quotas>
+
+    <!--
+      Users
+      ======
+      User accounts and access control
+    -->
+    <users>
+        <!--
+          Default User
+          =============
+          Administrative user with full access
+          IMPORTANT: Change password in production!
+        -->
+        <default>
+            <!-- Plain text password (NOT recommended for production) -->
+            <password></password>
+
+            <!-- Password hash (recommended for production) -->
+            <!-- Generate with: echo -n 'password' | sha256sum -->
+            <!-- <password_sha256_hex>...</password_sha256_hex> -->
+
+            <!-- Networks allowed to connect -->
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+
+            <!-- User profile -->
+            <profile>default</profile>
+
+            <!-- Default quota -->
+            <quota>default</quota>
+
+            <!-- Databases accessible -->
+            <!-- <allow_databases>
+                <database>telemetry</database>
+                <database>default</database>
+            </allow_databases> -->
+        </default>
+
+        <!--
+          TelemetryFlow Application User
+          ================================
+          User for the TelemetryFlow backend application
+          IMPORTANT: Set password via environment variable CLICKHOUSE_PASSWORD
+        -->
+        <!-- Uncomment and configure in production -->
+        <!-- <telemetryflow>
+            <password_sha256_hex><!-- Generated SHA256 hash --></password_sha256_hex>
+            <networks>
+                <ip>172.150.150.0/24</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+            <allow_databases>
+                <database>telemetry</database>
+            </allow_databases>
+        </telemetryflow> -->
+
+        <!--
+          Read Only User
+          ===============
+          User for dashboards and reporting with read-only access
+        -->
+        <!-- <readonly_user>
+            <password_sha256_hex><!-- Generated SHA256 hash --></password_sha256_hex>
+            <networks>
+                <ip>172.150.150.0/24</ip>
+            </networks>
+            <profile>readonly</profile>
+            <quota>default</quota>
+            <allow_databases>
+                <database>telemetry</database>
+            </allow_databases>
+        </readonly_user> -->
+
+        <!--
+          OTLP Ingestion User
+          ====================
+          Dedicated user for OTLP data ingestion
+        -->
+        <!-- <otlp_writer>
+            <password_sha256_hex><!-- Generated SHA256 hash --></password_sha256_hex>
+            <networks>
+                <ip>172.150.150.0/24</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+            <allow_databases>
+                <database>telemetry</database>
+            </allow_databases>
+            <allow_dictionaries>
+                <dictionary>telemetry.*</dictionary>
+            </allow_dictionaries>
+        </otlp_writer> -->
+    </users>
+</clickhouse>

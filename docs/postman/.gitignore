@@ -1,0 +1,6 @@
+# Newman test reports
+reports/
+*.html
+*.json
+!*.postman_collection.json
+!*.postman_environment.json
