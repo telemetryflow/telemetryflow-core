@@ -89,8 +89,6 @@ docker-compose --profile core --profile monitoring up -d  # Core + Monitoring
 - `tools` - Portainer
 - `all` - Everything
 
-See [docs/DOCKER_PROFILES.md](./docs/DOCKER_PROFILES.md) for details.
-
 ### Manual Setup
 
 ```bash
@@ -377,7 +375,6 @@ pnpm db:seed:postgres        # Seed PostgreSQL only
 pnpm db:seed:iam             # Seed IAM data only
 pnpm db:seed:clickhouse      # Seed ClickHouse only
 pnpm db:init-clickhouse      # Initialize ClickHouse schema
-pnpm db:generate-sample      # Generate sample data (50 records)
 pnpm db:reset                # Reset database
 
 # Testing
