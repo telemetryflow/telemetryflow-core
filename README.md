@@ -4,7 +4,7 @@
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/tfo-logo-core-light.svg">
     <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="400">
   </picture>
-  <h3>Backend-only IAM service with Domain-Driven Design</h3>
+  <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
 </div>
 
 <div align="center">
@@ -27,7 +27,7 @@
 
 </div>
 
-Backend-only application with IAM (Identity and Access Management) module following Domain-Driven Design (DDD) pattern.
+---
 
 ## Overview
 
