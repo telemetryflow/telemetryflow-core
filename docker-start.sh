@@ -9,7 +9,7 @@ bash scripts/init-volumes.sh
 
 # Start services
 echo "📦 Starting Docker services..."
-docker-compose up -d
+docker-compose -f docker-compose.yml --profile all up -d
 
 # Wait for services to be healthy
 echo "⏳ Waiting for services to be ready..."

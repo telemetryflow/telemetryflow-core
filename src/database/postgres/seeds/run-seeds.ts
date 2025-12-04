@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
-import { seedIAMRolesPermissions } from './001-iam-roles-permissions.seed';
-import { seedAuthTestUsers } from './002-auth-test-users.seed';
-import { seedGroups } from './003-groups.seed';
+import { seedIAMRolesPermissions } from './1704240000001-seed-iam-roles-permissions';
+import { seedAuthTestUsers } from './1704240000002-seed-auth-test-users';
+import { seedGroups } from './1704240000003-seed-groups';
 
 // Load environment variables
 config();
@@ -65,7 +65,7 @@ async function runSeeds() {
   } catch (error) {
     console.error('');
     console.error('╔════════════════════════════════════════════════════════════╗');
-    console.error('║                    ❌ Seeding Failed                       ║');
+    console.error('║               ❌ PostgreSQL Seeding Failed                 ║');
     console.error('╚════════════════════════════════════════════════════════════╝');
     console.error('');
     console.error('Error details:', error);

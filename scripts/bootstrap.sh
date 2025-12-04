@@ -233,39 +233,40 @@ if [ "$SKIP_DOCKER" = false ]; then
   echo -e "\n${GREEN}✓${NC} All Docker services are running"
 fi
 
-# Step 3: Initialize ClickHouse
-echo -e "\n${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BLUE}🗄️  Step 3: Initializing ClickHouse Database${NC}"
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-
-docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < config/clickhouse/migrations/001-audit-logs.sql
-echo -e "${GREEN}✓${NC} ClickHouse initialized"
-
-# Step 4: Run PostgreSQL migrations
+# Step 3: Database Migrations
 if [ "$SKIP_MIGRATION" = false ]; then
   echo -e "\n${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo -e "${BLUE}🔄 Step 4: Running PostgreSQL Migrations${NC}"
+  echo -e "${BLUE}🔄 Step 3: Running Database Migrations${NC}"
   echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-  pnpm run db:migrate
-  echo -e "${GREEN}✓${NC} Migrations completed"
+  echo -e "${YELLOW}Running PostgreSQL migrations...${NC}"
+  pnpm run db:migrate:postgres
+  echo -e "${GREEN}✓${NC} PostgreSQL migrations completed"
+
+  echo -e "\n${YELLOW}Running ClickHouse migrations...${NC}"
+  pnpm run db:migrate:clickhouse
+  echo -e "${GREEN}✓${NC} ClickHouse migrations completed"
 fi
 
-# Step 5: Seed databases
+# Step 4: Seed databases
 if [ "$SKIP_SEED" = false ]; then
   echo -e "\n${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo -e "${BLUE}🌱 Step 5: Seeding Databases${NC}"
+  echo -e "${BLUE}🌱 Step 4: Seeding Databases${NC}"
   echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-  echo -e "${YELLOW}Seeding IAM data (organizations, users, roles, permissions)...${NC}"
-  pnpm run db:seed
-  echo -e "${GREEN}✓${NC} IAM data seeded"
+  echo -e "${YELLOW}Seeding PostgreSQL (IAM data)...${NC}"
+  pnpm run db:seed:postgres
+  echo -e "${GREEN}✓${NC} PostgreSQL seeded"
+
+  echo -e "\n${YELLOW}Seeding ClickHouse (sample data)...${NC}"
+  pnpm run db:seed:clickhouse
+  echo -e "${GREEN}✓${NC} ClickHouse seeded"
 fi
 
 # Summary
 echo -e "\n${CYAN}╔════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║                                                                ║${NC}"
-echo -e "${CYAN}║                   ✅ Bootstrap Complete! ✅                    ║${NC}"
+echo -e "${CYAN}║                   ✅ Bootstrap Complete! ✅                     ║${NC}"
 echo -e "${CYAN}║                                                                ║${NC}"
 echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
 

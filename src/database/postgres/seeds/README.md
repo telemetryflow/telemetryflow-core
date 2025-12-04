@@ -1,114 +1,138 @@
-# Database Seeds
+# PostgreSQL Seeds
 
-This directory contains database seeding scripts for the TelemetryFlow Core 5-Tier RBAC system.
+TypeScript seed data for PostgreSQL database.
 
-## 🎯 5-Tier RBAC System
+## Available Seeds
 
-The seeding implements a complete 5-tier Role-Based Access Control system:
+| File | Description | Dependencies | Records |
+|------|-------------|--------------|---------|
+| `1704240000001-seed-iam-roles-permissions.ts` | Base IAM data | None | 1 region, 1 org, 1 workspace, 1 tenant, 22 permissions, 5 roles |
+| `1704240000002-seed-auth-test-users.ts` | Test users for 5-tier RBAC | Seed 1704240000001 | 5 users |
+| `1704240000003-seed-groups.ts` | User groups | Seed 1704240000001 | 4 groups |
 
-1. **Super Administrator** (Tier 1) - Platform management across all organizations
-2. **Administrator** (Tier 2) - Full CRUD within organization  
-3. **Developer** (Tier 3) - Create/Read/Update (no delete)
-4. **Viewer** (Tier 4) - Read-only access
-5. **Demo** (Tier 5) - Demo access in demo organization only
+## Running Seeds
 
-## 📁 Seed Files
-
-### 001-iam-roles-permissions.seed.ts
-**Complete IAM System Setup**
-- ✅ 3 Regions (APS3, USE1, EUW1)
-- ✅ 3 Organizations (DevOpsCorner, TelemetryFlow, Demo)
-- ✅ 3 Workspaces (one per organization)
-- ✅ 3 Tenants (one per workspace)
-- ✅ 22 Permissions (platform, users, roles, permissions, tenants, organizations, workspaces)
-- ✅ 5 Roles (5-tier RBAC with proper permission assignments)
-- ✅ 5 Default Users (one per role tier)
-
-### 002-groups.seed.ts
-**User Groups**
-- ✅ Engineering Team
-- ✅ DevOps Team  
-- ✅ Management Team
-- ✅ Demo Users
-
-## 🚀 Usage
-
-### Run All Seeds
 ```bash
-# Using npm script
-pnpm run db:seed:iam
+# Run all PostgreSQL seeds
+pnpm db:seed:postgres
 
-# Direct execution
-npx ts-node src/database/postgres/seeds/run-seeds.ts
+# Or use alias
+pnpm db:seed:iam
+
+# Run all seeds (PostgreSQL + ClickHouse)
+pnpm db:seed
+
+# Run migrations + seeds
+pnpm db:migrate:seed
 ```
 
-### Import in Code
+## Seed Order & Dependencies
+
+```
+1704240000001-seed-iam-roles-permissions.ts (Base)
+  ├─ Creates: Region
+  ├─ Creates: Organization (depends on Region)
+  ├─ Creates: Workspace (depends on Organization)
+  ├─ Creates: Tenant (depends on Workspace)
+  ├─ Creates: 22 Permissions
+  └─ Creates: 5 Roles
+
+1704240000002-seed-auth-test-users.ts
+  ├─ Requires: Tenant from seed 1704240000001
+  ├─ Requires: Roles from seed 1704240000001
+  └─ Creates: 5 Users (one per role tier)
+
+1704240000003-seed-groups.ts
+  ├─ Requires: Organization from seed 1704240000001
+  └─ Creates: 4 Groups
+```
+
+## Seed Structure
+
+Each seed exports a function:
+
 ```typescript
-import { runAllSeeds } from './seeds';
+import { DataSource } from 'typeorm';
 
-await runAllSeeds(dataSource);
+export async function seedName(dataSource: DataSource): Promise<void> {
+  const repository = dataSource.getRepository(Entity);
+  
+  // Check if already seeded
+  const count = await repository.count();
+  if (count > 0) {
+    console.log('Already seeded, skipping...');
+    return;
+  }
+  
+  // Create records
+  const entity = repository.create(data);
+  await repository.save(entity);
+}
 ```
 
-## 👤 Default Users
+## Validation
 
-| Email | Password | Role | Tier | Organization |
-|-------|----------|------|------|--------------|
-| superadmin.telemetryflow@telemetryflow.id | SuperAdmin@123456 | Super Administrator | 1 | TelemetryFlow |
-| administrator.telemetryflow@telemetryflow.id | Admin@123456 | Administrator | 2 | TelemetryFlow |
-| developer.telemetryflow@telemetryflow.id | Developer@123456 | Developer | 3 | TelemetryFlow |
-| viewer.telemetryflow@telemetryflow.id | Viewer@123456 | Viewer | 4 | TelemetryFlow |
-| demo.telemetryflow@telemetryflow.id | Demo@123456 | Demo | 5 | Demo |
+All seeds validate dependencies:
 
-⚠️ **Security Warning**: Change these passwords in production!
+```typescript
+// Example from 1704240000002-seed-auth-test-users.ts
+const defaultTenant = await tenantRepo.findOne({ 
+  where: { code: 'DEVOPSCORNER' } 
+});
 
-## 🔐 Permission Matrix
-
-| Permission | Super Admin | Administrator | Developer | Viewer | Demo |
-|------------|-------------|---------------|-----------|--------|------|
-| platform:manage | ✅ | ❌ | ❌ | ❌ | ❌ |
-| users:* | ✅ | ✅ | Read only | Read only | Read only |
-| roles:* | ✅ | ✅ | Read only | Read only | Read only |
-| organizations:* | ✅ | Read/Update | Read only | Read only | Read only |
-| tenants:* | ✅ | ✅ | Create/Read/Update | Read only | Create/Read/Update |
-| workspaces:* | ✅ | ✅ | Create/Read/Update | Read only | Create/Read/Update |
-
-## 🏗️ Database Structure
-
-```
-Regions (3)
-├── Organizations (3)
-    ├── Workspaces (3)
-        └── Tenants (3)
-
-Permissions (22)
-├── Roles (5)
-    └── Users (5)
-        └── Groups (4)
+if (!defaultTenant) {
+  throw new Error('Missing default tenant. Run IAM seed first!');
+}
 ```
 
-## 🔄 Execution Order
+## Default Credentials
 
-1. **Regions** → **Organizations** → **Workspaces** → **Tenants**
-2. **Permissions** → **Roles** → **Role-Permission Mappings**
-3. **Users** → **User-Role Assignments**
-4. **Groups**
+### Test Users
+| Email | Password | Role |
+|-------|----------|------|
+| superadmin.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Super Administrator |
+| administrator.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Administrator |
+| developer.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Developer |
+| viewer.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Viewer |
+| demo.telemetryflow@telemetryflow.id | TelemetryFlow@2024 | Demo |
 
-## ✨ Features
+⚠️ **Change these passwords in production!**
 
-- **Idempotent**: Safe to run multiple times (uses `ON CONFLICT DO NOTHING`)
-- **Consistent UUIDs**: Fixed UUIDs for core entities
-- **Password Hashing**: Argon2 for secure password storage
-- **Multi-tenancy**: Organization-scoped data isolation
-- **Demo Isolation**: Demo users restricted to demo organization
+## Adding New Seed
 
-## 🛡️ Security
+1. Create file: `1704240000XXX-seed-name.ts`
+2. Export function: `export async function seedName(dataSource: DataSource)`
+3. Add to `run-seeds.ts`
+4. Run seeds
 
-- All passwords are hashed with Argon2
-- Demo users isolated to demo organization
-- Proper permission inheritance
-- Organization-level data scoping
-- Email verification enabled for all users
+## Idempotency
 
----
+All seeds are idempotent (can run multiple times):
+- Check if data exists before creating
+- Use unique constraints (code, email)
+- Skip if already seeded
 
-**Status**: ✅ Complete 5-Tier RBAC System
+## Troubleshooting
+
+### Seed Fails with "Missing dependency"
+```bash
+# Run seeds in order
+pnpm run db:seed:postgres
+```
+
+### Duplicate Key Error
+```bash
+# Seeds already run, data exists
+# This is expected - seeds are idempotent
+```
+
+### Foreign Key Violation
+```bash
+# Ensure dependencies exist
+# Run seed 1704240000001 first, then 1704240000002, then 1704240000003
+```
+
+## References
+
+- [TypeORM Repository API](https://typeorm.io/repository-api)
+- [TypeORM Entities](https://typeorm.io/entities)

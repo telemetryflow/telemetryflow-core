@@ -112,8 +112,8 @@ services:
       # ClickHouse
       - CLICKHOUSE_HOST=clickhouse
       - CLICKHOUSE_PORT=8123
-      - CLICKHOUSE_DATABASE=${CLICKHOUSE_DB:-telemetryflow_db}
-      - CLICKHOUSE_USERNAME=${CLICKHOUSE_USER:-default}
+      - CLICKHOUSE_DB=${CLICKHOUSE_DB:-telemetryflow_db}
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
       - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-telemetryflow123}
 
       # JWT

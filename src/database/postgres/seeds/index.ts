@@ -1,45 +1,48 @@
-import { DataSource } from 'typeorm';
-import { seedIAMRolesPermissions } from './001-iam-roles-permissions.seed';
-import { seedAuthTestUsers } from './002-auth-test-users.seed';
-import { seedGroups } from './003-groups.seed';
+/**
+ * PostgreSQL Seeds Index
+ * 
+ * Auto-exports all seed modules for programmatic access
+ */
 
-export const SEED_ORDER = [
-  '001-iam-roles-permissions',
-  '002-auth-test-users',
-  '003-groups',
-] as const;
+export * as IAMRolesPermissions from './1704240000001-seed-iam-roles-permissions';
+export * as AuthTestUsers from './1704240000002-seed-auth-test-users';
+export * as Groups from './1704240000003-seed-groups';
+
+// Seed metadata
+export const seeds = [
+  { 
+    id: '1704240000001', 
+    name: 'seed-iam-roles-permissions', 
+    description: 'Base IAM data (regions, orgs, workspaces, tenants, permissions, roles)',
+    records: 30,
+    dependencies: []
+  },
+  { 
+    id: '1704240000002', 
+    name: 'seed-auth-test-users', 
+    description: '5-tier RBAC test users',
+    records: 5,
+    dependencies: ['1704240000001']
+  },
+  { 
+    id: '1704240000003', 
+    name: 'seed-groups', 
+    description: 'User groups',
+    records: 4,
+    dependencies: ['1704240000001']
+  },
+];
 
 /**
- * Run all seeds in order
+ * Default test credentials
  */
-export async function runAllSeeds(dataSource: DataSource): Promise<void> {
-  console.log('🌱 Starting database seeding...\n');
-
-  try {
-    // 1. IAM Roles & Permissions (Regions, Orgs, Workspaces, Tenants, Permissions, Roles)
-    console.log('📋 [01/03]: Seeding IAM roles & permissions...');
-    await seedIAMRolesPermissions(dataSource);
-    console.log('✅ IAM roles & permissions seeded\n');
-
-    // 2. Test Users (5-Tier RBAC)
-    console.log('👥 [02/03]: Seeding test users...');
-    await seedAuthTestUsers(dataSource);
-    console.log('✅ Test users seeded\n');
-
-    // 3. Groups
-    console.log('👥 [03/03]: Seeding groups...');
-    await seedGroups(dataSource);
-    console.log('✅ Groups seeded\n');
-
-    console.log('🎉 Database seeding completed successfully!');
-  } catch (error) {
-    console.error('❌ Seeding failed:', error);
-    throw error;
-  }
-}
-
-export {
-  seedIAMRolesPermissions,
-  seedAuthTestUsers,
-  seedGroups,
+export const defaultCredentials = {
+  password: 'TelemetryFlow@2024',
+  users: [
+    { email: 'superadmin.telemetryflow@telemetryflow.id', role: 'Super Administrator' },
+    { email: 'administrator.telemetryflow@telemetryflow.id', role: 'Administrator' },
+    { email: 'developer.telemetryflow@telemetryflow.id', role: 'Developer' },
+    { email: 'viewer.telemetryflow@telemetryflow.id', role: 'Viewer' },
+    { email: 'demo.telemetryflow@telemetryflow.id', role: 'Demo' },
+  ],
 };

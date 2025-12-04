@@ -18,7 +18,7 @@ export async function seedIAMRolesPermissions(dataSource: DataSource): Promise<v
   const regionRepo = dataSource.getRepository(RegionEntity);
 
   // 1. CREATE DEFAULT REGION
-  let region = await regionRepo.findOne({ where: { code: 'APS3' } });
+  let region = await regionRepo.findOneBy({ code: 'APS3' });
   if (!region) {
     region = regionRepo.create({
       name: 'ap-southeast-3',
@@ -49,6 +49,7 @@ export async function seedIAMRolesPermissions(dataSource: DataSource): Promise<v
   let workspace = await workspaceRepo.findOne({ where: { code: 'TELEMETRYFLOW-POC' } });
   if (!workspace) {
     workspace = workspaceRepo.create({
+      workspace_id: randomUUID(),
       name: 'TelemetryFlow POC',
       code: 'TELEMETRYFLOW-POC',
       description: 'Default workspace for OTEL collector',

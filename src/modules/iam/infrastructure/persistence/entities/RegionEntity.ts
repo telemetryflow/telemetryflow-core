@@ -1,28 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('regions')
 export class RegionEntity {
-  @PrimaryGeneratedColumn('uuid', { name: 'region_id' })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  name: string;
-
-  @Column({ type: 'varchar', length: 50, unique: true })
+  @Column({ unique: true })
   code: string;
+
+  @Column()
+  name: string;
 
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'boolean', default: true, name: 'isActive' })
+  @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
-  @CreateDateColumn({ name: 'createdAt' })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updatedAt' })
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deletedAt', nullable: true })
-  deletedAt: Date | null;
 }

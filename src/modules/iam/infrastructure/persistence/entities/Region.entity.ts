@@ -14,12 +14,12 @@ export class RegionEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ default: true })
-  is_active: boolean;
+  @Column({ name: 'is_active', default: true })
+  isActive: boolean;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }
