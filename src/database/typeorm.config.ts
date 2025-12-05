@@ -12,5 +12,5 @@ export default new DataSource({
   migrations: ['src/database/migrations/**/*.ts'],
   migrationsTableName: 'migrations',
   logging: process.env.NODE_ENV === 'development',
-  synchronize: process.env.NODE_ENV !== 'development',
+  synchronize: process.env.NODE_ENV === 'development',
 });
