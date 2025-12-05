@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tfo-logo-core-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/tfo-logo-core-light.svg">
-    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="400">
+    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="600">
   </picture>
   <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
 </div>
@@ -89,7 +89,7 @@ docker-compose --profile core --profile monitoring up -d  # Core + Monitoring
 - `tools` - Portainer
 - `all` - Everything
 
-See [docs/DOCKER_PROFILES.md](./docs/DOCKER_PROFILES.md) for details.
+See [docs/DOCKER_SETUP.md](./docs/DOCKER_SETUP.md) for details.
 
 ### Manual Setup
 
@@ -510,10 +510,6 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ### Core Documentation
 - [README.md](./README.md) - Main documentation (this file)
 - [CHANGELOG.md](./CHANGELOG.md) - Version history and changes
-- [RELEASE_NOTES_v1.1.2.md](./docs/RELEASE_NOTES_v1.1.2.md) - Latest release notes (Test improvements)
-- [RELEASE_NOTES_v1.1.1.md](./docs/RELEASE_NOTES_v1.1.1.md) - Database fixes
-- [RELEASE_NOTES_v1.1.0.md](./docs/RELEASE_NOTES_v1.1.0.md) - BDD testing
-- [DIAGRAMS.md](./docs/references/DIAGRAMS.md) - Architecture diagrams (20+ Mermaid diagrams)
 
 ### Features & Observability
 - [OBSERVABILITY.md](./docs/OBSERVABILITY.md) - Observability features (OTEL, Prometheus, Swagger)
@@ -521,9 +517,6 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 - [CLICKHOUSE_LOGGING.md](./docs/CLICKHOUSE_LOGGING.md) - ClickHouse logging (logs, metrics, traces)
 
 ### API & Testing
-- [TEST_COVERAGE_REPORT.md](./TEST_COVERAGE_REPORT.md) - Comprehensive test coverage analysis
-- [TESTING.md](./docs/TESTING.md) - Comprehensive testing guide (90%+ coverage target)
-- [TEST_STATUS.md](./docs/TEST_STATUS.md) - Current test coverage status and action plan
 - [Postman Collection](./docs/postman/README.md) - API testing with Postman (54+ requests)
 - [BDD Tests](./docs/postman/BDD_TESTS.md) - 33 BDD test scenarios (100% coverage)
 - [BDD Quick Start](./docs/postman/QUICK_START_BDD.md) - Quick reference for automated testing
@@ -543,6 +536,12 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 - [Database README](./src/database/README.md) - Database structure and migrations
 - [PostgreSQL Seeds](./src/database/postgres/seeds/README.md) - Seed data documentation
 - [ClickHouse Seeds](./src/database/clickhouse/seeds/README.md) - ClickHouse seed data
+
+### Maintenance & Security
+- [SECURITY.md](./SECURITY.md) - Security policy and vulnerability reporting
+- [DEPENDABOT.md](./docs/DEPENDABOT.md) - Automated dependency updates
+- [DEPENDABOT_QUICK_REFERENCE.md](./docs/DEPENDABOT_QUICK_REFERENCE.md) - Quick reference
+- [DEPENDENCY_NOTES.md](./docs/DEPENDENCY_NOTES.md) - Dependency management notes
 
 ## Project Statistics
 
@@ -572,21 +571,39 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 
 ## Contributing
 
+We welcome contributions! Please follow these steps:
+
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+**Important:**
+- Read [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines
+- Review [SECURITY.md](./SECURITY.md) for security best practices
+- Follow [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+
+## Security
+
+Security is a top priority. Please review our [Security Policy](./SECURITY.md) for:
+- Reporting vulnerabilities
+- Security best practices
+- Supported versions
+- Contact information
+
+**Report security issues to**: security@devopscorner.id
+
 ## License
 
-Apache-2.0 License - see LICENSE file for details
+Apache-2.0 License - see [LICENSE](./LICENSE) file for details
 
 ## Support
 
-- Documentation: [docs/](./docs/)
-- Issues: GitHub Issues
-- Discussions: GitHub Discussions
+- **Documentation**: [docs/](./docs/)
+- **Issues**: [GitHub Issues](https://github.com/telemetryflow/telemetryflow-core/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/telemetryflow/telemetryflow-core/discussions)
+- **Security**: [SECURITY.md](./SECURITY.md)
 
 ## Acknowledgments
 

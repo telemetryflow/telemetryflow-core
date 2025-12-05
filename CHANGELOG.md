@@ -1,11 +1,13 @@
 <div align="center">
-  <img src="docs/assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="300">
-  <img src="docs/assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="300">
+  <img src="docs/assets/tfo-logo-core-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="600">
+  <img src="docs/assets/tfo-logo-core-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="600">
 </div>
+
+---
 
 # Changelog
 
-All notable changes to TelemetryFlow Core will be documented in this file.
+All notable changes to **TelemetryFlow Core** will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -500,10 +502,10 @@ TelemetryFlow Core v1.0.0 is a production-ready IAM service extracted from Telem
 
 ## Release Information
 
-**Version**: 1.0.0
-**Release Date**: 2025-12-02
-**Status**: Stable
-**License**: Apache-2.0
+- **Version**: 1.0.0
+- **Release Date**: 2025-12-02
+- **Status**: Stable
+- **License**: Apache-2.0
 
 ## Upgrade Guide
 
@@ -515,7 +517,7 @@ This is the initial release. No upgrade required.
 
 ## Acknowledgments
 
-Extracted from [TelemetryFlow Platform](https://github.com/devopscorner/telemetryflow-platform) - Enterprise Telemetry & Observability Platform.
+Extracted from [TelemetryFlow Platform](https://github.com/telemetryflow/telemetryflow-platform) - Enterprise Telemetry & Observability Platform.
 
 ---
 
