@@ -1,7 +1,9 @@
 <div align="center">
-  <img src="docs/assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="600">
-  <img src="docs/assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="600">
+  <img src="docs/assets/tfo-logo-core-light.svg#gh-light-mode-only" alt="TelemetryFlow Core Logo" width="80%">
+  <img src="docs/assets/tfo-logo-core-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Core Logo" width="80%">
 </div>
+
+---
 
 # Security Policy
 
