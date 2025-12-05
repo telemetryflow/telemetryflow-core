@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tfo-logo-core-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/tfo-logo-core-light.svg">
-    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="400">
+    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="600">
   </picture>
   <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
 </div>
@@ -88,6 +88,8 @@ docker-compose --profile core --profile monitoring up -d  # Core + Monitoring
 - `monitoring` - OTEL, Jaeger, Prometheus, Grafana
 - `tools` - Portainer
 - `all` - Everything
+
+See [docs/DOCKER_PROFILES.md](./docs/DOCKER_PROFILES.md) for details.
 
 ### Manual Setup
 
@@ -375,6 +377,7 @@ pnpm db:seed:postgres        # Seed PostgreSQL only
 pnpm db:seed:iam             # Seed IAM data only
 pnpm db:seed:clickhouse      # Seed ClickHouse only
 pnpm db:init-clickhouse      # Initialize ClickHouse schema
+pnpm db:generate-sample      # Generate sample data (50 records)
 pnpm db:reset                # Reset database
 
 # Testing
@@ -531,6 +534,14 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 
 ### Database
 - [Database README](./src/database/README.md) - Database structure and migrations
+- [PostgreSQL Seeds](./src/database/postgres/seeds/README.md) - Seed data documentation
+- [ClickHouse Seeds](./src/database/clickhouse/seeds/README.md) - ClickHouse seed data
+
+### Maintenance & Security
+- [SECURITY.md](./SECURITY.md) - Security policy and vulnerability reporting
+- [DEPENDABOT.md](./docs/DEPENDABOT.md) - Automated dependency updates
+- [DEPENDABOT_QUICK_REFERENCE.md](./docs/DEPENDABOT_QUICK_REFERENCE.md) - Quick reference
+- [DEPENDENCY_NOTES.md](./docs/DEPENDENCY_NOTES.md) - Dependency management notes
 
 ## Project Statistics
 
@@ -560,21 +571,39 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 
 ## Contributing
 
+We welcome contributions! Please follow these steps:
+
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+**Important:**
+- Read [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines
+- Review [SECURITY.md](./SECURITY.md) for security best practices
+- Follow [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+
+## Security
+
+Security is a top priority. Please review our [Security Policy](./SECURITY.md) for:
+- Reporting vulnerabilities
+- Security best practices
+- Supported versions
+- Contact information
+
+**Report security issues to**: security@devopscorner.id
+
 ## License
 
-Apache-2.0 License - see LICENSE file for details
+Apache-2.0 License - see [LICENSE](./LICENSE) file for details
 
 ## Support
 
-- Documentation: [docs/](./docs/)
-- Issues: GitHub Issues
-- Discussions: GitHub Discussions
+- **Documentation**: [docs/](./docs/)
+- **Issues**: [GitHub Issues](https://github.com/telemetryflow/telemetryflow-core/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/telemetryflow/telemetryflow-core/discussions)
+- **Security**: [SECURITY.md](./SECURITY.md)
 
 ## Acknowledgments
 
