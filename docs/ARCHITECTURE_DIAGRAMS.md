@@ -303,7 +303,7 @@ flowchart TD
 - **Hierarchy**: Region → Tenant → Organization → Workspace
 - **User Assignment**: User belongs to Organization
 - **Role Assignment**: User has multiple Roles (many-to-many via USER_ROLE)
-- **Permission Assignment**: 
+- **Permission Assignment**:
   - Roles have Permissions (many-to-many via ROLE_PERMISSION)
   - Users can have direct Permissions (many-to-many via USER_PERMISSION)
 - **Group Membership**: Users can belong to multiple Groups
@@ -736,7 +736,7 @@ graph LR
 - **Backend**: Single NestJS instance
 - **PostgreSQL**: Single database instance
 - **ClickHouse**: Single database instance
-- **Limitations**: 
+- **Limitations**:
   - Single point of failure
   - Limited throughput
   - Vertical scaling only
@@ -918,4 +918,4 @@ graph TB
 - [Core Modules Documentation](./CORE_MODULES.md)
 - [IAM Module](../src/modules/iam/README.md)
 - [Audit Module](../src/modules/audit/README.md)
-- [Docker Setup](../DOCKER_SETUP.md)
+- [Docker Setup](./DOCKER_SETUP.md)

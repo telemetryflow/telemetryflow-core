@@ -1,6 +1,6 @@
 # TelemetryFlow Logo Update Summary
 
-**Date**: December 4, 2025  
+**Date**: December 4, 2025
 **Update**: Added official TelemetryFlow logos to all documentation
 
 ## ✅ Files Updated
@@ -56,7 +56,7 @@ src/assets/
 <div align="center">
   <img src="docs/assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="400">
   <img src="docs/assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="400">
-  
+
   <h1>TelemetryFlow Core</h1>
   <p><strong>Backend-only IAM service with Domain-Driven Design</strong></p>
 </div>
@@ -65,16 +65,16 @@ src/assets/
 ### CHANGELOG.md Format
 ```html
 <div align="center">
-  <img src="docs/assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="300">
-  <img src="docs/assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="300">
+  <img src="docs/assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="600">
+  <img src="docs/assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="600">
 </div>
 ```
 
 ### Release Notes Format
 ```html
 <div align="center">
-  <img src="assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="300">
-  <img src="assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="300">
+  <img src="assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="600">
+  <img src="assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="600">
 </div>
 ```
 
@@ -120,6 +120,6 @@ GitHub automatically switches between light and dark logos based on user's theme
 
 ---
 
-**Updated**: December 4, 2025  
-**Project**: TelemetryFlow Core v1.1.2  
+**Updated**: December 4, 2025
+**Project**: TelemetryFlow Core v1.1.2
 **Built with ❤️ by DevOpsCorner Indonesia**

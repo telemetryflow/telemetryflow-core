@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="300">
-  <img src="assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="300">
+  <img src="assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="600">
+  <img src="assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="600">
 </div>
 
 # TelemetryFlow Core v1.1.1 - Release Notes
@@ -40,8 +40,8 @@ bash scripts/db-cleanup.sh
 ### Migration Issues
 
 #### PostgreSQL Migrations
-**Problem**: Duplicate migration detection error  
-**Cause**: Glob pattern `*.ts` matched `index.ts` and `run-migrations.ts`  
+**Problem**: Duplicate migration detection error
+**Cause**: Glob pattern `*.ts` matched `index.ts` and `run-migrations.ts`
 **Solution**: Changed to `[0-9]*.ts` to only match numbered migration files
 
 ```typescript
@@ -53,8 +53,8 @@ migrations: ['src/database/postgres/migrations/[0-9]*.ts']
 ```
 
 #### ClickHouse Authentication
-**Problem**: "REQUIRED_PASSWORD" error  
-**Cause**: Environment variables not loaded before connection  
+**Problem**: "REQUIRED_PASSWORD" error
+**Cause**: Environment variables not loaded before connection
 **Solution**: Added `dotenv` config to migration and seed runners
 
 ```typescript
@@ -122,7 +122,7 @@ Thanks to the team for quickly addressing these critical database issues!
 
 ---
 
-**Previous Release**: [v1.1.0](./RELEASE_NOTES_v1.1.0.md)  
+**Previous Release**: [v1.1.0](./RELEASE_NOTES_v1.1.0.md)
 **Next Release**: [v1.1.2](./RELEASE_NOTES_v1.1.2.md)
 
 **Built with ❤️ by DevOpsCorner Indonesia**

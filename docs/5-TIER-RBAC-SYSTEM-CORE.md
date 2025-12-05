@@ -7,24 +7,32 @@
 
 ## 📋 Overview
 
-TelemetryFlow implements a 5-tier Role-Based Access Control (RBAC) system with hierarchical permissions and organizational scoping.
+TelemetryFlow implements a **5-tier Role-Based Access Control (RBAC) system** with hierarchical permissions and organizational scoping. This document provides comprehensive visualization and comparison of all roles, permissions, and access patterns.
 
 ---
 
 ## 🎯 Role Hierarchy
 
+### Visual Hierarchy
+
 ```mermaid
 graph TD
-    A[Tier 1: Super Administrator<br/>Global Scope<br/>All Permissions 60+] --> B[Tier 2: Administrator<br/>Organization Scope<br/>Full CRUD 55+]
-    B --> C[Tier 3: Developer<br/>Organization Scope<br/>Create/Read/Update 40+]
-    C --> D[Tier 4: Viewer<br/>Organization Scope<br/>Read-Only 17]
-    C --> E[Tier 5: Demo<br/>Demo Org Only<br/>Developer Access 40+]
-    
-    style A fill:#ff6b6b,stroke:#c92a2a,color:#fff
-    style B fill:#4dabf7,stroke:#1971c2,color:#fff
-    style C fill:#51cf66,stroke:#2f9e44,color:#fff
-    style D fill:#ffd43b,stroke:#f59f00,color:#000
-    style E fill:#a78bfa,stroke:#7c3aed,color:#fff
+    A[Tier 1: Super Administrator] --> B[Tier 2: Administrator]
+    B --> C[Tier 3: Developer]
+    C --> D[Tier 4: Viewer]
+    C --> E[Tier 5: Demo]
+
+    A1[Global Scope<br/>All Organizations<br/>All Regions] -.-> A
+    B1[Organization Scope<br/>Single Organization<br/>Multiple Regions] -.-> B
+    C1[Organization Scope<br/>Single Organization] -.-> C
+    D1[Organization Scope<br/>Read-Only] -.-> D
+    E1[Demo Org Only<br/>Auto-cleanup 6h] -.-> E
+
+    style A fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style B fill:#fa5252,stroke:#e03131,stroke-width:2px,color:#fff
+    style C fill:#ffd43b,stroke:#fab005,stroke-width:2px,color:#000
+    style D fill:#51cf66,stroke:#37b24d,stroke-width:2px,color:#fff
+    style E fill:#74c0fc,stroke:#339af0,stroke-width:2px,color:#fff
 ```
 
 ---
@@ -236,23 +244,23 @@ graph LR
     A[Request] --> B{Authentication}
     B -->|Valid JWT| C{Authorization}
     B -->|Invalid| X[401 Unauthorized]
-    
+
     C --> D{Role Check}
     D -->|Has Role| E{Permission Check}
     D -->|No Role| Y[403 Forbidden]
-    
+
     E -->|Has Permission| F{Scope Check}
     E -->|No Permission| Y
-    
+
     F -->|Organization Match| G{Tenant Filter}
     F -->|No Match| Y
-    
+
     G -->|Allowed| H[Execute Query]
     G -->|Denied| Y
-    
+
     H --> I[Audit Log]
     I --> J[Response]
-    
+
     style A fill:#e3f2fd
     style B fill:#fff3e0
     style C fill:#fff3e0
@@ -303,29 +311,29 @@ graph LR
 ```mermaid
 flowchart TB
     subgraph Database["Database Layer"]
-        PG[(PostgreSQL<br/>IAM Data)]
-        CH[(ClickHouse<br/>Audit Logs)]
+        PG[("PostgreSQL IAM Data")]
+        CH[("ClickHouse Audit Logs")]
     end
-    
+
     subgraph Seeds["Seed Data"]
-        S1[1. IAM Roles & Permissions]
-        S2[2. Auth Test Users]
-        S3[3. Groups]
+        S1["1. IAM Roles & Permissions"]
+        S2["2. Auth Test Users"]
+        S3["3. Groups"]
     end
-    
+
     subgraph Application["Application Layer"]
-        G1[Guards<br/>@RequirePermissions]
-        D1[Decorators<br/>@CurrentUser]
-        R1[Repositories<br/>Auto-scoping]
+        G1["Guards RequirePermissions"]
+        D1["Decorators CurrentUser"]
+        R1["Repositories Auto-scoping"]
     end
-    
+
     Seeds --> PG
     PG --> Application
     Application --> CH
-    
+
     S1 --> S2
     S2 --> S3
-    
+
     style PG fill:#4dabf7
     style CH fill:#ffd43b
     style S1 fill:#51cf66
@@ -450,5 +458,5 @@ bash scripts/bootstrap.sh --dev
 
 ---
 
-**Last Updated**: 2025-12-05  
-**Status**: ✅ 5-Tier RBAC System Complete
+- **Last Updated**: 2025-12-05
+- **Status**: ✅ 5-Tier RBAC System Complete
