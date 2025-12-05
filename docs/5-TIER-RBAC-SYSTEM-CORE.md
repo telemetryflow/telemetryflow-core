@@ -7,24 +7,32 @@
 
 ## 📋 Overview
 
-TelemetryFlow implements a 5-tier Role-Based Access Control (RBAC) system with hierarchical permissions and organizational scoping.
+TelemetryFlow implements a **5-tier Role-Based Access Control (RBAC) system** with hierarchical permissions and organizational scoping. This document provides comprehensive visualization and comparison of all roles, permissions, and access patterns.
 
 ---
 
 ## 🎯 Role Hierarchy
 
+### Visual Hierarchy
+
 ```mermaid
 graph TD
-    A[Tier 1: Super Administrator<br/>Global Scope<br/>All Permissions 60+] --> B[Tier 2: Administrator<br/>Organization Scope<br/>Full CRUD 55+]
-    B --> C[Tier 3: Developer<br/>Organization Scope<br/>Create/Read/Update 40+]
-    C --> D[Tier 4: Viewer<br/>Organization Scope<br/>Read-Only 17]
-    C --> E[Tier 5: Demo<br/>Demo Org Only<br/>Developer Access 40+]
+    A[Tier 1: Super Administrator] --> B[Tier 2: Administrator]
+    B --> C[Tier 3: Developer]
+    C --> D[Tier 4: Viewer]
+    C --> E[Tier 5: Demo]
 
-    style A fill:#ff6b6b,stroke:#c92a2a,color:#fff
-    style B fill:#4dabf7,stroke:#1971c2,color:#fff
-    style C fill:#51cf66,stroke:#2f9e44,color:#fff
-    style D fill:#ffd43b,stroke:#f59f00,color:#000
-    style E fill:#a78bfa,stroke:#7c3aed,color:#fff
+    A1[Global Scope<br/>All Organizations<br/>All Regions] -.-> A
+    B1[Organization Scope<br/>Single Organization<br/>Multiple Regions] -.-> B
+    C1[Organization Scope<br/>Single Organization] -.-> C
+    D1[Organization Scope<br/>Read-Only] -.-> D
+    E1[Demo Org Only<br/>Auto-cleanup 6h] -.-> E
+
+    style A fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style B fill:#fa5252,stroke:#e03131,stroke-width:2px,color:#fff
+    style C fill:#ffd43b,stroke:#fab005,stroke-width:2px,color:#000
+    style D fill:#51cf66,stroke:#37b24d,stroke-width:2px,color:#fff
+    style E fill:#74c0fc,stroke:#339af0,stroke-width:2px,color:#fff
 ```
 
 ---
