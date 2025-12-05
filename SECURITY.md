@@ -1,6 +1,10 @@
 <div align="center">
-  <img src="docs/assets/tfo-logo-core-light.svg#gh-light-mode-only" alt="TelemetryFlow Core Logo" width="80%">
-  <img src="docs/assets/tfo-logo-core-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Core Logo" width="80%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tfo-logo-core-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/tfo-logo-core-light.svg">
+    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="80%">
+  </picture>
+  <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
 </div>
 
 ---
