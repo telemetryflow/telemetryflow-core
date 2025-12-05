@@ -89,7 +89,7 @@ docker-compose --profile core --profile monitoring up -d  # Core + Monitoring
 - `tools` - Portainer
 - `all` - Everything
 
-See [docs/DOCKER_PROFILES.md](./docs/DOCKER_PROFILES.md) for details.
+See [docs/DOCKER_SETUP.md](./docs/DOCKER_SETUP.md) for details.
 
 ### Manual Setup
 
