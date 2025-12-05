@@ -25,6 +25,7 @@
 
 import { Module, Global, DynamicModule } from '@nestjs/common';
 import { LoggerService } from './logger.service';
+import { RequestContextMiddleware } from './middleware/request-context.middleware';
 
 /**
  * Logger Module Configuration Options
@@ -42,8 +43,8 @@ export interface LoggerModuleOptions {
  */
 @Global()
 @Module({
-  providers: [LoggerService],
-  exports: [LoggerService],
+  providers: [LoggerService, RequestContextMiddleware],
+  exports: [LoggerService, RequestContextMiddleware],
 })
 export class LoggerModule {
   /**
@@ -53,8 +54,8 @@ export class LoggerModule {
   static forRoot(): DynamicModule {
     return {
       module: LoggerModule,
-      providers: [LoggerService],
-      exports: [LoggerService],
+      providers: [LoggerService, RequestContextMiddleware],
+      exports: [LoggerService, RequestContextMiddleware],
     };
   }
 
@@ -71,8 +72,9 @@ export class LoggerModule {
           useValue: options,
         },
         LoggerService,
+        RequestContextMiddleware,
       ],
-      exports: [LoggerService],
+      exports: [LoggerService, RequestContextMiddleware],
     };
   }
 }

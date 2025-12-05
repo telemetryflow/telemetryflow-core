@@ -1,13 +1,15 @@
 <div align="center">
-  <img src="assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="300">
-  <img src="assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="300">
+  <img src="assets/tfo-logo-light.svg#gh-light-mode-only" alt="TelemetryFlow Logo" width="600">
+  <img src="assets/tfo-logo-dark.svg#gh-dark-mode-only" alt="TelemetryFlow Logo" width="600">
 </div>
+
+---
 
 # P25 Winston Logging - Impact Analysis for Core
 
-**Date**: December 5, 2025  
-**Platform Implementation**: ✅ Complete (100%)  
-**Core Status**: ✅ Already Implemented (Partial)
+- **Date**: December 5, 2025
+- **Platform Implementation**: ✅ Complete (100%)
+- **Core Status**: ✅ Already Implemented (Partial)
 
 ## Executive Summary
 
@@ -169,8 +171,8 @@ pnpm add @opensearch-project/opensearch
 
 ### Option A: Minimal (Production Ready)
 
-**Timeline**: 1 day  
-**Cost**: $1,000  
+**Timeline**: 1 day
+**Cost**: $1,000
 **Scope**: File rotation only
 
 ```typescript
@@ -191,8 +193,8 @@ transports.push(
 
 ### Option B: Standard (Recommended)
 
-**Timeline**: 1 week  
-**Cost**: $5,000  
+**Timeline**: 1 week
+**Cost**: $5,000
 **Scope**: File rotation + Loki
 
 **Benefits:**
@@ -203,8 +205,8 @@ transports.push(
 
 ### Option C: Enterprise (Full Platform Parity)
 
-**Timeline**: 2 weeks  
-**Cost**: $10,000  
+**Timeline**: 2 weeks
+**Cost**: $10,000
 **Scope**: All transports + sampling
 
 **Benefits:**
@@ -345,20 +347,20 @@ pnpm test:logger:stress
 
 ### Option A: Minimal
 
-**Cost**: $1,000  
-**Benefits**: $5,000/year (compliance, debugging)  
+**Cost**: $1,000
+**Benefits**: $5,000/year (compliance, debugging)
 **ROI**: 400%
 
 ### Option B: Standard (Recommended)
 
-**Cost**: $5,000  
-**Benefits**: $15,000/year (debugging, monitoring, compliance)  
+**Cost**: $5,000
+**Benefits**: $15,000/year (debugging, monitoring, compliance)
 **ROI**: 200%
 
 ### Option C: Enterprise
 
-**Cost**: $10,000  
-**Benefits**: $25,000/year (full observability, analytics)  
+**Cost**: $10,000
+**Benefits**: $25,000/year (full observability, analytics)
 **ROI**: 150%
 
 ## Recommendation
@@ -372,8 +374,8 @@ pnpm test:logger:stress
 4. ✅ Covers 90% of use cases
 5. ✅ Easy to upgrade to Enterprise later
 
-**Timeline**: 1 week  
-**Resources**: 1 developer  
+**Timeline**: 1 week
+**Resources**: 1 developer
 **Risk**: Low
 
 ## Next Steps
@@ -405,8 +407,8 @@ pnpm test:logger:stress
 
 ---
 
-**Last Updated**: December 5, 2025  
-**Version**: 1.0  
+**Last Updated**: December 5, 2025
+**Version**: 1.0
 **Project**: TelemetryFlow Core v1.1.2
 
 **Built with ❤️ by DevOpsCorner Indonesia**

@@ -125,7 +125,7 @@ Add to `package.json`:
 @Entity('users')
 export class UserEntity {
   // ... existing columns
-  
+
   @Column({ nullable: true })
   phone: string; // New column
 }
@@ -150,7 +150,7 @@ Migrations validate:
 # Check synchronize setting
 grep "synchronize" src/app.module.ts
 
-# Should show: synchronize: process.env.NODE_ENV === 'development'
+# Should show: synchronize: false,
 
 # Restart backend
 docker-compose restart backend

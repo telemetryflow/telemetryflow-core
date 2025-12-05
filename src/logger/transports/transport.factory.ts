@@ -6,7 +6,7 @@
  */
 
 import * as winston from 'winston';
-// import { OpenTelemetryTransportV3 } from '@opentelemetry/winston-transport';
+import { OpenTelemetryTransportV3 } from '@opentelemetry/winston-transport';
 import {
   LoggerConfig,
   ConsoleConfig,
@@ -54,14 +54,8 @@ export function createConsoleTransport(
 /**
  * Create OpenTelemetry transport for Winston
  */
-export function createOtelTransport(): winston.transport | null {
-  try {
-    const { OpenTelemetryTransportV3 } = require('@opentelemetry/winston-transport');
-    return new OpenTelemetryTransportV3();
-  } catch (error) {
-    console.warn('[Logger] OpenTelemetry transport not available:', error.message);
-    return null;
-  }
+export function createOtelTransport(): winston.transport {
+  return new OpenTelemetryTransportV3();
 }
 
 /**
@@ -76,9 +70,8 @@ export async function createFileTransport(
 
   try {
     // Dynamic import to avoid requiring the package if not used
-    const DailyRotateFile = await import('winston-daily-rotate-file').then(
-      (m) => m.default,
-    );
+    const DailyRotateFileModule = await import('winston-daily-rotate-file');
+    const DailyRotateFile: any = DailyRotateFileModule.default || DailyRotateFileModule;
 
     const transportConfig = {
       level,
@@ -143,8 +136,8 @@ export async function createLokiTransport(
 
   try {
     // Dynamic import to avoid requiring the package if not used
-    // @ts-expect-error - Optional package
-    const LokiTransport = await import('winston-loki').then((m) => m.default);
+    const LokiModule = await import('winston-loki');
+    const LokiTransport: any = LokiModule.default || LokiModule;
 
     const transportConfig: Record<string, unknown> = {
       host: config.host,
@@ -190,9 +183,9 @@ export async function createFluentBitTransport(
 
   try {
     // Dynamic import
-    // @ts-expect-error - Optional package
     const fluent = await import('fluent-logger');
-    const Transport = (await import('winston-transport')).default;
+    const TransportModule = await import('winston-transport');
+    const Transport: any = TransportModule.default || TransportModule;
 
     // Create FluentBit sender
     const sender = fluent.createFluentSender(config.tag, {
@@ -233,7 +226,8 @@ export async function createFluentBitTransport(
       }
     }
 
-    return new FluentBitTransport({ level });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new FluentBitTransport({ level }) as any;
   } catch (error) {
     console.warn(
       '[LoggerService] fluent-logger not installed. FluentBit transport disabled.',
@@ -255,9 +249,7 @@ export async function createOpenSearchTransport(
 
   try {
     // Dynamic import
-    // @ts-expect-error - Optional package
     const { ElasticsearchTransport } = await import('winston-elasticsearch');
-    // @ts-expect-error - Optional package
     const { Client } = await import('@opensearch-project/opensearch');
 
     // Create OpenSearch client
@@ -349,10 +341,7 @@ export async function createTransports(
 
   // OpenTelemetry transport
   if (config.otel.enabled) {
-    const otelTransport = createOtelTransport();
-    if (otelTransport) {
-      transports.push(otelTransport);
-    }
+    transports.push(createOtelTransport());
   }
 
   // File transport (daily rotation)

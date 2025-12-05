@@ -7,22 +7,22 @@
 
 **Problem**: `synchronize: false` prevented TypeORM from auto-creating tables in development.
 
-**Fix**: Changed to `synchronize: process.env.NODE_ENV === 'development'`
+**Fix**: Changed to `synchronize: false,`
 
 **Impact**: Tables are now automatically created from entities in development mode.
 
 ### 2. Conflicting Migrations
-**Files**: 
+**Files**:
 - `src/database/postgres/migrations/001-create-role-permissions-table.sql`
 - `src/database/postgres/migrations/1704240000000-CreateIAMTables.ts`
 
-**Problem**: 
+**Problem**:
 - SQL migration tried to create `role_permissions` table
 - TypeORM migration tried to create ALL IAM tables
 - TypeORM synchronize also creates tables from entities
 - Result: Conflicts and "relation already exists" errors
 
-**Fix**: 
+**Fix**:
 - Removed both migration files
 - Use TypeORM entities as single source of truth
 - TypeORM synchronize handles table creation in development
@@ -41,12 +41,12 @@
 ### 3. Groups Seed Using Hardcoded UUIDs
 **File**: `src/database/postgres/seeds/003-groups.seed.ts`
 
-**Problem**: 
+**Problem**:
 - Used hardcoded organization UUIDs that don't match auto-generated IDs
 - Used raw SQL instead of repository pattern
 - Hardcoded group IDs instead of letting database generate them
 
-**Fix**: 
+**Fix**:
 - Changed to use repository pattern
 - Fetch organization dynamically by code
 - Let database auto-generate group IDs
@@ -58,7 +58,7 @@
 ### Auto-Generated (No Manual UUID Needed)
 These entities use `@PrimaryGeneratedColumn('uuid')`:
 - ✅ User
-- ✅ Role  
+- ✅ Role
 - ✅ Permission
 - ✅ Tenant
 - ✅ Organization

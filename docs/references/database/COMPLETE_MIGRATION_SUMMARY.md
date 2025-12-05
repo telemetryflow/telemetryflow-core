@@ -44,11 +44,11 @@
   "db:migrate": "pnpm db:migrate:postgres && pnpm db:migrate:clickhouse",
   "db:migrate:postgres": "bash src/database/postgres/migrations/run-migrations.sh",
   "db:migrate:clickhouse": "ts-node src/database/clickhouse/migrations/run-migrations.ts",
-  
+
   "db:seed": "pnpm db:seed:postgres && pnpm db:seed:clickhouse",
   "db:seed:postgres": "ts-node src/database/postgres/seeds/run-seeds.ts",
   "db:seed:clickhouse": "ts-node src/database/clickhouse/seeds/run-seeds.ts",
-  
+
   "db:migrate:seed": "pnpm db:migrate && pnpm db:seed"
 }
 ```
@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS ${database}.table_name (...)
 
 Indexes handle duplicates:
 ```typescript
-ALTER TABLE ${database}.table_name 
+ALTER TABLE ${database}.table_name
 ADD INDEX IF NOT EXISTS idx_name column TYPE type GRANULARITY 1
 ```
 
@@ -205,7 +205,7 @@ ADD INDEX IF NOT EXISTS idx_name column TYPE type GRANULARITY 1
 ```bash
 # Check synchronize is enabled
 grep "synchronize" src/app.module.ts
-# Should show: synchronize: process.env.NODE_ENV === 'development'
+# Should show: synchronize: false,
 
 # Restart backend
 docker-compose restart backend

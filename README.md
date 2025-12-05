@@ -9,7 +9,7 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.1.2-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.3-blue.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 [![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs)](https://nestjs.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
@@ -54,7 +54,12 @@
 ### Observability
 - **Swagger/OpenAPI**: Interactive API documentation at `/api`
 - **OpenTelemetry**: Distributed tracing with OTLP export
-- **Winston Logging**: Structured logging with multiple levels
+- **Winston Logging (P25)**: 100% feature parity with Platform
+  - 7 production transports (Console, OTEL, File, Loki, FluentBit, OpenSearch, ClickHouse)
+  - Request context management with AsyncLocalStorage
+  - @Log() decorator for automatic method logging
+  - Log enrichment and sampling utilities
+  - See [docs/WINSTON_LOGGER.md](./docs/WINSTON_LOGGER.md) and [docs/P25_IMPLEMENTATION_SUMMARY.md](./docs/P25_IMPLEMENTATION_SUMMARY.md)
 - **Health Checks**: Built-in health endpoint
 
 ### Security
