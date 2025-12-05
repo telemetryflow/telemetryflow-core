@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tfo-logo-core-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/tfo-logo-core-light.svg">
-    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="600">
+    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="80%">
   </picture>
   <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
 </div>
@@ -54,12 +54,7 @@
 ### Observability
 - **Swagger/OpenAPI**: Interactive API documentation at `/api`
 - **OpenTelemetry**: Distributed tracing with OTLP export
-- **Winston Logging (P25)**: 100% feature parity with Platform
-  - 7 production transports (Console, OTEL, File, Loki, FluentBit, OpenSearch, ClickHouse)
-  - Request context management with AsyncLocalStorage
-  - @Log() decorator for automatic method logging
-  - Log enrichment and sampling utilities
-  - See [docs/WINSTON_LOGGER.md](./docs/WINSTON_LOGGER.md) and [docs/P25_IMPLEMENTATION_SUMMARY.md](./docs/P25_IMPLEMENTATION_SUMMARY.md)
+- **Winston Logging**: Structured logging with multiple levels
 - **Health Checks**: Built-in health endpoint
 
 ### Security
