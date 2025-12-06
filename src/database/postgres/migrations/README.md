@@ -6,7 +6,7 @@ TypeScript migrations for PostgreSQL database schema using TypeORM.
 
 | File | Description | Tables | Status |
 |------|-------------|--------|--------|
-| `1704240000000-InitialSchema.ts` | Deprecated placeholder | - | ⚠️ Deprecated |
+| `1704240000000-InitialSchema.ts` | UUID extension setup | - | ✅ Active |
 | `1704240000001-CreateRegionsTable.ts` | Create regions table | regions | ✅ Active |
 | `1704240000002-CreateOrganizationsTable.ts` | Create organizations table | organizations | ✅ Active |
 | `1704240000003-CreateWorkspacesTable.ts` | Create workspaces table | workspaces | ✅ Active |
@@ -16,124 +16,79 @@ TypeScript migrations for PostgreSQL database schema using TypeORM.
 | `1704240000007-CreateRBACTables.ts` | Create RBAC tables | roles, permissions | ✅ Active |
 | `1704240000008-CreateJunctionTables.ts` | Create junction tables | user_roles, user_permissions, role_permissions | ✅ Active |
 
-## Current Approach
-
-### Development
-- **TypeORM Synchronize**: `synchronize: true` in `src/app.module.ts`
-- Tables auto-created from entities
-- No manual migrations needed
-
-### Production
-- **TypeORM Migrations**: `synchronize: false`
-- Use TypeORM CLI to generate and run migrations
-- Migration file available as template
-
 ## Running Migrations
 
-### Automated Runner
+### Automated Runner (Recommended)
 ```bash
-# Run all migrations
+# Run all PostgreSQL migrations
 pnpm db:migrate:postgres
 
-# Or run with seeds
+# Run all migrations (PostgreSQL + ClickHouse)
+pnpm db:migrate
+
+# Run migrations + seeds
 pnpm db:migrate:seed
 ```
 
-### Development (Auto-Sync)
+### Manual Execution
 ```bash
-# Tables created automatically on backend start
-docker-compose restart backend
-```
-
-### Production (TypeORM CLI)
-```bash
-# Generate migration from entity changes
-pnpm run migration:generate -- src/database/postgres/migrations/MigrationName
-
-# Run migrations
-pnpm run migration:run
-
-# Revert migration
-pnpm run migration:revert
+# Using ts-node
+ts-node src/database/postgres/migrations/run-migrations.ts
 ```
 
 ## Tables Created
 
-All 11 IAM tables are created from TypeORM entities:
+All 13 IAM tables are created by these migrations:
 
-**Core Tables:**
-- `users` - User accounts
-- `roles` - RBAC roles
-- `permissions` - Permission definitions
-- `tenants` - Tenant organizations
-- `organizations` - Business units
-- `workspaces` - Project workspaces
+**Core Tables (8 tables):**
 - `regions` - Geographic regions
+- `tenants` - Top-level tenant organizations
+- `organizations` - Business units within tenants
+- `workspaces` - Project workspaces within organizations
+- `users` - User accounts with profiles
+- `roles` - Role definitions (5-tier RBAC)
+- `permissions` - Permission definitions (22+ permissions)
 - `groups` - User groups
 
-**Junction Tables:**
-- `user_roles` - User-role assignments
-- `user_permissions` - Direct user permissions
-- `role_permissions` - Role-permission mappings
+**Junction Tables (3 tables):**
+- `user_roles` - User-role assignments (many-to-many)
+- `user_permissions` - Direct user permissions (many-to-many)
+- `role_permissions` - Role-permission mappings (many-to-many)
 
 ## Migration Structure
 
-TypeORM migration template:
+Each migration implements the TypeORM `MigrationInterface`:
 
 ```typescript
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class MigrationName1234567890000 implements MigrationInterface {
-  name = 'MigrationName1234567890000';
+export class MigrationName1704240000000 implements MigrationInterface {
+  name = 'MigrationName1704240000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Create/alter tables
-    await queryRunner.query(`CREATE TABLE ...`);
+    // Create tables with IF NOT EXISTS
+    await queryRunner.query(`
+      CREATE TABLE IF NOT EXISTS "table_name" (
+        "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+        ...
+      )
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // Revert changes
-    await queryRunner.query(`DROP TABLE ...`);
+    // Drop tables with IF EXISTS
+    await queryRunner.query(`DROP TABLE IF EXISTS "table_name" CASCADE`);
   }
 }
 ```
 
-## TypeORM CLI Commands
+## Idempotency
 
-Add to `package.json`:
-```json
-{
-  "scripts": {
-    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/database/typeorm.config.ts",
-    "migration:create": "typeorm-ts-node-commonjs migration:create",
-    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/database/typeorm.config.ts",
-    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/typeorm.config.ts",
-    "migration:show": "typeorm-ts-node-commonjs migration:show -d src/database/typeorm.config.ts"
-  }
-}
-```
-
-## Entity-First Development
-
-1. **Create/modify entity** in `src/modules/iam/infrastructure/persistence/entities/`
-2. **Development**: TypeORM auto-syncs changes
-3. **Production**: Generate migration with CLI
-
-### Example: Add New Column
-```typescript
-// 1. Update entity
-@Entity('users')
-export class UserEntity {
-  // ... existing columns
-
-  @Column({ nullable: true })
-  phone: string; // New column
-}
-
-// 2. Development: Restart backend (auto-syncs)
-// 3. Production: Generate migration
-pnpm run migration:generate -- src/database/postgres/migrations/AddPhoneToUsers
-```
+All migrations are idempotent:
+- ✅ Use `IF NOT EXISTS` for CREATE statements
+- ✅ Use `IF EXISTS` for DROP statements
+- ✅ Safe to run multiple times
+- ✅ No errors if tables already exist
 
 ## Validation
 
@@ -142,18 +97,26 @@ Migrations validate:
 - ✅ Foreign key constraints
 - ✅ Index uniqueness
 - ✅ Data type compatibility
+- ✅ UUID extension availability
 
 ## Troubleshooting
 
+### Duplicate Migration Error
+```bash
+# Error: Duplicate migrations detected
+# Cause: index.ts or run-migrations.ts being treated as migration
+
+# Solution: Already fixed with glob pattern [0-9]*.ts
+# Only files starting with numbers are treated as migrations
+```
+
 ### Tables Not Created
 ```bash
-# Check synchronize setting
-grep "synchronize" src/app.module.ts
+# Check if migrations ran
+docker exec telemetryflow_core_postgres psql -U postgres -d telemetryflow_db -c "\dt"
 
-# Should show: synchronize: false,
-
-# Restart backend
-docker-compose restart backend
+# Run migrations manually
+pnpm db:migrate:postgres
 ```
 
 ### Migration Fails
@@ -163,9 +126,36 @@ docker exec telemetryflow_core_postgres pg_isready -U postgres
 
 # Check existing tables
 docker exec telemetryflow_core_postgres psql -U postgres -d telemetryflow_db -c "\dt"
+
+# Check migration logs
+pnpm db:migrate:postgres
+```
+
+### Foreign Key Violations
+```bash
+# Migrations run in order (1 → 2 → 3 → ...)
+# Ensure all dependencies exist before creating foreign keys
+# All migrations handle this correctly
+```
+
+## Environment Variables
+
+```env
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=telemetryflow_db
+POSTGRES_USERNAME=postgres
+POSTGRES_PASSWORD=telemetryflow123
 ```
 
 ## References
 
 - [TypeORM Migrations](https://typeorm.io/migrations)
-- [TypeORM Entities](https://typeorm.io/entities)
+- [TypeORM Query Runner](https://typeorm.io/query-runner)
+- [PostgreSQL CREATE TABLE](https://www.postgresql.org/docs/current/sql-createtable.html)
+
+---
+
+**Last Updated**: 2025-12-06  
+**Total Migrations**: 9  
+**Total Tables**: 13 (8 core + 3 junction + 2 system)

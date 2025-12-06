@@ -12,28 +12,46 @@ TelemetryFlow Core uses two databases:
 src/database/
 ├── clickhouse/
 │   ├── migrations/
-│   │   ├── 001-audit-logs.sql
-│   │   └── run-migrations.sh
+│   │   ├── 1704240000001-CreateAuditLogsTable.ts
+│   │   ├── 1704240000002-CreateLogsTable.ts
+│   │   ├── 1704240000003-CreateMetricsTable.ts
+│   │   ├── 1704240000004-CreateTracesTable.ts
+│   │   ├── run-migrations.ts
+│   │   ├── index.ts
+│   │   └── README.md
 │   └── seeds/
-│       ├── 001-sample-audit-logs.sql
+│       ├── 1704240000001-seed-sample-audit-logs.ts
+│       ├── 1704240000002-seed-sample-logs.ts
+│       ├── 1704240000003-seed-sample-metrics.ts
+│       ├── 1704240000004-seed-sample-traces.ts
+│       ├── run-seeds.ts
+│       ├── index.ts
 │       └── README.md
 ├── config/
 │   ├── database.config.ts
 │   └── index.ts
 ├── postgres/
 │   ├── migrations/
-│   │   ├── 1704240000000-CreateIAMTables.ts
+│   │   ├── 1704240000000-InitialSchema.ts
+│   │   ├── 1704240000001-CreateRegionsTable.ts
+│   │   ├── 1704240000002-CreateOrganizationsTable.ts
+│   │   ├── 1704240000003-CreateWorkspacesTable.ts
+│   │   ├── 1704240000004-CreateTenantsTable.ts
+│   │   ├── 1704240000005-CreateGroupsTable.ts
+│   │   ├── 1704240000006-CreateUsersTable.ts
+│   │   ├── 1704240000007-CreateRBACTables.ts
+│   │   ├── 1704240000008-CreateJunctionTables.ts
+│   │   ├── run-migrations.ts
+│   │   ├── index.ts
 │   │   └── README.md
 │   └── seeds/
-│       ├── 001-iam-roles-permissions.seed.ts
-│       ├── 002-iam-data.seed.ts
-│       ├── 003-auth-test-users.seed.ts
-│       ├── 004-groups.seed.ts
-│       ├── index.ts
+│       ├── 1704240000001-seed-iam-roles-permissions.ts
+│       ├── 1704240000002-seed-auth-test-users.ts
+│       ├── 1704240000003-seed-groups.ts
 │       ├── run-seeds.ts
+│       ├── index.ts
 │       └── README.md
 ├── typeorm.config.ts        # TypeORM configuration
-├── verify-migrations.sh     # Migration idempotency check
 └── README.md
 ```
 
@@ -58,19 +76,27 @@ src/database/
 
 ### Migrations
 
-**Available Migrations:**
-- `1704240000000-CreateIAMTables.ts` - Creates all IAM tables
+**Available Migrations (9 files):**
+1. `1704240000000-InitialSchema.ts` - UUID extension setup
+2. `1704240000001-CreateRegionsTable.ts` - Geographic regions
+3. `1704240000002-CreateOrganizationsTable.ts` - Organizations
+4. `1704240000003-CreateWorkspacesTable.ts` - Workspaces
+5. `1704240000004-CreateTenantsTable.ts` - Tenants
+6. `1704240000005-CreateGroupsTable.ts` - User groups
+7. `1704240000006-CreateUsersTable.ts` - User accounts
+8. `1704240000007-CreateRBACTables.ts` - Roles and permissions
+9. `1704240000008-CreateJunctionTables.ts` - Many-to-many relationships
 
 **Run Migrations:**
 ```bash
-# Run all pending migrations
-pnpm run migration:run
+# Run all PostgreSQL migrations
+pnpm db:migrate:postgres
 
-# Generate new migration
-pnpm run migration:generate -- src/database/postgres/migrations/MigrationName
+# Run all migrations (PostgreSQL + ClickHouse)
+pnpm db:migrate
 
-# Revert last migration
-pnpm run migration:revert
+# Run migrations + seeds
+pnpm db:migrate:seed
 ```
 
 **Idempotency:** ✅ All migrations use `IF NOT EXISTS` - safe to run multiple times
@@ -79,27 +105,33 @@ pnpm run migration:revert
 
 **Run Seeds:**
 ```bash
-# All seeds (recommended)
-pnpm run db:seed:iam
+# All PostgreSQL seeds (recommended)
+pnpm db:seed:postgres
 
-# Or manually
-ts-node src/database/postgres/seeds/run-seeds.ts
+# Or use alias
+pnpm db:seed:iam
+
+# Run all seeds (PostgreSQL + ClickHouse)
+pnpm db:seed
+
+# Run migrations + seeds
+pnpm db:migrate:seed
 ```
 
-**Seed Files:**
-1. `001-iam-roles-permissions.seed.ts` - Permissions and roles (5-tier RBAC)
-2. `002-iam-data.seed.ts` - Regions, tenants, organizations, workspaces
-3. `003-auth-test-users.seed.ts` - Default test users with roles
-4. `004-groups.seed.ts` - Sample user groups
+**Seed Files (3 files):**
+1. `1704240000001-seed-iam-roles-permissions.ts` - Regions, organizations, workspaces, tenants, permissions, roles
+2. `1704240000002-seed-auth-test-users.ts` - 5 test users (one per RBAC tier)
+3. `1704240000003-seed-groups.ts` - 4 sample user groups
 
 **Default Data Created:**
 - 1 Region: `ap-southeast-3` (Asia Pacific Jakarta)
 - 1 Tenant: `TelemetryFlow`
 - 1 Organization: `DevOpsCorner`
 - 1 Workspace: `Production`
-- 22+ Permissions
+- 22+ Permissions (IAM operations)
 - 5 Roles (Super Admin, Administrator, Developer, Viewer, Demo)
-- 5 Test Users
+- 5 Test Users (one per role)
+- 4 Groups (Engineering, DevOps, Management, Demo Users)
 
 ## ClickHouse
 
@@ -142,13 +174,22 @@ TTL timestamp + INTERVAL 90 DAY;
 
 ### Migrations
 
+**Available Migrations (4 files):**
+1. `1704240000001-CreateAuditLogsTable.ts` - Audit logs with materialized views
+2. `1704240000002-CreateLogsTable.ts` - Application logs with error tracking
+3. `1704240000003-CreateMetricsTable.ts` - Metrics with 1m/1h aggregations
+4. `1704240000004-CreateTracesTable.ts` - Distributed traces with statistics
+
 **Run Migrations:**
 ```bash
-# Using Docker
-docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < config/clickhouse/migrations/001-audit-logs.sql
+# Run all ClickHouse migrations
+pnpm db:migrate:clickhouse
 
-# Or using script
-bash config/clickhouse/migrations/run-migrations.sh
+# Run all migrations (PostgreSQL + ClickHouse)
+pnpm db:migrate
+
+# Run migrations + seeds
+pnpm db:migrate:seed
 ```
 
 **Idempotency:** ✅ Uses `IF NOT EXISTS` - safe to run multiple times
@@ -157,11 +198,27 @@ bash config/clickhouse/migrations/run-migrations.sh
 
 **Run Seeds:**
 ```bash
-docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < src/database/clickhouse/seeds/001-sample-audit-logs.sql
+# Run all ClickHouse seeds
+pnpm db:seed:clickhouse
+
+# Run all seeds (PostgreSQL + ClickHouse)
+pnpm db:seed
+
+# Run migrations + seeds
+pnpm db:migrate:seed
 ```
 
+**Seed Files (4 files):**
+1. `1704240000001-seed-sample-audit-logs.ts` - 5 sample audit log entries
+2. `1704240000002-seed-sample-logs.ts` - Sample application logs
+3. `1704240000003-seed-sample-metrics.ts` - 240 sample metrics (last 1 hour)
+4. `1704240000004-seed-sample-traces.ts` - 30 trace spans (10 complete traces)
+
 **Sample Data:**
-- 12 audit log entries (AUTH, AUTHZ, DATA, SYSTEM events)
+- 5 audit log entries (AUTH, AUTHZ, DATA, SYSTEM events)
+- Application logs with different severity levels
+- 240 metrics (CPU, memory, HTTP requests, response times)
+- 10 complete distributed traces (3 spans each)
 
 ### Connection
 
@@ -217,46 +274,57 @@ Update `src/modules/audit/audit.service.ts` to insert into ClickHouse instead of
 
 ### 1. Start Databases
 ```bash
-docker-compose up -d postgres clickhouse
+# Start core services (PostgreSQL + ClickHouse)
+docker-compose --profile core up -d
+
+# Or start all services
+docker-compose --profile all up -d
 ```
 
-### 2. Run PostgreSQL Migrations & Seeds
+### 2. Run Migrations
 ```bash
-# Migrations run automatically with synchronize: true in development
-# Or manually:
-pnpm run migration:run
+# Run all migrations (PostgreSQL + ClickHouse)
+pnpm db:migrate
 
-# Seed IAM data
-pnpm run db:seed:iam
+# Or run separately
+pnpm db:migrate:postgres
+pnpm db:migrate:clickhouse
 ```
 
-### 3. Run ClickHouse Migrations
+### 3. Seed Data
 ```bash
-# Run migration
-docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < config/clickhouse/migrations/001-audit-logs.sql
+# Seed all databases (PostgreSQL + ClickHouse)
+pnpm db:seed
 
-# Optional: Load sample data
-docker exec -i telemetryflow_core_clickhouse clickhouse-client --multiquery < src/database/clickhouse/seeds/001-sample-audit-logs.sql
+# Or run separately
+pnpm db:seed:postgres  # or pnpm db:seed:iam
+pnpm db:seed:clickhouse
 ```
 
 ### 4. Verify Setup
 ```bash
 # PostgreSQL - Check tables
-docker exec -it telemetryflow_core_postgres psql -U postgres -d telemetryflow_core -c "\dt"
+docker exec -it telemetryflow_core_postgres psql -U postgres -d telemetryflow_db -c "\dt"
 
 # PostgreSQL - Check users
-docker exec -it telemetryflow_core_postgres psql -U postgres -d telemetryflow_core -c "SELECT email, first_name, last_name FROM users;"
+docker exec -it telemetryflow_core_postgres psql -U postgres -d telemetryflow_db -c "SELECT email, first_name, last_name FROM users;"
 
-# ClickHouse - Check audit logs table
+# ClickHouse - Check tables
 docker exec -it telemetryflow_core_clickhouse clickhouse-client --query "SHOW TABLES FROM telemetryflow_db"
 
 # ClickHouse - Check audit logs count
 docker exec -it telemetryflow_core_clickhouse clickhouse-client --query "SELECT count() FROM telemetryflow_db.audit_logs"
 ```
 
+### 5. One-Command Setup
+```bash
+# Run migrations + seeds in one command
+pnpm db:migrate:seed
+```
+
 ## Default Users (5-Tier RBAC)
 
-Created by `003-auth-test-users.seed.ts`:
+Created by `1704240000002-seed-auth-test-users.ts`:
 
 | Email | Password | Role | Tier | Permissions |
 |-------|----------|------|------|-------------|
@@ -265,6 +333,8 @@ Created by `003-auth-test-users.seed.ts`:
 | developer.telemetryflow@telemetryflow.id | Developer@123456 | Developer | 3 | Create/Read/Update |
 | viewer.telemetryflow@telemetryflow.id | Viewer@123456 | Viewer | 4 | Read-only |
 | demo.telemetryflow@telemetryflow.id | Demo@123456 | Demo | 5 | Demo org only |
+
+⚠️ **Change these passwords in production!**
 
 ## API Endpoints
 
@@ -367,4 +437,4 @@ docker-compose logs backend | grep Audit
 
 ---
 
-**Last Updated**: 2025-12-03
+**Last Updated**: 2025-12-06
