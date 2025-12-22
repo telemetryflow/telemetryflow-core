@@ -37,7 +37,7 @@
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/typeorm.config.ts"
   },
   "dependencies": {
-    "@clickhouse/client": "^1.14.0",
+    "@clickhouse/client": "^1.15.0",
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.1.9",
     "@nestjs/config": "^4.0.2",
