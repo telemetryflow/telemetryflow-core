@@ -428,6 +428,91 @@ pnpm test:bdd:verbose
 ./scripts/export-swagger-docs.sh
 ```
 
+## Makefile Commands (Recommended)
+
+TelemetryFlow Core includes a comprehensive Makefile that simplifies development and CI operations. The Makefile provides standardized commands that work consistently across local development and CI environments.
+
+```bash
+# Quick Start
+make help                    # Show all available commands
+make install                 # Install dependencies
+make dev                     # Start development server
+make build                   # Build the application
+
+# Development Workflow
+make start                   # Install + build + start development
+make reset                   # Clean + install + build (reset environment)
+make check                   # Quick check (lint + test)
+
+# Code Quality
+make lint                    # Run ESLint
+make lint-fix                # Run ESLint with auto-fix
+make format                  # Alias for lint-fix
+
+# Testing
+make test                    # Run unit tests
+make test-coverage           # Run tests with coverage
+make test-bdd                # Run BDD tests (Newman/Postman)
+
+# Database Operations
+make db-migrate              # Run database migrations
+make db-seed                 # Seed database with initial data
+make db-setup                # Setup database (migrate + seed)
+make db-cleanup              # Clean up database
+
+# Docker Operations
+make docker-build            # Build Docker image
+make docker-run              # Run Docker container locally
+make docker-stop             # Stop and remove Docker container
+make up                      # Start all services with Docker Compose
+make down                    # Stop all services
+
+# CI/CD Pipeline (Used by GitHub Actions)
+make ci-install              # CI: Install dependencies (frozen lockfile)
+make ci-validate             # CI: Validate module standardization
+make ci-lint                 # CI: Run linting
+make ci-build                # CI: Build application
+make ci-test                 # CI: Run tests with coverage
+make ci-security             # CI: Run security audit
+make ci-pipeline             # CI: Run complete pipeline
+
+# Release Management
+make release-build           # Build release version
+make release-docker          # Build and push Docker release
+
+# Utilities
+make generate-secrets        # Generate JWT and session secrets
+make bootstrap               # Bootstrap development environment
+make health                  # Check application health
+make version                 # Show version information
+make clean                   # Clean build artifacts and dependencies
+```
+
+### Why Use Makefile?
+
+1. **Consistency**: Same commands work in local development and CI
+2. **Simplicity**: Single command for complex operations
+3. **Documentation**: Self-documenting with `make help`
+4. **Reliability**: Handles error cases and environment setup
+5. **CI Integration**: GitHub Actions use the same Makefile targets
+
+### Example Workflows
+
+```bash
+# New developer setup
+make install
+make generate-secrets
+make db-setup
+make dev
+
+# Daily development
+make check                   # Lint + test before committing
+make reset                   # Reset environment if issues
+
+# CI pipeline (what GitHub Actions runs)
+make ci-pipeline             # Complete CI validation
+```
+
 ## Available Scripts
 
 ```bash

@@ -62,4 +62,9 @@ export class Organization extends AggregateRoot<OrganizationId> {
   delete(): void {
     this.addDomainEvent(new OrganizationDeletedEvent(this.id.getValue()));
   }
+
+  // Alias for compatibility with tests
+  getUncommittedEvents(): any[] {
+    return this.domainEvents;
+  }
 }

@@ -57,17 +57,17 @@ export class IAMEventProcessor {
     }
   }
 
-  private async handleUserEvent(eventType: string, userId: string, tenantId: string, data: any): Promise<void> {
+  private async handleUserEvent(eventType: string, userId: string, _tenantId: string, _data: any): Promise<void> {
     // Handle user-specific processing
     this.logger.debug(`Processing user event: ${eventType} for user ${userId}`, this.context);
   }
 
-  private async handleRoleEvent(eventType: string, roleId: string, tenantId: string, data: any): Promise<void> {
+  private async handleRoleEvent(eventType: string, roleId: string, _tenantId: string, _data: any): Promise<void> {
     // Handle role-specific processing
     this.logger.debug(`Processing role event: ${eventType} for role ${roleId}`, this.context);
   }
 
-  private async handlePermissionEvent(eventType: string, permissionId: string, tenantId: string, data: any): Promise<void> {
+  private async handlePermissionEvent(eventType: string, permissionId: string, _tenantId: string, _data: any): Promise<void> {
     // Handle permission-specific processing
     this.logger.debug(`Processing permission event: ${eventType} for permission ${permissionId}`, this.context);
   }

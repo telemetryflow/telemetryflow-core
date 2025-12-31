@@ -5,7 +5,6 @@ import { IRoleRepository } from '../../domain/repositories/IRoleRepository';
 import { Role } from '../../domain/aggregates/Role';
 import { RoleId } from '../../domain/value-objects/RoleId';
 import { TenantId } from '../../domain/value-objects/TenantId';
-import { PermissionId } from '../../domain/value-objects/PermissionId';
 import { RoleEntity } from './entities/RoleEntity';
 import { PermissionEntity } from './entities/PermissionEntity';
 import { RoleMapper } from './RoleMapper';

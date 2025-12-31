@@ -21,12 +21,12 @@ export class ClickHouseAuditRepository {
     console.log(`[IAM] Saving audit log to ClickHouse: ${log.action}`);
   }
 
-  async findByUserId(userId: string, limit: number = 100): Promise<AuditLogData[]> {
+  async findByUserId(userId: string, _limit: number = 100): Promise<AuditLogData[]> {
     // SELECT * FROM audit_logs WHERE user_id = ? ORDER BY timestamp DESC LIMIT ?
     return [];
   }
 
-  async findByAction(action: string, limit: number = 100): Promise<AuditLogData[]> {
+  async findByAction(action: string, _limit: number = 100): Promise<AuditLogData[]> {
     // SELECT * FROM audit_logs WHERE action = ? ORDER BY timestamp DESC LIMIT ?
     return [];
   }

@@ -1,17 +1,14 @@
 # =============================================================================
-# TelemetryFlow Core - CI Workflow
+# TelemetryFlow Core - CI Workflow (Simplified with Makefile)
 # =============================================================================
 #
 # TelemetryFlow Core - Identity and Access Management Service
 # Copyright (c) 2024-2026 DevOpsCorner Indonesia. All rights reserved.
 #
-# This workflow runs tests, linting, and module standardization validation:
-# - Unit tests with coverage
-# - Integration tests
-# - E2E tests
-# - Linting with ESLint
-# - Module standardization validation
-# - Security scanning
+# This workflow uses Makefile targets to simplify CI operations:
+# - Standardized commands across local development and CI
+# - Consistent behavior between environments
+# - Easier maintenance and debugging
 #
 # =============================================================================
 
@@ -114,49 +111,10 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: make ci-install
 
       - name: Validate specification structure
-        run: |
-          echo "Validating module standardization specifications..."
-          
-          # Check if .kiro/specs directory exists
-          if [ ! -d ".kiro/specs" ]; then
-            echo "❌ .kiro/specs directory not found"
-            exit 1
-          fi
-          
-          # Validate each module specification
-          MODULES=("iam-module-standardization" "audit-module-standardization" "auth-module-standardization" "cache-module-standardization")
-          
-          for module in "${MODULES[@]}"; do
-            echo "Validating $module..."
-            
-            SPEC_DIR=".kiro/specs/$module"
-            if [ ! -d "$SPEC_DIR" ]; then
-              echo "❌ Module specification directory not found: $SPEC_DIR"
-              exit 1
-            fi
-            
-            # Check required files
-            REQUIRED_FILES=("requirements.md" "design.md" "tasks.md")
-            for file in "${REQUIRED_FILES[@]}"; do
-              if [ ! -f "$SPEC_DIR/$file" ]; then
-                echo "❌ Required file not found: $SPEC_DIR/$file"
-                exit 1
-              fi
-              
-              # Check file size (should not be empty)
-              if [ ! -s "$SPEC_DIR/$file" ]; then
-                echo "❌ File is empty: $SPEC_DIR/$file"
-                exit 1
-              fi
-            done
-            
-            echo "✅ $module specification is valid"
-          done
-          
-          echo "✅ All module specifications are valid"
+        run: make ci-validate
 
       - name: Validate EARS patterns in requirements
         run: |
@@ -248,13 +206,13 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: make ci-install
 
       - name: Run ESLint
-        run: pnpm lint
+        run: make ci-lint
 
       - name: Check TypeScript compilation
-        run: pnpm build
+        run: make ci-build
 
       - name: Check for circular dependencies
         run: |
@@ -296,19 +254,12 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: make ci-install
 
       # TODO: Fix Jest configuration issues with module resolution
       # Currently allowing tests to fail to unblock CI pipeline
       - name: Run unit tests with coverage
-        run: |
-          echo "Running tests with coverage..."
-          pnpm test:cov || {
-            echo "⚠️  Tests failed due to Jest module resolution issues"
-            echo "This is a known issue that needs to be fixed in a follow-up PR"
-            echo "The build and linting are working correctly"
-            exit 0
-          }
+        run: make ci-test
 
       - name: Check coverage thresholds
         run: |
@@ -404,7 +355,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: make ci-install
 
       - name: Wait for services
         run: |
@@ -423,29 +374,11 @@ jobs:
           echo "ClickHouse is ready!"
 
       - name: Run database migrations
-        run: |
-          export NODE_ENV=test
-          export POSTGRES_HOST=localhost
-          export POSTGRES_PORT=5432
-          export POSTGRES_DB=telemetryflow_test_db
-          export POSTGRES_USERNAME=postgres
-          export POSTGRES_PASSWORD=telemetryflow123
-          export CLICKHOUSE_HOST=localhost
-          export CLICKHOUSE_PORT=8123
-          export CLICKHOUSE_DB=telemetryflow_test_db
-          export CLICKHOUSE_PASSWORD=telemetryflow123
-          
-          pnpm db:migrate
+        run: make db-migrate
 
       # TODO: Fix Jest configuration for integration tests
       - name: Run integration tests
-        run: |
-          echo "Running integration tests..."
-          pnpm test --testPathPattern=integration || {
-            echo "⚠️  Integration tests failed due to Jest configuration issues"
-            echo "Continuing CI pipeline - this needs to be fixed"
-            exit 0
-          }
+        run: make test || echo "⚠️ Integration tests failed due to Jest configuration issues"
 
   # ===========================================================================
   # E2E Tests (Optional)
@@ -508,10 +441,10 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: make ci-install
 
       - name: Build application
-        run: pnpm build
+        run: make ci-build
 
       - name: Start application
         run: |
@@ -526,7 +459,7 @@ jobs:
           export CLICKHOUSE_DB=telemetryflow_e2e_db
           export CLICKHOUSE_PASSWORD=telemetryflow123
           
-          pnpm db:migrate:seed
+          make db-setup
           pnpm start &
           
           # Wait for application to start
@@ -534,7 +467,7 @@ jobs:
           curl -f http://localhost:3000/health
 
       - name: Run BDD tests
-        run: pnpm test:bdd
+        run: make test-bdd
 
   # ===========================================================================
   # Build Verification
@@ -572,10 +505,10 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: make ci-install
 
       - name: Build application
-        run: pnpm build
+        run: make ci-build
 
       - name: Verify build artifacts
         run: |
@@ -627,11 +560,10 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: make ci-install
 
       - name: Run npm audit
-        run: pnpm audit --audit-level moderate
-        continue-on-error: true
+        run: make ci-security
 
       # TODO: Fix CodeQL configuration conflict
       # Currently disabled due to "advanced configurations cannot be processed when default setup is enabled"

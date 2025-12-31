@@ -1,12 +1,13 @@
+import { AggregateRoot } from '../../../../shared/domain/base/AggregateRoot';
 import { WorkspaceId } from '../value-objects/WorkspaceId';
 import { OrganizationId } from '../value-objects/OrganizationId';
 import { WorkspaceCreatedEvent } from '../events/WorkspaceCreated.event';
 import { WorkspaceUpdatedEvent } from '../events/WorkspaceUpdated.event';
 import { WorkspaceDeletedEvent } from '../events/WorkspaceDeleted.event';
 
-export class Workspace {
+export class Workspace extends AggregateRoot<WorkspaceId> {
   private constructor(
-    public readonly id: WorkspaceId,
+    id: WorkspaceId,
     public name: string,
     public code: string,
     public organizationId: OrganizationId,
@@ -15,7 +16,10 @@ export class Workspace {
     public isActive: boolean = true,
     public readonly createdAt: Date = new Date(),
     public updatedAt: Date = new Date(),
-  ) {}
+  ) {
+    super();
+    this._id = id;
+  }
 
   static create(
     name: string,
@@ -32,7 +36,7 @@ export class Workspace {
       description,
       datasourceConfig,
     );
-    workspace.addEvent(new WorkspaceCreatedEvent(workspace.id.getValue(), name, code, organizationId.getValue()));
+    workspace.addDomainEvent(new WorkspaceCreatedEvent(workspace.id.getValue(), name, code, organizationId.getValue()));
     return workspace;
   }
 
@@ -55,7 +59,7 @@ export class Workspace {
     if (description !== undefined) this.description = description;
     if (datasourceConfig !== undefined) this.datasourceConfig = datasourceConfig;
     this.updatedAt = new Date();
-    this.addEvent(new WorkspaceUpdatedEvent(this.id.getValue(), this.name));
+    this.addDomainEvent(new WorkspaceUpdatedEvent(this.id.getValue(), this.name));
   }
 
   activate(): void {
@@ -69,17 +73,11 @@ export class Workspace {
   }
 
   delete(): void {
-    this.addEvent(new WorkspaceDeletedEvent(this.id.getValue(), this.name));
+    this.addDomainEvent(new WorkspaceDeletedEvent(this.id.getValue(), this.name));
   }
 
-  private events: any[] = [];
-  private addEvent(event: any): void {
-    this.events.push(event);
-  }
-  getEvents(): any[] {
-    return this.events;
-  }
-  clearEvents(): void {
-    this.events = [];
+  // Alias for compatibility with tests
+  getUncommittedEvents(): any[] {
+    return this.domainEvents;
   }
 }

@@ -76,7 +76,7 @@ describe('Workspace Aggregate', () => {
 
       workspace.clearEvents();
 
-      expect(workspace.getEvents()).toHaveLength(0);
+      expect(workspace.domainEvents).toHaveLength(0);
     });
 
     it('should accumulate events', () => {

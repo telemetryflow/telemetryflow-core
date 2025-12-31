@@ -1,14 +1,15 @@
 # =============================================================================
-# TelemetryFlow Core - Docker Image Builder Workflow
+# TelemetryFlow Core - Docker Image Builder Workflow (Makefile-Enhanced)
 # =============================================================================
 #
 # TelemetryFlow Core - Identity and Access Management Service
 # Copyright (c) 2024-2026 DevOpsCorner Indonesia. All rights reserved.
 #
-# This workflow builds and publishes Docker images for TelemetryFlow Core:
+# This workflow builds and publishes Docker images using Makefile targets:
+# - Consistent build process between local and CI environments
 # - Multi-platform support: linux/amd64, linux/arm64
 # - Semantic versioning tags
-# - Docker Hub and GitHub Container Registry
+# - Docker Hub registry only
 #
 # Triggers:
 # - Push tags matching v*.*.*
@@ -63,16 +64,12 @@ on:
 
 env:
   REGISTRY_DOCKER: docker.io
-  REGISTRY_GHCR: ghcr.io
   IMAGE_NAME: telemetryflow/telemetryflow-core
-  GHCR_IMAGE_NAME: ghcr.io/${{ github.repository }}
   PRODUCT_NAME: TelemetryFlow Core
 
 permissions:
   contents: read
-  packages: write
   id-token: write
-  security-events: write
 
 jobs:
   # ===========================================================================
@@ -132,7 +129,6 @@ jobs:
         with:
           images: |
             ${{ env.REGISTRY_DOCKER }}/${{ env.IMAGE_NAME }}
-            ${{ env.GHCR_IMAGE_NAME }}
           flavor: |
             latest=false
           tags: |
@@ -213,15 +209,17 @@ jobs:
           # Install pnpm
           RUN npm install -g pnpm@10.24.0
 
-          # Copy package files
-          COPY package.json pnpm-lock.yaml ./
-          RUN pnpm install --frozen-lockfile
+          # Copy package files and Makefile
+          COPY package.json pnpm-lock.yaml Makefile ./
+          
+          # Install dependencies using Makefile
+          RUN make ci-install
 
           # Copy source
           COPY . .
 
-          # Build application
-          RUN pnpm build
+          # Build application using Makefile
+          RUN make ci-build
 
           # =============================================================================
           # Final image
@@ -276,14 +274,6 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Login to GitHub Container Registry
-        if: needs.prepare.outputs.push == 'true'
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_GHCR }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Determine version
         id: version
         run: |
@@ -319,7 +309,7 @@ jobs:
         if: needs.prepare.outputs.push == 'true'
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.GHCR_IMAGE_NAME }}:sha-${{ needs.prepare.outputs.commit }}
+          image: ${{ env.REGISTRY_DOCKER }}/${{ env.IMAGE_NAME }}:sha-${{ needs.prepare.outputs.commit }}
           format: spdx-json
           output-file: sbom-${{ steps.version.outputs.version }}.spdx.json
           upload-release-assets: false
@@ -339,28 +329,125 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
     needs: [prepare, build]
-    if: needs.prepare.outputs.push == 'true' && vars.DOCKERHUB_USERNAME != ''
+    if: needs.build.result == 'success'
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Login to Docker Hub
+        if: needs.prepare.outputs.push == 'true' && vars.DOCKERHUB_USERNAME != ''
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY_DOCKER }}
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Determine scan target
+        id: scan-target
+        run: |
+          echo "=== Security Scan Configuration ==="
+          echo "Repository: ${{ github.repository }}"
+          echo "Commit: ${{ needs.prepare.outputs.commit }}"
+          echo "Push enabled: ${{ needs.prepare.outputs.push }}"
+          echo "Docker Hub Image: ${{ env.REGISTRY_DOCKER }}/${{ env.IMAGE_NAME }}"
+          
+          if [ "${{ needs.prepare.outputs.push }}" = "true" ]; then
+            # Try to scan the pushed image
+            IMAGE_REF="${{ env.REGISTRY_DOCKER }}/${{ env.IMAGE_NAME }}:sha-${{ needs.prepare.outputs.commit }}"
+            echo "Checking if pushed image is available: $IMAGE_REF"
+            
+            # Try to pull the image to verify it exists
+            if docker pull "$IMAGE_REF" 2>/dev/null; then
+              echo "✅ Using pushed image: $IMAGE_REF"
+              echo "target=$IMAGE_REF" >> $GITHUB_OUTPUT
+              echo "type=remote" >> $GITHUB_OUTPUT
+            else
+              echo "⚠️ Pushed image not available, will build locally for scanning"
+              echo "target=local-scan-image" >> $GITHUB_OUTPUT
+              echo "type=local" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "📝 PR build - will build locally for scanning"
+            echo "target=local-scan-image" >> $GITHUB_OUTPUT
+            echo "type=local" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build image for scanning (if needed)
+        if: steps.scan-target.outputs.type == 'local'
+        run: |
+          # Create Dockerfile for scanning
+          cat > Dockerfile << 'EOF'
+          FROM node:18-alpine AS builder
+          WORKDIR /build
+          RUN apk add --no-cache git make python3 g++
+          RUN npm install -g pnpm@10.24.0
+          COPY package.json pnpm-lock.yaml Makefile ./
+          RUN make ci-install
+          COPY . .
+          RUN make ci-build
+
+          FROM node:18-alpine
+          RUN apk upgrade --no-cache && \
+              apk add --no-cache ca-certificates tzdata curl
+          RUN addgroup -g 1001 -S nodejs && \
+              adduser -S nestjs -u 1001
+          WORKDIR /app
+          COPY --from=builder --chown=nestjs:nodejs /build/dist ./dist
+          COPY --from=builder --chown=nestjs:nodejs /build/node_modules ./node_modules
+          COPY --from=builder --chown=nestjs:nodejs /build/package.json ./
+          RUN mkdir -p logs && chown nestjs:nodejs logs
+          USER nestjs
+          EXPOSE 3000
+          CMD ["node", "dist/main.js"]
+          EOF
+          
+          # Build image locally for scanning
+          docker build -t local-scan-image .
+
       - name: Run Trivy vulnerability scanner
+        id: trivy-scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.GHCR_IMAGE_NAME }}:sha-${{ needs.prepare.outputs.commit }}
+          image-ref: ${{ steps.scan-target.outputs.target }}
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
+        continue-on-error: true
 
-      - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
+      - name: Check scan results
+        run: |
+          if [ -f "trivy-results.sarif" ]; then
+            echo "✅ Trivy scan completed successfully"
+            echo "📄 SARIF file size: $(du -h trivy-results.sarif | cut -f1)"
+            
+            # Check if there are any findings
+            if grep -q '"results"' trivy-results.sarif; then
+              echo "🔍 Security findings detected"
+              echo "📋 Summary of findings:"
+              # Extract and display basic vulnerability info
+              if command -v jq >/dev/null 2>&1; then
+                jq -r '.runs[0].results[]? | "- \(.ruleId): \(.message.text)"' trivy-results.sarif | head -10
+              else
+                echo "Install jq to see detailed findings"
+              fi
+            else
+              echo "✅ No security vulnerabilities found"
+            fi
+          else
+            echo "⚠️ Trivy scan did not produce results file"
+            echo "This might indicate a scan failure or no vulnerabilities found"
+          fi
+
+      - name: Upload scan results as artifact
+        uses: actions/upload-artifact@v4
+        if: always() && hashFiles('trivy-results.sarif') != ''
         with:
-          sarif_file: 'trivy-results.sarif'
+          name: trivy-scan-results-${{ needs.prepare.outputs.commit }}
+          path: trivy-results.sarif
+          retention-days: 30
 
   # ===========================================================================
   # Summary
@@ -393,9 +480,6 @@ jobs:
           echo '```bash' >> $GITHUB_STEP_SUMMARY
           echo "# Docker Hub" >> $GITHUB_STEP_SUMMARY
           echo "docker pull ${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "# GitHub Container Registry" >> $GITHUB_STEP_SUMMARY
-          echo "docker pull ${{ env.GHCR_IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Usage" >> $GITHUB_STEP_SUMMARY

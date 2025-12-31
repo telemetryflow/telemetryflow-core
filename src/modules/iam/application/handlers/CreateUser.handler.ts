@@ -4,7 +4,6 @@ import { CreateUserCommand } from '../commands/CreateUser.command';
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { User } from '../../domain/aggregates/User';
 import { Email } from '../../domain/value-objects/Email';
-import { UserProfile } from '../../domain/entities/UserProfile';
 import * as bcrypt from 'bcrypt';
 
 @CommandHandler(CreateUserCommand)
