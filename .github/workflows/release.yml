@@ -1,0 +1,559 @@
+# =============================================================================
+# TelemetryFlow Core - Release Workflow
+# =============================================================================
+#
+# TelemetryFlow Core - Identity and Access Management Service
+# Copyright (c) 2024-2026 DevOpsCorner Indonesia. All rights reserved.
+#
+# This workflow builds and releases TelemetryFlow Core:
+# - Docker images for multiple platforms
+# - Source code archives
+# - Release notes with changelog
+#
+# Platforms:
+# - Linux: Docker images (amd64, arm64)
+# - Source: tar.gz archives
+#
+# Triggers:
+# - Push tags matching v*.*.*
+# - Manual workflow dispatch
+#
+# =============================================================================
+
+name: Release - TelemetryFlow Core
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+  PRODUCT_NAME: TelemetryFlow Core
+  VENDOR: DevOpsCorner Indonesia
+  MAINTAINER: support@telemetryflow.id
+  DESCRIPTION: Enterprise-grade Identity and Access Management service for TelemetryFlow - the observability platform that provides unified metrics, logs, and traces collection following OpenTelemetry standards.
+  LICENSE: Apache-2.0
+  HOMEPAGE: https://telemetryflow.id
+  REGISTRY_DOCKER: docker.io
+  REGISTRY_GHCR: ghcr.io
+  IMAGE_NAME: telemetryflow/telemetryflow-core
+  GHCR_IMAGE_NAME: ghcr.io/${{ github.repository }}
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  # ===========================================================================
+  # Prepare Release
+  # ===========================================================================
+  prepare:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      commit: ${{ steps.version.outputs.commit }}
+      branch: ${{ steps.version.outputs.branch }}
+      build_time: ${{ steps.version.outputs.build_time }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "commit=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_OUTPUT
+          echo "build_time=$(date -u '+%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+
+  # ===========================================================================
+  # Build Docker Images
+  # ===========================================================================
+  build-docker:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: vars.DOCKERHUB_USERNAME != ''
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_DOCKER }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GHCR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.REGISTRY_DOCKER }}/${{ env.IMAGE_NAME }}
+            ${{ env.GHCR_IMAGE_NAME }}
+          flavor: |
+            latest=false
+          tags: |
+            # Semantic versioning from tags
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            # Manual version input
+            type=raw,value=${{ needs.prepare.outputs.version }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            # Latest for releases
+            type=raw,value=latest,enable=true
+          labels: |
+            org.opencontainers.image.title=${{ env.PRODUCT_NAME }}
+            org.opencontainers.image.description=${{ env.DESCRIPTION }}
+            org.opencontainers.image.vendor=TelemetryFlow
+            org.opencontainers.image.licenses=${{ env.LICENSE }}
+            org.opencontainers.image.url=${{ env.HOMEPAGE }}
+            io.telemetryflow.product=${{ env.PRODUCT_NAME }}
+            io.telemetryflow.component=iam-service
+            io.telemetryflow.platform=CEOP
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ needs.prepare.outputs.version }}
+            GIT_COMMIT=${{ needs.prepare.outputs.commit }}
+            GIT_BRANCH=${{ needs.prepare.outputs.branch }}
+            BUILD_TIME=${{ needs.prepare.outputs.build_time }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true
+          sbom: true
+
+  # ===========================================================================
+  # Create Source Archives
+  # ===========================================================================
+  build-source:
+    name: Create Source Archives
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Create source archive
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          # Create source archive with built application
+          ARCHIVE_NAME="telemetryflow-core-${VERSION}-source"
+          mkdir -p "${ARCHIVE_NAME}"
+          
+          # Copy essential files
+          cp -r dist "${ARCHIVE_NAME}/"
+          cp -r src "${ARCHIVE_NAME}/"
+          cp -r config "${ARCHIVE_NAME}/"
+          cp -r docs "${ARCHIVE_NAME}/"
+          cp -r scripts "${ARCHIVE_NAME}/"
+          cp package.json "${ARCHIVE_NAME}/"
+          cp pnpm-lock.yaml "${ARCHIVE_NAME}/"
+          cp tsconfig.json "${ARCHIVE_NAME}/"
+          cp nest-cli.json "${ARCHIVE_NAME}/"
+          cp jest.config.js "${ARCHIVE_NAME}/"
+          cp Dockerfile "${ARCHIVE_NAME}/"
+          cp docker-compose.yml "${ARCHIVE_NAME}/"
+          cp README.md "${ARCHIVE_NAME}/"
+          cp LICENSE "${ARCHIVE_NAME}/"
+          cp CHANGELOG.md "${ARCHIVE_NAME}/"
+          cp CONTRIBUTING.md "${ARCHIVE_NAME}/"
+          cp SECURITY.md "${ARCHIVE_NAME}/"
+          
+          # Create installation script
+          cat > "${ARCHIVE_NAME}/install.sh" << 'EOF'
+          #!/bin/bash
+          # TelemetryFlow Core Installation Script
+          
+          set -e
+          
+          echo "Installing TelemetryFlow Core..."
+          
+          # Check Node.js
+          if ! command -v node &> /dev/null; then
+            echo "Error: Node.js is required but not installed."
+            echo "Please install Node.js 18+ from https://nodejs.org/"
+            exit 1
+          fi
+          
+          # Check pnpm
+          if ! command -v pnpm &> /dev/null; then
+            echo "Installing pnpm..."
+            npm install -g pnpm
+          fi
+          
+          # Install dependencies (production only)
+          echo "Installing dependencies..."
+          pnpm install --prod --frozen-lockfile
+          
+          # Generate secrets if not exists
+          if [ ! -f ".env" ]; then
+            echo "Generating secrets..."
+            node scripts/generate-secrets.js
+          fi
+          
+          echo ""
+          echo "TelemetryFlow Core installed successfully!"
+          echo ""
+          echo "Next steps:"
+          echo "1. Configure your .env file with database settings"
+          echo "2. Run database migrations: pnpm db:migrate:seed"
+          echo "3. Start the service: pnpm start"
+          echo ""
+          echo "For more information, see README.md"
+          EOF
+          chmod +x "${ARCHIVE_NAME}/install.sh"
+          
+          # Create README for the archive
+          cat > "${ARCHIVE_NAME}/INSTALL.md" << EOF
+          # TelemetryFlow Core v${VERSION}
+          
+          ## Quick Start
+          
+          1. **Install dependencies:**
+             \`\`\`bash
+             ./install.sh
+             \`\`\`
+          
+          2. **Configure environment:**
+             \`\`\`bash
+             cp .env.example .env
+             # Edit .env with your database settings
+             \`\`\`
+          
+          3. **Initialize database:**
+             \`\`\`bash
+             pnpm db:migrate:seed
+             \`\`\`
+          
+          4. **Start the service:**
+             \`\`\`bash
+             pnpm start
+             \`\`\`
+          
+          ## Docker Deployment
+          
+          \`\`\`bash
+          docker-compose --profile core up -d
+          \`\`\`
+          
+          ## Documentation
+          
+          - [README.md](README.md) - Main documentation
+          - [CONTRIBUTING.md](CONTRIBUTING.md) - Development guide
+          - [docs/](docs/) - Additional documentation
+          
+          ## Support
+          
+          - Homepage: ${HOMEPAGE}
+          - Email: ${MAINTAINER}
+          - Issues: https://github.com/telemetryflow/telemetryflow-core/issues
+          EOF
+          
+          # Create tarball
+          tar -czf "${ARCHIVE_NAME}.tar.gz" "${ARCHIVE_NAME}"
+          
+          # Create ZIP for Windows users
+          zip -r "${ARCHIVE_NAME}.zip" "${ARCHIVE_NAME}"
+
+      - name: Upload source artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-archives
+          path: |
+            telemetryflow-core-*.tar.gz
+            telemetryflow-core-*.zip
+          retention-days: 1
+
+  # ===========================================================================
+  # Create GitHub Release
+  # ===========================================================================
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - build-docker
+      - build-source
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download source archives
+        uses: actions/download-artifact@v4
+        with:
+          name: source-archives
+          path: artifacts/
+
+      - name: Prepare release assets
+        run: |
+          mkdir -p release
+
+          echo "=== Downloaded artifacts structure ==="
+          find artifacts -type f -ls
+
+          echo ""
+          echo "=== Collecting source archives ==="
+          find artifacts -name "*.tar.gz" -exec cp {} release/ \; 2>/dev/null || echo "No tar.gz files found"
+          find artifacts -name "*.zip" -exec cp {} release/ \; 2>/dev/null || echo "No zip files found"
+
+          echo ""
+          echo "=== Release directory contents ==="
+          ls -la release/
+
+          echo ""
+          echo "=== Package summary ==="
+          echo "Source archives: $(ls release/*.tar.gz 2>/dev/null | wc -l)"
+          echo "ZIP archives:    $(ls release/*.zip 2>/dev/null | wc -l)"
+          echo "Total files:     $(ls release/ | wc -l)"
+
+          if [ -z "$(ls -A release/)" ]; then
+            echo "ERROR: No release assets found!"
+            exit 1
+          fi
+
+      - name: Generate checksums
+        run: |
+          cd release
+          sha256sum * > checksums-sha256.txt
+          cat checksums-sha256.txt
+
+      - name: Create tag if not exists (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          TAG_NAME="v${{ needs.prepare.outputs.version }}"
+          if ! git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
+            git push origin "$TAG_NAME"
+            echo "Created tag: $TAG_NAME"
+          else
+            echo "Tag $TAG_NAME already exists"
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "${{ env.PRODUCT_NAME }} v${{ needs.prepare.outputs.version }}"
+          tag_name: "v${{ needs.prepare.outputs.version }}"
+          draft: false
+          prerelease: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.prerelease == 'true' }}
+          generate_release_notes: true
+          files: |
+            release/*
+          body: |
+            ## ${{ env.PRODUCT_NAME }} v${{ needs.prepare.outputs.version }}
+
+            ### What's New
+
+            TelemetryFlow Core is a lightweight, production-ready Identity and Access Management (IAM) service extracted from the larger TelemetryFlow Platform. This release provides complete identity and access management with enterprise-grade security features.
+
+            ### Core Features
+
+            - **5-Tier RBAC System**: Super Admin, Administrator, Developer, Viewer, Demo roles with hierarchical permissions
+            - **Multi-tenant Architecture**: Tenant → Organization → Workspace hierarchy for data isolation
+            - **Domain-Driven Design**: Clean architecture with DDD patterns and CQRS implementation
+            - **Enterprise Security**: JWT authentication, Argon2 password hashing, role-based access control
+            - **Observability**: OpenTelemetry tracing, Winston logging, Swagger API documentation
+            - **Audit Logging**: Complete audit trail stored in ClickHouse for compliance
+
+            ### Technology Stack
+
+            - **Backend**: NestJS 11.x with TypeScript 5.9
+            - **Database**: PostgreSQL 16 (IAM data) + ClickHouse (audit logs)
+            - **Authentication**: JWT with Passport
+            - **Observability**: OpenTelemetry, Winston, Prometheus, Grafana
+            - **Testing**: Jest with 90%+ coverage requirements
+
+            ### Downloads
+
+            | Type | Description | File |
+            |------|-------------|------|
+            | **Source Code** | Complete source with built application | `telemetryflow-core-${{ needs.prepare.outputs.version }}-source.tar.gz` |
+            | **Source Code (Windows)** | Complete source with built application | `telemetryflow-core-${{ needs.prepare.outputs.version }}-source.zip` |
+
+            ### Docker Images
+
+            ```bash
+            # Docker Hub
+            docker pull telemetryflow/telemetryflow-core:${{ needs.prepare.outputs.version }}
+            docker pull telemetryflow/telemetryflow-core:latest
+
+            # GitHub Container Registry
+            docker pull ghcr.io/${{ github.repository }}:${{ needs.prepare.outputs.version }}
+            docker pull ghcr.io/${{ github.repository }}:latest
+            ```
+
+            ### Quick Start
+
+            **Using Docker Compose:**
+            ```bash
+            # Download source
+            wget https://github.com/${{ github.repository }}/releases/download/v${{ needs.prepare.outputs.version }}/telemetryflow-core-${{ needs.prepare.outputs.version }}-source.tar.gz
+            tar -xzf telemetryflow-core-${{ needs.prepare.outputs.version }}-source.tar.gz
+            cd telemetryflow-core-${{ needs.prepare.outputs.version }}-source
+
+            # Start services
+            docker-compose --profile core up -d
+            ```
+
+            **From Source:**
+            ```bash
+            # Extract and install
+            tar -xzf telemetryflow-core-${{ needs.prepare.outputs.version }}-source.tar.gz
+            cd telemetryflow-core-${{ needs.prepare.outputs.version }}-source
+            ./install.sh
+
+            # Configure and start
+            cp .env.example .env
+            # Edit .env with your settings
+            pnpm db:migrate:seed
+            pnpm start
+            ```
+
+            ### Default Users
+
+            The system comes with pre-configured users for each RBAC tier:
+            - Super Administrator: `superadmin.telemetryflow@telemetryflow.id`
+            - Administrator: `administrator.telemetryflow@telemetryflow.id`
+            - Developer: `developer.telemetryflow@telemetryflow.id`
+            - Viewer: `viewer.telemetryflow@telemetryflow.id`
+            - Demo: `demo.telemetryflow@telemetryflow.id`
+
+            All default passwords follow the pattern: `{Role}@123456` (change in production).
+
+            ### API Documentation
+
+            Once running, access the Swagger UI at: `http://localhost:3000/api`
+
+            ### Health Check
+
+            ```bash
+            curl http://localhost:3000/health
+            ```
+
+            ### Verification
+
+            Verify downloads using SHA256 checksums in `checksums-sha256.txt`.
+
+            ### Support
+
+            - 📚 [Documentation](https://docs.telemetryflow.id)
+            - 🐛 [Report Issues](https://github.com/${{ github.repository }}/issues)
+            - 💬 [Discussions](https://github.com/${{ github.repository }}/discussions)
+            - 📧 [Email Support](mailto:${{ env.MAINTAINER }})
+
+            ---
+
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/v${{ needs.prepare.outputs.version }}...HEAD Issues](https://github.com/telemetryflow/telemetryflow-go-sdk/issues)
+
+  # ===========================================================================
+  # Summary
+  # ===========================================================================
+  summary:
+    name: Release Summary
+    runs-on: ubuntu-latest
+    needs: [prepare, build-docker, build-source, release]
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "## ${{ env.PRODUCT_NAME }} - Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Version** | v${{ needs.prepare.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | ${{ needs.prepare.outputs.commit }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | ${{ needs.prepare.outputs.branch }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Build Time** | ${{ needs.prepare.outputs.build_time }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Components" >> $GITHUB_STEP_SUMMARY
+          echo "- Identity and Access Management (IAM) Service" >> $GITHUB_STEP_SUMMARY
+          echo "- 5-Tier RBAC System" >> $GITHUB_STEP_SUMMARY
+          echo "- Multi-tenant Architecture" >> $GITHUB_STEP_SUMMARY
+          echo "- OpenTelemetry Observability" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Deliverables" >> $GITHUB_STEP_SUMMARY
+          echo "| Type | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Docker Images | ${{ needs.build-docker.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Source Archives | ${{ needs.build-source.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| GitHub Release | ${{ needs.release.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Docker Images" >> $GITHUB_STEP_SUMMARY
+          echo "- \`telemetryflow/telemetryflow-core:${{ needs.prepare.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/${{ github.repository }}:${{ needs.prepare.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Quick Start" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "docker run -d --name telemetryflow-core \\" >> $GITHUB_STEP_SUMMARY
+          echo "  -p 3000:3000 \\" >> $GITHUB_STEP_SUMMARY
+          echo "  -e POSTGRES_HOST=your-postgres-host \\" >> $GITHUB_STEP_SUMMARY
+          echo "  -e JWT_SECRET=your-jwt-secret \\" >> $GITHUB_STEP_SUMMARY
+          echo "  telemetryflow/telemetryflow-core:${{ needs.prepare.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
