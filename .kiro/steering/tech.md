@@ -72,8 +72,8 @@ pnpm db:migrate:clickhouse  # ClickHouse only
 
 # Seed data
 pnpm db:seed
-pnpm db:seed:iam           # IAM data only
-pnpm db:seed:clickhouse    # ClickHouse only
+pnpm db:seed:iam            # IAM data only
+pnpm db:seed:clickhouse     # ClickHouse only
 
 # Clean databases
 pnpm db:cleanup
@@ -92,8 +92,8 @@ pnpm test:cov
 # BDD API tests (Newman)
 pnpm test:bdd
 pnpm test:bdd:verbose
-pnpm test:bdd:users        # Users module only
-pnpm test:bdd:roles        # Roles module only
+pnpm test:bdd:users         # Users module only
+pnpm test:bdd:roles         # Roles module only
 ```
 
 ### Docker Operations

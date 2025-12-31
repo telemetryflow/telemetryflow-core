@@ -19,7 +19,7 @@ TelemetryFlow Core follows the **LEGO Builder** approach where each module is a 
 ### Complete LEGO Block Anatomy
 
 ```
-src/modules/iam/                    # Example LEGO block
+src/modules/iam/                   # Example LEGO block
 │
 ├── 🧩 iam.module.ts               # NestJS module definition
 ├── 🧩 module.manifest.ts          # LEGO instructions (future)

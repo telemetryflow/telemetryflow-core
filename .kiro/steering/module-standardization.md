@@ -35,14 +35,14 @@ Before marking a module as "complete", it MUST pass all these gates:
 docs/
 ├── README.md                    # Main documentation entry
 ├── INDEX.md                     # Complete navigation index
-├── ERD.mermaid.md              # Entity Relationship Diagram
-├── DFD.mermaid.md              # Data Flow Diagrams
+├── ERD.mermaid.md               # Entity Relationship Diagram
+├── DFD.mermaid.md               # Data Flow Diagrams
 ├── TESTING.md                   # Testing strategy & guide
-├── TEST_PATTERNS.md            # Test patterns & templates
-├── openapi.yaml                # OpenAPI/Swagger specification
-└── api/                        # API documentation
-    ├── endpoints.md            # All endpoints with examples
-    └── authentication.md       # Auth & permission requirements
+├── TEST_PATTERNS.md             # Test patterns & templates
+├── openapi.yaml                 # OpenAPI/Swagger specification
+└── api/                         # API documentation
+    ├── endpoints.md             # All endpoints with examples
+    └── authentication.md        # Auth & permission requirements
 ```
 
 ### Gate 2: Test Coverage (≥90%)
@@ -57,29 +57,29 @@ docs/
 #### Test Structure
 ```
 tests/
-├── unit/                       # Unit tests
+├── unit/                        # Unit tests
 │   ├── domain/
-│   │   ├── aggregates/         # Test all aggregates
-│   │   ├── value-objects/      # Test all VOs
-│   │   └── services/           # Test domain services
+│   │   ├── aggregates/          # Test all aggregates
+│   │   ├── value-objects/       # Test all VOs
+│   │   └── services/            # Test domain services
 │   ├── application/
-│   │   └── handlers/           # Test all handlers
+│   │   └── handlers/            # Test all handlers
 │   └── README.md
-├── integration/                # Integration tests
-│   ├── repositories/           # Test all repositories
+├── integration/                 # Integration tests
+│   ├── repositories/            # Test all repositories
 │   └── README.md
-├── e2e/                       # End-to-end tests
-│   ├── controllers/           # Test all controllers
+├── e2e/                         # End-to-end tests
+│   ├── controllers/             # Test all controllers
 │   └── README.md
-├── fixtures/                  # Test data
+├── fixtures/                    # Test data
 │   ├── users.fixture.ts
 │   ├── roles.fixture.ts
 │   └── index.ts
-├── mocks/                     # Mock implementations
+├── mocks/                       # Mock implementations
 │   ├── repository.mock.ts
 │   ├── event-bus.mock.ts
 │   └── index.ts
-└── postman/                   # BDD tests
+└── postman/                     # BDD tests
     ├── {module}-api.postman_collection.json
     ├── {module}-bdd-tests.postman_collection.json
     └── README.md
@@ -90,39 +90,39 @@ tests/
 #### Domain Layer Requirements
 ```
 domain/
-├── aggregates/                 # Business entities
-│   ├── {Entity}.ts            # PascalCase, extends AggregateRoot
-│   └── index.ts               # Barrel exports
-├── entities/                  # Domain entities
-│   ├── {Entity}.ts            # PascalCase, plain classes
+├── aggregates/                  # Business entities
+│   ├── {Entity}.ts              # PascalCase, extends AggregateRoot
+│   └── index.ts                 # Barrel exports
+├── entities/                    # Domain entities
+│   ├── {Entity}.ts              # PascalCase, plain classes
 │   └── index.ts
-├── value-objects/             # Immutable concepts
-│   ├── {Name}.ts              # PascalCase, extends ValueObject
+├── value-objects/               # Immutable concepts
+│   ├── {Name}.ts                # PascalCase, extends ValueObject
 │   └── index.ts
-├── events/                    # Domain events
+├── events/                      # Domain events
 │   ├── {Entity}{Action}.event.ts  # e.g., UserCreated.event.ts
 │   └── index.ts
-├── repositories/              # Repository interfaces
-│   ├── I{Entity}Repository.ts # Interface with I prefix
+├── repositories/                # Repository interfaces
+│   ├── I{Entity}Repository.ts   # Interface with I prefix
 │   └── index.ts
-├── services/                  # Domain services (if needed)
+├── services/                    # Domain services (if needed)
 │   └── index.ts
-└── index.ts                   # Module exports
+└── index.ts                     # Module exports
 ```
 
 #### Application Layer Requirements
 ```
 application/
-├── commands/                  # Write operations
+├── commands/                    # Write operations
 │   ├── {Action}{Entity}.command.ts  # e.g., CreateUser.command.ts
 │   └── index.ts
-├── queries/                   # Read operations
+├── queries/                     # Read operations
 │   ├── {Action}{Entity}.query.ts    # e.g., GetUser.query.ts
 │   └── index.ts
-├── handlers/                  # CQRS handlers
+├── handlers/                    # CQRS handlers
 │   ├── {Action}{Entity}.handler.ts  # e.g., CreateUser.handler.ts
 │   └── index.ts
-├── dto/                       # Application DTOs
+├── dto/                         # Application DTOs
 │   ├── {Entity}Response.dto.ts
 │   └── index.ts
 └── index.ts
@@ -132,23 +132,23 @@ application/
 ```
 infrastructure/
 ├── persistence/
-│   ├── entities/              # TypeORM entities
-│   │   ├── {Entity}.entity.ts # PascalCase with .entity.ts suffix
+│   ├── entities/                # TypeORM entities
+│   │   ├── {Entity}.entity.ts   # PascalCase with .entity.ts suffix
 │   │   └── index.ts
-│   ├── repositories/          # Repository implementations
+│   ├── repositories/            # Repository implementations
 │   │   ├── {Entity}Repository.ts  # PascalCase, implements interface
 │   │   └── index.ts
-│   ├── mappers/               # Domain ↔ Entity mappers
+│   ├── mappers/                 # Domain ↔ Entity mappers
 │   │   ├── {Entity}Mapper.ts
 │   │   └── index.ts
-│   ├── migrations/            # Database migrations
+│   ├── migrations/              # Database migrations
 │   │   ├── {timestamp}-{Description}.ts
 │   │   └── index.ts
-│   ├── seeds/                 # Seed data
+│   ├── seeds/                   # Seed data
 │   │   ├── {timestamp}-seed-{module}-{entity}.ts
 │   │   └── index.ts
 │   └── index.ts
-├── messaging/                 # Event processors
+├── messaging/                   # Event processors
 │   └── index.ts
 └── index.ts
 ```
@@ -156,16 +156,16 @@ infrastructure/
 #### Presentation Layer Requirements
 ```
 presentation/
-├── controllers/               # REST controllers
-│   ├── {Entity}.controller.ts # PascalCase, singular
+├── controllers/                 # REST controllers
+│   ├── {Entity}.controller.ts   # PascalCase, singular
 │   └── index.ts
-├── dto/                       # Request/Response DTOs
+├── dto/                         # Request/Response DTOs
 │   ├── Create{Entity}Request.dto.ts
 │   ├── {Entity}Response.dto.ts
 │   └── index.ts
-├── guards/                    # Route guards (if module-specific)
+├── guards/                      # Route guards (if module-specific)
 │   └── index.ts
-├── decorators/                # Custom decorators (if needed)
+├── decorators/                  # Custom decorators (if needed)
 │   └── index.ts
 └── index.ts
 ```

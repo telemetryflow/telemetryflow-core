@@ -167,10 +167,10 @@ config/
 ```
 docs/
 ├── references/             # Technical references and guides
-├── postman/               # API testing collections
-├── winston-logger/        # Logger documentation
-├── dependabot/           # Dependency management
-└── assets/               # Images and diagrams
+├── postman/                # API testing collections
+├── winston-logger/         # Logger documentation
+├── dependabot/             # Dependency management
+└── assets/                 # Images and diagrams
 ```
 
 ## Import Path Conventions

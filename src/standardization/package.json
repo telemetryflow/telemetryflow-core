@@ -1,0 +1,38 @@
+{
+  "name": "@telemetryflow/standardization",
+  "version": "1.0.0",
+  "description": "Module standardization tools for TelemetryFlow Core",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint . --ext .ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "standardization",
+    "quality-gates",
+    "ddd",
+    "validation",
+    "automation"
+  ],
+  "author": "DevOpsCorner Indonesia",
+  "license": "Apache ver-2.0",
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "typescript": "^5.9.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "@types/node": "^22.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0"
+  },
+  "peerDependencies": {
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0"
+  }
+}
