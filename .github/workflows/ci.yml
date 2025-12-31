@@ -360,6 +360,10 @@ jobs:
       - name: Wait for services
         run: |
           echo "Waiting for PostgreSQL..."
+          # Install postgresql-client for pg_isready
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          
           until pg_isready -h localhost -p 5432 -U postgres; do
             echo "PostgreSQL is unavailable - sleeping"
             sleep 1
@@ -372,6 +376,52 @@ jobs:
             sleep 1
           done
           echo "ClickHouse is ready!"
+
+      - name: Generate secrets and create CI environment file
+        run: |
+          # Generate secure secrets for CI
+          echo "Generating secure secrets for CI environment..."
+          
+          # Create base .env file
+          cat > .env << EOF
+          NODE_ENV=test
+          PORT=3000
+          LOG_LEVEL=info
+          TZ=UTC
+          
+          # Database Configuration
+          POSTGRES_HOST=localhost
+          POSTGRES_PORT=5432
+          POSTGRES_DB=telemetryflow_test_db
+          POSTGRES_USERNAME=postgres
+          POSTGRES_PASSWORD=telemetryflow123
+          
+          CLICKHOUSE_HOST=localhost
+          CLICKHOUSE_PORT=8123
+          CLICKHOUSE_DB=telemetryflow_test_db
+          CLICKHOUSE_USER=default
+          CLICKHOUSE_PASSWORD=telemetryflow123
+          
+          # OpenTelemetry (disabled for CI)
+          OTEL_ENABLED=false
+          OTEL_SERVICE_NAME=telemetryflow-core-test
+          
+          # Logging (minimal for CI)
+          LOGGER_TYPE=winston
+          LOG_PRETTY_PRINT=false
+          LOG_COLORIZE=false
+          OTEL_LOGS_ENABLED=false
+          LOG_FILE_ENABLED=false
+          EOF
+          
+          # Generate and append secure secrets
+          echo "" >> .env
+          echo "# Generated Secrets for CI" >> .env
+          node scripts/generate-secrets.js --env >> .env
+          
+          echo "✅ CI environment file created with secure secrets"
+          echo "Environment file preview (secrets masked):"
+          sed 's/=.*/=***MASKED***/' .env
 
       - name: Run database migrations
         run: make db-migrate
@@ -443,22 +493,55 @@ jobs:
       - name: Install dependencies
         run: make ci-install
 
+      - name: Generate secrets and create E2E environment file
+        run: |
+          # Generate secure secrets for E2E
+          echo "Generating secure secrets for E2E environment..."
+          
+          # Create base .env file
+          cat > .env << EOF
+          NODE_ENV=test
+          PORT=3000
+          LOG_LEVEL=info
+          TZ=UTC
+          
+          # Database Configuration
+          POSTGRES_HOST=localhost
+          POSTGRES_PORT=5432
+          POSTGRES_DB=telemetryflow_e2e_db
+          POSTGRES_USERNAME=postgres
+          POSTGRES_PASSWORD=telemetryflow123
+          
+          CLICKHOUSE_HOST=localhost
+          CLICKHOUSE_PORT=8123
+          CLICKHOUSE_DB=telemetryflow_e2e_db
+          CLICKHOUSE_USER=default
+          CLICKHOUSE_PASSWORD=telemetryflow123
+          
+          # OpenTelemetry (disabled for E2E)
+          OTEL_ENABLED=false
+          OTEL_SERVICE_NAME=telemetryflow-core-e2e
+          
+          # Logging (minimal for E2E)
+          LOGGER_TYPE=winston
+          LOG_PRETTY_PRINT=false
+          LOG_COLORIZE=false
+          OTEL_LOGS_ENABLED=false
+          LOG_FILE_ENABLED=false
+          EOF
+          
+          # Generate and append secure secrets
+          echo "" >> .env
+          echo "# Generated Secrets for E2E" >> .env
+          node scripts/generate-secrets.js --env >> .env
+          
+          echo "✅ E2E environment file created with secure secrets"
+
       - name: Build application
         run: make ci-build
 
       - name: Start application
         run: |
-          export NODE_ENV=test
-          export POSTGRES_HOST=localhost
-          export POSTGRES_PORT=5432
-          export POSTGRES_DB=telemetryflow_e2e_db
-          export POSTGRES_USERNAME=postgres
-          export POSTGRES_PASSWORD=telemetryflow123
-          export CLICKHOUSE_HOST=localhost
-          export CLICKHOUSE_PORT=8123
-          export CLICKHOUSE_DB=telemetryflow_e2e_db
-          export CLICKHOUSE_PASSWORD=telemetryflow123
-          
           make db-setup
           pnpm start &
           
