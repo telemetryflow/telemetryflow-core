@@ -92,7 +92,7 @@ export class ProbabilitySampler implements ILogSampler {
     }
   }
 
-  shouldSample(level: string, context?: Record<string, unknown>): boolean {
+  shouldSample(level: string, _context?: Record<string, unknown>): boolean {
     this.stats.totalLogs++;
 
     // Always sample errors if configured
@@ -169,7 +169,7 @@ export class RateLimitSampler implements ILogSampler {
     this.lastRefill = now;
   }
 
-  shouldSample(level: string, context?: Record<string, unknown>): boolean {
+  shouldSample(level: string, _context?: Record<string, unknown>): boolean {
     this.stats.totalLogs++;
     this.refillTokens();
 
@@ -266,7 +266,7 @@ export class AdaptiveSampler implements ILogSampler {
     }
   }
 
-  shouldSample(level: string, context?: Record<string, unknown>): boolean {
+  shouldSample(level: string, _context?: Record<string, unknown>): boolean {
     this.stats.totalLogs++;
     this.windowLogs++;
     this.adjustSampleRate();
@@ -336,7 +336,7 @@ export class ErrorOnlySampler implements ILogSampler {
     warnings: 0,
   };
 
-  shouldSample(level: string, context?: Record<string, unknown>): boolean {
+  shouldSample(level: string, _context?: Record<string, unknown>): boolean {
     this.stats.totalLogs++;
 
     if (level === 'error' || level === 'warn') {

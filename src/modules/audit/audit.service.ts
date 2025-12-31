@@ -171,7 +171,7 @@ export class AuditService {
     }
   }
 
-  async export(format: string): Promise<any[]> {
+  async export(_format: string): Promise<any[]> {
     return this.query({ limit: 10000, offset: 0 });
   }
 }

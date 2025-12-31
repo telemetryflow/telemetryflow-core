@@ -2,7 +2,7 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { Request } from 'express';
-import { AuditService, AuditEventType, AuditEventResult } from './audit.service';
+import { AuditService, AuditEventResult } from './audit.service';
 
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {
