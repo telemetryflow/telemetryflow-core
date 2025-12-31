@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export async function seedRoles(dataSource: DataSource): Promise<void> {
   const roleRepo = dataSource.getRepository('roles');
@@ -8,7 +8,7 @@ export async function seedRoles(dataSource: DataSource): Promise<void> {
   // Define system roles
   const systemRoles = [
     {
-      id: uuidv4(),
+      id: randomUUID(),
       name: 'super_administrator',
       description: 'Can manage all the SaaS Platform across all organizations and regions',
       isSystem: true,
@@ -36,7 +36,7 @@ export async function seedRoles(dataSource: DataSource): Promise<void> {
       ],
     },
     {
-      id: uuidv4(),
+      id: randomUUID(),
       name: 'administrator',
       description: 'Can manage all permissions within their organization across multiple regions',
       isSystem: true,
@@ -62,7 +62,7 @@ export async function seedRoles(dataSource: DataSource): Promise<void> {
       ],
     },
     {
-      id: uuidv4(),
+      id: randomUUID(),
       name: 'developer',
       description: 'Can create and update resources within their organization, but cannot delete',
       isSystem: true,
@@ -108,7 +108,7 @@ export async function seedRoles(dataSource: DataSource): Promise<void> {
       ],
     },
     {
-      id: uuidv4(),
+      id: randomUUID(),
       name: 'viewer',
       description: 'Read-only access to resources within their organization',
       isSystem: true,
@@ -134,7 +134,7 @@ export async function seedRoles(dataSource: DataSource): Promise<void> {
       ],
     },
     {
-      id: uuidv4(),
+      id: randomUUID(),
       name: 'demo',
       description: 'Developer access limited to Demo Organization, Demo Workspace, and Demo Tenant only',
       isSystem: true,
@@ -204,7 +204,7 @@ export async function seedRoles(dataSource: DataSource): Promise<void> {
       if (!permission) {
         const [resource, action] = permName.split(':');
         permission = await permissionRepo.save({
-          id: uuidv4(),
+          id: randomUUID(),
           name: permName,
           description: `${action} permission for ${resource}`,
           resource,

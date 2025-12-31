@@ -6,7 +6,7 @@
  */
 
 import { AsyncLocalStorage } from 'async_hooks';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 /**
  * Request context data
@@ -110,7 +110,7 @@ export class RequestContextManager {
    */
   static createFromRequest(req: any): RequestContext {
     return {
-      requestId: req.id || req.headers['x-request-id'] || uuidv4(),
+      requestId: req.id || req.headers['x-request-id'] || randomUUID(),
       tenantId: req.user?.tenantId || req.headers['x-tenant-id'],
       workspaceId: req.user?.workspaceId || req.headers['x-workspace-id'],
       userId: req.user?.id || req.user?.userId,

@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import * as bcrypt from 'bcrypt';
 
 export async function seedUsers(dataSource: DataSource): Promise<void> {
@@ -26,7 +26,7 @@ export async function seedUsers(dataSource: DataSource): Promise<void> {
 
   const users = [
     {
-      id: uuidv4(),
+      id: randomUUID(),
       email: 'superadmin.telemetryflow@telemetryflow.id',
       password_hash: await bcrypt.hash('SuperAdmin@123456', 10),
       first_name: 'Super',
@@ -38,7 +38,7 @@ export async function seedUsers(dataSource: DataSource): Promise<void> {
       tenant_id: null,
     },
     {
-      id: uuidv4(),
+      id: randomUUID(),
       email: 'administrator.telemetryflow@telemetryflow.id',
       password_hash: await bcrypt.hash('Admin@123456', 10),
       first_name: 'Administrator',
@@ -50,7 +50,7 @@ export async function seedUsers(dataSource: DataSource): Promise<void> {
       tenant_id: telemetryflowTenant?.tenant_id,
     },
     {
-      id: uuidv4(),
+      id: randomUUID(),
       email: 'developer.telemetryflow@telemetryflow.id',
       password_hash: await bcrypt.hash('Developer@123456', 10),
       first_name: 'Developer',
@@ -62,7 +62,7 @@ export async function seedUsers(dataSource: DataSource): Promise<void> {
       tenant_id: telemetryflowTenant?.tenant_id,
     },
     {
-      id: uuidv4(),
+      id: randomUUID(),
       email: 'viewer.telemetryflow@telemetryflow.id',
       password_hash: await bcrypt.hash('Viewer@123456', 10),
       first_name: 'Viewer',
@@ -74,7 +74,7 @@ export async function seedUsers(dataSource: DataSource): Promise<void> {
       tenant_id: telemetryflowTenant?.tenant_id,
     },
     {
-      id: uuidv4(),
+      id: randomUUID(),
       email: 'demo.telemetryflow@telemetryflow.id',
       password_hash: await bcrypt.hash('Demo@123456', 10),
       first_name: 'Demo',

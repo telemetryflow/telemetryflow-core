@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export class GroupId {
   private constructor(private readonly value: string) {
@@ -8,7 +8,7 @@ export class GroupId {
   }
 
   static create(id?: string): GroupId {
-    return new GroupId(id || uuidv4());
+    return new GroupId(id || randomUUID());
   }
 
   getValue(): string {

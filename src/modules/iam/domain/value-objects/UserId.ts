@@ -1,5 +1,5 @@
 import { ValueObject } from '../../../../shared/domain/base/ValueObject';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export class UserId extends ValueObject<string> {
   private constructor(value: string) { super(value); }
@@ -14,7 +14,7 @@ export class UserId extends ValueObject<string> {
   }
   
   static generate(): UserId {
-    return new UserId(uuid());
+    return new UserId(randomUUID());
   }
   
   protected validate(value: string): void {

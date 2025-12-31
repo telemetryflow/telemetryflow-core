@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export async function seedPermissions(dataSource: DataSource): Promise<void> {
   const permissionRepository = dataSource.getRepository('permissions');
@@ -99,7 +99,7 @@ export async function seedPermissions(dataSource: DataSource): Promise<void> {
     const existing = await permissionRepository.findOne({ where: { name: perm.name } });
     if (!existing) {
       await permissionRepository.save({
-        id: uuidv4(),
+        id: randomUUID(),
         ...perm,
         createdAt: new Date(),
         updatedAt: new Date(),

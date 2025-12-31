@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export async function seedRegions(dataSource: DataSource): Promise<void> {
   const regionRepository = dataSource.getRepository('regions');
@@ -22,7 +22,7 @@ export async function seedRegions(dataSource: DataSource): Promise<void> {
     const existing = await regionRepository.findOne({ where: { code: region.code } });
     if (!existing) {
       await regionRepository.save({
-        region_id: uuidv4(),
+        region_id: randomUUID(),
         ...region,
         isActive: true,
         createdAt: new Date(),

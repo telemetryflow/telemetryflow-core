@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export class TenantId {
   private constructor(private readonly value: string) {
@@ -8,7 +8,7 @@ export class TenantId {
   }
 
   static create(id?: string): TenantId {
-    return new TenantId(id || uuidv4());
+    return new TenantId(id || randomUUID());
   }
 
   getValue(): string {

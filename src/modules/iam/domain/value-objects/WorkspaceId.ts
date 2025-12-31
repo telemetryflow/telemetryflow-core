@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export class WorkspaceId {
   private constructor(private readonly value: string) {
@@ -8,7 +8,7 @@ export class WorkspaceId {
   }
 
   static create(id?: string): WorkspaceId {
-    return new WorkspaceId(id || uuidv4());
+    return new WorkspaceId(id || randomUUID());
   }
 
   getValue(): string {

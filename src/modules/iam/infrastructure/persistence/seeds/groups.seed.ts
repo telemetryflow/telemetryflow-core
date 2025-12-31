@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export async function seedGroups(dataSource: DataSource): Promise<void> {
   const groupRepository = dataSource.getRepository('group_users');
@@ -15,7 +15,7 @@ export async function seedGroups(dataSource: DataSource): Promise<void> {
     const existing = await groupRepository.findOne({ where: { name: group.name } });
     if (!existing) {
       await groupRepository.save({
-        group_user_id: uuidv4(),
+        group_user_id: randomUUID(),
         ...group,
         isActive: true,
         tenant_id: null,
