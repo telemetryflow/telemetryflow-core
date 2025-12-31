@@ -21,12 +21,12 @@ The system follows a layered architecture with clear separation of concerns:
 
 ```
 src/standardization/
-├── interfaces/          # Core interfaces and contracts
-├── types/              # Enums, constants, and error types
-├── validators/         # Quality gate validators (to be implemented)
-├── generators/         # Documentation and report generators (to be implemented)
-├── cli/               # Command-line interface tools (to be implemented)
-└── utils/             # Utility functions and helpers (to be implemented)
+├── interfaces/           # Core interfaces and contracts
+├── types/                # Enums, constants, and error types
+├── validators/           # Quality gate validators (to be implemented)
+├── generators/           # Documentation and report generators (to be implemented)
+├── cli/                  # Command-line interface tools (to be implemented)
+└── utils/                # Utility functions and helpers (to be implemented)
 ```
 
 ## Quality Gates
