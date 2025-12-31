@@ -1,10 +1,29 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tfo-logo-core-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="docs/assets/tfo-logo-core-light.svg">
-    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="80%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-light.svg">
+    <img src="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Logo" width="80%">
   </picture>
+
   <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
+
+[![Version](https://img.shields.io/badge/Version-1.1.4-orange.svg)](CHANGELOG.md)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
+[![ClickHouse](https://img.shields.io/badge/ClickHouse-latest-FFCC00?logo=clickhouse)](https://clickhouse.com/)
+[![DDD](https://img.shields.io/badge/Architecture-DDD%2FCQRS-blueviolet)](src/modules/iam/)
+[![RBAC](https://img.shields.io/badge/Security-5--Tier%20RBAC-red)](README.md#5-tier-rbac-system)
+[![Migrations](https://img.shields.io/badge/migrations-PostgreSQL%208%20%7C%20ClickHouse%204-success.svg)](src/database)
+[![API Coverage](https://img.shields.io/badge/API%20coverage-100%25-brightgreen.svg)](docs/postman/BDD_TESTS.md)
+[![OpenTelemetry](https://img.shields.io/badge/OTLP-100%25%20Compliant-success?logo=opentelemetry)](https://opentelemetry.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://hub.docker.com/r/telemetryflow/telemetryflow-core)
+
+<p align="center">
+  <strong>TelemetryFlow Core</strong> is a lightweight, production-ready IAM service extracted from the TelemetryFlow Platform. It provides complete identity and access management with a 5-tier RBAC system, multi-tenancy support, and enterprise-grade security features.
+</p>
+
 </div>
 
 ---

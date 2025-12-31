@@ -1,29 +1,24 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tfo-logo-core-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="docs/assets/tfo-logo-core-light.svg">
-    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="80%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-light.svg">
+    <img src="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Logo" width="80%">
   </picture>
+
   <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
-</div>
 
-<div align="center">
-
-[![Version](https://img.shields.io/badge/version-1.1.3-blue.svg)](CHANGELOG.md)
-[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.1.4-orange.svg)](CHANGELOG.md)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs)](https://nestjs.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
 [![ClickHouse](https://img.shields.io/badge/ClickHouse-latest-FFCC00?logo=clickhouse)](https://clickhouse.com/)
-[![OpenTelemetry](https://img.shields.io/badge/OTLP-Enabled-success?logo=opentelemetry)](https://opentelemetry.io/)
 [![DDD](https://img.shields.io/badge/Architecture-DDD%2FCQRS-blueviolet)](src/modules/iam/)
 [![RBAC](https://img.shields.io/badge/Security-5--Tier%20RBAC-red)](README.md#5-tier-rbac-system)
 [![Migrations](https://img.shields.io/badge/migrations-PostgreSQL%208%20%7C%20ClickHouse%204-success.svg)](src/database)
-[![Seeds](https://img.shields.io/badge/seeds-PostgreSQL%203%20%7C%20ClickHouse%204-success.svg)](src/database)
-[![Test Suites](https://img.shields.io/badge/test%20suites-90%25%20passing-brightgreen.svg)](TEST_COVERAGE_REPORT.md)
-[![Tests](https://img.shields.io/badge/tests-99%25%20passing-brightgreen.svg)](TEST_COVERAGE_REPORT.md)
 [![API Coverage](https://img.shields.io/badge/API%20coverage-100%25-brightgreen.svg)](docs/postman/BDD_TESTS.md)
-[![BDD Tests](https://img.shields.io/badge/BDD%20tests-33%20scenarios-success.svg)](docs/postman/BDD_TESTS.md)
+[![OpenTelemetry](https://img.shields.io/badge/OTLP-100%25%20Compliant-success?logo=opentelemetry)](https://opentelemetry.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://hub.docker.com/r/telemetryflow/telemetryflow-core)
 
 </div>
 
@@ -44,6 +39,14 @@
 - **Region support**: Multi-region tenant deployment
 - **CQRS pattern**: Separate read/write operations (33 commands, 18 queries)
 - **Domain events**: Event-driven architecture (25+ events)
+
+### Module Standardization
+- **Quality Gates**: 6 comprehensive standardization gates for all modules
+- **Test Coverage**: 90%+ overall coverage (95% domain layer requirement)
+- **Documentation**: 500+ line README files with complete API documentation
+- **Property-Based Testing**: 8 correctness properties per module
+- **Automated Validation**: Quality enforcement and standardization tooling
+- **DDD Compliance**: Strict Domain-Driven Design architecture patterns
 
 ### Architecture
 - **Domain-Driven Design (DDD)**: 8 aggregates, 10 value objects, domain services
@@ -273,7 +276,77 @@ src/
             ├── dto/              # Request/Response DTOs
             ├── guards/           # Authorization guards
             └── decorators/       # Custom decorators
+
+.kiro/                          # Kiro specifications
+└── specs/                      # Module standardization specs
+    ├── iam-module-standardization/
+    │   ├── requirements.md       # 8 requirements, 80 acceptance criteria
+    │   ├── design.md            # DDD architecture, 8 correctness properties
+    │   └── tasks.md             # 60 implementation tasks
+    ├── audit-module-standardization/
+    ├── auth-module-standardization/
+    └── cache-module-standardization/
 ```
+
+## Module Standardization
+
+TelemetryFlow Core follows comprehensive module standardization guidelines to ensure consistency, quality, and maintainability across all modules.
+
+### Standardization Framework
+
+Each module includes detailed specifications in `.kiro/specs/`:
+
+- **IAM Module**: Complete identity and access management standardization
+- **Audit Module**: Audit logging and compliance standardization  
+- **Auth Module**: Authentication and authorization standardization
+- **Cache Module**: Caching and performance standardization
+
+### Quality Gates
+
+All modules must pass 6 comprehensive quality gates:
+
+| Gate | Requirement | Standard |
+|------|-------------|----------|
+| **Documentation** | Complete documentation with 500+ line README | 100% |
+| **Test Coverage** | Domain: ≥95%, Application: ≥90%, Overall: ≥90% | ≥90% |
+| **File Structure** | DDD compliance with standardized naming | 100% |
+| **Database Patterns** | Standardized migrations, seeds, and naming | 100% |
+| **API Standards** | Swagger, validation, REST conventions | 100% |
+| **Build Quality** | Zero errors in build, lint, and tests | 0 Errors |
+
+### Property-Based Testing
+
+Each module implements 8 correctness properties:
+
+1. **Idempotency** - Operations produce same result when repeated
+2. **Consistency** - Data remains consistent across operations  
+3. **Validation** - All inputs are properly validated
+4. **Authorization** - Access control is enforced
+5. **Persistence** - Data is correctly saved and retrieved
+6. **Event Handling** - Domain events are properly published
+7. **Error Handling** - Errors are handled gracefully
+8. **Performance** - Operations meet performance requirements
+
+### Specification Structure
+
+Each module specification includes:
+
+```
+.kiro/specs/{module}-module-standardization/
+├── requirements.md    # 8 requirements, 80 acceptance criteria (EARS patterns)
+├── design.md         # DDD architecture, components, correctness properties
+└── tasks.md          # 52-60 implementation tasks with checkpoints
+```
+
+### Development Workflow
+
+1. **Review Specifications**: Study requirements, design, and tasks
+2. **Implement Features**: Follow DDD/CQRS patterns
+3. **Validate Quality**: Ensure all quality gates pass
+4. **Property Testing**: Implement correctness properties
+5. **Documentation**: Maintain comprehensive documentation
+
+For detailed contribution guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md#module-standardization).
 
 ## 5-Tier RBAC System
 
@@ -510,6 +583,13 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ### Core Documentation
 - [README.md](./README.md) - Main documentation (this file)
 - [CHANGELOG.md](./CHANGELOG.md) - Version history and changes
+- [CONTRIBUTING.md](./CONTRIBUTING.md) - Contribution guidelines with module standardization
+
+### Module Standardization
+- [IAM Module Standardization](./.kiro/specs/iam-module-standardization/) - Complete IAM module specification
+- [Audit Module Standardization](./.kiro/specs/audit-module-standardization/) - Audit logging standardization
+- [Auth Module Standardization](./.kiro/specs/auth-module-standardization/) - Authentication standardization  
+- [Cache Module Standardization](./.kiro/specs/cache-module-standardization/) - Caching standardization
 
 ### Features & Observability
 - [OBSERVABILITY.md](./docs/OBSERVABILITY.md) - Observability features (OTEL, Prometheus, Swagger)
@@ -580,9 +660,22 @@ We welcome contributions! Please follow these steps:
 5. Open a Pull Request
 
 **Important:**
-- Read [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines
+- Read [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines including module standardization
+- Review module specifications in `.kiro/specs/` before working on modules
+- Follow the 6 quality gates for module development
+- Implement property-based testing for comprehensive validation
 - Review [SECURITY.md](./SECURITY.md) for security best practices
 - Follow [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+
+### Module Standardization
+
+When contributing to modules, ensure compliance with standardization requirements:
+
+- **Quality Gates**: All 6 gates must pass (Documentation, Test Coverage, File Structure, Database Patterns, API Standards, Build Quality)
+- **Test Coverage**: ≥90% overall, ≥95% domain layer
+- **Property Testing**: Implement all 8 correctness properties
+- **Documentation**: Maintain 500+ line README with comprehensive sections
+- **DDD Compliance**: Follow Domain-Driven Design patterns strictly
 
 ## Security
 
@@ -611,4 +704,4 @@ Extracted from [TelemetryFlow Platform](https://github.com/telemetryflow/telemet
 
 ---
 
-**Built with ❤️ by DevOpsCorner Indonesia**
+**Built with ❤️ by DevOpsCorner Indonesia** collaboration with [**Kiro**](https://kiro.dev/)

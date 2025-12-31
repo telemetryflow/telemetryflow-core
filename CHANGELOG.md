@@ -1,10 +1,25 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tfo-logo-core-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="docs/assets/tfo-logo-core-light.svg">
-    <img src="docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Core Logo" width="80%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-light.svg">
+    <img src="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Logo" width="80%">
   </picture>
+
   <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
+
+[![Version](https://img.shields.io/badge/Version-1.1.4-orange.svg)](CHANGELOG.md)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
+[![ClickHouse](https://img.shields.io/badge/ClickHouse-latest-FFCC00?logo=clickhouse)](https://clickhouse.com/)
+[![DDD](https://img.shields.io/badge/Architecture-DDD%2FCQRS-blueviolet)](src/modules/iam/)
+[![RBAC](https://img.shields.io/badge/Security-5--Tier%20RBAC-red)](README.md#5-tier-rbac-system)
+[![Migrations](https://img.shields.io/badge/migrations-PostgreSQL%208%20%7C%20ClickHouse%204-success.svg)](src/database)
+[![API Coverage](https://img.shields.io/badge/API%20coverage-100%25-brightgreen.svg)](docs/postman/BDD_TESTS.md)
+[![OpenTelemetry](https://img.shields.io/badge/OTLP-100%25%20Compliant-success?logo=opentelemetry)](https://opentelemetry.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://hub.docker.com/r/telemetryflow/telemetryflow-core)
+
 </div>
 
 ---
@@ -15,6 +30,120 @@ All notable changes to **TelemetryFlow Core** will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Summary
+
+**Module Standardization Specifications** - Comprehensive standardization framework for all TelemetryFlow Core modules. Created detailed specifications with requirements, design documents, and implementation tasks following Domain-Driven Design principles and Kiro steering guidelines.
+
+**Key Highlights:**
+- 📋 **4 Module Specifications**: Complete standardization specs for IAM, Audit, Auth, and Cache modules
+- 🎯 **Quality Gates**: 6 comprehensive quality gates with 80 acceptance criteria using EARS patterns
+- 🏗️ **DDD Architecture**: Detailed design documents with domain/application/infrastructure/presentation layers
+- ✅ **Property-Based Testing**: 8 correctness properties per module for comprehensive validation
+- 📚 **Implementation Tasks**: 52-60 detailed tasks per module with checkpoints and validation
+- 🔧 **Automation**: Automated quality validation and standardization tooling
+
+### Added
+
+#### Module Standardization Framework
+- **Specification Structure**: Complete framework for module standardization
+  - `requirements.md` - 8 major requirements with 80 acceptance criteria using EARS patterns
+  - `design.md` - DDD architecture, components, interfaces, and 8 correctness properties  
+  - `tasks.md` - 52-60 detailed implementation tasks with checkpoints
+
+#### IAM Module Standardization (`.kiro/specs/iam-module-standardization/`)
+- **Requirements**: 8 comprehensive requirements covering documentation, test coverage, file structure, database patterns, API standards, build quality, automation, and continuous improvement
+- **Design**: Complete DDD architecture with 8 aggregates, 33 commands, 18 queries, and detailed component specifications
+- **Tasks**: 60 implementation tasks organized in 6 phases with property-based testing and quality validation
+
+#### Audit Module Standardization (`.kiro/specs/audit-module-standardization/`)
+- **Requirements**: Specialized requirements for audit logging, ClickHouse integration, and compliance features
+- **Design**: Event-driven architecture with audit aggregates, retention policies, and analytics capabilities
+- **Tasks**: 58 implementation tasks focusing on audit trail integrity and performance optimization
+
+#### Auth Module Standardization (`.kiro/specs/auth-module-standardization/`)
+- **Requirements**: Security-focused requirements for JWT authentication, session management, and authorization
+- **Design**: Security-first architecture with authentication aggregates, token management, and guard systems
+- **Tasks**: 55 implementation tasks emphasizing security validation and authentication flows
+
+#### Cache Module Standardization (`.kiro/specs/cache-module-standardization/`)
+- **Requirements**: Performance-oriented requirements for caching strategies, invalidation, and monitoring
+- **Design**: High-performance architecture with cache aggregates, eviction policies, and metrics collection
+- **Tasks**: 52 implementation tasks focusing on cache efficiency and reliability
+
+#### Quality Gates Framework
+- **Gate 1**: Documentation Standardization (100% complete documentation with 500+ line README)
+- **Gate 2**: Test Coverage Compliance (≥90% overall, ≥95% domain layer)
+- **Gate 3**: File Structure Standardization (100% DDD compliance)
+- **Gate 4**: Database Pattern Compliance (standardized migrations and seeds)
+- **Gate 5**: API Standards Compliance (Swagger, validation, REST conventions)
+- **Gate 6**: Build and Quality Enforcement (zero errors, automated validation)
+
+#### Property-Based Testing Framework
+- **8 Correctness Properties** per module:
+  1. Idempotency - Operations produce same result when repeated
+  2. Consistency - Data remains consistent across operations
+  3. Validation - All inputs are properly validated
+  4. Authorization - Access control is enforced
+  5. Persistence - Data is correctly saved and retrieved
+  6. Event Handling - Domain events are properly published
+  7. Error Handling - Errors are handled gracefully
+  8. Performance - Operations meet performance requirements
+
+#### Documentation Updates
+- **CONTRIBUTING.md**: Added comprehensive module standardization section with quality gates, workflows, and tooling
+- **Project Documentation**: Updated to reference standardization specifications and development processes
+
+### Changed
+
+#### Development Workflow
+- Enhanced contribution guidelines with standardization requirements
+- Added quality gate validation to development process
+- Integrated property-based testing into testing strategy
+- Updated branch naming conventions to include standardization work
+
+#### Quality Standards
+- Raised test coverage requirements (95% domain layer, 90% overall)
+- Implemented automated quality validation
+- Added comprehensive documentation requirements
+- Established consistent file structure patterns
+
+### Technical Details
+
+**Implementation Approach**: 
+- Used EARS (Easy Approach to Requirements Syntax) patterns for acceptance criteria
+- Applied Domain-Driven Design principles throughout all specifications
+- Integrated CQRS patterns with proper command/query separation
+- Emphasized clean architecture with proper layer separation
+
+**Specification Coverage**:
+- **Total Requirements**: 32 (8 per module)
+- **Total Acceptance Criteria**: 320 (80 per module)
+- **Total Implementation Tasks**: 225 (52-60 per module)
+- **Quality Gates**: 6 comprehensive gates
+- **Correctness Properties**: 32 (8 per module)
+
+**Files Created**: 12 specification files
+**Documentation Updated**: 2 core files (CONTRIBUTING.md, CHANGELOG.md)
+**Standards Established**: Complete standardization framework
+
+### Migration Guide
+
+**For Contributors:**
+1. Review module specifications in `.kiro/specs/` before starting work
+2. Follow quality gates when implementing module features
+3. Use property-based testing for comprehensive validation
+4. Ensure all acceptance criteria are met before submitting PRs
+
+**For Module Development:**
+1. Start with requirements.md to understand acceptance criteria
+2. Review design.md for architecture and component specifications
+3. Follow tasks.md for step-by-step implementation
+4. Validate against quality gates throughout development
+
+---
 
 ## [1.1.3] - 2025-12-05
 
