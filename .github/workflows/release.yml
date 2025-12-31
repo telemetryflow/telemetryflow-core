@@ -40,7 +40,7 @@ on:
 
 env:
   NODE_VERSION: '18'
-  PNPM_VERSION: '8'
+  PNPM_VERSION: '10.24.0'
   PRODUCT_NAME: TelemetryFlow Core
   VENDOR: DevOpsCorner Indonesia
   MAINTAINER: support@telemetryflow.id
