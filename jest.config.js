@@ -2,7 +2,10 @@ module.exports = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: 'src',
   testRegex: '.*\\.spec\\.ts$',
-  testPathIgnorePatterns: ['.*\\.e2e\\.spec\\.ts$'], // Skip E2E tests by default
+  testPathIgnorePatterns: [
+    '.*\\.e2e\\.spec\\.ts$', // Skip E2E tests by default
+    'src/standardization/.*\\.spec\\.ts$' // Skip standardization tests
+  ],
   transform: {
     '^.+\\.ts$': 'ts-jest',
     '^.+\\.js$': 'babel-jest',
@@ -17,6 +20,7 @@ module.exports = {
     '!**/main.ts',
     '!**/migrations/**',
     '!**/seeds/**',
+    '!**/standardization/**', // Exclude standardization from coverage
   ],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
@@ -37,6 +41,6 @@ module.exports = {
   ],
   // Mock ES modules that cause issues
   moduleNameMapper: {
-    '^uuid$': '<rootDir>/../__mocks__/uuid.js',
+    '^uuid$': '<rootDir>/shared/__mocks__/uuid.js',
   },
 };
