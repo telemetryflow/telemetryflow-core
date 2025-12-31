@@ -94,7 +94,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -216,7 +215,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -252,7 +250,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -339,7 +336,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -436,7 +432,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -488,7 +483,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -531,7 +525,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
