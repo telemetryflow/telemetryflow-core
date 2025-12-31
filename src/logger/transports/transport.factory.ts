@@ -113,7 +113,7 @@ export async function createFileTransport(
       console.log(`[LoggerService] ✓ New log file created: ${newFilename}`);
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     return transport as any;
   } catch (error) {
     console.warn(
@@ -159,7 +159,7 @@ export async function createLokiTransport(
     }
 
     const transport = new LokiTransport(transportConfig as any);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     return transport as any;
   } catch (error) {
     console.warn(
@@ -226,7 +226,7 @@ export async function createFluentBitTransport(
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     return new FluentBitTransport({ level }) as any;
   } catch (error) {
     console.warn(
@@ -282,7 +282,7 @@ export async function createOpenSearchTransport(
       };
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     return new ElasticsearchTransport({
       level,
       client: client as any,

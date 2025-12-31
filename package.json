@@ -16,7 +16,8 @@
     "test:bdd:verbose": "bash docs/postman/run-bdd-tests.sh --verbose",
     "test:bdd:users": "bash docs/postman/run-bdd-tests.sh --folder Users",
     "test:bdd:roles": "bash docs/postman/run-bdd-tests.sh --folder Roles",
-    "lint": "eslint \"{src,test}/**/*.ts\" --fix",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
     "clean": "rm -rf dist node_modules",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
@@ -86,6 +87,7 @@
     "winston-transport": "^4.9.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@nestjs/cli": "^11.0.14",
     "@nestjs/testing": "^11.1.10",
     "@types/bcrypt": "^6.0.0",
