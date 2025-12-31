@@ -16,11 +16,11 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class InitialSchema1704240000000 implements MigrationInterface {
   name = 'InitialSchema1704240000000';
 
-  public async up(queryRunner: QueryRunner): Promise<void> {
+  public async up(_queryRunner: QueryRunner): Promise<void> {
     console.log('⚠️  This migration is deprecated. Use individual table migrations instead.');
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
+  public async down(_queryRunner: QueryRunner): Promise<void> {
     console.log('⚠️  This migration is deprecated. Use individual table migrations instead.');
   }
 }

@@ -55,7 +55,7 @@ export async function up(client: ClickHouseClient, database: string): Promise<vo
       await client.command({
         query: `ALTER TABLE ${database}.metrics ADD INDEX IF NOT EXISTS ${idx.name} ${idx.column} TYPE ${idx.type} GRANULARITY 1`,
       });
-    } catch (error) {
+    } catch (_error) {
       // Index might already exist
     }
   }

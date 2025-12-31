@@ -115,7 +115,7 @@ export async function createFileTransport(
 
      
     return transport as any;
-  } catch (error) {
+  } catch (_error) {
     console.warn(
       '[LoggerService] winston-daily-rotate-file not installed. File transport disabled.',
       'Run: npm install winston-daily-rotate-file',
@@ -161,7 +161,7 @@ export async function createLokiTransport(
     const transport = new LokiTransport(transportConfig as any);
      
     return transport as any;
-  } catch (error) {
+  } catch (_error) {
     console.warn(
       '[LoggerService] winston-loki not installed. Loki transport disabled.',
       'Run: npm install winston-loki',
@@ -228,7 +228,7 @@ export async function createFluentBitTransport(
 
      
     return new FluentBitTransport({ level }) as any;
-  } catch (error) {
+  } catch (_error) {
     console.warn(
       '[LoggerService] fluent-logger not installed. FluentBit transport disabled.',
       'Run: npm install fluent-logger',
@@ -316,7 +316,7 @@ export async function createOpenSearchTransport(
         },
       },
     });
-  } catch (error) {
+  } catch (_error) {
     console.warn(
       '[LoggerService] winston-elasticsearch or @opensearch-project/opensearch not installed.',
       'OpenSearch transport disabled.',

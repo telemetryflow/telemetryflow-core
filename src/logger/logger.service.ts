@@ -148,7 +148,7 @@ export class LoggerService implements NestLoggerService, OnModuleInit, OnModuleD
    */
   log(message: unknown, context?: string): void;
   log(message: unknown, ...optionalParams: unknown[]): void;
-  log(message: unknown, contextOrParams?: string | unknown, ...rest: unknown[]): void {
+  log(message: unknown, contextOrParams?: string | unknown, ..._rest: unknown[]): void {
     const ctx = typeof contextOrParams === 'string' ? contextOrParams : undefined;
     const meta = typeof contextOrParams === 'object' ? contextOrParams : undefined;
 

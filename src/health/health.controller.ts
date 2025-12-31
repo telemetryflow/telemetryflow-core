@@ -16,7 +16,7 @@ export class HealthController {
       );
       this.appVersion = packageJson.version || '1.0.0';
       this.buildTime = new Date().toISOString();
-    } catch (error) {
+    } catch (_error) {
       this.appVersion = '1.0.0';
       this.buildTime = new Date().toISOString();
     }
