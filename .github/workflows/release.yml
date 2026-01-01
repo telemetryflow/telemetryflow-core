@@ -124,7 +124,7 @@ jobs:
 
       - name: Build standalone binary
         run: |
-          pnpm pkg . --out-path build --targets ${{ matrix.pkg_target }}
+          pnpm exec pkg . --out-path build --targets ${{ matrix.pkg_target }}
           mv build/telemetryflow-core build/telemetryflow-core-linux-${{ matrix.arch }}
 
       - name: Upload artifact
@@ -163,7 +163,7 @@ jobs:
 
       - name: Build standalone binary
         run: |
-          pnpm pkg . --out-path build --targets node18-win-x64
+          pnpm exec pkg . --out-path build --targets node18-win-x64
           mv build/telemetryflow-core.exe build/telemetryflow-core-windows-amd64.exe
 
       - name: Upload artifact
@@ -210,7 +210,7 @@ jobs:
 
       - name: Build standalone binary
         run: |
-          pnpm pkg . --out-path build --targets ${{ matrix.pkg_target }}
+          pnpm exec pkg . --out-path build --targets ${{ matrix.pkg_target }}
           mv build/telemetryflow-core build/telemetryflow-core-darwin-${{ matrix.arch }}
 
       - name: Upload artifact
