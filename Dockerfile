@@ -3,34 +3,34 @@ FROM node:25-alpine AS builder
 
 WORKDIR /app
 
-# Install system dependencies including bash and make for Makefile support
-RUN apk add --no-cache git make python3 g++ bash
+# Install system dependencies
+RUN apk add --no-cache python3 g++
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10.24.0
 
-# Copy package files and Makefile
-COPY package.json pnpm-lock.yaml Makefile ./
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies using Makefile
-RUN make ci-install
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
 # Build the application
-RUN make ci-build
+RUN pnpm build
 
 # Production stage
 FROM node:25-alpine
 
 WORKDIR /app
 
-# Install system dependencies including bash for proper shell support
-RUN apk add --no-cache dumb-init wget bash
+# Install system dependencies
+RUN apk add --no-cache dumb-init wget
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10.24.0
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \

@@ -1,6 +1,17 @@
 #================================================================================================
 # TelemetryFlow Core - Docker Compose Configuration
 # IAM Module Only (PostgreSQL + Backend)
+#
+# PROFILES:
+# - core: Essential services (postgres, clickhouse, backend) - No monitoring
+# - monitoring: Observability stack (otel-collector, jaeger, prometheus, grafana)
+# - tools: Management tools (portainer)
+# - all: All services combined
+#
+# USAGE:
+# docker-compose --profile core up -d              # Core services only
+# docker-compose --profile core --profile monitoring up -d  # Core + monitoring
+# docker-compose --profile all up -d               # All services
 #================================================================================================
 
 #================================================================================================
@@ -85,10 +96,10 @@ services:
       start_period: 10s
 
   #----------------------------------------------------------------------------------------------
-  # BACKEND - NestJS API
+  # BACKEND - NestJS API (Core Profile - No OTEL dependency)
   #----------------------------------------------------------------------------------------------
   backend:
-    profiles: ["core", "all"]
+    profiles: ["core"]
     platform: linux/amd64
     build:
       context: .
@@ -129,7 +140,72 @@ services:
       - LOG_FILE_DIRNAME=logs
       - LOG_FILE_FILENAME=app-%DATE%.log
 
-      # OpenTelemetry
+      # OpenTelemetry (disabled for core profile)
+      - OTEL_ENABLED=false
+      - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME:-telemetryflow-core}
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_BACKEND:-172.151.151.10}
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  #----------------------------------------------------------------------------------------------
+  # BACKEND - NestJS API (All Profile - With OTEL dependency)
+  #----------------------------------------------------------------------------------------------
+  backend-with-monitoring:
+    profiles: ["all"]
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${CONTAINER_BACKEND:-telemetryflow_core_backend}
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=3000
+      - TZ=${TZ:-UTC}
+
+      # PostgreSQL
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-telemetryflow_db}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-telemetryflow123}
+
+      # ClickHouse
+      - CLICKHOUSE_HOST=clickhouse
+      - CLICKHOUSE_PORT=8123
+      - CLICKHOUSE_DB=${CLICKHOUSE_DB:-telemetryflow_db}
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-telemetryflow123}
+
+      # JWT
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-24h}
+      - SESSION_SECRET=${SESSION_SECRET}
+
+      # Logging
+      - LOGGER_TYPE=${LOGGER_TYPE:-winston}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_PRETTY_PRINT=${LOG_PRETTY_PRINT:-false}
+      - LOG_FILE_ENABLED=${LOG_FILE_ENABLED:-true}
+      - LOG_FILE_DIRNAME=logs
+      - LOG_FILE_FILENAME=app-%DATE%.log
+
+      # OpenTelemetry (enabled for all profile)
       - OTEL_ENABLED=${OTEL_ENABLED:-true}
       - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME:-telemetryflow-core}
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
@@ -190,7 +266,7 @@ services:
   otel-collector:
     profiles: ["monitoring", "all"]
     platform: linux/amd64
-    image: otel/opentelemetry-collector-contrib:${OTEL_VERSION:-latest}
+    image: telemetryflow/telemetryflow-collector-ocb:${OTEL_VERSION:-latest}
     container_name: ${CONTAINER_OTEL:-telemetryflow_core_otel}
     restart: unless-stopped
     command: ["--config=/etc/otel-collector-config.yaml"]

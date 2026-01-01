@@ -96,7 +96,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '25'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -194,7 +194,7 @@ jobs:
           # =============================================================================
           # TelemetryFlow Core - Multi-stage Dockerfile
           # =============================================================================
-          FROM node:18-alpine AS builder
+          FROM node:25-alpine AS builder
 
           ARG VERSION=dev
           ARG GIT_COMMIT=unknown
@@ -204,27 +204,27 @@ jobs:
           WORKDIR /build
 
           # Install build dependencies
-          RUN apk add --no-cache git make python3 g++
+          RUN apk add --no-cache python3 g++
 
           # Install pnpm
           RUN npm install -g pnpm@10.24.0
 
-          # Copy package files and Makefile
-          COPY package.json pnpm-lock.yaml Makefile ./
+          # Copy package files
+          COPY package.json pnpm-lock.yaml ./
           
-          # Install dependencies using Makefile
-          RUN make ci-install
+          # Install dependencies
+          RUN pnpm install --frozen-lockfile
 
           # Copy source
           COPY . .
 
-          # Build application using Makefile
-          RUN make ci-build
+          # Build application
+          RUN pnpm build
 
           # =============================================================================
           # Final image
           # =============================================================================
-          FROM node:18-alpine
+          FROM node:25-alpine
 
           # Update packages to get security patches (CVE fixes)
           RUN apk upgrade --no-cache && \
@@ -380,16 +380,16 @@ jobs:
         run: |
           # Create Dockerfile for scanning
           cat > Dockerfile << 'EOF'
-          FROM node:18-alpine AS builder
+          FROM node:25-alpine AS builder
           WORKDIR /build
-          RUN apk add --no-cache git make python3 g++
+          RUN apk add --no-cache python3 g++
           RUN npm install -g pnpm@10.24.0
-          COPY package.json pnpm-lock.yaml Makefile ./
-          RUN make ci-install
+          COPY package.json pnpm-lock.yaml ./
+          RUN pnpm install --frozen-lockfile
           COPY . .
-          RUN make ci-build
+          RUN pnpm build
 
-          FROM node:18-alpine
+          FROM node:25-alpine
           RUN apk upgrade --no-cache && \
               apk add --no-cache ca-certificates tzdata curl
           RUN addgroup -g 1001 -S nodejs && \
