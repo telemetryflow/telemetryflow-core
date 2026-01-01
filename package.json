@@ -3,10 +3,30 @@
   "version": "1.1.4",
   "description": "TelemetryFlow Core - Backend only with IAM module",
   "packageManager": "pnpm@10.24.0",
+  "bin": "dist/main.js",
+  "pkg": {
+    "scripts": "dist/**/*.js",
+    "assets": [
+      "dist/**/*",
+      ".env.example"
+    ],
+    "targets": [
+      "node18-linux-x64",
+      "node18-linux-arm64",
+      "node18-macos-x64",
+      "node18-macos-arm64",
+      "node18-win-x64"
+    ],
+    "outputPath": "build"
+  },
   "scripts": {
     "bootstrap": "bash scripts/bootstrap.sh",
     "dev": "nest start --watch",
     "build": "nest build",
+    "pkg": "pkg . --out-path build",
+    "pkg:linux": "pkg . --out-path build --targets node18-linux-x64,node18-linux-arm64",
+    "pkg:macos": "pkg . --out-path build --targets node18-macos-x64,node18-macos-arm64",
+    "pkg:windows": "pkg . --out-path build --targets node18-win-x64",
     "start": "node dist/main",
     "start:debug": "nest start --debug --watch",
     "test": "jest",
@@ -88,6 +108,7 @@
     "yaml": "^2.8.2"
   },
   "devDependencies": {
+    "@yao-pkg/pkg": "^6.5.4",
     "@eslint/js": "^9.39.2",
     "@nestjs/cli": "^11.0.14",
     "@nestjs/testing": "^11.1.10",
