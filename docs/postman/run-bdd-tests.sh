@@ -25,7 +25,7 @@ mkdir -p "$REPORT_DIR"
 
 echo -e "${CYAN}╔════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║                                                                ║${NC}"
-echo -e "${CYAN}║         TelemetryFlow Core - BDD API Tests (Newman)           ║${NC}"
+echo -e "${CYAN}║         TelemetryFlow Core - BDD API Tests (Newman)            ║${NC}"
 echo -e "${CYAN}║                                                                ║${NC}"
 echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
 echo ""

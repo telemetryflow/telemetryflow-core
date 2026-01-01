@@ -119,6 +119,70 @@ test-bdd: ## Run BDD tests (Newman/Postman)
 	@echo "$(BLUE)Running BDD tests...$(NC)"
 	pnpm test:bdd
 
+.PHONY: test-bdd-verbose
+test-bdd-verbose: ## Run BDD tests with verbose output
+	@echo "$(BLUE)Running BDD tests (verbose)...$(NC)"
+	pnpm test:bdd:verbose
+
+.PHONY: test-bdd-auth
+test-bdd-auth: ## Run BDD tests for Auth module only
+	@echo "$(BLUE)Running BDD tests for Auth...$(NC)"
+	pnpm test:bdd:auth
+
+.PHONY: test-bdd-users
+test-bdd-users: ## Run BDD tests for Users module only
+	@echo "$(BLUE)Running BDD tests for Users...$(NC)"
+	pnpm test:bdd:users
+
+.PHONY: test-bdd-roles
+test-bdd-roles: ## Run BDD tests for Roles module only
+	@echo "$(BLUE)Running BDD tests for Roles...$(NC)"
+	pnpm test:bdd:roles
+
+.PHONY: test-bdd-permissions
+test-bdd-permissions: ## Run BDD tests for Permissions module only
+	@echo "$(BLUE)Running BDD tests for Permissions...$(NC)"
+	pnpm test:bdd:permissions
+
+.PHONY: test-bdd-tenants
+test-bdd-tenants: ## Run BDD tests for Tenants module only
+	@echo "$(BLUE)Running BDD tests for Tenants...$(NC)"
+	pnpm test:bdd:tenants
+
+.PHONY: test-bdd-organizations
+test-bdd-organizations: ## Run BDD tests for Organizations module only
+	@echo "$(BLUE)Running BDD tests for Organizations...$(NC)"
+	pnpm test:bdd:organizations
+
+.PHONY: test-bdd-workspaces
+test-bdd-workspaces: ## Run BDD tests for Workspaces module only
+	@echo "$(BLUE)Running BDD tests for Workspaces...$(NC)"
+	pnpm test:bdd:workspaces
+
+.PHONY: test-bdd-groups
+test-bdd-groups: ## Run BDD tests for Groups module only
+	@echo "$(BLUE)Running BDD tests for Groups...$(NC)"
+	pnpm test:bdd:groups
+
+.PHONY: test-bdd-regions
+test-bdd-regions: ## Run BDD tests for Regions module only
+	@echo "$(BLUE)Running BDD tests for Regions...$(NC)"
+	pnpm test:bdd:regions
+
+.PHONY: test-bdd-auditlogs
+test-bdd-auditlogs: ## Run BDD tests for AuditLogs module only
+	@echo "$(BLUE)Running BDD tests for AuditLogs...$(NC)"
+	pnpm test:bdd:auditlogs
+
+.PHONY: test-bdd-folder
+test-bdd-folder: ## Run BDD tests for specific folder (usage: make test-bdd-folder FOLDER=Users)
+	@if [ -z "$(FOLDER)" ]; then \
+		echo "$(RED)❌ FOLDER is required. Usage: make test-bdd-folder FOLDER=Users$(NC)"; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)Running BDD tests for folder: $(FOLDER)...$(NC)"
+	bash docs/postman/run-bdd-tests.sh --folder $(FOLDER)
+
 # =============================================================================
 # Database
 # =============================================================================
