@@ -12,10 +12,10 @@
 
 # Variables
 PRODUCT_NAME := TelemetryFlow Core
-VERSION := $(shell node -p "require('./package.json').version")
-GIT_COMMIT := $(shell git rev-parse --short HEAD)
-GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
-BUILD_TIME := $(shell date -u '+%Y-%m-%dT%H:%M:%SZ')
+VERSION := $(shell node -p "require('./package.json').version" 2>/dev/null || echo "unknown")
+GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+BUILD_TIME := $(shell date -u '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || echo "unknown")
 
 # Docker
 REGISTRY := docker.io
