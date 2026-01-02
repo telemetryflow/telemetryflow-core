@@ -192,6 +192,18 @@ exporters:
     sampling_initial: 5
     sampling_thereafter: 200
 
+  # OTLP exporter for Jaeger V2 (native OTLP support)
+  # Jaeger V2 listens on 4317 (gRPC) and 4318 (HTTP) by default
+  otlp/jaeger:
+    endpoint: "${JAEGER_OTLP_ENDPOINT:-jaeger:4317}"
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+
   # Prometheus exporter for metrics scraping (with exemplars support)
   prometheus:
     endpoint: "0.0.0.0:8889"
@@ -271,11 +283,11 @@ service:
   extensions: [health_check, zpages, pprof]
 
   pipelines:
-    # Traces pipeline - receives traces, exports to debug and spanmetrics connector
+    # Traces pipeline - receives traces, exports to Jaeger, debug, and spanmetrics connector
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource]
-      exporters: [debug, spanmetrics, servicegraph]
+      exporters: [otlp/jaeger, debug, spanmetrics, servicegraph]
 
     # Metrics pipeline - receives metrics from OTLP
     metrics:

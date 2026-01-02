@@ -267,11 +267,16 @@ exporters:
   #     num_consumers: 10
   #     queue_size: 1000
 
-  # OTLP exporter to Jaeger (uncomment to enable)
-  # otlp/jaeger:
-  #   endpoint: "jaeger:4317"
-  #   tls:
-  #     insecure: true
+  # OTLP exporter to Jaeger V2 (native OTLP support)
+  otlp/jaeger:
+    endpoint: "jaeger:4317"
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
 
   # Loki exporter for logs (uncomment to enable)
   # loki:
@@ -348,12 +353,12 @@ service:
 
   pipelines:
     # ==========================================================================
-    # Traces pipeline - receives traces, exports to debug and spanmetrics connector
+    # Traces pipeline - receives traces, exports to Jaeger, debug, and spanmetrics connector
     # ==========================================================================
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource]
-      exporters: [debug, spanmetrics, servicegraph]  # Export to connectors for derived metrics
+      exporters: [otlp/jaeger, debug, spanmetrics, servicegraph]  # Export traces to Jaeger + connectors
 
     # ==========================================================================
     # Metrics pipeline - receives metrics from OTLP

@@ -602,6 +602,40 @@ curl http://localhost:3000/api
 - **OTEL Collector**: 172.151.151.30:4317/4318
 - **Prometheus**: 172.151.151.50:9090
 
+### OTEL Collector Ports
+
+| Port  | Protocol | Description           |
+| ----- | -------- | --------------------- |
+| 4317  | gRPC     | OTLP gRPC (v1 & v2)   |
+| 4318  | HTTP     | OTLP HTTP (v1 & v2)   |
+| 8888  | HTTP     | OTEL Collector metrics|
+| 8889  | HTTP     | Prometheus exporter   |
+| 13133 | HTTP     | Health check          |
+| 55679 | HTTP     | zPages (debugging)    |
+| 1777  | HTTP     | pprof (profiling)     |
+
+### OTLP Endpoints (Dual Ingestion)
+
+The collector supports both TelemetryFlow (v2) and OTEL Community (v1) endpoints:
+
+**TelemetryFlow Platform (Recommended):**
+
+```text
+POST http://localhost:4318/v2/traces
+POST http://localhost:4318/v2/metrics
+POST http://localhost:4318/v2/logs
+```
+
+**OTEL Community (Backwards Compatible):**
+
+```text
+POST http://localhost:4318/v1/traces
+POST http://localhost:4318/v1/metrics
+POST http://localhost:4318/v1/logs
+```
+
+**gRPC:** `localhost:4317` (both v1 and v2)
+
 ## Database Schema
 
 ### Core Tables

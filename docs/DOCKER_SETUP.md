@@ -262,12 +262,19 @@ curl http://localhost:3000/health
 open http://localhost:3000/api
 ```
 
-### 4. OTEL Collector
+### 4. TFO-Collector (OTEL Collector)
 
 **Configuration**:
-- **Image**: otel/opentelemetry-collector-contrib:latest
-- **Config**: ./config/otel/otel-collector-config-spm.yaml
-- **Ports**: 4317 (gRPC), 4318 (HTTP), 8889 (metrics)
+- **Image**: telemetryflow/telemetryflow-collector:latest (v1.1.1+)
+- **Config**: ./config/otel/tfo-collector.yaml
+- **Ports**: 4317 (gRPC), 4318 (HTTP), 8889 (metrics), 13133 (health)
+- **Features**: 100% OTLP compliant, SpanMetrics, ServiceGraph
+
+**Key Capabilities**:
+- OTLP gRPC/HTTP receivers and exporters
+- Native Jaeger V2 integration via OTLP
+- SpanMetrics connector with exemplars
+- ServiceGraph connector for dependencies
 
 **Check Status**:
 ```bash
@@ -276,14 +283,18 @@ curl http://localhost:13133
 
 # Metrics
 curl http://localhost:8889/metrics
+
+# zPages debugging
+open http://localhost:55679/debug/tracez
 ```
 
-### 5. Jaeger
+### 5. Jaeger V2
 
 **Configuration**:
-- **Image**: jaegertracing/jaeger:2.2.0
+- **Image**: jaegertracing/jaeger:2.13.0
 - **Storage**: Memory (for development)
-- **Metrics**: Prometheus integration
+- **Metrics**: Prometheus integration via SPM
+- **Protocol**: Native OTLP support (receives from TFO-Collector)
 
 **Access UI**:
 ```bash
@@ -678,14 +689,16 @@ docker exec telemetryflow_core_clickhouse clickhouse-client --query "SELECT data
 - [Docker Compose Profiles](https://docs.docker.com/compose/profiles/)
 - [PostgreSQL Docker](https://hub.docker.com/_/postgres)
 - [ClickHouse Docker](https://hub.docker.com/r/clickhouse/clickhouse-server)
+- [TelemetryFlow Collector](https://github.com/telemetryflow/telemetryflow-collector) - Custom OTEL Collector with 100% OTLP compliance
 - [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)
-- [Jaeger Documentation](https://www.jaegertracing.io/docs/)
+- [Jaeger V2 Documentation](https://www.jaegertracing.io/docs/)
 - [Prometheus Documentation](https://prometheus.io/docs/)
 - [Grafana Documentation](https://grafana.com/docs/)
 - [Portainer Documentation](https://docs.portainer.io/)
 
 ---
 
-**Last Updated**: 2025-12-05  
-**Docker Compose Version**: 2.x  
+**Last Updated**: 2026-01-01
+**Docker Compose Version**: 2.x
 **Network**: 172.151.0.0/16
+**TFO-Collector Version**: v1.1.1+
