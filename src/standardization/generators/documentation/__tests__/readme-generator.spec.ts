@@ -102,7 +102,7 @@ describe('ReadmeGenerator', () => {
 
       // Assert
       expect(readme).toContain('fetch(\'/api/iam\'');
-      expect(readme).toContain('import { Iam } from \'./domain/aggregates\'');
+      expect(readme).toContain('import { IAM } from \'./domain/aggregates\'');
     });
 
     it('should include test structure information', async () => {
@@ -113,7 +113,7 @@ describe('ReadmeGenerator', () => {
       expect(readme).toContain('Unit tests (2 files)');
       expect(readme).toContain('Integration tests (1 files)');
       expect(readme).toContain('End-to-end tests (1 files)');
-      expect(readme).toContain('BDD tests (1 collections)');
+      expect(readme).toContain('BDD tests (see docs/postman/)');
     });
 
     it('should format module name correctly', async () => {

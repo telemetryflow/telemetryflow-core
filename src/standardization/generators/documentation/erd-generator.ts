@@ -44,7 +44,8 @@ ${this.generateIndexes(entities)}
 
     // Generate entity definitions
     for (const entity of entities) {
-      erd += `    ${entity.name.toUpperCase()} {\n`;
+      const entityName = this.formatMermaidEntityName(entity.name);
+      erd += `    ${entityName} {\n`;
       
       for (const property of entity.properties) {
         const type = this.mapTypeToMermaid(property.type);
@@ -57,9 +58,11 @@ ${this.generateIndexes(entities)}
 
     // Generate relationships
     for (const entity of entities) {
+      const entityName = this.formatMermaidEntityName(entity.name);
       for (const relationship of entity.relationships) {
         const relationshipSymbol = this.getRelationshipSymbol(relationship.type);
-        erd += `    ${entity.name.toUpperCase()} ${relationshipSymbol} ${relationship.targetEntity.toUpperCase()} : "${relationship.propertyName}"\n`;
+        const targetName = this.formatMermaidEntityName(relationship.targetEntity);
+        erd += `    ${entityName} ${relationshipSymbol} ${targetName} : "${relationship.propertyName}"\n`;
       }
     }
 
@@ -70,15 +73,17 @@ ${this.generateIndexes(entities)}
     let descriptions = '';
 
     for (const entity of entities) {
-      descriptions += `### ${entity.name}\n\n`;
-      descriptions += `**Purpose**: Core entity representing ${entity.name.toLowerCase()} data\n\n`;
+      const entityName = this.formatEntityName(entity.name);
+      descriptions += `### ${entityName}\n\n`;
+      descriptions += `**Purpose**: Core entity representing ${entityName.toLowerCase()} data\n\n`;
       descriptions += `**Properties**:\n\n`;
       descriptions += '| Property | Type | Nullable | Description |\n';
       descriptions += '|----------|------|----------|-------------|\n';
       
       for (const property of entity.properties) {
         const nullable = property.isOptional ? 'Yes' : 'No';
-        descriptions += `| ${property.name} | ${property.type} | ${nullable} | ${property.name} property |\n`;
+        const description = this.getPropertyDescription(property.name, property.type);
+        descriptions += `| ${property.name} | ${property.type} | ${nullable} | ${description} |\n`;
       }
       
       descriptions += '\n';
@@ -86,7 +91,8 @@ ${this.generateIndexes(entities)}
       if (entity.relationships.length > 0) {
         descriptions += `**Relationships**:\n\n`;
         for (const relationship of entity.relationships) {
-          descriptions += `- **${relationship.propertyName}**: ${relationship.type} relationship with ${relationship.targetEntity}\n`;
+          const targetName = this.formatEntityName(relationship.targetEntity);
+          descriptions += `- **${relationship.propertyName}**: ${relationship.type} relationship with ${targetName}\n`;
         }
         descriptions += '\n';
       }
@@ -114,7 +120,10 @@ ${this.generateIndexes(entities)}
     details += '|---------------|---------------|-------------------|----------|-------------|\n';
 
     for (const { source, relationship } of allRelationships) {
-      details += `| ${source} | ${relationship.targetEntity} | ${relationship.type} | ${relationship.propertyName} | ${this.getRelationshipDescription(relationship)} |\n`;
+      const sourceName = this.formatEntityName(source);
+      const targetName = this.formatEntityName(relationship.targetEntity);
+      const relationshipType = this.formatRelationshipType(relationship.type);
+      details += `| ${sourceName} | ${targetName} | ${relationshipType} | ${relationship.propertyName} | ${this.getRelationshipDescription(relationship)} |\n`;
     }
 
     details += '\n';
@@ -127,29 +136,33 @@ ${this.generateIndexes(entities)}
 
     constraints += '### Primary Keys\n\n';
     for (const entity of entities) {
+      const entityName = this.formatEntityName(entity.name);
       const pkProperty = entity.properties.find(p => p.name === 'id' || p.name.endsWith('Id'));
       if (pkProperty) {
-        constraints += `- **${entity.name}**: \`${pkProperty.name}\` (${pkProperty.type})\n`;
+        constraints += `- **${entityName}**: \`${pkProperty.name}\` (${pkProperty.type})\n`;
       }
     }
 
     constraints += '\n### Foreign Keys\n\n';
     for (const entity of entities) {
+      const entityName = this.formatEntityName(entity.name);
       for (const relationship of entity.relationships) {
         if (relationship.type === 'manyToOne' || relationship.type === 'oneToOne') {
-          constraints += `- **${entity.name}.${relationship.propertyName}** → **${relationship.targetEntity}.id**\n`;
+          const targetName = this.formatEntityName(relationship.targetEntity);
+          constraints += `- **${entityName}.${relationship.propertyName}** → **${targetName}.id**\n`;
         }
       }
     }
 
     constraints += '\n### Unique Constraints\n\n';
     for (const entity of entities) {
+      const entityName = this.formatEntityName(entity.name);
       const uniqueProperties = entity.properties.filter(p => 
         p.name === 'email' || p.name === 'slug' || p.name.includes('unique')
       );
       
       if (uniqueProperties.length > 0) {
-        constraints += `- **${entity.name}**: `;
+        constraints += `- **${entityName}**: `;
         constraints += uniqueProperties.map(p => `\`${p.name}\``).join(', ');
         constraints += '\n';
       }
@@ -157,10 +170,11 @@ ${this.generateIndexes(entities)}
 
     constraints += '\n### Not Null Constraints\n\n';
     for (const entity of entities) {
+      const entityName = this.formatEntityName(entity.name);
       const requiredProperties = entity.properties.filter(p => !p.isOptional);
       
       if (requiredProperties.length > 0) {
-        constraints += `- **${entity.name}**: `;
+        constraints += `- **${entityName}**: `;
         constraints += requiredProperties.map(p => `\`${p.name}\``).join(', ');
         constraints += '\n';
       }
@@ -175,15 +189,17 @@ ${this.generateIndexes(entities)}
     indexes += 'Recommended indexes for optimal query performance:\n\n';
 
     for (const entity of entities) {
-      indexes += `### ${entity.name}\n\n`;
+      const entityName = this.formatEntityName(entity.name);
+      const tableName = entityName.toLowerCase();
+      indexes += `### ${entityName}\n\n`;
       
       // Primary key index (automatic)
-      indexes += `- **Primary Key**: \`${entity.name.toLowerCase()}_pkey\` on \`id\`\n`;
+      indexes += `- **Primary Key**: \`${tableName}_pkey\` on \`id\`\n`;
       
       // Foreign key indexes
       for (const relationship of entity.relationships) {
         if (relationship.type === 'manyToOne' || relationship.type === 'oneToOne') {
-          indexes += `- **Foreign Key**: \`idx_${entity.name.toLowerCase()}_${relationship.propertyName}\` on \`${relationship.propertyName}\`\n`;
+          indexes += `- **Foreign Key**: \`idx_${tableName}_${relationship.propertyName}\` on \`${relationship.propertyName}\`\n`;
         }
       }
       
@@ -193,7 +209,7 @@ ${this.generateIndexes(entities)}
       );
       
       for (const property of uniqueProperties) {
-        indexes += `- **Unique**: \`idx_${entity.name.toLowerCase()}_${property.name}_unique\` on \`${property.name}\`\n`;
+        indexes += `- **Unique**: \`idx_${tableName}_${property.name}_unique\` on \`${property.name}\`\n`;
       }
       
       // Common query indexes
@@ -202,7 +218,7 @@ ${this.generateIndexes(entities)}
       );
       
       for (const property of commonQueryProperties) {
-        indexes += `- **Query**: \`idx_${entity.name.toLowerCase()}_${property.name}\` on \`${property.name}\`\n`;
+        indexes += `- **Query**: \`idx_${tableName}_${property.name}\` on \`${property.name}\`\n`;
       }
       
       indexes += '\n';
@@ -245,5 +261,42 @@ ${this.generateIndexes(entities)}
     };
 
     return descriptions[relationship.type] || 'Relationship between entities';
+  }
+
+  private formatEntityName(name: string): string {
+    // Remove .entity.ts suffix and convert to PascalCase
+    return name.replace(/\.entity\.ts$/i, '');
+  }
+
+  private formatMermaidEntityName(name: string): string {
+    // Remove .entity.ts suffix and convert to uppercase for Mermaid
+    return name.replace(/\.entity\.ts$/i, '').toUpperCase();
+  }
+
+  private formatRelationshipType(type: string): string {
+    // Convert camelCase to kebab-case
+    return type.replace(/([A-Z])/g, '-$1').toLowerCase();
+  }
+
+  private getPropertyDescription(name: string, type: string): string {
+    // Generate meaningful descriptions for common property names
+    const descriptions: Record<string, string> = {
+      'id': 'Unique identifier',
+      'email': 'User email address',
+      'name': 'Display name',
+      'title': 'Title or heading',
+      'description': 'Detailed description',
+      'isActive': 'Active status flag',
+      'isEnabled': 'Enabled status flag',
+      'createdAt': 'Creation timestamp',
+      'updatedAt': 'Last update timestamp',
+      'deletedAt': 'Soft deletion timestamp',
+      'userId': 'Reference to user',
+      'roleId': 'Reference to role',
+      'organizationId': 'Reference to organization',
+      'tenantId': 'Reference to tenant'
+    };
+
+    return descriptions[name] || `${name} property`;
   }
 }

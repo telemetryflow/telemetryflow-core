@@ -102,8 +102,10 @@ export class TestCoverageAnalyzerService implements TestCoverageAnalyzer {
       return report;
 
     } catch (error) {
-      this.logger.error(`Failed to analyze coverage: ${error.message}`, error.stack);
-      throw new Error(`Coverage analysis failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`Failed to analyze coverage: ${errorMessage}`, errorStack);
+      throw new Error(`Coverage analysis failed: ${errorMessage}`);
     }
   }
 
@@ -281,7 +283,8 @@ export class TestCoverageAnalyzerService implements TestCoverageAnalyzer {
       return { total: { lines: { pct: 0 }, functions: { pct: 0 }, branches: { pct: 0 }, statements: { pct: 0 } } };
 
     } catch (error) {
-      this.logger.error(`Failed to parse coverage data: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to parse coverage data: ${errorMessage}`);
       throw error;
     }
   }
@@ -401,7 +404,8 @@ export class TestCoverageAnalyzerService implements TestCoverageAnalyzer {
         !file.endsWith('.d.ts')
       );
     } catch (error) {
-      this.logger.warn(`Could not find files in layer ${layerPath}: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.warn(`Could not find files in layer ${layerPath}: ${errorMessage}`);
       return [];
     }
   }
@@ -672,7 +676,7 @@ export class TestCoverageAnalyzerService implements TestCoverageAnalyzer {
     // Group violations by layer
     const violationsByLayer = violations.reduce((acc, violation) => {
       if (!acc[violation.layer]) acc[violation.layer] = [];
-      acc[violation.layer].push(violation);
+      acc[violation.layer]!.push(violation);
       return acc;
     }, {} as Record<string, ThresholdViolation[]>);
 

@@ -216,8 +216,12 @@ export interface QueryInfo {
 export interface HandlerInfo {
   name: string;
   path: string;
-  type: 'command' | 'query';
-  events: string[];
+  className: string;
+  handlerType: 'command' | 'query';
+  targetClass: string;
+  dependencies: string[];
+  type?: 'command' | 'query'; // Legacy compatibility
+  events?: string[]; // Legacy compatibility
 }
 
 export interface DtoInfo {
@@ -249,10 +253,15 @@ export interface ControllerInfo {
 export interface EndpointInfo {
   method: string;
   path: string;
-  description: string;
-  permissions: string[];
-  parameters: ParameterInfo[];
-  responses: ResponseInfo[];
+  handlerMethod?: string;
+  description?: string;
+  permissions?: string[];
+  parameters?: ParameterInfo[];
+  responses?: ResponseInfo[];
+  requestDto?: string;
+  responseDto?: string;
+  guards?: string[];
+  decorators?: string[];
 }
 
 export interface ParameterInfo {

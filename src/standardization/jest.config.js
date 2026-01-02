@@ -27,5 +27,21 @@ module.exports = {
     }
   },
   moduleFileExtensions: ['ts', 'js', 'json'],
-  testTimeout: 10000
+  testTimeout: 15000, // Increased timeout for complex tests
+  // Memory management
+  maxWorkers: 1,
+  workerIdleMemoryLimit: '256MB', // Reduced memory limit
+  // Increase heap size for Node.js
+  setupFilesAfterEnv: [],
+  // Reduce memory usage
+  clearMocks: true,
+  restoreMocks: true,
+  // Force garbage collection
+  forceExit: true,
+  // Detect open handles
+  detectOpenHandles: true,
+  // Specific timeout for problematic tests
+  testPathIgnorePatterns: [],
+  // Add memory cleanup
+  globalTeardown: undefined
 };

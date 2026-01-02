@@ -5,7 +5,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TestStructureValidatorService } from '../test-structure-validator';
 import * as fs from 'fs/promises';
-import * as path from 'path';
 
 // Mock dependencies
 jest.mock('fs/promises');
@@ -110,8 +109,8 @@ describe('TestStructureValidatorService', () => {
       expect(result.score).toBe(0);
       expect(result.hasUnitTests).toBe(false);
       expect(result.issues.length).toBeGreaterThan(0);
-      expect(result.issues[0].type).toBe('missing_directory');
-      expect(result.issues[0].severity).toBe('error');
+      expect(result.issues[0]?.type).toBe('missing_directory');
+      expect(result.issues[0]?.severity).toBe('error');
     });
 
     it('should identify missing required directories', async () => {

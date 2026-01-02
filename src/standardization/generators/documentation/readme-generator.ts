@@ -199,13 +199,13 @@ ${this.generateTablesDescription(moduleStructure)}
 
 Database migrations are located in \`src/modules/${moduleStructure.name}/infrastructure/persistence/migrations/\`:
 
-${moduleStructure.layers.infrastructure.migrations.map(migration => `- \`${migration}\``).join('\n')}
+${moduleStructure.layers.infrastructure.migrations.map(migration => `- \`${migration.name}\``).join('\n')}
 
 ### Seeds
 
 Test data seeds are located in \`src/modules/${moduleStructure.name}/infrastructure/persistence/seeds/\`:
 
-${moduleStructure.layers.infrastructure.seeds.map(seed => `- \`${seed}\``).join('\n')}`;
+${moduleStructure.layers.infrastructure.seeds.map(seed => `- \`${seed.name}\``).join('\n')}`;
   }
 
   private generateGettingStarted(moduleStructure: ModuleStructure): string {
@@ -337,6 +337,20 @@ src/modules/${moduleStructure.name}/
 5. **Add Tests**: Unit, integration, and E2E tests
 6. **Update Documentation**: API docs and examples
 
+### Development Commands
+
+\`\`\`bash
+# Development
+pnpm dev
+pnpm build
+pnpm test
+pnpm lint
+
+# Database
+pnpm db:migrate
+pnpm db:seed
+\`\`\`
+
 ### Code Standards
 
 - **TypeScript**: Strict mode enabled
@@ -378,6 +392,21 @@ Built with ❤️ by the TelemetryFlow team`;
 
   // Helper methods
   private formatModuleName(name: string): string {
+    // Special cases for acronyms
+    const acronyms: Record<string, string> = {
+      'iam': 'IAM',
+      'api': 'API',
+      'jwt': 'JWT',
+      'rbac': 'RBAC',
+      'oauth': 'OAuth',
+      'saml': 'SAML'
+    };
+    
+    const lowerName = name.toLowerCase();
+    if (acronyms[lowerName]) {
+      return acronyms[lowerName];
+    }
+    
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   }
 

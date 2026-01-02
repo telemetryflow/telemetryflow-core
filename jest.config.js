@@ -4,7 +4,6 @@ module.exports = {
   testRegex: '.*\\.spec\\.ts$',
   testPathIgnorePatterns: [
     '.*\\.e2e\\.spec\\.ts$', // Skip E2E tests by default
-    'src/standardization/.*\\.spec\\.ts$' // Skip standardization tests
   ],
   transform: {
     '^.+\\.ts$': 'ts-jest',
@@ -20,7 +19,6 @@ module.exports = {
     '!**/main.ts',
     '!**/migrations/**',
     '!**/seeds/**',
-    '!**/standardization/**', // Exclude standardization from coverage
   ],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',

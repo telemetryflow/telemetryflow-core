@@ -1,7 +1,7 @@
 {
   "name": "@telemetryflow/standardization",
-  "version": "1.0.0",
-  "description": "Module standardization tools for TelemetryFlow Core",
+  "version": "1.1.1",
+  "description": "Module standardization tools for TelemetryFlow Core - Documentation generation, test coverage analysis, and quality gate validation",
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
@@ -9,14 +9,21 @@
     "lint": "eslint . --ext .ts",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:memory": "jest --detectOpenHandles --forceExit",
+    "validate": "npm run lint && npm run test",
+    "clean": "rm -rf dist coverage"
   },
   "keywords": [
     "standardization",
     "quality-gates",
     "ddd",
     "validation",
-    "automation"
+    "automation",
+    "documentation-generation",
+    "test-coverage",
+    "nestjs",
+    "typescript"
   ],
   "author": "DevOpsCorner Indonesia",
   "license": "Apache ver-2.0",
@@ -34,5 +41,18 @@
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0"
-  }
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devops-corner/telemetryflow-core.git",
+    "directory": "src/standardization"
+  },
+  "bugs": {
+    "url": "https://github.com/devops-corner/telemetryflow-core/issues"
+  },
+  "homepage": "https://github.com/devops-corner/telemetryflow-core/tree/main/src/standardization#readme"
 }

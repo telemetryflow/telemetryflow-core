@@ -3,7 +3,7 @@
  */
 
 import { DFDGenerator } from '../dfd-generator';
-import { HandlerInfo } from '../../../interfaces/documentation.interface';
+import { HandlerInfo } from '../../../interfaces/module-structure.interface';
 
 describe('DFDGenerator', () => {
   let generator: DFDGenerator;
@@ -189,8 +189,13 @@ describe('DFDGenerator', () => {
         {
           name: 'GetUserHandler',
           path: '/handlers/GetUser.handler.ts',
-          type: 'query',
-          events: []
+          size: 500,
+          exists: true,
+          lastModified: new Date(),
+          className: 'GetUserHandler',
+          handlerType: 'query',
+          targetClass: 'GetUserQuery',
+          dependencies: []
         }
       ];
 
@@ -232,35 +237,35 @@ describe('DFDGenerator', () => {
         {
           name: 'ListUsersHandler',
           path: '/handlers/ListUsers.handler.ts',
-          size: 400,
+          size: 600,
           exists: true,
           lastModified: new Date(),
           className: 'ListUsersHandler',
-          handlerType: 'query',
+          handlerType: 'query' as const,
           targetClass: 'ListUsersQuery',
-          dependencies: []
+          dependencies: ['IUserRepository']
         },
         {
           name: 'CountUsersHandler',
           path: '/handlers/CountUsers.handler.ts',
-          size: 300,
+          size: 400,
           exists: true,
           lastModified: new Date(),
           className: 'CountUsersHandler',
-          handlerType: 'query',
+          handlerType: 'query' as const,
           targetClass: 'CountUsersQuery',
-          dependencies: []
+          dependencies: ['IUserRepository']
         },
         {
           name: 'UserExistsHandler',
           path: '/handlers/UserExists.handler.ts',
-          size: 250,
+          size: 300,
           exists: true,
           lastModified: new Date(),
           className: 'UserExistsHandler',
-          handlerType: 'query',
+          handlerType: 'query' as const,
           targetClass: 'UserExistsQuery',
-          dependencies: []
+          dependencies: ['IUserRepository']
         }
       ];
 
@@ -268,9 +273,9 @@ describe('DFDGenerator', () => {
       const dfd = await generator.generateDFD(queryHandlersWithDifferentTypes);
 
       // Assert
-      expect(dfd).toContain('| ListUsersHandler | None | Array<DTO> |');
-      expect(dfd).toContain('| CountUsersHandler | None | number |');
-      expect(dfd).toContain('| UserExistsHandler | None | boolean |');
+      expect(dfd).toContain('| ListUsersHandler | Array<DTO> | Retrieves listusers data |');
+      expect(dfd).toContain('| CountUsersHandler | number | Retrieves countusers data |');
+      expect(dfd).toContain('| UserExistsHandler | boolean | Retrieves userexists data |');
     });
   });
 
@@ -281,8 +286,13 @@ describe('DFDGenerator', () => {
         {
           name: 'Create-User_V2.handler.ts',
           path: '/handlers/Create-User_V2.handler.ts',
-          type: 'command',
-          events: ['UserV2CreatedEvent']
+          size: 800,
+          exists: true,
+          lastModified: new Date(),
+          className: 'CreateUserV2Handler',
+          handlerType: 'command' as const,
+          targetClass: 'CreateUserV2Command',
+          dependencies: []
         }
       ];
 
@@ -300,8 +310,13 @@ describe('DFDGenerator', () => {
         {
           name: 'ComplexHandler',
           path: '/handlers/Complex.handler.ts',
-          type: 'command',
-          events: []
+          size: 1200,
+          exists: true,
+          lastModified: new Date(),
+          className: 'ComplexHandler',
+          handlerType: 'command' as const,
+          targetClass: 'ComplexCommand',
+          dependencies: []
         }
       ];
 
@@ -319,8 +334,13 @@ describe('DFDGenerator', () => {
         {
           name: 'MultiEventHandler',
           path: '/handlers/MultiEvent.handler.ts',
-          type: 'command',
-          events: ['Event1', 'Event2', 'Event3']
+          size: 1000,
+          exists: true,
+          lastModified: new Date(),
+          className: 'MultiEventHandler',
+          handlerType: 'command' as const,
+          targetClass: 'MultiEventCommand',
+          dependencies: []
         }
       ];
 
@@ -340,26 +360,46 @@ describe('DFDGenerator', () => {
       {
         name: 'CreateUserHandler',
         path: '/application/handlers/CreateUser.handler.ts',
-        type: 'command',
-        events: ['UserCreatedEvent']
+        size: 500,
+        exists: true,
+        lastModified: new Date(),
+        className: 'CreateUserHandler',
+        handlerType: 'command' as const,
+        targetClass: 'CreateUserCommand',
+        dependencies: ['IUserRepository']
       },
       {
         name: 'UpdateUserHandler',
         path: '/application/handlers/UpdateUser.handler.ts',
-        type: 'command',
-        events: ['UserUpdatedEvent']
+        size: 450,
+        exists: true,
+        lastModified: new Date(),
+        className: 'UpdateUserHandler',
+        handlerType: 'command' as const,
+        targetClass: 'UpdateUserCommand',
+        dependencies: ['IUserRepository']
       },
       {
         name: 'GetUserHandler',
         path: '/application/handlers/GetUser.handler.ts',
-        type: 'query',
-        events: []
+        size: 300,
+        exists: true,
+        lastModified: new Date(),
+        className: 'GetUserHandler',
+        handlerType: 'query' as const,
+        targetClass: 'GetUserQuery',
+        dependencies: ['IUserRepository']
       },
       {
         name: 'ListUsersHandler',
         path: '/application/handlers/ListUsers.handler.ts',
-        type: 'query',
-        events: []
+        size: 350,
+        exists: true,
+        lastModified: new Date(),
+        className: 'ListUsersHandler',
+        handlerType: 'query' as const,
+        targetClass: 'ListUsersQuery',
+        dependencies: ['IUserRepository']
       }
     ];
   }

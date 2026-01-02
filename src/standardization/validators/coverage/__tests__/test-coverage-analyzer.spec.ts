@@ -478,11 +478,11 @@ describe('TestCoverageAnalyzerService', () => {
       // Assert
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
-      expect(result[0].filePath).toBe('/test/domain/User.ts');
-      expect(result[0].layer).toBe('domain');
-      expect(result[0].uncoveredLines.length).toBe(2);
-      expect(result[0].suggestedTests.length).toBeGreaterThan(0);
-      expect(result[0].priority).toBe('high');
+      expect(result[0]?.filePath).toBe('/test/domain/User.ts');
+      expect(result[0]?.layer).toBe('domain');
+      expect(result[0]?.uncoveredLines.length).toBe(2);
+      expect(result[0]?.suggestedTests.length).toBeGreaterThan(0);
+      expect(result[0]?.priority).toBe('high');
     });
   });
 });

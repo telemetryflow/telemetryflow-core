@@ -291,15 +291,15 @@ export TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
         paths[pathKey][endpoint.method.toLowerCase()] = {
           summary: endpoint.description,
           tags: [controller.name.replace('Controller', '')],
-          security: endpoint.permissions.length > 0 ? [{ bearerAuth: [] }] : [],
-          parameters: endpoint.parameters.map(param => ({
+          security: endpoint.permissions && endpoint.permissions.length > 0 ? [{ bearerAuth: [] }] : [],
+          parameters: endpoint.parameters ? endpoint.parameters.map(param => ({
             name: param.name,
             in: param.type === 'path' ? 'path' : 'query',
             required: param.required,
             description: param.description,
             schema: { type: 'string' }
-          })),
-          responses: endpoint.responses.reduce((acc, response) => {
+          })) : [],
+          responses: endpoint.responses ? endpoint.responses.reduce((acc, response) => {
             acc[response.status] = {
               description: response.description,
               content: response.schema ? {
@@ -309,7 +309,11 @@ export TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
               } : undefined
             };
             return acc;
-          }, {} as Record<string, any>)
+          }, {} as Record<string, any>) : {
+            '200': {
+              description: 'Success'
+            }
+          }
         };
       }
     }
@@ -356,11 +360,11 @@ export TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       section += `### ${endpoint.method.toUpperCase()} ${endpoint.path}\n\n`;
       section += `${endpoint.description}\n\n`;
 
-      if (endpoint.permissions.length > 0) {
+      if (endpoint.permissions && endpoint.permissions.length > 0) {
         section += `**Required Permissions:** \`${endpoint.permissions.join('`, `')}\`\n\n`;
       }
 
-      if (endpoint.parameters.length > 0) {
+      if (endpoint.parameters && endpoint.parameters.length > 0) {
         section += `**Parameters:**\n`;
         for (const param of endpoint.parameters) {
           section += `- \`${param.name}\` (${param.type}${param.required ? ', required' : ''}): ${param.description}\n`;
@@ -369,7 +373,7 @@ export TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       }
 
       section += `**Responses:**\n`;
-      for (const response of endpoint.responses) {
+      for (const response of endpoint.responses || []) {
         section += `- \`${response.status}\`: ${response.description}\n`;
       }
       section += '\n';
@@ -396,7 +400,7 @@ export TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
     let curl = `\`\`\`bash
 curl -X ${endpoint.method.toUpperCase()} http://localhost:3000${endpoint.path}`;
 
-    if (endpoint.permissions.length > 0) {
+    if (endpoint.permissions && endpoint.permissions.length > 0) {
       curl += ` \\
   -H "Authorization: Bearer $TOKEN"`;
     }
@@ -423,7 +427,7 @@ const response = await fetch('http://localhost:3000${endpoint.path}', {
   method: '${endpoint.method.toUpperCase()}',
   headers: {`;
 
-    if (endpoint.permissions.length > 0) {
+    if (endpoint.permissions && endpoint.permissions.length > 0) {
       js += `
     'Authorization': 'Bearer ' + token,`;
     }
@@ -570,7 +574,9 @@ try {
     
     for (const controller of controllers) {
       for (const endpoint of controller.endpoints) {
-        endpoint.permissions.forEach(permission => permissions.add(permission));
+        if (endpoint.permissions) {
+          endpoint.permissions.forEach(permission => permissions.add(permission));
+        }
       }
     }
     

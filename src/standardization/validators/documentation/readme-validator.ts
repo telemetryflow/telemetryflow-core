@@ -67,9 +67,9 @@ export class ReadmeValidator {
       issues,
       metadata: {
         exists,
-        lineCount: content.split('\n').length,
-        wordCount: content.split(/\s+/).length,
-        sectionsFound: this.extractSections(content),
+        lineCount: exists ? content.split('\n').length : 0,
+        wordCount: exists ? content.split(/\s+/).length : 0,
+        sectionsFound: exists ? this.extractSections(content) : [],
         lastModified: exists ? await this.getLastModified(readmePath) : null
       }
     };

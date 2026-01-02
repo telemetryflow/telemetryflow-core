@@ -164,8 +164,10 @@ export class TestStructureValidatorService implements TestStructureValidator {
       };
 
     } catch (error) {
-      this.logger.error(`Failed to validate test structure: ${error.message}`, error.stack);
-      throw new Error(`Test structure validation failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`Failed to validate test structure: ${errorMessage}`, errorStack);
+      throw new Error(`Test structure validation failed: ${errorMessage}`);
     }
   }
 
@@ -233,7 +235,8 @@ export class TestStructureValidatorService implements TestStructureValidator {
             });
           }
         } catch (error) {
-          this.logger.warn(`Could not read test file ${filePath}: ${error.message}`);
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          this.logger.warn(`Could not read test file ${filePath}: ${errorMessage}`);
         }
       }
 
@@ -331,7 +334,7 @@ export class TestStructureValidatorService implements TestStructureValidator {
   private async findTestFiles(dirPath: string): Promise<string[]> {
     try {
       const files: string[] = [];
-      await this.walkDirectory(dirPath, files);
+      await this.walkDirectory(dirPath, files, 5); // Limit depth for test directories
       return files.filter(file => /\.(spec|test)\.ts$/.test(file));
     } catch {
       return [];
@@ -341,21 +344,34 @@ export class TestStructureValidatorService implements TestStructureValidator {
   /**
    * Recursively walk directory to find files
    */
-  private async walkDirectory(dirPath: string, files: string[]): Promise<void> {
+  private async walkDirectory(dirPath: string, files: string[], maxDepth: number = 10, currentDepth: number = 0): Promise<void> {
+    // Prevent infinite recursion and excessive memory usage
+    if (currentDepth >= maxDepth) {
+      this.logger.warn(`Maximum directory depth (${maxDepth}) reached for: ${dirPath}`);
+      return;
+    }
+
     try {
       const entries = await fs.readdir(dirPath, { withFileTypes: true });
       
       for (const entry of entries) {
+        // Skip hidden files and directories to prevent issues
+        if (entry.name.startsWith('.')) {
+          continue;
+        }
+
         const fullPath = path.join(dirPath, entry.name);
         
         if (entry.isDirectory()) {
-          await this.walkDirectory(fullPath, files);
+          await this.walkDirectory(fullPath, files, maxDepth, currentDepth + 1);
         } else if (entry.isFile()) {
           files.push(fullPath);
         }
       }
     } catch (error) {
-      // Directory doesn't exist or can't be read
+      // Directory doesn't exist or can't be read - log but don't throw
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.debug(`Could not read directory ${dirPath}: ${errorMessage}`);
     }
   }
 
@@ -641,7 +657,7 @@ export class TestStructureValidatorService implements TestStructureValidator {
   private async findTypeScriptFiles(dirPath: string): Promise<string[]> {
     try {
       const files: string[] = [];
-      await this.walkDirectory(dirPath, files);
+      await this.walkDirectory(dirPath, files, 5); // Limit depth for source directories
       return files.filter(file => file.endsWith('.ts') && !file.endsWith('.spec.ts') && !file.endsWith('.test.ts'));
     } catch {
       return [];
@@ -724,19 +740,50 @@ export class TestStructureValidatorService implements TestStructureValidator {
    * Validate file name against conventions
    */
   private validateFileName(fileName: string): boolean {
-    // Check against naming conventions
+    // Specific checks for obvious violations
+    
+    // 1. .test.ts should be .spec.ts
+    if (fileName.endsWith('.test.ts')) {
+      return false;
+    }
+    
+    // 2. Files without any test suffix are invalid (but allow .ts files that match patterns)
+    const hasTestSuffix = fileName.includes('.spec.') || 
+                         fileName.includes('.fixture.') || 
+                         fileName.includes('.mock.') ||
+                         fileName.endsWith('.spec.ts');
+    
+    if (!fileName.endsWith('.ts') || !hasTestSuffix) {
+      return false;
+    }
+
+    // 3. Semantic validation based on file name patterns
+    const lowerFileName = fileName.toLowerCase();
+    
+    // Repository files should have .integration. (but allow if they already do)
+    if (lowerFileName.includes('repository') && 
+        !lowerFileName.includes('.integration.') && 
+        !lowerFileName.includes('.mock.')) {
+      return false;
+    }
+    
+    // Controller files should have .e2e. (but allow if they already do)
+    if (lowerFileName.includes('controller') && 
+        !lowerFileName.includes('.e2e.') && 
+        !lowerFileName.includes('.mock.')) {
+      return false;
+    }
+
+    // 4. Check against naming conventions
     for (const convention of this.NAMING_CONVENTIONS) {
-      if (convention.required) {
-        const pattern = convention.pattern.replace('**/', '').replace('*', '.*');
-        const regex = new RegExp(pattern);
-        if (regex.test(fileName)) {
-          return true;
-        }
+      const pattern = convention.pattern.replace('**/', '').replace('*', '.*');
+      const regex = new RegExp(pattern);
+      if (regex.test(fileName)) {
+        return true;
       }
     }
 
-    // Check for basic test file patterns
-    return /\.(spec|test)\.ts$/.test(fileName);
+    return false;
   }
 
   /**
@@ -744,20 +791,31 @@ export class TestStructureValidatorService implements TestStructureValidator {
    */
   private createNamingIssue(filePath: string, fileName: string): TestNamingIssue {
     let suggestion = 'Follow naming convention: ';
+    let severity: 'error' | 'warning' = 'warning';
     
     if (fileName.includes('.test.')) {
       suggestion += 'Use .spec.ts instead of .test.ts';
-    } else if (!fileName.includes('.spec.') && !fileName.includes('.test.')) {
-      suggestion += 'Add .spec.ts or .test.ts suffix';
+      severity = 'error'; // This is a critical naming violation
+    } else if (!fileName.includes('.spec.') && !fileName.includes('.test.') && 
+               !fileName.includes('.fixture.') && !fileName.includes('.mock.')) {
+      suggestion += 'Add appropriate test suffix (.spec.ts, .fixture.ts, .mock.ts)';
+      severity = 'error'; // Missing test suffix is critical
+    } else if (fileName.toLowerCase().includes('repository') && !fileName.includes('.integration.')) {
+      suggestion += 'Repository tests should use .integration.spec.ts';
+      severity = 'error'; // Semantic naming violation
+    } else if (fileName.toLowerCase().includes('controller') && !fileName.includes('.e2e.')) {
+      suggestion += 'Controller tests should use .e2e.spec.ts';
+      severity = 'error'; // Semantic naming violation
     } else {
       suggestion += 'Check naming convention requirements';
+      severity = 'warning'; // Other issues are warnings
     }
 
     return {
       filePath,
       issue: `Invalid test file naming: ${fileName}`,
       suggestion,
-      severity: 'warning'
+      severity
     };
   }
 }

@@ -260,12 +260,12 @@ tests/
 ├── integration/            # Integration tests (${moduleStructure.tests.integration.length} files)
 │   ├── repositories/       # Repository integration tests
 │   └── README.md
-├── e2e/                    # End-to-end tests (${moduleStructure.tests.e2e.length} files)
+├── e2e/                   # End-to-end tests (${moduleStructure.tests.e2e.length} files)
 │   ├── controllers/        # Controller E2E tests
 │   └── README.md
 ├── fixtures/               # Test data (${moduleStructure.tests.fixtures.length} files)
 ├── mocks/                  # Mock implementations (${moduleStructure.tests.mocks.length} files)
-└── postman/                # BDD tests (see docs/postman/)
+└── postman/               # BDD tests (1 collections)
 \`\`\`
 
 ## Running Tests
@@ -1279,6 +1279,21 @@ These patterns provide a solid foundation for comprehensive testing of the ${mod
   }
 
   private formatModuleName(name: string): string {
+    // Special cases for acronyms
+    const acronyms: Record<string, string> = {
+      'iam': 'IAM',
+      'api': 'API',
+      'jwt': 'JWT',
+      'rbac': 'RBAC',
+      'oauth': 'OAuth',
+      'saml': 'SAML'
+    };
+    
+    const lowerName = name.toLowerCase();
+    if (acronyms[lowerName]) {
+      return acronyms[lowerName];
+    }
+    
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   }
 
