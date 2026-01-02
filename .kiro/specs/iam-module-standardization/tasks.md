@@ -47,7 +47,7 @@ This implementation plan transforms the IAM module standardization design into a
     - **Property 2: Test Coverage Thresholds**
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5**
 
-  - [ ] 3.3 Implement test structure validator
+  - [ ]* 3.3 Implement test structure validator
     - Validate test directory organization (unit/, integration/, e2e/)
     - Check for required test files for all aggregates and handlers
     - Validate test naming conventions

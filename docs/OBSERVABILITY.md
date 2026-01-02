@@ -12,13 +12,14 @@ graph TB
         Winston[Winston Logger]
     end
 
-    subgraph "Collection & Processing"
-        Collector[OTEL Collector<br/>:4318]
-        Processor[Processors<br/>Batch, Filter, Transform]
+    subgraph "TelemetryFlow Collector"
+        Collector[TFO-Collector v1.1.1<br/>:4317 gRPC / :4318 HTTP]
+        Processor[Processors<br/>Batch, Memory Limiter, Resource]
+        Connectors[Connectors<br/>SpanMetrics, ServiceGraph]
     end
 
     subgraph "Storage & Visualization"
-        Jaeger[Jaeger<br/>:16686<br/>Traces]
+        Jaeger[Jaeger V2<br/>:16686<br/>Traces]
         Prometheus[Prometheus<br/>:9090<br/>Metrics]
         Files[Log Files<br/>logs/*.log]
     end
@@ -27,28 +28,32 @@ graph TB
         Swagger[Swagger UI<br/>:3000/api]
         JaegerUI[Jaeger UI<br/>Trace Viewer]
         PromUI[Prometheus UI<br/>Metrics Query]
+        Grafana[Grafana<br/>:3001<br/>Dashboards]
     end
 
     App --> OTEL_SDK
     App --> Winston
 
-    OTEL_SDK -->|Traces| Collector
-    OTEL_SDK -->|Metrics| Collector
+    OTEL_SDK -->|OTLP HTTP :4318| Collector
     Winston -->|Logs| Collector
     Winston -->|Write| Files
 
     Collector --> Processor
-    Processor -->|Export| Jaeger
+    Processor --> Connectors
+    Connectors -->|SpanMetrics| Prometheus
+    Processor -->|OTLP gRPC :4317| Jaeger
     Processor -->|Scrape :8889| Prometheus
 
     Jaeger --> JaegerUI
     Prometheus --> PromUI
+    Prometheus --> Grafana
     App --> Swagger
 
     style App fill:#e1f5ff
     style Collector fill:#fff4e1
     style Jaeger fill:#90EE90
     style Prometheus fill:#FFD700
+    style Grafana fill:#FF6B6B
 ```
 
 ## Features
@@ -106,32 +111,61 @@ OTEL_ENABLED=false
 
 ## OpenTelemetry Setup
 
-### Option 1: OTEL Collector (Recommended)
+### Option 1: TFO-Collector (Recommended)
 
-1. **Start OTEL Collector**:
+TelemetryFlow uses **TFO-Collector v1.1.1+** - a custom OpenTelemetry Collector with 100% OTLP compliance.
+
+**Key Features:**
+- OTLP gRPC (port 4317) and HTTP (port 4318) receivers/exporters
+- SpanMetrics connector with exemplars support
+- ServiceGraph connector for dependency visualization
+- Native Jaeger V2 integration via OTLP
+
+1. **Start with Docker Compose**:
+```bash
+# Start with monitoring profile (includes TFO-Collector, Jaeger, Prometheus, Grafana)
+docker-compose --profile core --profile monitoring up -d
+```
+
+2. **Or manually configure TFO-Collector**:
 ```yaml
 # docker-compose.yml
 otel-collector:
-  image: otel/opentelemetry-collector:latest
-  command: ["--config=/etc/otel-collector-config.yaml"]
+  image: telemetryflow/telemetryflow-collector:latest
+  command: ["--config=/etc/tfo-collector/tfo-collector.yaml"]
   volumes:
-    - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    - ./config/otel/tfo-collector.yaml:/etc/tfo-collector/tfo-collector.yaml:ro
   ports:
+    - "4317:4317"  # OTLP gRPC
     - "4318:4318"  # OTLP HTTP
+    - "8889:8889"  # Prometheus metrics
+    - "13133:13133" # Health check
 ```
 
-2. **Configure Core**:
+3. **Configure Core Application**:
 ```env
 OTEL_ENABLED=true
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ```
 
-3. **Start Application**:
+4. **Start Application**:
 ```bash
 pnpm run dev
 ```
 
-### Option 2: Direct to Backend
+### Option 2: Standard OTEL Collector (OCB Build)
+
+For standard OpenTelemetry Collector format, use the OCB build:
+
+```yaml
+otel-collector:
+  image: telemetryflow/telemetryflow-collector-ocb:latest
+  command: ["--config=/etc/tfo-collector/otel-collector.yaml"]
+  volumes:
+    - ./config/otel/otel-collector.yaml:/etc/tfo-collector/otel-collector.yaml:ro
+```
+
+### Option 3: Direct to Backend
 
 Export traces directly to observability backend:
 
@@ -141,7 +175,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=https://your-backend.com
 ```
 
 Supported backends:
-- Jaeger
+- Jaeger (V2 with native OTLP)
 - Zipkin
 - Grafana Tempo
 - Honeycomb
@@ -273,89 +307,90 @@ Output (JSON):
 ## Monitoring Stack
 
 ### Minimal Setup (Core Only)
+
 ```
 TelemetryFlow Core
   └─ Swagger UI (built-in)
 ```
 
-### With OTEL Collector
+### With TFO-Collector
+
 ```
 TelemetryFlow Core
-  └─ OTEL Collector
-      └─ Jaeger/Tempo (traces)
+  └─ TFO-Collector v1.1.1+
+      ├─ Jaeger V2 (traces via OTLP)
+      └─ SpanMetrics (derived metrics)
 ```
 
 ### Full Stack (Platform)
+
 ```
 TelemetryFlow Core
-  └─ OTEL Collector
-      ├─ Jaeger/Tempo (traces)
-      ├─ Prometheus (metrics)
-      └─ Loki (logs)
+  └─ TFO-Collector v1.1.1+
+      ├─ Jaeger V2 (traces via OTLP gRPC :4317)
+      ├─ Prometheus (metrics via :8889)
+      ├─ Grafana (dashboards)
+      └─ ServiceGraph (dependency visualization)
 ```
 
 ## Example: Enable Full Observability
 
-### 1. Create OTEL Collector Config
+### 1. Use Pre-configured TFO-Collector
+
+The project includes a ready-to-use TFO-Collector configuration at `config/otel/tfo-collector.yaml`.
+
+**Key Pipeline Configuration:**
 ```yaml
-# otel-collector-config.yaml
-receivers:
-  otlp:
-    protocols:
-      http:
-        endpoint: 0.0.0.0:4318
-
-exporters:
-  logging:
-    loglevel: debug
-  jaeger:
-    endpoint: jaeger:14250
-    tls:
-      insecure: true
-
+# Traces flow: App → TFO-Collector → Jaeger V2
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [logging, jaeger]
+      processors: [memory_limiter, batch, resource]
+      exporters: [otlp/jaeger, debug, spanmetrics, servicegraph]
+
+    # Derived metrics from traces (with exemplars)
+    metrics/spanmetrics:
+      receivers: [spanmetrics]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus]
 ```
 
-### 2. Update docker-compose.yml
-```yaml
-services:
-  postgres:
-    # ... existing config
+### 2. Start with Docker Compose Profiles
 
-  otel-collector:
-    image: otel/opentelemetry-collector:latest
-    command: ["--config=/etc/otel-collector-config.yaml"]
-    volumes:
-      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
-    ports:
-      - "4318:4318"
+```bash
+# Start core + monitoring (recommended)
+docker-compose --profile core --profile monitoring up -d
 
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - "16686:16686"  # UI
-      - "14250:14250"  # gRPC
+# Or start everything
+docker-compose --profile all up -d
 ```
 
-### 3. Enable OTEL
+This starts:
+- **TFO-Collector** (telemetryflow/telemetryflow-collector:latest)
+- **Jaeger V2** (jaegertracing/jaeger:2.13.0) with native OTLP support
+- **Prometheus** for metrics collection
+- **Grafana** for dashboards
+
+### 3. Enable OTEL in Application
+
 ```env
 OTEL_ENABLED=true
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ```
 
-### 4. Start Everything
+### 4. Start Application
+
 ```bash
-docker-compose up -d
 pnpm run dev
 ```
 
 ### 5. Access UIs
+
 - **Swagger**: http://localhost:3000/api
 - **Jaeger**: http://localhost:16686
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3001 (admin/admin)
 
 ## Best Practices
 
