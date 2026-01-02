@@ -322,7 +322,7 @@ Follow these standards to maintain code quality and consistency.
 - Regular security audits and updates
 
 ## License
-MIT License for open source usage and distribution.
+Apache-v2.0 License for open source usage and distribution.
 See LICENSE file for complete terms and conditions.
 
 ## Additional Documentation

@@ -376,7 +376,7 @@ pnpm db:migrate:revert
   private generateLicense(): string {
     return `## License
 
-This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.
+This project is licensed under the Apache-v2.0 License - see the [LICENSE](../../LICENSE) file for details.
 
 ## Support
 

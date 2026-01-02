@@ -281,4 +281,4 @@ When contributing to the standardization system:
 
 ## License
 
-MIT License - see LICENSE file for details.
+Apache-v2.0 License - see LICENSE file for details.
