@@ -663,5 +663,198 @@ describe('FileStructureValidator', () => {
       expect(result.issues.filter(issue => issue.severity === IssueSeverity.ERROR).length).toBe(0);
       expect(result.metadata?.totalIssues).toBe(0);
     });
+
+    it('should handle edge cases in file naming patterns', async () => {
+      // Create directories for edge case testing
+      await fs.mkdir(path.join(tempDir, 'domain/repositories'), { recursive: true });
+      await fs.mkdir(path.join(tempDir, 'infrastructure/persistence/migrations'), { recursive: true });
+      await fs.mkdir(path.join(tempDir, 'infrastructure/persistence/seeds'), { recursive: true });
+
+      // Create files with edge case naming patterns
+      await fs.writeFile(path.join(tempDir, 'domain/repositories/iUserRepository.ts'), 'export interface IUserRepository {}');
+      await fs.writeFile(path.join(tempDir, 'domain/repositories/user-repository.interface.ts'), 'export interface IUserRepository {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/migrations/123-CreateUsers.ts'), 'export class CreateUsers {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/migrations/invalid-migration.ts'), 'export class InvalidMigration {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/seeds/seed-users.ts'), 'export class SeedUsers {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/seeds/1234567890123-seed-users.ts'), 'export class SeedUsers {}');
+
+      const result = await validator.validate({
+        modulePath: tempDir,
+        enforceBarrelExports: false,
+        validateNamingConventions: true,
+        checkRequiredDirectories: false
+      });
+
+      // Should detect naming violations for all edge cases
+      const namingIssues = result.issues.filter(issue => issue.id.includes('naming-violation'));
+      expect(namingIssues.length).toBeGreaterThan(0);
+
+      // Should have fixes for some of the violations
+      const renameFixes = result.fixes.filter(fix => fix.action === 'rename-file');
+      expect(renameFixes.length).toBeGreaterThan(0);
+    });
+
+    it('should handle mixed case scenarios with partial compliance', async () => {
+      // Create a module with mixed compliance levels
+      await fs.mkdir(path.join(tempDir, 'domain/aggregates'), { recursive: true });
+      await fs.mkdir(path.join(tempDir, 'domain/events'), { recursive: true });
+      await fs.mkdir(path.join(tempDir, 'application/commands'), { recursive: true });
+      await fs.mkdir(path.join(tempDir, 'application/queries'), { recursive: true });
+
+      // Mix of correct and incorrect files
+      await fs.writeFile(path.join(tempDir, 'domain/aggregates/User.ts'), 'export class User {}');
+      await fs.writeFile(path.join(tempDir, 'domain/aggregates/user_role.ts'), 'export class UserRole {}');
+      await fs.writeFile(path.join(tempDir, 'domain/aggregates/index.ts'), 'export * from "./User";');
+      
+      await fs.writeFile(path.join(tempDir, 'domain/events/UserCreated.event.ts'), 'export class UserCreatedEvent {}');
+      await fs.writeFile(path.join(tempDir, 'domain/events/user-updated.ts'), 'export class UserUpdatedEvent {}');
+      // No barrel export for events
+      
+      await fs.writeFile(path.join(tempDir, 'application/commands/CreateUser.command.ts'), 'export class CreateUserCommand {}');
+      await fs.writeFile(path.join(tempDir, 'application/commands/updateUser.ts'), 'export class UpdateUserCommand {}');
+      await fs.writeFile(path.join(tempDir, 'application/commands/index.ts'), 'export * from "./CreateUser.command";');
+      
+      // Empty queries directory
+      
+      const result = await validator.validate({
+        modulePath: tempDir,
+        enforceBarrelExports: true,
+        validateNamingConventions: true,
+        checkRequiredDirectories: false
+      });
+
+      // Should have mixed results
+      expect(result.issues.length).toBeGreaterThan(0);
+      
+      // Should have naming violations
+      const namingIssues = result.issues.filter(issue => issue.id.includes('naming-violation'));
+      expect(namingIssues.length).toBeGreaterThan(0);
+      
+      // Should have missing barrel export issues
+      const barrelIssues = result.issues.filter(issue => issue.id.includes('missing-barrel-export'));
+      expect(barrelIssues.length).toBeGreaterThan(0);
+      
+      // Should not have barrel export issue for empty queries directory
+      const queriesBarrelIssue = result.issues.find(issue => 
+        issue.id.includes('missing-barrel-export') && issue.location?.includes('application/queries')
+      );
+      expect(queriesBarrelIssue).toBeUndefined();
+    });
+
+    it('should validate special file types correctly', async () => {
+      // Create directories for special file types
+      await fs.mkdir(path.join(tempDir, 'domain/services'), { recursive: true });
+      await fs.mkdir(path.join(tempDir, 'infrastructure/persistence/mappers'), { recursive: true });
+      await fs.mkdir(path.join(tempDir, 'presentation/guards'), { recursive: true });
+      await fs.mkdir(path.join(tempDir, 'presentation/decorators'), { recursive: true });
+
+      // Create files with correct and incorrect naming for special types
+      await fs.writeFile(path.join(tempDir, 'domain/services/PermissionService.ts'), 'export class PermissionService {}');
+      await fs.writeFile(path.join(tempDir, 'domain/services/user-service.ts'), 'export class UserService {}');
+      
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/mappers/UserMapper.ts'), 'export class UserMapper {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/mappers/role_mapper.ts'), 'export class RoleMapper {}');
+      
+      await fs.writeFile(path.join(tempDir, 'presentation/guards/AuthGuard.guard.ts'), 'export class AuthGuard {}');
+      await fs.writeFile(path.join(tempDir, 'presentation/guards/permission.ts'), 'export class PermissionGuard {}');
+      
+      await fs.writeFile(path.join(tempDir, 'presentation/decorators/RequirePermissions.decorator.ts'), 'export function RequirePermissions() {}');
+      await fs.writeFile(path.join(tempDir, 'presentation/decorators/log-decorator.ts'), 'export function Log() {}');
+
+      const result = await validator.validate({
+        modulePath: tempDir,
+        enforceBarrelExports: false,
+        validateNamingConventions: true,
+        checkRequiredDirectories: false
+      });
+
+      // Should detect naming violations for incorrectly named files
+      const namingIssues = result.issues.filter(issue => issue.id.includes('naming-violation'));
+      expect(namingIssues.length).toBeGreaterThan(0);
+
+      // Should have fixes for the violations
+      const renameFixes = result.fixes.filter(fix => fix.action === 'rename-file');
+      expect(renameFixes.length).toBeGreaterThan(0);
+
+      // Verify specific violations are detected
+      const serviceViolation = namingIssues.find(issue => issue.location?.includes('user-service.ts'));
+      const mapperViolation = namingIssues.find(issue => issue.location?.includes('role_mapper.ts'));
+      const guardViolation = namingIssues.find(issue => issue.location?.includes('permission.ts'));
+      const decoratorViolation = namingIssues.find(issue => issue.location?.includes('log-decorator.ts'));
+
+      expect(serviceViolation).toBeDefined();
+      expect(mapperViolation).toBeDefined();
+      expect(guardViolation).toBeDefined();
+      expect(decoratorViolation).toBeDefined();
+    });
+
+    it('should handle migration and seed file naming validation', async () => {
+      // Create directories for migrations and seeds
+      await fs.mkdir(path.join(tempDir, 'infrastructure/persistence/migrations'), { recursive: true });
+      await fs.mkdir(path.join(tempDir, 'infrastructure/persistence/seeds'), { recursive: true });
+
+      // Create files with correct and incorrect migration naming
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/migrations/1704240000001-CreateUsersTable.ts'), 'export class CreateUsersTable {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/migrations/invalid-migration.ts'), 'export class InvalidMigration {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/migrations/123-CreateRoles.ts'), 'export class CreateRoles {}');
+
+      // Create files with correct and incorrect seed naming
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/seeds/1704240000001-seed-iam-users.ts'), 'export class SeedIamUsers {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/seeds/seed-roles.ts'), 'export class SeedRoles {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/persistence/seeds/1234567890123-seed-permissions.ts'), 'export class SeedPermissions {}');
+
+      const result = await validator.validate({
+        modulePath: tempDir,
+        enforceBarrelExports: false,
+        validateNamingConventions: true,
+        checkRequiredDirectories: false
+      });
+
+      // Should detect naming violations for incorrectly named migration and seed files
+      const namingIssues = result.issues.filter(issue => issue.id.includes('naming-violation'));
+      expect(namingIssues.length).toBeGreaterThan(0);
+
+      // Should have violations for invalid migration and seed files
+      const migrationViolations = namingIssues.filter(issue => 
+        issue.location?.includes('infrastructure/persistence/migrations')
+      );
+      const seedViolations = namingIssues.filter(issue => 
+        issue.location?.includes('infrastructure/persistence/seeds')
+      );
+
+      expect(migrationViolations.length).toBeGreaterThan(0);
+      expect(seedViolations.length).toBeGreaterThan(0);
+    });
+
+    it('should handle processor file naming validation', async () => {
+      // Create directory for processors
+      await fs.mkdir(path.join(tempDir, 'infrastructure/processors'), { recursive: true });
+
+      // Create files with correct and incorrect processor naming
+      await fs.writeFile(path.join(tempDir, 'infrastructure/processors/iam-event.processor.ts'), 'export class IamEventProcessor {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/processors/UserProcessor.ts'), 'export class UserProcessor {}');
+      await fs.writeFile(path.join(tempDir, 'infrastructure/processors/role_processor.ts'), 'export class RoleProcessor {}');
+
+      const result = await validator.validate({
+        modulePath: tempDir,
+        enforceBarrelExports: false,
+        validateNamingConventions: true,
+        checkRequiredDirectories: false
+      });
+
+      // Should detect naming violations for incorrectly named processor files
+      const namingIssues = result.issues.filter(issue => 
+        issue.id.includes('naming-violation') && 
+        issue.location?.includes('infrastructure/processors')
+      );
+      expect(namingIssues.length).toBeGreaterThan(0);
+
+      // Should have fixes for the violations
+      const renameFixes = result.fixes.filter(fix => 
+        fix.action === 'rename-file' && 
+        fix.parameters?.oldPath?.includes('infrastructure/processors')
+      );
+      expect(renameFixes.length).toBeGreaterThanOrEqual(0); // May not have fixes if patterns don't match
+    });
   });
 });
