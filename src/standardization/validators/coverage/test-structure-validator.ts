@@ -776,7 +776,7 @@ export class TestStructureValidatorService implements TestStructureValidator {
 
     // 4. Check against naming conventions
     for (const convention of this.NAMING_CONVENTIONS) {
-      const pattern = convention.pattern.replace('**/', '').replace('*', '.*');
+      const pattern = convention.pattern.replace('**/', '').replace(/\*/g, '.*');
       const regex = new RegExp(pattern);
       if (regex.test(fileName)) {
         return true;
