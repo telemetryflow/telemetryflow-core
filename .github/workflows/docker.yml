@@ -316,7 +316,7 @@ jobs:
 
       - name: Upload SBOM
         if: needs.prepare.outputs.push == 'true'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-${{ needs.prepare.outputs.commit }}
           path: sbom-*.spdx.json
@@ -442,7 +442,7 @@ jobs:
           fi
 
       - name: Upload scan results as artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always() && hashFiles('trivy-results.sarif') != ''
         with:
           name: trivy-scan-results-${{ needs.prepare.outputs.commit }}
