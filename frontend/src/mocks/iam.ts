@@ -2331,24 +2331,45 @@ const ACTION_TO_EVENT_TYPE: Record<
   "retention.update": "SYSTEM",
 };
 
+function secureRandomFloat(): number {
+  const values = new Uint32Array(1);
+  crypto.getRandomValues(values);
+  return values[0] / 4294967296;
+}
+
+function secureRandomInt(max: number): number {
+  if (max <= 0) return 0;
+  const values = new Uint32Array(1);
+  const range = 4294967296;
+  const limit = range - (range % max);
+
+  let value = 0;
+  do {
+    crypto.getRandomValues(values);
+    value = values[0];
+  } while (value >= limit);
+
+  return value % max;
+}
+
 export function generateAuditLogs(count: number = 100): AuditLogEntry[] {
   const logs: AuditLogEntry[] = [];
   const now = Date.now();
 
   for (let i = 0; i < count; i++) {
-    const user = MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)];
+    const user = MOCK_USERS[secureRandomInt(MOCK_USERS.length)];
     const action =
-      AUDIT_ACTIONS[Math.floor(Math.random() * AUDIT_ACTIONS.length)];
+      AUDIT_ACTIONS[secureRandomInt(AUDIT_ACTIONS.length)];
     const [resource] = action.split(".");
     const eventType = ACTION_TO_EVENT_TYPE[action] || "DATA";
-    const resultRandom = Math.random();
+    const resultRandom = secureRandomFloat();
     const result: "SUCCESS" | "FAILURE" | "DENIED" =
       resultRandom > 0.9
         ? "FAILURE"
         : resultRandom > 0.85
           ? "DENIED"
           : "SUCCESS";
-    const timestamp = now - Math.random() * 7 * 24 * 60 * 60 * 1000;
+    const timestamp = now - secureRandomFloat() * 7 * 24 * 60 * 60 * 1000;
 
     logs.push({
       id: `audit-${randomId(12)}`,
@@ -2379,21 +2400,21 @@ export function generateAuditLogs(count: number = 100): AuditLogEntry[] {
             ? { name: "New Value" }
             : undefined,
       },
-      ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+      ipAddress: `192.168.${secureRandomInt(255)}.${secureRandomInt(255)}`,
       userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
       requestMethod: ["GET", "POST", "PUT", "DELETE"][
-        Math.floor(Math.random() * 4)
+        secureRandomInt(4)
       ],
       requestPath: `/api/v2/${resource}s`,
       metadata: {
-        requestMethod: ["GET", "POST", "PUT", "DELETE"][Math.floor(Math.random() * 4)],
+        requestMethod: ["GET", "POST", "PUT", "DELETE"][secureRandomInt(4)],
         requestPath: `/api/v2/${resource}s`,
         statusCode: result === "SUCCESS" ? 200 : result === "DENIED" ? 403 : 500,
-        duration: Math.floor(Math.random() * 500) + 10,
+        duration: secureRandomInt(500) + 10,
         resourceId: `${resource}-${randomId(6)}`,
         sessionId: "",
       },
-      durationMs: Math.floor(Math.random() * 500) + 10,
+      durationMs: secureRandomInt(500) + 10,
       tenantId: "tenant-devopscorner",
       workspaceId: "ws-devopscorner",
       organizationId: user.organizationId || "org-devopscorner",
