@@ -5,6 +5,7 @@ import { ApiKeyCreatedEvent } from '../events/ApiKeyCreated.event';
 import { ApiKeyRotatedEvent } from '../events/ApiKeyRotated.event';
 import { ApiKeyRevokedEvent } from '../events/ApiKeyRevoked.event';
 import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 export interface ApiKeyProps {
   name: string;
@@ -148,8 +149,8 @@ export class ApiKey extends AggregateRoot<ApiKeyId> {
     const keyPrefix = KeyPrefix.secret(); // Always tfs_ for the hashed secret
     const keyHint = rawKeySecret.slice(-4);
 
-    // Hash the secret for storage (one-way)
-    const apiKeySecret = crypto.createHash('sha256').update(rawKeySecret).digest('hex');
+    // Hash the secret for storage (one-way) using a slow password hash
+    const apiKeySecret = bcrypt.hashSync(rawKeySecret, 12);
 
     const now = new Date();
     const apiKey = new ApiKey(id, {
