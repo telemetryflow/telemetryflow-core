@@ -31,6 +31,31 @@ export const AUDIT_ENDPOINTS = {
 
 // ==================== MOCK DATA GENERATORS ====================
 
+function secureRandomInt(maxExclusive: number): number {
+  if (!Number.isInteger(maxExclusive) || maxExclusive <= 0) {
+    throw new Error("maxExclusive must be a positive integer");
+  }
+
+  const maxUint32 = 0x100000000;
+  const limit = maxUint32 - (maxUint32 % maxExclusive);
+  const buffer = new Uint32Array(1);
+
+  let value: number;
+  do {
+    globalThis.crypto.getRandomValues(buffer);
+    value = buffer[0];
+  } while (value >= limit);
+
+  return value % maxExclusive;
+}
+
+function pickRandom<T>(items: T[]): T {
+  if (items.length === 0) {
+    throw new Error("Cannot pick from an empty array");
+  }
+  return items[secureRandomInt(items.length)];
+}
+
 function generateMockAuditLogs(count: number): AuditLog[] {
   const eventTypes: AuditEventType[] = ["AUTH", "AUTHZ", "DATA", "SYSTEM"];
   const results: AuditResult[] = ["SUCCESS", "FAILURE", "DENIED"];
@@ -61,12 +86,12 @@ function generateMockAuditLogs(count: number): AuditLog[] {
   const now = Date.now();
 
   for (let i = 0; i < count; i++) {
-    const eventType = eventTypes[Math.floor(Math.random() * eventTypes.length)];
-    const result = results[Math.floor(Math.random() * results.length)];
-    const action = actions[eventType][Math.floor(Math.random() * actions[eventType].length)];
-    const user = users[Math.floor(Math.random() * users.length)];
-    const resource = resources[Math.floor(Math.random() * resources.length)];
-    const timestamp = now - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000);
+    const eventType = pickRandom(eventTypes);
+    const result = pickRandom(results);
+    const action = pickRandom(actions[eventType]);
+    const user = pickRandom(users);
+    const resource = pickRandom(resources);
+    const timestamp = now - secureRandomInt(7 * 24 * 60 * 60 * 1000);
 
     logs.push({
       id: `audit-${Date.now()}-${i}`,
@@ -79,17 +104,17 @@ function generateMockAuditLogs(count: number): AuditLog[] {
       eventType,
       action,
       resource,
-      resourceId: `${resource}-${Math.floor(Math.random() * 1000)}`,
+      resourceId: `${resource}-${secureRandomInt(1000)}`,
       result,
       errorMessage: result === "FAILURE" ? `${action} operation failed` : undefined,
       errorCode: result === "FAILURE" ? `ERR_${action.toUpperCase()}` : undefined,
-      ipAddress: ips[Math.floor(Math.random() * ips.length)],
-      userAgent: userAgents[Math.floor(Math.random() * userAgents.length)],
+      ipAddress: pickRandom(ips),
+      userAgent: pickRandom(userAgents),
       requestMethod: eventType === "DATA"
-        ? ["GET", "POST", "PUT", "DELETE"][Math.floor(Math.random() * 4)]
+        ? pickRandom(["GET", "POST", "PUT", "DELETE"])
         : "POST",
       requestPath: `/api/v2/${resource}s`,
-      durationMs: Math.floor(Math.random() * 500) + 10,
+      durationMs: secureRandomInt(500) + 10,
       tenantId: "tenant-devopscorner",
       workspaceId: "workspace-default",
       organizationId: "org-devopscorner",
