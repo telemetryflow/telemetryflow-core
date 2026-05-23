@@ -7,6 +7,7 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { randomBytes } from "crypto";
 import { OAuthCallbackCommand } from "../commands/OAuthCallback.command";
 import { OAuthLoginHandler } from "./OAuthLogin.handler";
 import { UserEntity } from "../../../iam/infrastructure/persistence/entities/User.entity";
@@ -361,7 +362,8 @@ export class OAuthCallbackHandler
       oauthProfile.family_name || oauthProfile.name?.split(" ")[1] || "";
 
     // Generate a random username from email
-    const username = oauthProfile.email.split("@")[0] + "_" + Math.random().toString(36).substring(7);
+    const username =
+      oauthProfile.email.split("@")[0] + "_" + randomBytes(6).toString("hex");
 
     // Get default region (you may want to make this configurable)
     const defaultRegionId = this.configService.get<string>(
