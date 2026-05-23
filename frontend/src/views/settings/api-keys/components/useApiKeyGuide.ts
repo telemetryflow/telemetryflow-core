@@ -124,11 +124,19 @@ export function codeBlock(
 export function rawOf(html: string): string {
   const m = html.match(/<pre class="gcb-code">([\s\S]*?)<\/pre>/);
   const inner = m ? m[1] : html;
-  return inner
+
+  let out = inner
     .replace(/<[^>]+>/g, "")
     .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&");
+    .replace(/&gt;/g, ">");
+
+  let previous: string;
+  do {
+    previous = out;
+    out = out.replace(/<[^>]+>/g, "");
+  } while (out !== previous);
+
+  return out;
 }
 
 // ─── Code generators ──────────────────────────────────────────────────────────

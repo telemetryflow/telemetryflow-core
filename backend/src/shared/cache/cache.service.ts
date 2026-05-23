@@ -209,7 +209,8 @@ export class CacheService implements ICacheService, OnModuleInit, OnModuleDestro
     let deleted = 0;
 
     // Delete from L1
-    const l1Pattern = new RegExp(pattern.replace('*', '.*'));
+    const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const l1Pattern = new RegExp(`^${escapedPattern.replace(/\\\*/g, '.*')}$`);
     for (const key of this.l1Cache.keys()) {
       if (l1Pattern.test(key)) {
         this.l1Cache.delete(key);
