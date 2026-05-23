@@ -193,26 +193,45 @@ const passwordStrength = computed(() => {
   return { score, label: "Strong", color: "#2196f3" };
 });
 
+function secureRandomIndex(max: number): number {
+  if (!Number.isInteger(max) || max <= 0) {
+    throw new Error("secureRandomIndex requires a positive integer max");
+  }
+  const cryptoObj = window.crypto;
+  const array = new Uint32Array(1);
+  const limit = Math.floor(0x100000000 / max) * max;
+  let value = 0;
+  do {
+    cryptoObj.getRandomValues(array);
+    value = array[0];
+  } while (value >= limit);
+  return value % max;
+}
+
 function generatePassword() {
   const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
   const lower = "abcdefghjkmnpqrstuvwxyz";
   const digits = "23456789";
   const special = "@$!%*?&#";
   const all = upper + lower + digits + special;
-  let pwd = [
-    upper[Math.floor(Math.random() * upper.length)],
-    upper[Math.floor(Math.random() * upper.length)],
-    lower[Math.floor(Math.random() * lower.length)],
-    lower[Math.floor(Math.random() * lower.length)],
-    digits[Math.floor(Math.random() * digits.length)],
-    digits[Math.floor(Math.random() * digits.length)],
-    special[Math.floor(Math.random() * special.length)],
-    special[Math.floor(Math.random() * special.length)],
+  const pwd = [
+    upper[secureRandomIndex(upper.length)],
+    upper[secureRandomIndex(upper.length)],
+    lower[secureRandomIndex(lower.length)],
+    lower[secureRandomIndex(lower.length)],
+    digits[secureRandomIndex(digits.length)],
+    digits[secureRandomIndex(digits.length)],
+    special[secureRandomIndex(special.length)],
+    special[secureRandomIndex(special.length)],
   ];
   for (let i = 0; i < 4; i++) {
-    pwd.push(all[Math.floor(Math.random() * all.length)]);
+    pwd.push(all[secureRandomIndex(all.length)]);
   }
-  formModel.value.password = pwd.sort(() => Math.random() - 0.5).join("");
+  for (let i = pwd.length - 1; i > 0; i--) {
+    const j = secureRandomIndex(i + 1);
+    [pwd[i], pwd[j]] = [pwd[j], pwd[i]];
+  }
+  formModel.value.password = pwd.join("");
 }
 
 // Password reset form
