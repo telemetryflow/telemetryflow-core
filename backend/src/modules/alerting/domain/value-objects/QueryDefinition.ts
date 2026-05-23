@@ -288,7 +288,10 @@ export class QueryDefinition {
 
     if (this.language === QueryLanguage.PROMQL) {
       // Basic PromQL to TFQL conversion
-      return `-- Converted from PromQL\n-- Original: ${this.query}\nFETCH metrics\nWHERE promql_expr = "${this.query?.replace(/"/g, '\\"')}"`;
+      const escapedPromql = this.query
+        ?.replace(/\\/g, "\\\\")
+        .replace(/"/g, '\\"');
+      return `-- Converted from PromQL\n-- Original: ${this.query}\nFETCH metrics\nWHERE promql_expr = "${escapedPromql}"`;
     }
 
     return "";
