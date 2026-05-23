@@ -619,11 +619,11 @@ export const useLLMStore = defineStore("llm", () => {
 
   // Helper functions untuk generate UUID
   function generateTabId(): string {
-    return `tab-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `tab-${Date.now()}-${crypto.randomUUID()}`;
   }
 
   function generateConversationUuid(): string {
-    return `conv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `conv-${Date.now()}-${crypto.randomUUID()}`;
   }
 
   function startNewConversation() {
