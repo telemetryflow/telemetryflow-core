@@ -29,7 +29,23 @@ export class OllamaAdapter implements ILLMAdapter {
   }
 
   setBaseUrl(url: string): this {
-    this.baseUrl = url;
+    const parsed = new URL(url);
+    const host = parsed.hostname.toLowerCase();
+    const isLocalHost =
+      host === "localhost" || host === "127.0.0.1" || host === "::1";
+
+    if (parsed.protocol !== "http:" || !isLocalHost) {
+      throw new Error(
+        "Invalid Ollama base URL: only local http://localhost/127.0.0.1/[::1] endpoints are allowed",
+      );
+    }
+
+    const normalizedPath = parsed.pathname.replace(/\/+$/, "");
+    if (!normalizedPath.endsWith("/v1")) {
+      parsed.pathname = `${normalizedPath || ""}/v1`;
+    }
+
+    this.baseUrl = parsed.toString().replace(/\/+$/, "");
     this.client = axios.create({
       baseURL: this.baseUrl,
       timeout: 60000,
