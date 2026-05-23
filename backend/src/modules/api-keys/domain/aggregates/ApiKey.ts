@@ -267,7 +267,7 @@ export class ApiKey extends AggregateRoot<ApiKeyId> {
     const rawKeySecret = ApiKey.generateApiKeySecret();
     const rawEncryptionKey = ApiKey.generateEncryptKey();
     const keyHint = rawKeySecret.slice(-4);
-    const apiKeySecret = crypto.createHash('sha256').update(rawKeySecret).digest('hex');
+    const apiKeySecret = bcrypt.hashSync(rawKeySecret, 12);
 
     this.props.apiKeySecret = apiKeySecret;
     this.props.keyHint = keyHint;
