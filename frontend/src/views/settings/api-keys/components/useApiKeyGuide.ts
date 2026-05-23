@@ -126,9 +126,9 @@ export function rawOf(html: string): string {
   const inner = m ? m[1] : html;
   return inner
     .replace(/<[^>]+>/g, "")
-    .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">");
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
 }
 
 // ─── Code generators ──────────────────────────────────────────────────────────
