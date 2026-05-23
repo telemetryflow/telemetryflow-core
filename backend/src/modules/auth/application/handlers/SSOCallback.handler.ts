@@ -8,6 +8,7 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { randomBytes } from "crypto";
 import { SSOCallbackCommand } from "../commands/SSOCallback.command";
 import { SsoService } from "../../../sso/sso.service";
 import { UserEntity } from "../../../iam/infrastructure/persistence/entities/User.entity";
@@ -221,11 +222,9 @@ export class SSOCallbackHandler implements ICommandHandler<SSOCallbackCommand> {
     const firstName = ssoProfile.firstName || ssoProfile.displayName?.split(" ")[0] || "User";
     const lastName = ssoProfile.lastName || ssoProfile.displayName?.split(" ")[1] || "";
 
-    // Generate a random username from email
-    const username =
-      ssoProfile.email.split("@")[0] +
-      "_" +
-      Math.random().toString(36).substring(7);
+    // Generate a random username from email using cryptographically secure randomness
+    const randomSuffix = randomBytes(6).toString("base64url");
+    const username = ssoProfile.email.split("@")[0] + "_" + randomSuffix;
 
     // Get default region
     const defaultRegionId = this.configService.get<string>(
