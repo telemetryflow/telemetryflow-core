@@ -127,7 +127,6 @@ export function rawOf(html: string): string {
 
   let out = inner
     .replace(/<[^>]+>/g, "")
-    .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">");
 
