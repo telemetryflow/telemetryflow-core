@@ -614,7 +614,9 @@ export class ClickHouseTranslator extends BaseTranslator {
     pattern: string,
     negated: boolean,
   ): string {
-    const escapedPattern = pattern.replace(/'/g, "\\'");
+    const escapedPattern = pattern
+      .replace(/\\/g, "\\\\")
+      .replace(/'/g, "\\'");
     const func = negated ? "NOT match" : "match";
     return `${func}(${field}, '${escapedPattern}')`;
   }
