@@ -33,19 +33,28 @@ export class OllamaAdapter implements ILLMAdapter {
     const host = parsed.hostname.toLowerCase();
     const isLocalHost =
       host === "localhost" || host === "127.0.0.1" || host === "::1";
+    const isAllowedPort = parsed.port === "" || parsed.port === "11434";
+    const normalizedPath = parsed.pathname.replace(/\/+$/, "");
+    const isAllowedPath =
+      normalizedPath === "" || normalizedPath === "/" || normalizedPath === "/v1";
+    const hasCredentials = Boolean(parsed.username || parsed.password);
 
-    if (parsed.protocol !== "http:" || !isLocalHost) {
+    if (
+      parsed.protocol !== "http:" ||
+      !isLocalHost ||
+      !isAllowedPort ||
+      !isAllowedPath ||
+      hasCredentials
+    ) {
       throw new Error(
-        "Invalid Ollama base URL: only local http://localhost/127.0.0.1/[::1] endpoints are allowed",
+        "Invalid Ollama base URL: only http://localhost:11434/v1 (or 127.0.0.1 / [::1]) is allowed",
       );
     }
 
-    const normalizedPath = parsed.pathname.replace(/\/+$/, "");
-    if (!normalizedPath.endsWith("/v1")) {
-      parsed.pathname = `${normalizedPath || ""}/v1`;
-    }
+    const canonical = new URL("http://localhost:11434/v1");
+    canonical.hostname = host;
+    this.baseUrl = canonical.toString().replace(/\/+$/, "");
 
-    this.baseUrl = parsed.toString().replace(/\/+$/, "");
     this.client = axios.create({
       baseURL: this.baseUrl,
       timeout: 60000,
