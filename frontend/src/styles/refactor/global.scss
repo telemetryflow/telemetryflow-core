@@ -1,0 +1,608 @@
+/**
+ * Global styles for TelemetryFlow-Viz
+ */
+
+@use 'variables' as *;
+@use 'tfo-variables' as tfo;
+
+// ===========================================
+// CSS Custom Properties for K8s Components
+// ===========================================
+:root {
+  --k8s-border-color: #{tfo.$border-light};
+  --k8s-border-color-subtle: rgba(193, 197, 204, 0.5);
+  --k8s-card-bg: #{tfo.$bg-card-light};
+  --k8s-section-bg: var(--n-card-color);
+  --k8s-section-header-bg: var(--n-card-color);
+  --k8s-table-label-bg: #{tfo.$table-label-bg-light};
+  --k8s-table-label-text: #{tfo.$table-label-text-light};
+  --k8s-table-value-text: #{tfo.$table-value-text-light};
+  --k8s-table-header-bg: #f8fafc;
+  --k8s-table-header-text: #374151;
+  --k8s-scrollbar-track: #{tfo.$scrollbar-track-light};
+  --k8s-scrollbar-thumb: #{tfo.$scrollbar-thumb-light};
+  --k8s-scrollbar-thumb-hover: #{tfo.$scrollbar-thumb-hover-light};
+  --k8s-scroll-indicator: #{tfo.$scroll-indicator-light};
+}
+
+html.dark {
+  --k8s-border-color: #{tfo.$border-dark};
+  --k8s-border-color-subtle: rgba(90, 101, 119, 0.5);
+  --k8s-card-bg: #{tfo.$bg-card-dark};
+  --k8s-section-bg: #{tfo.$bg-section-dark};
+  --k8s-section-header-bg: #{tfo.$bg-section-header-dark};
+  --k8s-table-label-bg: #{tfo.$table-label-bg-dark};
+  --k8s-table-label-text: #{tfo.$table-label-text-dark};
+  --k8s-table-value-text: #{tfo.$table-value-text-dark};
+  --k8s-table-header-bg: rgba(51, 65, 85, 0.6);
+  --k8s-table-header-text: #e2e8f0;
+  --k8s-scrollbar-track: #{tfo.$scrollbar-track-dark};
+  --k8s-scrollbar-thumb: #{tfo.$scrollbar-thumb-dark};
+  --k8s-scrollbar-thumb-hover: #{tfo.$scrollbar-thumb-hover-dark};
+  --k8s-scroll-indicator: #{tfo.$scroll-indicator-dark};
+}
+
+// Typography
+.text-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $gray-900;
+
+  .dark & {
+    color: $dark-text-primary;
+  }
+}
+
+.text-subtitle {
+  font-size: 0.875rem;
+  color: $gray-600;
+
+  .dark & {
+    color: $dark-text-secondary;
+  }
+}
+
+.text-muted {
+  font-size: 0.75rem;
+  color: $gray-500;
+
+  .dark & {
+    color: $dark-text-muted;
+  }
+}
+
+// Cards
+.card {
+  @include card;
+  padding: 1rem;
+}
+
+.card-header {
+  @include flex-between;
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $gray-800;
+
+  .dark & {
+    color: $dark-text-primary;
+  }
+}
+
+// Status indicators
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+
+  &.success {
+    background-color: $success-color;
+  }
+
+  &.warning {
+    background-color: $warning-color;
+  }
+
+  &.error {
+    background-color: $error-color;
+  }
+
+  &.info {
+    background-color: $info-color;
+  }
+}
+
+// Log level badges
+.log-level {
+  padding: 2px 8px;
+  border-radius: $radius-sm;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+
+  &.trace {
+    background-color: rgba($gray-500, 0.1);
+    color: $gray-600;
+  }
+
+  &.debug {
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+  }
+
+  &.info {
+    background-color: rgba($success-color, 0.1);
+    color: $success-color;
+  }
+
+  &.warn {
+    background-color: rgba($warning-color, 0.1);
+    color: $warning-color;
+  }
+
+  &.error {
+    background-color: rgba($error-color, 0.1);
+    color: $error-color;
+  }
+
+  &.fatal {
+    background-color: rgba(#7c3aed, 0.1);
+    color: #7c3aed;
+  }
+}
+
+// Signal type badges
+.signal-badge {
+  padding: 4px 12px;
+  border-radius: $radius-sm;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &.metric {
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+  }
+
+  &.log {
+    background-color: rgba($success-color, 0.1);
+    color: $success-color;
+  }
+
+  &.trace {
+    background-color: rgba(#8b5cf6, 0.1);
+    color: #8b5cf6;
+  }
+
+  &.exemplar {
+    background-color: rgba($warning-color, 0.1);
+    color: $warning-color;
+  }
+}
+
+// Alert severity badges
+.severity-badge {
+  padding: 4px 12px;
+  border-radius: $radius-sm;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.critical {
+    background-color: rgba($error-color, 0.1);
+    color: $error-color;
+  }
+
+  &.warning {
+    background-color: rgba($warning-color, 0.1);
+    color: $warning-color;
+  }
+
+  &.info {
+    background-color: rgba($info-color, 0.1);
+    color: $info-color;
+  }
+}
+
+// Empty state
+.empty-state {
+  @include flex-center;
+  flex-direction: column;
+  padding: 3rem;
+  color: $gray-500;
+
+  .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    font-size: 0.875rem;
+    text-align: center;
+  }
+}
+
+// Loading state
+.loading-overlay {
+  @include flex-center;
+  position: absolute;
+  inset: 0;
+  background-color: rgba(white, 0.8);
+  z-index: $z-fixed;
+
+  .dark & {
+    background-color: rgba($dark-bg-base, 0.85);
+  }
+}
+
+// Monospace text (for code, IDs, etc.)
+.mono {
+  font-family: 'JetBrains Mono', 'Menlo', 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 0.875em;
+}
+
+// Truncate text
+.truncate {
+  @include truncate;
+}
+
+// Custom scrollbar
+.custom-scrollbar {
+  @include scrollbar;
+}
+
+// Duration format
+.duration {
+  font-family: 'JetBrains Mono', 'Menlo', 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 0.875rem;
+
+  &.fast {
+    color: $success-color;
+  }
+
+  &.normal {
+    color: $gray-600;
+  }
+
+  &.slow {
+    color: $warning-color;
+  }
+
+  &.very-slow {
+    color: $error-color;
+  }
+}
+
+// NTag small default bold
+.n-tag.n-tag--small,
+.n-tag[data-n-size="small"] {
+  font-weight: 700 !important;
+}
+
+// Alternative selector for NTag content
+.n-tag__content {
+  font-weight: inherit !important;
+}
+
+// ===========================================
+// Badge Count Styling
+// ===========================================
+
+// Badge with count number - consistent pattern: bold number + regular label
+// Usage: <n-tag type="info" size="small" :bordered="true"><span class="badge-count">{{ count }}</span> label</n-tag>
+.badge-count {
+  font-weight: 700 !important;
+}
+
+// Ensure the label text after badge-count is normal weight
+.n-tag .badge-count+span,
+.n-tag:not(:has(.badge-count)) {
+  font-weight: 400;
+}
+
+// Override n-tag content to allow mixed weights
+.n-tag:has(.badge-count) {
+  .n-tag__content {
+    font-weight: 400 !important;
+  }
+}
+
+// ===========================================
+// Naive UI Card Component Standards
+// ===========================================
+
+// Card header - bold title with subtle border
+.n-card {
+  .n-card-header {
+    padding-bottom: 8px !important;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+
+    :root.dark & {
+      border-color: $dark-border;
+    }
+  }
+
+  .n-card-header__main {
+    font-weight: 700 !important;
+  }
+}
+
+// Card with vertically centered content
+.n-card.card-centered {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+
+  .n-card__content {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+}
+
+// Card with footer actions (buttons at bottom)
+.n-card.card-with-footer {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+
+  .n-card__content {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .card-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
+    display: flex;
+    gap: 12px;
+
+    :root.dark & {
+      border-color: $dark-border;
+    }
+  }
+}
+
+// ===========================================
+// Page Header Standards
+// ===========================================
+
+// Standard page header with title, subtitle, and bottom border
+.page-header {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+
+  :root.dark & {
+    border-color: $dark-border;
+  }
+}
+
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--n-text-color);
+
+  :root.dark & {
+    color: $dark-text-primary;
+  }
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+
+  :root.dark & {
+    color: $dark-text-secondary;
+  }
+}
+
+// ===========================================
+// Naive UI Button Dark Mode Fixes
+// ===========================================
+
+html.dark {
+
+  // Default button - ensure visible text color
+  .n-button--default-type {
+    color: #e2e8f0 !important;
+    border-color: #475569 !important;
+
+    .n-button__content {
+      color: #e2e8f0 !important;
+    }
+
+    &:hover:not(:disabled) {
+      border-color: #6366f1 !important;
+      color: #c7d2fe !important;
+      background: rgba(99, 102, 241, 0.1) !important;
+
+      .n-button__content {
+        color: #c7d2fe !important;
+      }
+    }
+  }
+
+  // Primary button - white text
+  .n-button--primary-type {
+    color: #ffffff !important;
+
+    .n-button__content {
+      color: #ffffff !important;
+    }
+  }
+
+  // Secondary/tertiary button
+  .n-button--secondary-type,
+  .n-button--tertiary-type {
+    color: #c7d2fe !important;
+    border-color: #6366f1 !important;
+
+    .n-button__content {
+      color: #c7d2fe !important;
+    }
+
+    &:hover:not(:disabled) {
+      background: rgba(99, 102, 241, 0.15) !important;
+    }
+  }
+
+  // Quaternary button (ghost) - with border
+  .n-button--quaternary-type {
+    color: #94a3b8 !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+    min-width: 80px;
+
+    .n-button__content {
+      color: #94a3b8 !important;
+    }
+
+    &:hover:not(:disabled) {
+      color: #e2e8f0 !important;
+      background: rgba(99, 102, 241, 0.1) !important;
+      border-color: rgba(99, 102, 241, 0.5) !important;
+
+      .n-button__content {
+        color: #e2e8f0 !important;
+      }
+    }
+
+    // Icon-only buttons - smaller min-width
+    &.n-button--icon-button {
+      min-width: unset;
+      border: none !important;
+    }
+  }
+
+  // Error type button
+  .n-button--error-type {
+    &.n-button--quaternary-type {
+      color: #f87171 !important;
+
+      .n-button__content {
+        color: #f87171 !important;
+      }
+
+      &:hover:not(:disabled) {
+        background: rgba(239, 68, 68, 0.15) !important;
+      }
+    }
+  }
+}
+
+// ===========================================
+// Data Table Tree View - Dashed Lines Style
+// ===========================================
+
+.n-data-table {
+
+  // Tree indent lines - dashed style
+  .n-data-table-indent__guide {
+    border-left: 2px dashed rgba(99, 102, 241, 0.4) !important;
+    background: none !important;
+  }
+
+  // Light mode
+  &:not(.dark) {
+    .n-data-table-indent__guide {
+      border-left-color: rgba(99, 102, 241, 0.3) !important;
+    }
+  }
+}
+
+// Dark mode tree lines
+html.dark {
+  .n-data-table-indent__guide {
+    border-left-color: rgba(99, 102, 241, 0.5) !important;
+  }
+}
+
+// ===========================================
+// Global Button Border & Min-Width Styles
+// ===========================================
+
+// Light mode quaternary buttons with borders
+.n-button--quaternary-type {
+  border: 1px solid rgba(100, 116, 139, 0.3) !important;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: rgba(99, 102, 241, 0.5) !important;
+  }
+
+  // Icon-only buttons - no border, no min-width
+  &.n-button--icon-button {
+    min-width: unset;
+    border: none !important;
+  }
+}
+
+// Default button min-width
+.n-button--default-type {
+
+  &.n-button--icon-button {
+    min-width: unset;
+  }
+}
+
+// Text type buttons with subtle underline on hover
+.n-button--text-type {
+  min-width: unset;
+
+  &:hover:not(:disabled) {
+    text-decoration: underline;
+  }
+}
+
+// ===========================================
+// Dropdown Delete Action Styling
+// ===========================================
+// Global styles for delete actions in dropdown menus
+// Usage: Add props: { class: 'delete-action' } to dropdown options
+
+.n-dropdown-option.delete-action {
+  .n-dropdown-option-body {
+    color: #ef4444 !important;
+  }
+
+  .n-dropdown-option-body__label {
+    color: #ef4444 !important;
+  }
+
+  .n-dropdown-option-body__prefix {
+    color: #ef4444 !important;
+  }
+
+  &:hover {
+    .n-dropdown-option-body {
+      background: rgba(239, 68, 68, 0.1) !important;
+    }
+  }
+}
+
+// Dark mode - slightly lighter red for better visibility
+html.dark {
+  .n-dropdown-option.delete-action {
+
+    .n-dropdown-option-body,
+    .n-dropdown-option-body__label,
+    .n-dropdown-option-body__prefix {
+      color: #f87171 !important;
+    }
+  }
+}

@@ -5,23 +5,22 @@
     <img src="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Logo" width="80%">
   </picture>
 
-  <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
+  <h3>TelemetryFlow Core - IAM, AI Assistant & Audit Platform</h3>
 
-[![Version](https://img.shields.io/badge/Version-1.1.4-orange.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.4.0-orange.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs)](https://nestjs.com/)
+[![Vue 3](https://img.shields.io/badge/Vue%203-5.x-4FC08D?logo=vuedotjs)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
 [![ClickHouse](https://img.shields.io/badge/ClickHouse-latest-FFCC00?logo=clickhouse)](https://clickhouse.com/)
-[![DDD](https://img.shields.io/badge/Architecture-DDD%2FCQRS-blueviolet)](src/modules/iam/)
+[![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis)](https://redis.io/)
+[![DDD](https://img.shields.io/badge/Architecture-DDD%2FCQRS-blueviolet)](backend/src/modules/iam/)
 [![RBAC](https://img.shields.io/badge/Security-5--Tier%20RBAC-red)](README.md#5-tier-rbac-system)
-[![Migrations](https://img.shields.io/badge/migrations-PostgreSQL%208%20%7C%20ClickHouse%204-success.svg)](src/database)
-[![API Coverage](https://img.shields.io/badge/API%20coverage-100%25-brightgreen.svg)](docs/postman/BDD_TESTS.md)
-[![OpenTelemetry](https://img.shields.io/badge/OTLP-100%25%20Compliant-success?logo=opentelemetry)](https://opentelemetry.io/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://hub.docker.com/r/telemetryflow/telemetryflow-core)
 
 <p align="center">
-  <strong>TelemetryFlow Core</strong> is a lightweight, production-ready IAM service extracted from the TelemetryFlow Platform. It provides complete identity and access management with a 5-tier RBAC system, multi-tenancy support, and enterprise-grade security features.
+  <strong>TelemetryFlow Core</strong> is a full-stack monorepo providing IAM, AI Assistant, Alerting, Audit, Tenancy, and System management. Built with NestJS backend and Vue 3 frontend.
 </p>
 
 </div>
@@ -85,7 +84,7 @@ git remote add upstream https://github.com/telemetryflow/telemetryflow-core.git
 ### Install Dependencies
 
 ```bash
-# Install dependencies
+# Install dependencies (all workspaces)
 pnpm install
 
 # Configure environment
@@ -101,8 +100,12 @@ docker-compose --profile core up -d
 # Run migrations and seeds
 pnpm db:migrate:seed
 
-# Start development server
+# Start development (backend + frontend)
 pnpm dev
+
+# Or start individually
+pnpm dev:backend
+pnpm dev:frontend
 ```
 
 ### Verify Setup
@@ -114,11 +117,17 @@ pnpm test
 # Run linter
 pnpm lint
 
+# Build all
+pnpm build
+
 # Check health endpoint
 curl http://localhost:3000/health
 
 # Access Swagger UI
 open http://localhost:3000/api
+
+# Access Frontend
+open http://localhost:8080
 ```
 
 ### IDE Setup
@@ -131,45 +140,55 @@ We recommend using an IDE with TypeScript support:
 
 ## Project Structure
 
-TelemetryFlow Core follows Domain-Driven Design (DDD) and CQRS patterns:
+TelemetryFlow Core is a full-stack monorepo following Domain-Driven Design (DDD) and CQRS patterns:
 
 ```
 telemetryflow-core/
-├── src/
-│   ├── main.ts                 # Application entry point
-│   ├── app.module.ts           # Root NestJS module
-│   ├── shared/                 # Shared domain primitives
-│   │   └── domain/             # Base classes (Entity, ValueObject, etc.)
-│   ├── logger/                 # Winston logging module
-│   ├── otel/                   # OpenTelemetry configuration
-│   ├── health/                 # Health check endpoint
-│   ├── database/               # Database configuration
-│   └── modules/                # Business modules
-│       ├── iam/                # Identity and Access Management
-│       ├── audit/              # Audit logging
-│       ├── auth/               # Authentication
-│       └── cache/              # Caching service
-├── .kiro/                      # Kiro specifications
-│   └── specs/                  # Module standardization specs
-│       ├── iam-module-standardization/
-│       ├── audit-module-standardization/
-│       ├── auth-module-standardization/
-│       └── cache-module-standardization/
-├── config/                     # Service configurations
-├── docs/                       # Documentation
-├── scripts/                    # Utility scripts
-├── tests/                      # Test files
-├── docker-compose.yml          # Docker services
-├── package.json                # Dependencies and scripts
-└── README.md                   # Project overview
+├── backend/                     # NestJS API (@telemetryflow/backend)
+│   └── src/
+│       ├── main.ts              # Application entry point
+│       ├── app.module.ts        # Root NestJS module
+│       ├── shared/              # Shared utilities (queue, domain primitives)
+│       ├── logger/              # Winston logging module
+│       ├── otel/                # OpenTelemetry configuration
+│       ├── health/              # Health check endpoint
+│       ├── database/            # Database configuration
+│       └── modules/             # Business modules
+│           ├── iam/             # Identity & Access Management
+│           ├── auth/            # Authentication
+│           ├── sso/             # Single Sign-On
+│           ├── api-keys/        # API Key Management
+│           ├── audit/           # Audit logging
+│           ├── tenancy/         # Multi-tenancy
+│           ├── alerting/        # Alert Rules Engine
+│           ├── query/           # TFQL Query Engine
+│           ├── llm/             # AI Assistant (LLM)
+│           ├── notification/    # Notification Service
+│           ├── data-masking/    # Data Masking
+│           └── cache/           # Caching Service
+├── frontend/                    # Vue 3 SPA (@telemetryflow/viz)
+│   └── src/
+│       ├── views/               # Page components
+│       ├── components/          # Reusable components
+│       ├── layouts/             # SideNav layout
+│       ├── api/                 # API client modules
+│       ├── store/               # Pinia stores
+│       ├── router/              # Vue Router
+│       └── composables/         # Vue composables
+├── config/                      # Service configurations
+├── docs/                        # Documentation
+├── docker-compose.yml           # Docker services
+├── turbo.json                   # Turborepo tasks
+├── pnpm-workspace.yaml          # Workspace definition
+└── package.json                 # Root scripts (turbo-based)
 ```
 
 ### Module Structure (DDD)
 
-Each module follows the standardized DDD structure:
+Each backend module follows the standardized DDD structure:
 
 ```
-src/modules/{module}/
+backend/src/modules/{module}/
 ├── domain/                     # Business logic layer
 │   ├── aggregates/             # Domain aggregates
 │   ├── entities/               # Domain entities
@@ -209,6 +228,7 @@ The project includes detailed standardization specifications for all modules:
 - **Cache Module**: `.kiro/specs/cache-module-standardization/`
 
 Each specification includes:
+
 - `requirements.md` - 8 major requirements with 80 acceptance criteria using EARS patterns
 - `design.md` - DDD architecture, components, interfaces, and 8 correctness properties
 - `tasks.md` - 52-60 detailed implementation tasks with checkpoints
@@ -218,12 +238,14 @@ Each specification includes:
 All modules must pass these standardization gates:
 
 #### Gate 1: Documentation (100% Complete)
+
 - ✅ Root README.md (500+ lines) with comprehensive sections
 - ✅ Complete documentation structure (INDEX.md, ERD.mermaid.md, DFD.mermaid.md)
 - ✅ Testing documentation (TESTING.md, TEST_PATTERNS.md)
 - ✅ API documentation (openapi.yaml, endpoints.md, authentication.md)
 
 #### Gate 2: Test Coverage (≥90%)
+
 - ✅ Domain layer: ≥95% coverage (business logic is critical)
 - ✅ Application layer: ≥90% coverage (use cases and handlers)
 - ✅ Infrastructure layer: ≥85% coverage (database and external integrations)
@@ -231,24 +253,28 @@ All modules must pass these standardization gates:
 - ✅ Overall module: ≥90% coverage
 
 #### Gate 3: DDD Structure (100% Compliant)
+
 - ✅ Proper domain/application/infrastructure/presentation layering
 - ✅ Standardized file naming and organization
 - ✅ Barrel exports (index.ts) in all directories
 - ✅ TypeScript path mapping for clean imports
 
 #### Gate 4: Database Patterns (100% Compliant)
+
 - ✅ Migration naming: `{timestamp}-{Description}.ts`
 - ✅ Seed naming: `{timestamp}-seed-{module}-{entity}.ts`
 - ✅ Environment variables (no hardcoded values)
 - ✅ Proper foreign keys and indexes
 
 #### Gate 5: API Standards (100% Compliant)
+
 - ✅ Swagger decorators on all endpoints
 - ✅ Validation decorators on all DTOs
 - ✅ Permission guards on protected endpoints
 - ✅ REST conventions and error handling
 
 #### Gate 6: Build & Quality (0 Errors)
+
 - ✅ `pnpm build` succeeds with 0 errors
 - ✅ `pnpm lint` succeeds with 0 errors
 - ✅ `pnpm test` succeeds with 0 failures
@@ -257,6 +283,7 @@ All modules must pass these standardization gates:
 ### Working with Specifications
 
 #### Viewing Specifications
+
 ```bash
 # View IAM module requirements
 cat .kiro/specs/iam-module-standardization/requirements.md
@@ -269,6 +296,7 @@ cat .kiro/specs/iam-module-standardization/tasks.md
 ```
 
 #### Implementation Workflow
+
 1. **Review Requirements**: Read the requirements.md file for acceptance criteria
 2. **Study Design**: Review the design.md file for architecture and components
 3. **Follow Tasks**: Implement tasks from tasks.md in order
@@ -276,7 +304,9 @@ cat .kiro/specs/iam-module-standardization/tasks.md
 5. **Update Documentation**: Keep documentation current with changes
 
 #### Property-Based Testing
+
 Each module includes 8 correctness properties for comprehensive testing:
+
 1. **Idempotency**: Operations produce same result when repeated
 2. **Consistency**: Data remains consistent across operations
 3. **Validation**: All inputs are properly validated
@@ -289,6 +319,7 @@ Each module includes 8 correctness properties for comprehensive testing:
 ### Standardization Tools
 
 #### Coverage Enforcement
+
 ```bash
 # Check test coverage
 pnpm test:cov
@@ -303,6 +334,7 @@ pnpm test:cov
 ```
 
 #### Quality Validation
+
 ```bash
 # Run all quality checks
 pnpm lint && pnpm test && pnpm build
@@ -315,6 +347,7 @@ pnpm validate:naming
 ```
 
 #### Documentation Generation
+
 ```bash
 # Generate module documentation
 pnpm generate:docs --module iam
@@ -363,6 +396,7 @@ Fixes #123
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -432,15 +466,15 @@ Follow these guidelines for tests:
 Example test structure:
 
 ```typescript
-import { User } from '../User';
-import { Email } from '../../value-objects/Email';
-import { UserCreatedEvent } from '../../events/UserCreated.event';
+import { User } from "../User";
+import { Email } from "../../value-objects/Email";
+import { UserCreatedEvent } from "../../events/UserCreated.event";
 
-describe('User Aggregate', () => {
-  describe('create', () => {
-    it('should create user with valid email', () => {
+describe("User Aggregate", () => {
+  describe("create", () => {
+    it("should create user with valid email", () => {
       // Arrange
-      const email = Email.create('test@example.com');
+      const email = Email.create("test@example.com");
 
       // Act
       const user = User.create(email);
@@ -452,9 +486,9 @@ describe('User Aggregate', () => {
       expect(user.getUncommittedEvents()[0]).toBeInstanceOf(UserCreatedEvent);
     });
 
-    it('should throw error for invalid email', () => {
+    it("should throw error for invalid email", () => {
       // Act & Assert
-      expect(() => Email.create('invalid-email')).toThrow();
+      expect(() => Email.create("invalid-email")).toThrow();
     });
   });
 });
@@ -475,16 +509,16 @@ We maintain high test coverage standards:
 Each module must implement 8 correctness properties:
 
 ```typescript
-describe('User Aggregate Properties', () => {
-  it('should maintain idempotency', () => {
+describe("User Aggregate Properties", () => {
+  it("should maintain idempotency", () => {
     // Test that operations produce same result when repeated
   });
 
-  it('should maintain consistency', () => {
+  it("should maintain consistency", () => {
     // Test that data remains consistent across operations
   });
 
-  it('should validate all inputs', () => {
+  it("should validate all inputs", () => {
     // Test that all inputs are properly validated
   });
 
@@ -546,14 +580,14 @@ Follow NestJS and TypeScript best practices:
 
 ### Naming Conventions
 
-| Type | Convention | Example |
-|------|------------|---------|
-| Modules | PascalCase | `IAMModule`, `AuditModule` |
-| Classes | PascalCase | `User`, `UserController`, `CreateUserHandler` |
-| Interfaces | PascalCase with I prefix | `IUserRepository`, `ILogger` |
-| Functions | camelCase | `createUser`, `validateEmail` |
-| Constants | UPPER_SNAKE_CASE | `DEFAULT_PAGE_SIZE`, `MAX_RETRY_ATTEMPTS` |
-| Files | PascalCase with suffix | `User.entity.ts`, `CreateUser.handler.ts` |
+| Type       | Convention               | Example                                       |
+| ---------- | ------------------------ | --------------------------------------------- |
+| Modules    | PascalCase               | `IAMModule`, `AuditModule`                    |
+| Classes    | PascalCase               | `User`, `UserController`, `CreateUserHandler` |
+| Interfaces | PascalCase with I prefix | `IUserRepository`, `ILogger`                  |
+| Functions  | camelCase                | `createUser`, `validateEmail`                 |
+| Constants  | UPPER_SNAKE_CASE         | `DEFAULT_PAGE_SIZE`, `MAX_RETRY_ATTEMPTS`     |
+| Files      | PascalCase with suffix   | `User.entity.ts`, `CreateUser.handler.ts`     |
 
 ### Error Handling
 
@@ -591,7 +625,7 @@ async getUser(@Param('id') id: string): Promise<UserResponseDto> {
 - Use JSDoc comments for TypeScript
 - Include type information in documentation
 
-```typescript
+````typescript
 /**
  * Creates a new user in the system.
  *
@@ -609,7 +643,7 @@ async getUser(@Param('id') id: string): Promise<UserResponseDto> {
 async execute(command: CreateUserCommand): Promise<void> {
   // Implementation...
 }
-```
+````
 
 ## Architecture Guidelines
 
@@ -671,11 +705,11 @@ Releases follow semantic versioning (SemVer):
 
 The project uses GitHub Actions for CI/CD:
 
-| Workflow       | Trigger           | Purpose                                 |
-| -------------- | ----------------- | --------------------------------------- |
-| `ci.yml`       | Push/PR           | Lint, test, build verification          |
-| `docker.yml`   | Push to main/tags | Build Docker images                     |
-| `release.yml`  | Tags (v*.*.*)     | Create GitHub release                   |
+| Workflow      | Trigger           | Purpose                        |
+| ------------- | ----------------- | ------------------------------ |
+| `ci.yml`      | Push/PR           | Lint, test, build verification |
+| `docker.yml`  | Push to main/tags | Build Docker images            |
+| `release.yml` | Tags (v*.*.\*)    | Create GitHub release          |
 
 ### Changelog
 
@@ -719,4 +753,4 @@ Thank you for contributing to TelemetryFlow Core!
 
 ---
 
-Built with care by the **DevOpsCorner Indonesia** community
+Built with care by the **Telemetri Data Indonesia** community

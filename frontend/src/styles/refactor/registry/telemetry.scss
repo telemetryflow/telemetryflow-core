@@ -1,0 +1,28 @@
+// TFO Style Registry — Telemetry Category
+
+// Core telemetry shared styles (pre-existing)
+@use "logs-core" as *;
+@use "traces-core" as *;
+@use "metrics-core" as *;
+
+// Logs — extracted from Vue SFCs
+@use "logs-index" as *;
+@use "logs-detail" as *;
+@use "logs-fields-sidebar" as *;
+@use "logs-discover-tab" as *;
+@use "logs-patterns-tab" as *;
+
+// Traces — extracted from Vue SFCs
+@use "traces-index" as *;
+@use "traces-detail" as *;
+@use "traces-graphs" as *;
+
+// Metrics — extracted from Vue SFCs
+@use "metrics-index" as *;
+@use "metrics-detail" as *;
+
+// Exemplars — extracted from Vue SFCs
+@use "exemplars-index" as *;
+
+// Correlations — extracted from Vue SFCs
+@use "correlations-index" as *;

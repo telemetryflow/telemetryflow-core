@@ -1,0 +1,369 @@
+# Implementation Plan: Frontend-Backend Audit Integration
+
+## Overview
+
+This implementation plan breaks down the audit integration feature into discrete, incremental tasks. The plan follows a bottom-up approach: backend API enhancements first, then frontend components, followed by real-time streaming, and finally advanced features like retention policies and compliance reporting.
+
+## Tasks
+
+- [ ] 1. Enhance Backend Audit API
+  - [ ] 1.1 Enhance ListAuditLogsQueryDto with search parameter support
+    - Add search field validation and transformation
+    - Update OpenAPI documentation
+    - _Requirements: 3.1, 3.2_
+  - [ ] 1.2 Implement search functionality in AuditService
+    - Add search method that queries across multiple fields (user_email, action, resource, metadata)
+    - Implement case-insensitive matching using ClickHouse functions
+    - _Requirements: 3.2, 3.5_
+  - [ ]\* 1.3 Write property test for multi-field search
+    - **Property 11: Multi-Field Search**
+    - **Validates: Requirements 3.2**
+  - [ ]\* 1.4 Write property test for case-insensitive search
+    - **Property 13: Case-Insensitive Search**
+    - **Validates: Requirements 3.5**
+  - [ ] 1.5 Enhance query method to support date range filtering
+    - Add startDate and endDate parameter handling
+    - Build ClickHouse WHERE clauses for timestamp filtering
+    - _Requirements: 2.1, 2.6_
+  - [ ]\* 1.6 Write property test for filter combination with AND logic
+    - **Property 8: Filter Combination with AND Logic**
+    - **Validates: Requirements 2.2, 2.3, 2.4, 2.5, 2.6**
+  - [ ]\* 1.7 Write property test for timestamp descending order
+    - **Property 5: Timestamp Descending Order**
+    - **Validates: Requirements 1.5**
+
+- [ ] 2. Implement Export Functionality
+  - [ ] 2.1 Create ExportAuditLogsDto with format validation
+    - Define DTO with format enum (json, csv, pdf)
+    - Add validation decorators
+    - _Requirements: 4.1, 4.2_
+  - [ ] 2.2 Implement CSV export in AuditService
+    - Generate CSV with headers
+    - Properly escape special characters (commas, quotes, newlines)
+    - _Requirements: 4.4_
+  - [ ] 2.3 Implement JSON export in AuditService
+    - Return complete audit log objects with all metadata
+    - _Requirements: 4.6_
+  - [ ] 2.4 Implement PDF export in AuditService (using pdfkit or similar)
+    - Format data in readable tables
+    - Add page headers and footers
+    - _Requirements: 4.5_
+  - [ ] 2.5 Add export endpoint to AuditController
+    - POST /audit/export endpoint
+    - Set appropriate Content-Type and Content-Disposition headers
+    - Handle export size limits
+    - _Requirements: 4.2, 4.3, 4.7_
+  - [ ]\* 2.6 Write property test for export file generation
+    - **Property 14: Export File Generation**
+    - **Validates: Requirements 4.2**
+  - [ ]\* 2.7 Write property test for export format compliance
+    - **Property 16: Export Format Compliance**
+    - **Validates: Requirements 4.4, 4.5, 4.6**
+
+- [ ] 3. Implement WebSocket Gateway for Real-Time Streaming
+  - [ ] 3.1 Create AuditGateway with WebSocket decorators
+    - Set up @WebSocketGateway with /audit namespace
+    - Implement handleConnection and handleDisconnect
+    - _Requirements: 5.1_
+  - [ ] 3.2 Implement authentication for WebSocket connections
+    - Extract and verify JWT token from connection handshake
+    - Store authenticated user info in socket data
+    - _Requirements: 5.6_
+  - [ ] 3.3 Implement subscribe/unsubscribe message handlers
+    - Handle client subscription requests with optional filters
+    - Maintain map of connected clients and their filters
+    - _Requirements: 5.1_
+  - [ ] 3.4 Implement broadcastAuditEvent method
+    - Broadcast new audit events to all subscribed clients
+    - Filter events based on client permissions and filters
+    - _Requirements: 5.2, 5.6_
+  - [ ] 3.5 Integrate WebSocket broadcasting into AuditService.log
+    - Call broadcastAuditEvent after successfully inserting audit log
+    - Handle broadcasting failures gracefully
+    - _Requirements: 5.2_
+  - [ ]\* 3.6 Write property test for event broadcasting
+    - **Property 18: Event Broadcasting**
+    - **Validates: Requirements 5.2**
+  - [ ]\* 3.7 Write property test for WebSocket authorization filtering
+    - **Property 22: WebSocket Authorization Filtering**
+    - **Validates: Requirements 5.6**
+
+- [ ] 4. Checkpoint - Ensure Backend Tests Pass
+  - Ensure all backend tests pass, ask the user if questions arise.
+
+- [ ] 5. Implement Retention Policies Backend
+  - [ ] 5.1 Create retention_policies table migration in PostgreSQL
+    - Define schema with id, name, retention_days, archive_enabled, delete_after_archive, enabled, timestamps
+    - _Requirements: 6.1_
+  - [ ] 5.2 Create RetentionPolicy TypeORM entity
+    - Map to retention_policies table
+    - Add validation decorators
+    - _Requirements: 6.1_
+  - [ ] 5.3 Create RetentionPolicyRepository
+    - Implement findAll, findById, update methods
+    - _Requirements: 6.1_
+  - [ ] 5.4 Create UpdateRetentionPolicyDto
+    - Define DTO with optional fields
+    - Add validation decorators
+    - _Requirements: 6.1_
+  - [ ] 5.5 Implement retention policy endpoints in AuditController
+    - GET /audit/retention-policies
+    - PUT /audit/retention-policies/:id
+    - _Requirements: 6.1, 6.6_
+  - [ ] 5.6 Implement executeRetentionPolicy in AuditService
+    - Query audit logs older than retention period
+    - Archive or delete based on policy settings
+    - Create audit log for retention execution
+    - _Requirements: 6.2, 6.4, 6.5_
+  - [ ]\* 5.7 Write property test for retention policy persistence
+    - **Property 23: Retention Policy Persistence**
+    - **Validates: Requirements 6.1**
+  - [ ]\* 5.8 Write property test for retention policy execution
+    - **Property 24: Retention Policy Execution**
+    - **Validates: Requirements 6.2**
+  - [ ]\* 5.9 Write property test for deleted log removal
+    - **Property 26: Deleted Log Removal**
+    - **Validates: Requirements 6.4**
+
+- [ ] 6. Implement Frontend Type Definitions
+  - [ ] 6.1 Create types/audit.ts with all audit interfaces
+    - Define AuditLog, AuditEventType, AuditEventResult enums
+    - Define AuditFilters, ListAuditLogsParams, PaginatedResponse interfaces
+    - Define AuditStatistics, RetentionPolicy, ExportFormat types
+    - _Requirements: 11.1, 11.2_
+  - [ ] 6.2 Ensure types match backend DTOs exactly
+    - Verify field names and types align with backend
+    - _Requirements: 11.3, 11.4_
+
+- [ ] 7. Implement Frontend Audit API Client
+  - [ ] 7.1 Create api/audit.ts with axios client
+    - Set up base URL and authentication headers
+    - _Requirements: 12.1_
+  - [ ] 7.2 Implement listLogs method
+    - GET /audit/logs with query parameters
+    - Return PaginatedResponse<AuditLog>
+    - _Requirements: 1.1, 12.1_
+  - [ ] 7.3 Implement getLogById method
+    - GET /audit/logs/:id
+    - Return single AuditLog
+    - _Requirements: 1.4, 12.2_
+  - [ ] 7.4 Implement getStatistics method
+    - GET /audit/statistics
+    - Return AuditStatistics
+    - _Requirements: 10.6, 12.4_
+  - [ ] 7.5 Implement exportLogs method
+    - POST /audit/export
+    - Return Blob for file download
+    - _Requirements: 4.2, 12.3_
+  - [ ] 7.6 Implement getRetentionPolicies and updateRetentionPolicy methods
+    - GET /audit/retention-policies
+    - PUT /audit/retention-policies/:id
+    - _Requirements: 6.6, 12.5, 12.6_
+  - [ ] 7.7 Add error handling and response validation
+    - Validate responses against TypeScript interfaces
+    - Handle network errors, timeouts, and HTTP errors
+    - _Requirements: 11.6, 15.1, 15.2_
+
+- [ ] 8. Implement Frontend WebSocket Client
+  - [ ] 8.1 Create streaming/audit-websocket.ts
+    - Set up Socket.IO client for /audit namespace
+    - _Requirements: 5.1_
+  - [ ] 8.2 Implement connect method with JWT authentication
+    - Pass JWT token in connection handshake
+    - _Requirements: 5.1, 5.6_
+  - [ ] 8.3 Implement disconnect method
+    - Clean up socket connection
+    - _Requirements: 5.1_
+  - [ ] 8.4 Implement subscribe/unsubscribe methods
+    - Manage event listeners for audit events
+    - _Requirements: 5.1_
+  - [ ] 8.5 Implement reconnection logic with exponential backoff
+    - Retry connection on failure with increasing delays (1s, 2s, 4s, 8s, 16s, max 30s)
+    - _Requirements: 5.5_
+  - [ ]\* 8.6 Write property test for WebSocket reconnection with exponential backoff
+    - **Property 21: WebSocket Reconnection with Exponential Backoff**
+    - **Validates: Requirements 5.5**
+
+- [ ] 9. Implement Pinia Audit Store
+  - [ ] 9.1 Create store/audit.ts with state definition
+    - Define logs, loading, error, pagination, filters, searchQuery, statistics, wsConnected, newEventCount
+    - _Requirements: 1.1_
+  - [ ] 9.2 Implement fetchLogs action
+    - Call auditAPI.listLogs with current filters and pagination
+    - Update state with response data
+    - _Requirements: 1.1, 1.5_
+  - [ ] 9.3 Implement fetchStatistics action
+    - Call auditAPI.getStatistics
+    - Update statistics state
+    - _Requirements: 10.6_
+  - [ ] 9.4 Implement applyFilters action
+    - Merge new filters with existing filters
+    - Reset pagination to page 1
+    - Call fetchLogs
+    - _Requirements: 2.1, 2.6_
+  - [ ] 9.5 Implement search action with debouncing
+    - Update searchQuery state
+    - Debounce API call by 300ms
+    - Call fetchLogs with search parameter
+    - _Requirements: 3.1_
+  - [ ] 9.6 Implement exportLogs action
+    - Call auditAPI.exportLogs with format and filters
+    - Return Blob for download
+    - _Requirements: 4.2, 4.3_
+  - [ ] 9.7 Implement WebSocket actions (connectWebSocket, disconnectWebSocket, addNewEvent)
+    - Connect to WebSocket on store initialization
+    - Subscribe to audit events
+    - Prepend new events to logs array
+    - Increment newEventCount
+    - _Requirements: 5.1, 5.3, 5.4_
+  - [ ]\* 9.8 Write property test for search query debouncing
+    - **Property 10: Search Query Debouncing**
+    - **Validates: Requirements 3.1**
+
+- [ ] 10. Implement Audit View Component
+  - [ ] 10.1 Create views/audit/index.vue with script setup
+    - Import audit store and composables
+    - _Requirements: 1.1_
+  - [ ] 10.2 Implement audit log table with Naive UI DataTable
+    - Define columns for timestamp, actor, action, resource, status, IP address
+    - Bind to store.logs
+    - Handle row click to show detail modal
+    - _Requirements: 1.2, 1.4_
+  - [ ] 10.3 Implement pagination controls
+    - Use Naive UI Pagination component
+    - Bind to store.pagination
+    - Call store.fetchLogs on page change
+    - _Requirements: 1.3_
+  - [ ] 10.4 Implement filter controls
+    - Date range picker for startDate/endDate
+    - Select dropdowns for eventType, result
+    - Input fields for userId, action, resource
+    - Apply button to call store.applyFilters
+    - Clear button to reset filters
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
+  - [ ] 10.5 Implement search input with debouncing
+    - Use Naive UI Input component
+    - Bind to store.searchQuery
+    - Call store.search on input change
+    - _Requirements: 3.1_
+  - [ ] 10.6 Implement export button with format selection
+    - Use Naive UI Dropdown for format selection (JSON, CSV, PDF)
+    - Call store.exportLogs on selection
+    - Trigger file download using Blob URL
+    - _Requirements: 4.1, 4.3_
+  - [ ] 10.7 Implement WebSocket connection status indicator
+    - Show connected/disconnected badge
+    - Show new event count badge when scrolled away from top
+    - _Requirements: 5.4, 15.3_
+  - [ ] 10.8 Implement detail modal for audit log
+    - Show all fields including metadata
+    - Format JSON metadata for readability
+    - _Requirements: 1.4_
+  - [ ]\* 10.9 Write property test for required fields display
+    - **Property 2: Required Fields Display**
+    - **Validates: Requirements 1.2**
+  - [ ]\* 10.10 Write property test for real-time event prepending
+    - **Property 19: Real-Time Event Prepending**
+    - **Validates: Requirements 5.3**
+
+- [ ] 11. Implement Audit Analytics Components
+  - [ ] 11.1 Create components/audit/AuditTimeSeriesChart.vue
+    - Use VChart with ECharts line chart
+    - Display event volume over time
+    - Support zoom and pan
+    - _Requirements: 10.1_
+  - [ ] 11.2 Create components/audit/EventDistributionChart.vue
+    - Use VChart with ECharts pie or bar chart
+    - Display event type distribution
+    - Interactive legend
+    - _Requirements: 10.2_
+  - [ ] 11.3 Create components/audit/TopUsersChart.vue
+    - Use VChart with ECharts bar chart
+    - Display top active users
+    - Click to filter by user
+    - _Requirements: 10.3_
+  - [ ] 11.4 Add analytics section to audit view
+    - Render all chart components
+    - Fetch statistics on mount
+    - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
+  - [ ]\* 11.5 Write property test for analytics data visualization
+    - **Property 38: Analytics Data Visualization**
+    - **Validates: Requirements 10.1, 10.2, 10.3, 10.4, 10.5**
+
+- [ ] 12. Implement Retention Policy Management UI
+  - [ ] 12.1 Create views/audit/retention-policies.vue
+    - Display list of retention policies in table
+    - _Requirements: 6.6_
+  - [ ] 12.2 Implement edit retention policy modal
+    - Form with fields for name, retentionDays, archiveEnabled, deleteAfterArchive, enabled
+    - Validation for required fields
+    - Call auditAPI.updateRetentionPolicy on save
+    - _Requirements: 6.6_
+  - [ ] 12.3 Add navigation link to retention policies page
+    - Add to audit module navigation
+    - _Requirements: 6.6_
+
+- [ ] 13. Implement Permission-Based UI Rendering
+  - [ ] 13.1 Create composable useAuditPermissions
+    - Check user permissions for audit:read, audit:export, audit:admin
+    - Return boolean flags
+    - _Requirements: 13.1, 13.2, 13.3_
+  - [ ] 13.2 Hide export button if user lacks audit:export permission
+    - Use v-if with permission check
+    - _Requirements: 13.6_
+  - [ ] 13.3 Hide retention policy link if user lacks audit:admin permission
+    - Use v-if with permission check
+    - _Requirements: 13.6_
+  - [ ]\* 13.4 Write property test for permission-based UI rendering
+    - **Property 46: Permission-Based UI Rendering**
+    - **Validates: Requirements 13.6**
+
+- [ ] 14. Implement Error Handling and User Feedback
+  - [ ] 14.1 Add error display in audit view
+    - Show error message from store.error
+    - Use Naive UI Message or Notification component
+    - _Requirements: 15.2_
+  - [ ] 14.2 Add loading states
+    - Show loading spinner while fetching data
+    - Disable controls during loading
+    - _Requirements: 1.1_
+  - [ ] 14.3 Add empty state for no results
+    - Display when store.logs is empty
+    - Show search suggestions
+    - _Requirements: 3.4_
+  - [ ] 14.4 Implement error logging to console
+    - Log all errors to console for debugging
+    - _Requirements: 15.6_
+  - [ ]\* 14.5 Write property test for user-friendly error display
+    - **Property 50: User-Friendly Error Display**
+    - **Validates: Requirements 15.2**
+
+- [ ] 15. Final Checkpoint - Integration Testing
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 16. Documentation and Cleanup
+  - [ ] 16.1 Update backend OpenAPI documentation
+    - Ensure all new endpoints are documented
+    - Add request/response examples
+    - _Requirements: 12.7_
+  - [ ] 16.2 Add JSDoc comments to frontend components and stores
+    - Document props, emits, methods
+    - _Requirements: 11.1, 11.2_
+  - [ ] 16.3 Create README for audit integration
+    - Document setup, usage, and testing
+    - Include architecture diagrams
+  - [ ] 16.4 Clean up console.log statements
+    - Remove debug logging
+    - Keep only essential logs
+
+## Notes
+
+- Tasks marked with `*` are optional property-based tests and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties
+- Unit tests validate specific examples and edge cases
+- The implementation follows a bottom-up approach: backend first, then frontend, then integration
+- WebSocket implementation requires Socket.IO library on both frontend and backend
+- Export functionality may require additional libraries (pdfkit for PDF generation)
+- Retention policies require a scheduled job (cron) to execute periodically

@@ -1,0 +1,246 @@
+// TFO Style Registry — Section Core
+// Wrapper, header, title, icon, chevron, badge, content, page layout, mini-charts, empty state
+@use '@/styles/responsive-utilities.scss' as *;
+@use '@/styles/tfo-variables' as *;
+
+// ─── Page Layout ──────────────────────────────────────────────────────────────
+
+.k8s-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include xs-down {
+    gap: 12px;
+  }
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  @include xs-down {
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--n-text-color);
+  margin: 0 0 4px 0;
+
+  @include xs-down {
+    font-size: 1.25rem;
+  }
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+
+  @include xs-down {
+    font-size: 0.8125rem;
+  }
+}
+
+// ─── Section wrapper ─────────────────────────────────────────────────────────
+
+.section {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--k8s-border-color);
+  background: var(--k8s-section-bg);
+
+  @include xs-down {
+    border-radius: 6px;
+  }
+}
+
+// ─── Section header ──────────────────────────────────────────────────────────
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  user-select: none;
+  cursor: pointer;
+  background: var(--k8s-section-header-bg);
+  border-bottom: 1px solid var(--k8s-border-color);
+  transition: background-color 0.2s ease;
+  gap: 8px;
+
+  @include md-up {
+    padding: 14px 16px;
+  }
+
+  @include xs-down {
+    flex-wrap: wrap;
+    font-size: 0.8125rem;
+  }
+
+  &:hover {
+    background: var(--n-color-hover);
+  }
+}
+
+// ─── Filters header ──────────────────────────────────────────────────────────
+
+.filters-header {
+  padding: 10px 16px;
+
+  @include xs-down {
+    padding: 8px 12px;
+  }
+}
+
+// ─── Section title ───────────────────────────────────────────────────────────
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @include md-up {
+    gap: 10px;
+  }
+}
+
+// ─── Section icon ────────────────────────────────────────────────────────────
+
+.section-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  color: var(--n-text-color-3);
+
+  @include md-up {
+    font-size: 18px;
+  }
+}
+
+// ─── Chevron icon ────────────────────────────────────────────────────────────
+
+.chevron-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  color: var(--n-text-color-3);
+
+  @include md-up {
+    font-size: 16px;
+  }
+}
+
+// ─── Section badge ───────────────────────────────────────────────────────────
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  @include md-up {
+    font-size: 0.75rem;
+    padding: 5px 14px;
+  }
+
+  .badge-number {
+    font-weight: 700;
+  }
+
+  &.badge-primary { color: #fff; background: var(--n-primary-color, #3b82f6); }
+  &.badge-success { color: #fff; background: var(--n-success-color, #22c55e); }
+  &.badge-warning { color: #fff; background: var(--n-warning-color, #f59e0b); }
+  &.badge-error   { color: #fff; background: var(--n-error-color, #ef4444);   }
+  &.badge-info    { color: #fff; background: var(--n-info-color, #06b6d4);    }
+}
+
+// ─── Section content ─────────────────────────────────────────────────────────
+
+.section-content {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--k8s-border-color);
+
+  @include sm-up {
+    padding: 14px;
+    gap: 14px;
+  }
+
+  @include md-up {
+    padding: 16px;
+    gap: 16px;
+  }
+}
+
+// ─── Mini charts ─────────────────────────────────────────────────────────────
+
+.mini-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include xs-down {
+    gap: 12px;
+  }
+}
+
+// ─── Empty state ─────────────────────────────────────────────────────────────
+
+// ─── Global Tab Bold ─────────────────────────────────────────────────────────
+
+.n-tabs-tab {
+  font-weight: 700 !important;
+}
+
+// ─── Global Tab Rail ─────────────────────────────────────────────────────────
+
+.n-tabs-rail {
+  background: rgba(128, 128, 128, 0.1);
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+// ─── Empty state ─────────────────────────────────────────────────────────────
+
+.n-data-table-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--n-text-color-3);
+  font-size: 0.875rem;
+
+  @include xs-down {
+    padding: 30px 15px;
+    font-size: 0.8125rem;
+  }
+}

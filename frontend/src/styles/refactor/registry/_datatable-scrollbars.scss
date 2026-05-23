@@ -1,0 +1,47 @@
+// TFO Style Registry — DataTable Scrollbars
+// Custom scrollbar, horizontal scroll, mobile scroll indicator
+
+@use "@/styles/tfo-variables" as *;
+
+.table-content {
+  .n-data-table-wrapper {
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--k8s-scrollbar-track);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--k8s-scrollbar-thumb);
+      border-radius: 4px;
+
+      &:hover {
+        background: var(--k8s-scrollbar-thumb-hover);
+      }
+    }
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 40px;
+      background: var(--k8s-scroll-indicator);
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    &.scrolled-to-end::after {
+      opacity: 0;
+    }
+  }
+}

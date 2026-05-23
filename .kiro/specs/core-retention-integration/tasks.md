@@ -1,0 +1,515 @@
+# Implementation Plan: Frontend-Backend Retention Integration
+
+## Overview
+
+This implementation plan breaks down the retention integration feature into discrete, incremental tasks. The approach follows the platform's DDD/CQRS architecture for the backend and Vue 3 Composition API patterns for the frontend. Tasks are organized to build foundational components first, then layer on functionality, with testing integrated throughout.
+
+## Tasks
+
+- [ ] 1. Set up retention module structure and database schema
+  - Create backend module directory structure following DDD layers (domain, application, infrastructure, presentation)
+  - Create database migrations for retention_policies, retention_rules, and retention_executions tables in PostgreSQL
+  - Create ClickHouse tables for retention_execution_logs and storage_metrics
+  - Set up TypeORM entities for PostgreSQL tables
+  - Create seed data for default retention policies in development
+  - _Requirements: 11.1, 11.2, 11.3, 11.4_
+
+- [ ] 2. Implement domain layer - core business logic
+  - [ ] 2.1 Create value objects (PolicyId, RuleId, RetentionPeriod, ArchivalPeriod, PolicyStatus, DataType, ComplianceStatus)
+    - Implement immutable value object classes extending base ValueObject
+    - Add validation logic for each value object
+    - _Requirements: 2.4, 2.5_
+  - [ ] 2.2 Create RetentionRule entity
+    - Implement RetentionRule class with data type, retention period, archival period, and filters
+    - Add validation for rule constraints (archival period <= retention period)
+    - Implement matches() method to check if rule applies to data
+    - _Requirements: 2.1, 2.2, 2.4, 2.5_
+  - [ ]\* 2.3 Write property test for RetentionRule validation
+    - **Property 7: Rule validation rejects invalid configurations**
+    - **Validates: Requirements 2.1, 2.4, 2.5**
+  - [ ] 2.4 Create RetentionPolicy aggregate root
+    - Implement RetentionPolicy class extending AggregateRoot
+    - Add methods: create(), addRule(), removeRule(), activate(), deactivate()
+    - Implement domain event emission (PolicyCreatedEvent, PolicyUpdatedEvent, PolicyActivatedEvent, PolicyDeactivatedEvent)
+    - Add business rule validation
+    - _Requirements: 1.1, 1.2, 1.3, 1.6, 1.7_
+  - [ ]\* 2.5 Write property tests for RetentionPolicy aggregate
+    - **Property 1: Policy creation stores all required fields**
+    - **Property 3: Policy deletion is soft delete**
+    - **Property 5: Policy activation schedules enforcement**
+    - **Property 6: Policy deactivation cancels enforcement**
+    - **Validates: Requirements 1.1, 1.2, 1.4, 1.6, 1.7**
+  - [ ] 2.6 Create RetentionExecution entity
+    - Implement RetentionExecution class for tracking policy execution
+    - Add fields for execution status, data volumes, errors
+    - _Requirements: 7.3, 7.4_
+  - [ ] 2.7 Define repository interfaces
+    - Create IRetentionPolicyRepository interface
+    - Create IRetentionExecutionRepository interface
+    - Define method signatures (save, findById, findAll, findActive, delete)
+    - _Requirements: 1.1, 1.3, 1.4, 1.5_
+  - [ ] 2.8 Define domain events
+    - Create PolicyCreatedEvent, PolicyUpdatedEvent, PolicyDeletedEvent
+    - Create PolicyActivatedEvent, PolicyDeactivatedEvent
+    - Create PolicyExecutedEvent, DataArchivedEvent, DataDeletedEvent
+    - Create ComplianceStatusChangedEvent
+    - _Requirements: 5.5, 10.7_
+
+- [ ] 3. Implement application layer - CQRS commands and queries
+  - [ ] 3.1 Create command DTOs
+    - CreateRetentionPolicyCommand
+    - UpdateRetentionPolicyCommand
+    - DeleteRetentionPolicyCommand
+    - ActivateRetentionPolicyCommand
+    - DeactivateRetentionPolicyCommand
+    - ExecuteRetentionPolicyCommand
+    - AddRetentionRuleCommand
+    - RemoveRetentionRuleCommand
+    - _Requirements: 1.1, 1.3, 1.4, 1.6, 1.7, 2.1, 2.6_
+  - [ ] 3.2 Create query DTOs
+    - GetRetentionPolicyQuery
+    - ListRetentionPoliciesQuery
+    - GetStorageMetricsQuery
+    - GetComplianceStatusQuery
+    - GetRetentionExecutionLogsQuery
+    - GetRetentionAnalyticsQuery
+    - _Requirements: 1.5, 6.1, 6.2, 5.2, 5.3, 5.4_
+  - [ ] 3.3 Implement command handlers
+    - CreateRetentionPolicyHandler
+    - UpdateRetentionPolicyHandler
+    - DeleteRetentionPolicyHandler
+    - ActivateRetentionPolicyHandler
+    - DeactivateRetentionPolicyHandler
+    - ExecuteRetentionPolicyHandler
+    - Use @CommandHandler decorator and implement ICommandHandler
+    - Inject repository interfaces and event bus
+    - _Requirements: 1.1, 1.3, 1.4, 1.6, 1.7, 7.6_
+  - [ ]\* 3.4 Write unit tests for command handlers
+    - Test successful command execution
+    - Test validation failures
+    - Test event emission
+    - _Requirements: 1.1, 1.3, 1.4, 1.6, 1.7_
+  - [ ] 3.5 Implement query handlers
+    - GetRetentionPolicyHandler
+    - ListRetentionPoliciesHandler
+    - GetStorageMetricsHandler
+    - GetComplianceStatusHandler
+    - GetRetentionExecutionLogsHandler
+    - GetRetentionAnalyticsHandler
+    - Use @QueryHandler decorator and implement IQueryHandler
+    - _Requirements: 1.5, 6.1, 6.2, 5.2, 5.3, 5.4, 8.1, 8.2_
+  - [ ]\* 3.6 Write unit tests for query handlers
+    - Test query execution with various filters
+    - Test data transformation to DTOs
+    - _Requirements: 1.5, 6.1, 6.2, 5.4_
+
+- [ ] 4. Checkpoint - Ensure domain and application layers are complete
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 5. Implement infrastructure layer - repositories and services
+  - [ ] 5.1 Create TypeORM repository implementations
+    - RetentionPolicyRepository implementing IRetentionPolicyRepository
+    - RetentionExecutionRepository implementing IRetentionExecutionRepository
+    - Implement entity mappers (domain ↔ TypeORM entities)
+    - Add transaction support
+    - _Requirements: 1.1, 1.3, 1.4, 1.5_
+  - [ ]\* 5.2 Write integration tests for repositories
+    - Test save and retrieve operations
+    - Test findActive() filtering
+    - Test soft delete behavior
+    - Use test database with cleanup
+    - _Requirements: 1.1, 1.4, 1.5_
+  - [ ]\* 5.3 Write property test for policy listing
+    - **Property 4: Policy listing returns all non-deleted policies**
+    - **Validates: Requirements 1.5**
+  - [ ] 5.4 Implement StorageMonitorService
+    - Create service to query PostgreSQL storage metrics (pg_database_size)
+    - Create service to query ClickHouse storage metrics (system.parts, system.tables)
+    - Implement getMetrics() method returning storage usage, growth rate, projected usage
+    - Implement storage tracking by data type
+    - Implement threshold checking and alerting
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
+  - [ ]\* 5.5 Write property tests for StorageMonitorService
+    - **Property 28: Separate database storage tracking**
+    - **Property 29: Storage metrics completeness**
+    - **Property 31: Storage tracking by data type**
+    - **Validates: Requirements 6.1, 6.2, 6.4**
+  - [ ] 5.6 Implement ArchivalService
+    - Create archiveClickHouseData() method (INSERT INTO archival_table SELECT, then DELETE)
+    - Create archivePostgresData() method (export and mark as archived)
+    - Implement data integrity verification
+    - Add error handling with retry logic
+    - _Requirements: 3.1, 3.2, 3.3, 3.5_
+  - [ ]\* 5.7 Write property tests for ArchivalService
+    - **Property 11: Data identification for archival**
+    - **Property 12: ClickHouse archival moves data**
+    - **Property 13: PostgreSQL archival marks records**
+    - **Property 15: Archival retry with exponential backoff**
+    - **Validates: Requirements 3.1, 3.2, 3.3, 3.5**
+  - [ ] 5.8 Implement DeletionService
+    - Create deleteClickHouseData() method (DELETE or DROP PARTITION based on volume)
+    - Create deletePostgresData() method (batch deletion with transactions)
+    - Implement deletion strategy selection logic
+    - Add error handling with retry logic
+    - _Requirements: 4.1, 4.2, 4.3, 4.5_
+  - [ ]\* 5.9 Write property tests for DeletionService
+    - **Property 17: Data identification for deletion**
+    - **Property 18: ClickHouse deletion strategy selection**
+    - **Property 19: PostgreSQL batch deletion**
+    - **Property 22: Deletion permanence**
+    - **Validates: Requirements 4.1, 4.2, 4.3, 4.6**
+  - [ ] 5.10 Implement PolicyEnforcementEngine
+    - Create scheduled job using @Cron decorator (daily at 2 AM)
+    - Implement executeScheduledPolicies() to find and execute active policies
+    - Implement executePolicy() to process data in batches
+    - Add batch size limiting (10,000 records per batch)
+    - Implement sequential execution of multiple policies
+    - Add execution logging (start time, completion time, volumes, errors)
+    - Integrate with ArchivalService and DeletionService
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.7, 13.1_
+  - [ ]\* 5.11 Write property tests for PolicyEnforcementEngine
+    - **Property 34: Batch processing for policy execution**
+    - **Property 35: Execution start logging**
+    - **Property 36: Execution completion logging**
+    - **Property 39: Sequential policy execution**
+    - **Validates: Requirements 7.2, 7.3, 7.4, 7.7, 13.1**
+  - [ ] 5.12 Implement ComplianceTrackerService
+    - Create checkCompliance() method to evaluate data against policies
+    - Implement non-compliant data flagging (age > retention period, not archived)
+    - Implement at-risk data flagging (within 7 days of retention period)
+    - Implement compliance percentage calculation
+    - Emit ComplianceStatusChangedEvent when status changes
+    - _Requirements: 5.1, 5.2, 5.3, 5.5, 5.6_
+  - [ ]\* 5.13 Write property tests for ComplianceTrackerService
+    - **Property 23: Non-compliant data flagging**
+    - **Property 24: At-risk data flagging**
+    - **Property 27: Compliance percentage calculation**
+    - **Validates: Requirements 5.2, 5.3, 5.6**
+
+- [ ] 6. Checkpoint - Ensure infrastructure layer is complete
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 7. Implement presentation layer - REST API controllers
+  - [ ] 7.1 Create request/response DTOs
+    - CreatePolicyRequestDto with class-validator decorators
+    - UpdatePolicyRequestDto
+    - PolicyResponseDto
+    - PolicyFiltersDto
+    - StorageMetricsDto
+    - ComplianceStatusDto
+    - ExecutionResultDto
+    - Add Swagger @ApiProperty decorators
+    - _Requirements: 10.5, 10.6_
+  - [ ] 7.2 Implement RetentionPolicyController
+    - POST /retention/policies (create policy)
+    - GET /retention/policies (list policies)
+    - GET /retention/policies/:id (get policy by ID)
+    - PATCH /retention/policies/:id (update policy)
+    - DELETE /retention/policies/:id (delete policy)
+    - PATCH /retention/policies/:id/activate (activate policy)
+    - PATCH /retention/policies/:id/deactivate (deactivate policy)
+    - POST /retention/policies/:id/execute (execute policy manually)
+    - POST /retention/policies/:id/rules (add rule)
+    - DELETE /retention/policies/:id/rules/:ruleId (remove rule)
+    - Add @UseGuards(JwtAuthGuard, PermissionsGuard)
+    - Add @RequirePermissions decorators
+    - Add Swagger decorators (@ApiOperation, @ApiResponse, @ApiTags)
+    - _Requirements: 10.1, 10.2, 10.5, 14.1, 14.3_
+  - [ ] 7.3 Implement RetentionAnalyticsController
+    - GET /retention/analytics/storage (get storage metrics)
+    - GET /retention/analytics/compliance (get compliance status)
+    - GET /retention/analytics/executions (get execution logs)
+    - GET /retention/analytics/reports (get retention reports)
+    - Add authentication and permission guards
+    - Add Swagger decorators
+    - _Requirements: 6.1, 6.2, 5.4, 8.1, 8.2, 14.2_
+  - [ ]\* 7.4 Write property tests for API authentication
+    - **Property 48: API authentication enforcement**
+    - **Property 59: Permission enforcement for management operations**
+    - **Property 60: Permission enforcement for view operations**
+    - **Property 61: Permission enforcement for execution operations**
+    - **Validates: Requirements 10.2, 14.1, 14.2, 14.3, 14.4**
+  - [ ]\* 7.5 Write property tests for API error handling
+    - **Property 49: API error responses**
+    - **Property 50: Request DTO validation**
+    - **Validates: Requirements 10.4, 10.6**
+  - [ ] 7.6 Implement global exception filter for retention module
+    - Create RetentionExceptionFilter extending base exception filter
+    - Format error responses with status code, message, error code, timestamp
+    - Log errors with Winston logger
+    - _Requirements: 10.4, 12.1_
+  - [ ] 7.7 Configure retention module in NestJS
+    - Create retention.module.ts with all providers, controllers, imports
+    - Register CQRS command and query handlers
+    - Configure TypeORM repositories
+    - Register services (PolicyEnforcementEngine, StorageMonitorService, etc.)
+    - Import shared modules (ClickHouseModule, LoggerModule, CacheModule, IAMModule)
+    - _Requirements: 15.1, 15.2, 15.4, 15.5_
+
+- [ ] 8. Implement error handling and resilience patterns
+  - [ ] 8.1 Add retry logic with exponential backoff
+    - Create executeWithRetry() utility function
+    - Implement isRetryableError() to identify transient failures
+    - Apply to database operations, archival, and deletion
+    - _Requirements: 3.5, 4.5, 12.2_
+  - [ ] 8.2 Implement circuit breaker for external storage
+    - Create CircuitBreaker class with CLOSED, OPEN, HALF_OPEN states
+    - Apply to archival service external storage operations
+    - _Requirements: 12.4_
+  - [ ] 8.3 Add partial failure handling
+    - Implement batch processing with error collection
+    - Continue processing remaining batches on failure
+    - Report all failures at end of execution
+    - _Requirements: 12.3_
+  - [ ]\* 8.4 Write property tests for error handling
+    - **Property 52: Error logging with stack traces**
+    - **Property 53: Database connection retry**
+    - **Property 54: Partial failure continuation**
+    - **Validates: Requirements 12.1, 12.2, 12.3**
+  - [ ] 8.5 Implement alerting integration
+    - Create AlertService wrapper for platform alerting system
+    - Add alert methods for critical errors, performance issues, compliance violations
+    - Integrate with PolicyEnforcementEngine, ComplianceTrackerService, StorageMonitorService
+    - _Requirements: 12.5, 13.5_
+  - [ ] 8.6 Implement operation state persistence for resumability
+    - Add execution state tracking to RetentionExecution entity
+    - Implement checkpoint saving during long-running operations
+    - Add resume capability to PolicyEnforcementEngine
+    - _Requirements: 12.6_
+
+- [ ] 9. Checkpoint - Ensure backend is complete
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 10. Implement frontend - Vue 3 components and stores
+  - [ ] 10.1 Create Pinia store for retention state management
+    - Create useRetentionStore with state (policies, selectedPolicy, loading, error)
+    - Implement actions (fetchPolicies, createPolicy, updatePolicy, deletePolicy, activatePolicy, deactivatePolicy)
+    - Implement getters (activePolicies, policiesByDataType)
+    - Use storeToRefs for reactive state
+    - _Requirements: 9.5_
+  - [ ] 10.2 Create Pinia store for retention analytics
+    - Create useRetentionAnalyticsStore with state (storageMetrics, complianceStatus, executionLogs)
+    - Implement actions (fetchStorageMetrics, fetchComplianceStatus, fetchExecutionLogs)
+    - _Requirements: 6.1, 6.2, 5.4, 8.1_
+  - [ ] 10.3 Create API client for retention endpoints
+    - Create retentionApi.ts with Axios client
+    - Implement methods for all API endpoints (listPolicies, createPolicy, updatePolicy, etc.)
+    - Add error handling and response transformation
+    - _Requirements: 10.1_
+  - [ ] 10.4 Create RetentionPolicyList.vue component
+    - Use Naive UI DataTable for policy list
+    - Add sorting, filtering, and pagination
+    - Add action buttons (Create, Edit, Delete, Activate/Deactivate)
+    - Use useRetentionStore for data
+    - _Requirements: 1.5, 9.2_
+  - [ ] 10.5 Create RetentionPolicyForm.vue component
+    - Create form for policy name, description, status
+    - Add RetentionRuleEditor sub-component for rules
+    - Implement form validation with error messages
+    - Emit save/cancel events
+    - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2, 9.3_
+  - [ ]\* 10.6 Write property test for form validation
+    - **Property 46: Form validation error messages**
+    - **Validates: Requirements 9.3**
+  - [ ] 10.7 Create RetentionRuleEditor.vue component
+    - Add/remove rules within a policy
+    - Configure data type, retention period, archival period, filters
+    - Validate rule constraints (archival <= retention)
+    - Show visual feedback for rule conflicts
+    - _Requirements: 2.1, 2.2, 2.4, 2.5_
+  - [ ] 10.8 Create RetentionDashboard.vue component
+    - Overview dashboard with key metrics
+    - Use StatCard components for summary stats
+    - Include StorageUsageChart, ComplianceStatusChart, RetentionExecutionLog
+    - _Requirements: 8.1, 8.2_
+  - [ ] 10.9 Create StorageUsageChart.vue component
+    - Time series chart using ECharts
+    - Separate series for PostgreSQL and ClickHouse
+    - Interactive zoom and data point selection
+    - Use vue-echarts wrapper
+    - _Requirements: 6.1, 6.5, 9.4_
+  - [ ] 10.10 Create ComplianceStatusChart.vue component
+    - Gauge chart showing overall compliance percentage
+    - Color-coded status indicators (green/yellow/red)
+    - Drill-down to policy-level compliance
+    - _Requirements: 5.6, 9.4_
+  - [ ] 10.11 Create RetentionExecutionLog.vue component
+    - DataTable showing recent policy executions
+    - Columns: policy name, execution time, status, data volume, duration
+    - Filtering by status and date range
+    - _Requirements: 7.3, 7.4_
+  - [ ] 10.12 Create composables for reusable logic
+    - useRetentionAnalytics composable for analytics data fetching
+    - useChartOptions composable for ECharts configuration
+    - usePolicyValidation composable for form validation
+    - _Requirements: 9.7_
+  - [ ] 10.13 Add loading indicators and progress feedback
+    - Show loading spinners during API calls
+    - Display progress bars for long-running operations (policy execution)
+    - Add skeleton loaders for data tables and charts
+    - _Requirements: 9.6_
+  - [ ]\* 10.14 Write property test for loading indicators
+    - **Property 47: Loading indicators for long operations**
+    - **Validates: Requirements 9.6**
+  - [ ] 10.15 Add router configuration for retention pages
+    - Add routes: /retention/policies, /retention/policies/:id, /retention/analytics
+    - Configure route guards for authentication
+    - Add meta tags for page titles
+    - _Requirements: 9.1_
+  - [ ] 10.16 Implement permission-based UI visibility
+    - Hide/disable actions based on user permissions
+    - Check retention:manage, retention:view, retention:execute permissions
+    - Use v-if directives with permission checks
+    - _Requirements: 14.6_
+  - [ ]\* 10.17 Write property test for permission-based visibility
+    - **Property 63: UI permission-based action visibility**
+    - **Validates: Requirements 14.6**
+
+- [ ] 11. Implement analytics and reporting features
+  - [ ] 11.1 Implement retention analytics query handler
+    - Calculate data volume trends over time by data type
+    - Calculate average retention duration by data type
+    - Calculate policy effectiveness (storage savings, compliance rates)
+    - Support drill-down by service, environment, time period
+    - _Requirements: 8.1, 8.3, 8.4, 8.7_
+  - [ ]\* 11.2 Write property tests for analytics calculations
+    - **Property 40: Analytics volume trends**
+    - **Property 42: Average retention duration calculation**
+    - **Property 43: Policy effectiveness metrics**
+    - **Property 45: Analytics drill-down filtering**
+    - **Validates: Requirements 8.1, 8.3, 8.4, 8.7**
+  - [ ] 11.3 Implement report generation service
+    - Generate retention reports with total/archived/deleted/active volumes
+    - Support JSON and CSV export formats
+    - Include compliance report generation
+    - _Requirements: 8.2, 8.5_
+  - [ ]\* 11.4 Write property tests for report generation
+    - **Property 41: Retention report completeness**
+    - **Property 44: Report export formats**
+    - **Validates: Requirements 8.2, 8.5**
+  - [ ] 11.5 Create report export UI components
+    - Add export buttons to analytics dashboard
+    - Implement file download for JSON and CSV formats
+    - Show export progress and success/error messages
+    - _Requirements: 8.5_
+
+- [ ] 12. Implement audit logging and event integration
+  - [ ] 12.1 Create domain event handlers
+    - PolicyCreatedEventHandler (log to audit)
+    - PolicyUpdatedEventHandler (log to audit)
+    - PolicyDeletedEventHandler (log to audit)
+    - PolicyExecutedEventHandler (log to audit and ClickHouse)
+    - DataArchivedEventHandler (log to ClickHouse)
+    - DataDeletedEventHandler (log to ClickHouse)
+    - ComplianceStatusChangedEventHandler (log and alert)
+    - _Requirements: 10.7, 14.5, 15.3_
+  - [ ]\* 12.2 Write property tests for event emission and handling
+    - **Property 51: Domain event emission**
+    - **Property 64: Audit module event integration**
+    - **Validates: Requirements 10.7, 15.3**
+  - [ ] 12.3 Implement audit logging for all retention operations
+    - Log policy creation, updates, deletions with user ID and timestamp
+    - Log policy activations, deactivations, executions
+    - Log manual policy executions
+    - Use Winston logger service with structured logging
+    - _Requirements: 14.5, 15.2_
+  - [ ]\* 12.4 Write property test for audit logging
+    - **Property 62: Audit logging for all operations**
+    - **Validates: Requirements 14.5**
+
+- [ ] 13. Implement performance optimizations
+  - [ ] 13.1 Add caching for frequently accessed policies
+    - Use shared cache service to cache active policies
+    - Implement cache invalidation on policy updates
+    - Set appropriate TTL for cached data
+    - _Requirements: 15.5_
+  - [ ] 13.2 Optimize database queries with indexes
+    - Verify indexes on retention_policies (status, created_by)
+    - Verify indexes on retention_rules (policy_id, data_type, filters)
+    - Verify indexes on retention_executions (policy_id, start_time, status)
+    - Add composite indexes where needed
+    - _Requirements: 11.5_
+  - [ ] 13.3 Implement batch size limiting
+    - Ensure PolicyEnforcementEngine limits batches to 10,000 records
+    - Add configuration for batch size
+    - _Requirements: 7.2, 13.1_
+  - [ ] 13.4 Add execution time monitoring and logging
+    - Log execution times for all retention operations
+    - Track performance metrics in ClickHouse
+    - _Requirements: 13.4_
+  - [ ]\* 13.5 Write property tests for performance monitoring
+    - **Property 57: Execution time logging**
+    - **Property 58: Performance threshold alerting**
+    - **Validates: Requirements 13.4, 13.5**
+  - [ ] 13.6 Implement virtual scrolling for large lists in frontend
+    - Use Naive UI virtual list for policy and rule lists
+    - Configure item size and viewport height
+    - _Requirements: 13.6_
+
+- [ ] 14. Write E2E tests for complete workflows
+  - [ ]\* 14.1 Write E2E test for policy lifecycle
+    - Test create → retrieve → activate → execute → delete workflow
+    - Verify API responses and database state at each step
+    - _Requirements: 1.1, 1.3, 1.4, 1.5, 1.6, 7.6_
+  - [ ]\* 14.2 Write E2E test for data archival and deletion workflow
+    - Create test data with various ages
+    - Create and execute retention policy
+    - Verify data is archived and deleted correctly
+    - _Requirements: 3.1, 3.2, 3.3, 4.1, 4.2, 4.3_
+  - [ ]\* 14.3 Write E2E test for compliance tracking
+    - Create policies and test data
+    - Verify compliance status calculations
+    - Test at-risk and non-compliant flagging
+    - _Requirements: 5.2, 5.3, 5.4, 5.6_
+  - [ ]\* 14.4 Write E2E test for storage monitoring
+    - Query storage metrics
+    - Verify separate tracking for PostgreSQL and ClickHouse
+    - Test threshold alerting
+    - _Requirements: 6.1, 6.2, 6.3, 6.4_
+
+- [ ] 15. Final integration and documentation
+  - [ ] 15.1 Create module README.md
+    - Document module overview, architecture, features
+    - Include API documentation with endpoint examples
+    - Add database schema documentation with ERD
+    - Include testing guide and coverage requirements
+    - _Requirements: All_
+  - [ ] 15.2 Create Mermaid diagrams
+    - Entity Relationship Diagram (ERD) for database schema
+    - Data Flow Diagram (DFD) for policy execution
+    - Sequence diagrams for key workflows
+    - _Requirements: All_
+  - [ ] 15.3 Generate OpenAPI specification
+    - Use Swagger decorators to generate openapi.yaml
+    - Document all endpoints with request/response examples
+    - Include authentication and permission requirements
+    - _Requirements: 10.5_
+  - [ ] 15.4 Create Postman collection for API testing
+    - Add all retention API endpoints
+    - Include authentication setup
+    - Add example requests and assertions
+    - _Requirements: 10.1_
+  - [ ] 15.5 Update platform documentation
+    - Add retention module to main documentation index
+    - Update architecture diagrams to include retention module
+    - Document integration points with other modules
+    - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7_
+
+- [ ] 16. Final checkpoint - Ensure all tests pass and coverage meets requirements
+  - Run full test suite (unit, property, integration, E2E)
+  - Verify coverage meets requirements (≥90% overall, ≥95% domain layer)
+  - Fix any failing tests or coverage gaps
+  - Ensure all tests pass, ask the user if questions arise.
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties (minimum 100 iterations each)
+- Unit tests validate specific examples and edge cases
+- Integration tests validate database operations and external integrations
+- E2E tests validate complete workflows across all layers
+- The implementation follows the platform's established DDD/CQRS architecture
+- Frontend follows Vue 3 Composition API patterns with Pinia stores
+- Backend uses NestJS with TypeORM for PostgreSQL and ClickHouse client for analytics

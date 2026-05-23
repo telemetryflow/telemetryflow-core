@@ -5,7 +5,7 @@ All logger calls have been standardized to use the `[${MODULE_NAME}]` prefix for
 ## Standard Format
 
 ```typescript
-const MODULE_NAME = 'ServiceName';
+const MODULE_NAME = "ServiceName";
 
 export class ServiceName {
   private readonly logger = new Logger(MODULE_NAME);
@@ -55,6 +55,7 @@ export class ServiceName {
 ### 1. Consistent Log Format
 
 All logs now follow the same pattern:
+
 ```
 [ModuleName] Message content
 ```
@@ -62,6 +63,7 @@ All logs now follow the same pattern:
 ### 2. Easy Filtering
 
 Filter logs by module in production:
+
 ```bash
 # Filter by module
 grep "\[ClickHouseService\]" logs/app.log
@@ -73,6 +75,7 @@ grep "\[AuditService\].*ERROR" logs/error.log
 ### 3. Better Debugging
 
 Clear module identification helps trace issues:
+
 ```
 [ClickHouseService] Failed to insert log: Connection timeout
 [HttpLoggingInterceptor] ✗ Request failed: POST /api/users - 500
@@ -82,6 +85,7 @@ Clear module identification helps trace issues:
 ### 4. ClickHouse Integration
 
 Logs sent to ClickHouse include module name in attributes:
+
 ```sql
 SELECT timestamp, body, log_attributes['module']
 FROM logs
@@ -94,16 +98,22 @@ ORDER BY timestamp DESC;
 ### Standard Usage
 
 - **log**: Normal operations, successful actions
+
   ```typescript
   this.logger.log(`[${MODULE_NAME}] User created successfully`);
   ```
 
 - **error**: Errors and exceptions
+
   ```typescript
-  this.logger.error(`[${MODULE_NAME}] Failed to save: ${error.message}`, error.stack);
+  this.logger.error(
+    `[${MODULE_NAME}] Failed to save: ${error.message}`,
+    error.stack,
+  );
   ```
 
 - **warn**: Warnings and potential issues
+
   ```typescript
   this.logger.warn(`[${MODULE_NAME}] Cache miss, fetching from database`);
   ```
@@ -119,7 +129,7 @@ ORDER BY timestamp DESC;
 
 ```typescript
 // Inconsistent formats
-this.logger.log('User created');
+this.logger.log("User created");
 this.logger.error(`Failed to insert log: ${error.message}`);
 this.logger.log(`[HTTP] Request completed`);
 this.logger.error(`[Audit] ✗ Failed to create audit log`);
@@ -128,7 +138,7 @@ this.logger.error(`[Audit] ✗ Failed to create audit log`);
 ### After Standardization
 
 ```typescript
-const MODULE_NAME = 'UserService';
+const MODULE_NAME = "UserService";
 
 // Consistent format
 this.logger.log(`[${MODULE_NAME}] User created`);
@@ -142,11 +152,13 @@ this.logger.error(`[${MODULE_NAME}] Failed to create audit log`);
 When creating new services/modules:
 
 1. **Add MODULE_NAME constant**:
+
    ```typescript
-   const MODULE_NAME = 'NewService';
+   const MODULE_NAME = "NewService";
    ```
 
 2. **Initialize logger**:
+
    ```typescript
    private readonly logger = new Logger(MODULE_NAME);
    ```

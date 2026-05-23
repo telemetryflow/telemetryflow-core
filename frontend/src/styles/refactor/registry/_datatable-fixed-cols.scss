@@ -1,0 +1,64 @@
+// TFO Style Registry — DataTable Fixed Columns
+// Pinned column backgrounds (light/dark), striped rows, hover states
+
+.table-content {
+  .n-data-table {
+    .n-data-table-th--fixed-right,
+    .n-data-table-th--fixed-left {
+      background: var(--k8s-table-header-bg) !important;
+    }
+
+    .n-data-table-td--fixed-right,
+    .n-data-table-td--fixed-left {
+      background: var(--n-td-color, #fff) !important;
+    }
+
+    .n-data-table-th--fixed-right,
+    .n-data-table-td--fixed-right {
+      border-left: 1px solid var(--k8s-border-color) !important;
+      border-right: none !important;
+    }
+
+    // Striped rows fixed column background
+    .n-data-table-tr:nth-child(even) {
+      .n-data-table-td--fixed-right,
+      .n-data-table-td--fixed-left {
+        background: var(--n-td-color-striped, #fafafa) !important;
+      }
+    }
+
+    // Hover state for fixed columns
+    .n-data-table-tr:hover {
+      .n-data-table-td--fixed-right,
+      .n-data-table-td--fixed-left {
+        background: var(--n-td-color-hover, #f5f5f5) !important;
+      }
+    }
+  }
+}
+
+// Light mode explicit overrides
+html:not(.dark) {
+  .table-content {
+    .n-data-table {
+      .n-data-table-td--fixed-right,
+      .n-data-table-td--fixed-left {
+        background: #fff !important;
+      }
+
+      .n-data-table-tr:nth-child(even) {
+        .n-data-table-td--fixed-right,
+        .n-data-table-td--fixed-left {
+          background: #fafafa !important;
+        }
+      }
+
+      .n-data-table-tr:hover {
+        .n-data-table-td--fixed-right,
+        .n-data-table-td--fixed-left {
+          background: #f5f5f5 !important;
+        }
+      }
+    }
+  }
+}

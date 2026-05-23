@@ -1,39 +1,27 @@
-# TelemetryFlow Core Product Overview
+# TelemetryFlow Platform
 
-TelemetryFlow Core is a lightweight, production-ready Identity and Access Management (IAM) service extracted from the larger TelemetryFlow Platform. It provides complete identity and access management with enterprise-grade security features.
+TelemetryFlow Platform is a full-stack, production-ready observability platform (Community Enterprise Observability Platform — CEOP). It combines:
 
-## Core Features
+- A **NestJS backend** providing IAM (Identity & Access Management), authentication, telemetry ingestion, and API services
+- A **Vue 3 frontend** (TelemetryFlow-Viz) for visualization dashboards, IAM management, and observability UIs
 
-- **5-Tier RBAC System**: Super Admin, Administrator, Developer, Viewer, Demo roles with hierarchical permissions
-- **Multi-tenant Architecture**: Tenant → Organization → Workspace hierarchy for data isolation
-- **Domain-Driven Design**: Clean architecture with DDD patterns and CQRS implementation
-- **Enterprise Security**: JWT authentication, Argon2 password hashing, role-based access control
-- **Observability**: OpenTelemetry tracing, Winston logging, Swagger API documentation
-- **Audit Logging**: Complete audit trail stored in ClickHouse for compliance
+## Core Capabilities
 
-## Architecture
+- **5-Tier RBAC**: Super Admin → Administrator → Developer → Viewer → Demo
+- **Multi-tenancy**: Tenant → Organization → Workspace hierarchy
+- **Telemetry Ingestion**: OTLP-compliant collector supporting metrics, logs, and traces (v1 and v2 endpoints)
+- **IAM Management**: Full CRUD for users, roles, permissions, groups, tenants, organizations, workspaces, regions
+- **Observability Dashboards**: Metrics, logs, traces, Kubernetes, service maps, uptime, alerting
+- **Audit Logging**: ClickHouse-backed audit trail
+- **LLM Integration**: AI-assisted analysis across telemetry domains
 
-The system follows Domain-Driven Design (DDD) with Clean Architecture principles:
-- **Domain Layer**: 8 aggregates, 10 value objects, domain services
-- **Application Layer**: CQRS with 33 commands and 18 queries
-- **Infrastructure Layer**: TypeORM repositories, event processors
-- **Presentation Layer**: 9 REST controllers with comprehensive API
+## White-label Support
 
-## Technology Stack
+The platform supports full white-labeling via environment variables (`TELEMETRYFLOW_BRAND_*`, `TELEMETRYFLOW_LOGO_*`, `TELEMETRYFLOW_THEME_*`).
 
-- **Backend**: NestJS 11.x with TypeScript 5.9
-- **Database**: PostgreSQL 16 (IAM data) + ClickHouse (audit logs)
-- **Authentication**: JWT with Passport
-- **Observability**: OpenTelemetry, Winston, Prometheus, Grafana
-- **Testing**: Jest with 90%+ coverage requirements
+## API Base
 
-## Default Users
-
-The system comes with pre-configured users for each RBAC tier:
-- Super Administrator: `superadmin.telemetryflow@telemetryflow.id`
-- Administrator: `administrator.telemetryflow@telemetryflow.id`
-- Developer: `developer.telemetryflow@telemetryflow.id`
-- Viewer: `viewer.telemetryflow@telemetryflow.id`
-- Demo: `demo.telemetryflow@telemetryflow.id`
-
-All default passwords follow the pattern: `{Role}@123456` (change in production).
+- Backend REST API: `http://localhost:3000` — prefix `/api/v2/`
+- OTEL Collector HTTP: `http://localhost:4318` — `/v1/` and `/v2/` endpoints
+- Frontend dev server: `http://localhost:3100` (proxies `/api/v2` → backend, `/v1` → collector)
+- Swagger UI: `http://localhost:3000/api`

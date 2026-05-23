@@ -1,0 +1,168 @@
+// TFO Style Registry — StatPanel Variants
+// Size variants, responsive breakpoints
+
+@use "@/styles/tfo-variables" as *;
+
+// ---------------------------------------------------------------------------
+// Small size variant
+// ---------------------------------------------------------------------------
+.stat-panel.small {
+  padding: 12px 16px;
+  min-height: 75px;
+  gap: 12px;
+  border-radius: 10px;
+  border-left-width: 3px;
+  flex: 1 1 180px;
+
+  .stat-content {
+    gap: 6px;
+  }
+
+  .stat-header {
+    gap: 6px;
+  }
+
+  .stat-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+  }
+
+  .stat-title {
+    font-size: 0.65rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-unit {
+    font-size: 0.65rem;
+  }
+
+  .stat-trend {
+    font-size: 0.625rem;
+    min-height: 14px;
+  }
+
+  .stat-status {
+    min-height: 14px;
+  }
+
+  .stat-chart {
+    width: 60px;
+    height: 40px;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Tablet / large phone  (max-width: 768px)
+// ---------------------------------------------------------------------------
+@media (max-width: $breakpoint-mobile) {
+  .stat-panel {
+    padding: 14px 16px;
+    min-height: 95px;
+    flex: 1 1 calc(50% - 8px);
+    min-width: calc(50% - 8px);
+
+    &.small {
+      padding: 10px 14px;
+      min-height: 75px;
+      flex: 1 1 calc(50% - 8px);
+      min-width: calc(50% - 8px);
+
+      .stat-icon {
+        width: 22px;
+        height: 22px;
+      }
+
+      .stat-title {
+        font-size: 0.6rem;
+      }
+
+      .stat-value {
+        font-size: 1.25rem;
+      }
+
+      .stat-trend {
+        font-size: 0.55rem;
+      }
+    }
+  }
+
+  .stat-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .stat-title {
+    font-size: 0.65rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-trend {
+    font-size: 0.6rem;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Extra-small phones  (max-width: 480px)
+// ---------------------------------------------------------------------------
+@media (max-width: $breakpoint-xs) {
+  .stat-panel {
+    padding: 10px 12px;
+    min-height: 80px;
+    flex: 1 1 calc(50% - 6px);
+    min-width: calc(50% - 6px);
+
+    &.small {
+      padding: 8px 10px;
+      min-height: 65px;
+
+      .stat-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .stat-title {
+        font-size: 0.55rem;
+      }
+
+      .stat-value {
+        font-size: 1.1rem;
+      }
+
+      .stat-trend {
+        font-size: 0.5rem;
+      }
+    }
+  }
+
+  .stat-header {
+    gap: 5px;
+  }
+
+  .stat-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .stat-title {
+    font-size: 0.6rem;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .stat-unit {
+    font-size: 0.6rem;
+  }
+
+  .stat-trend {
+    font-size: 0.55rem;
+  }
+}

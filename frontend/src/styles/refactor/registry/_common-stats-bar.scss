@@ -1,0 +1,33 @@
+// ============================================================================
+// StatsBar Component Styles
+// Source: components/common/StatsBar.vue
+// ============================================================================
+
+.stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding: 16px 24px;
+  background: var(--n-card-color);
+  border-bottom: 1px solid var(--n-border-color);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-icon {
+  font-size: 20px;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+}

@@ -1,0 +1,53 @@
+// ============================================================================
+// MainLayout Styles
+// Source: layouts/MainLayout.vue
+// ============================================================================
+
+// Dark mode colors - softer zinc palette
+$dark-bg-base: #1a1a1e;
+$dark-bg-elevated: #242428;
+$dark-border: #3f3f46;
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  background-color: white;
+
+  .dark & {
+    background-color: $dark-bg-elevated;
+    border-color: $dark-border;
+  }
+}
+
+.main-layout {
+  min-height: 100vh;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  background-color: white;
+
+  .dark & {
+    background-color: $dark-bg-elevated;
+    border-color: $dark-border;
+  }
+}
+
+.content {
+  padding: 24px;
+  min-height: calc(100vh - 56px);
+  background-color: #f9fafb;
+
+  .dark & {
+    background-color: $dark-bg-base;
+  }
+}

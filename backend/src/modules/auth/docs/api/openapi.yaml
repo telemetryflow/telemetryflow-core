@@ -1,0 +1,454 @@
+openapi: 3.0.3
+info:
+  title: TelemetryFlow Auth API
+  description: Authentication, session management, and security API
+  version: 1.0.0
+
+servers:
+  - url: /api/v2
+
+tags:
+  - name: Authentication
+    description: Login, logout, and token management
+  - name: Email Verification
+    description: Email verification flow
+  - name: Password Reset
+    description: Password recovery flow
+  - name: MFA
+    description: Multi-factor authentication
+  - name: Sessions
+    description: Session management
+  - name: Devices
+    description: Known device management
+
+paths:
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: User login
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      tags: [Authentication]
+      summary: User logout
+      operationId: logout
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logged out successfully
+
+  /auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          description: Invalid or expired refresh token
+
+  /auth/me:
+    get:
+      tags: [Authentication]
+      summary: Get current user
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+  /auth/verify-email:
+    post:
+      tags: [Email Verification]
+      summary: Verify email with token
+      operationId: verifyEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyEmailRequest'
+      responses:
+        '200':
+          description: Email verified
+        '400':
+          description: Invalid or expired token
+
+  /auth/resend-verification:
+    post:
+      tags: [Email Verification]
+      summary: Resend verification email
+      operationId: resendVerification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Verification email sent
+
+  /auth/forgot-password:
+    post:
+      tags: [Password Reset]
+      summary: Request password reset
+      operationId: forgotPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Reset email sent if user exists
+
+  /auth/reset-password:
+    post:
+      tags: [Password Reset]
+      summary: Reset password with token
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Password reset successful
+        '400':
+          description: Invalid or expired token
+
+  /auth/mfa/setup:
+    post:
+      tags: [MFA]
+      summary: Setup MFA (get QR code)
+      operationId: setupMfa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: MFA setup data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MfaSetupResponse'
+
+  /auth/mfa/verify:
+    post:
+      tags: [MFA]
+      summary: Verify MFA code
+      operationId: verifyMfa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaVerifyRequest'
+      responses:
+        '200':
+          description: MFA verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Invalid code
+
+  /auth/mfa/disable:
+    post:
+      tags: [MFA]
+      summary: Disable MFA
+      operationId: disableMfa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaVerifyRequest'
+      responses:
+        '200':
+          description: MFA disabled
+
+  /auth/sessions:
+    get:
+      tags: [Sessions]
+      summary: List active sessions
+      operationId: listSessions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSession'
+
+  /auth/sessions/{id}:
+    delete:
+      tags: [Sessions]
+      summary: Terminate session
+      operationId: terminateSession
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Session terminated
+        '404':
+          description: Session not found
+
+  /auth/devices:
+    get:
+      tags: [Devices]
+      summary: List known devices
+      operationId: listDevices
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of known devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KnownDevice'
+
+  /auth/devices/{id}:
+    delete:
+      tags: [Devices]
+      summary: Remove trusted device
+      operationId: removeDevice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Device removed
+        '404':
+          description: Device not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        rememberMe:
+          type: boolean
+          default: false
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+        requireMfa:
+          type: boolean
+        mfaToken:
+          type: string
+
+    RefreshTokenRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+
+    VerifyEmailRequest:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+
+    ResetPasswordRequest:
+      type: object
+      required: [token, password]
+      properties:
+        token:
+          type: string
+        password:
+          type: string
+          minLength: 8
+
+    MfaSetupResponse:
+      type: object
+      properties:
+        secret:
+          type: string
+        qrCode:
+          type: string
+        backupCodes:
+          type: array
+          items:
+            type: string
+
+    MfaVerifyRequest:
+      type: object
+      required: [code]
+      properties:
+        code:
+          type: string
+          pattern: '^\d{6}$'
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        emailVerified:
+          type: boolean
+        mfaEnabled:
+          type: boolean
+
+    UserSession:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        deviceName:
+          type: string
+        deviceType:
+          type: string
+        browser:
+          type: string
+        os:
+          type: string
+        ipAddress:
+          type: string
+        location:
+          type: object
+        isCurrent:
+          type: boolean
+        lastActivityAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    KnownDevice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        deviceName:
+          type: string
+        deviceType:
+          type: string
+        browser:
+          type: string
+        os:
+          type: string
+        isTrusted:
+          type: boolean
+        lastIpAddress:
+          type: string
+        loginCount:
+          type: integer
+        firstSeenAt:
+          type: string
+          format: date-time
+        lastSeenAt:
+          type: string
+          format: date-time

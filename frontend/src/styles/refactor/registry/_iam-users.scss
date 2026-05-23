@@ -1,0 +1,552 @@
+// ═══════════════════════════════════════════════════════════════════
+// IAM Users Styles
+// Extracted from: views/iam/users/index.vue, users/components/PermissionsModal.vue,
+//   users/components/RegisterUserModal.vue, users/components/UserFiltersBar.vue,
+//   users/components/UserActionsDropdown.vue
+// ═══════════════════════════════════════════════════════════════════
+
+// ─── Users Page (users/index.vue) ─────────────────────────────────
+
+// Edit Roles Tab
+.iam-users-page .edit-roles-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+
+  svg { font-size: 16px; }
+}
+
+.iam-users-page .edit-roles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.iam-users-page .edit-role-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  transition: all 0.2s;
+
+  &.assigned {
+    background: rgba(34, 197, 94, 0.04);
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+
+  &.available {
+    background: var(--n-card-color);
+  }
+
+  &:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+  }
+}
+
+.iam-users-page .edit-role-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.iam-users-page .edit-role-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.iam-users-page .edit-role-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iam-users-page .edit-role-desc {
+  font-size: 0.75rem;
+  color: var(--n-text-color-3);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iam-users-page .edit-roles-empty {
+  text-align: center;
+  padding: 24px 0;
+  color: var(--n-text-color-3);
+  font-size: 0.8125rem;
+}
+
+// Page layout
+.iam-users-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.iam-users-page .page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.iam-users-page .page-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.iam-users-page .page-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.iam-users-page .page-title-icon {
+  font-size: 22px;
+  color: var(--n-text-color-3);
+  flex-shrink: 0;
+}
+
+.iam-users-page .page-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--n-text-color);
+}
+
+.iam-users-page .page-subtitle {
+  font-size: 0.875rem;
+  margin: 0;
+  color: var(--n-text-color-3);
+}
+
+.iam-users-page .stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.iam-users-page .filters-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+}
+
+.iam-users-page .search-input {
+  flex: 1;
+  min-width: 160px;
+}
+
+.iam-users-page .filter-select {
+  width: 160px;
+}
+
+.iam-users-page .status-select {
+  width: 130px;
+}
+
+// ── Channel-style Modal ───────────────────────────────────────────────
+.iam-users-page .um-modal-content {
+  display: flex;
+  gap: 16px;
+  max-height: calc(80vh - 120px);
+  overflow: hidden;
+}
+
+.iam-users-page .um-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  max-width: 200px;
+  border-right: 1px solid var(--n-border-color);
+  padding-right: 16px;
+}
+
+.iam-users-page .um-tab-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--n-text-color-3);
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.08);
+    color: var(--n-text-color);
+  }
+
+  &.active {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--n-primary-color);
+
+    .tab-icon {
+      color: var(--n-primary-color);
+    }
+  }
+
+  .tab-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+  }
+
+  .tab-label {
+    white-space: nowrap;
+  }
+}
+
+.iam-users-page .tab-hint {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--n-border-color);
+
+  p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--n-text-color-3);
+    line-height: 1.5;
+  }
+}
+
+.iam-users-page .um-form {
+  flex: 1;
+  min-width: 0;
+
+  .form-box {
+    background: var(--n-action-color);
+    border: 1px solid var(--n-border-color);
+    border-radius: 8px;
+    padding: 16px;
+  }
+}
+
+.iam-users-page .form-row {
+  display: flex;
+  gap: 12px;
+
+  > .n-form-item {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.iam-users-page .toggle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  .n-switch {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+}
+
+.iam-users-page .toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.iam-users-page .toggle-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--n-text-color);
+}
+
+.iam-users-page .toggle-desc {
+  font-size: 0.75rem;
+  color: var(--n-text-color-3);
+  line-height: 1.4;
+}
+
+.iam-users-page .generate-icon {
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--n-text-color-3);
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--n-primary-color);
+  }
+}
+
+.iam-users-page .password-strength {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+.iam-users-page .strength-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--n-border-color);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.iam-users-page .strength-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition:
+    width 0.3s ease,
+    background 0.3s ease;
+}
+
+.iam-users-page .strength-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: 44px;
+  text-align: right;
+}
+
+.iam-users-page .tfo-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+// ─── Permissions Modal (users/components/PermissionsModal.vue) ────
+// Used inside n-modal which is teleported to body
+
+.permissions-modal .permissions-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.permissions-modal .permissions-role-info-header {
+  padding-bottom: 12px;
+  border-bottom: 2px solid;
+  margin-bottom: 8px;
+
+  :root:not(.dark) & {
+    border-bottom-color: #cbd5e1 !important;
+  }
+
+  :root.dark & {
+    border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  }
+}
+
+.permissions-modal .permissions-selected-role-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.permissions-modal .permissions-selected-role-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+}
+
+.permissions-modal .permissions-selected-role-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--n-text-color);
+}
+
+.permissions-modal .permissions-selected-role-meta {
+  font-size: 0.875rem;
+  color: var(--text-color-3);
+  margin-top: 2px;
+}
+
+.permissions-modal .permissions-system-role-alert {
+  margin-bottom: 8px;
+}
+
+.permissions-modal .permissions-modal-scroll {
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.permissions-modal .permissions-modal-group {
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.permissions-modal .permissions-modal-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--n-color);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-bottom: 2px solid var(--border-color);
+
+  :root:not(.dark) & {
+    background: #f1f5f9;
+    border-bottom-color: #e2e8f0;
+  }
+
+  :root.dark & {
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  svg {
+    font-size: 16px;
+    color: var(--primary-color);
+  }
+}
+
+.permissions-modal .permissions-modal-group-name {
+  flex: 1;
+  text-transform: capitalize;
+}
+
+.permissions-modal .permissions-modal-group-permissions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding-left: 8px;
+}
+
+.permissions-modal .permissions-modal-permission-item {
+  padding: 12px 14px;
+  border: 1px solid;
+  border-radius: 10px;
+  transition: all 0.2s;
+  background: var(--card-color);
+
+  :root:not(.dark) & {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(148, 163, 184, 0.4) !important;
+  }
+
+  :root.dark & {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  &.assigned {
+    :root:not(.dark) & {
+      background: rgba(34, 197, 94, 0.15) !important;
+      border-color: rgba(34, 197, 94, 0.6) !important;
+    }
+
+    :root.dark & {
+      background: rgba(34, 197, 94, 0.2) !important;
+      border-color: rgba(34, 197, 94, 0.7) !important;
+    }
+  }
+
+  &:hover {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2) !important;
+    transform: translateY(-1px);
+  }
+}
+
+.permissions-modal .permissions-modal-permission-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.permissions-modal .permissions-modal-permission-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+}
+
+.permissions-modal .permissions-modal-permission-description {
+  font-size: 0.75rem;
+  color: var(--text-color-3);
+  margin-top: 4px;
+  margin-left: 24px;
+  line-height: 1.4;
+}
+
+// ─── Register User Modal (users/components/RegisterUserModal.vue) ─
+.register-user-modal .verify-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.register-user-modal .verify-hint {
+  font-size: 12px;
+  opacity: 0.6;
+  line-height: 1.4;
+}
+
+// ─── User Filters Bar (users/components/UserFiltersBar.vue) ───────
+.user-filters-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .filter-select {
+    width: 155px;
+
+    &--sm {
+      width: 115px;
+    }
+  }
+}
+
+// ─── User Actions Dropdown (users/components/UserActionsDropdown.vue)
+.action-menu-btn {
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+}

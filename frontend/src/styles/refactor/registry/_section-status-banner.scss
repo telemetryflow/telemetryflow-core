@@ -1,0 +1,44 @@
+// TFO Style Registry — Section Status Banner
+// Success/warning/error/info/default status banner variants
+
+@use "@/styles/tfo-variables" as *;
+
+.status-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+
+  &.available,
+  &.bound,
+  &.ready {
+    background: $status-success-bg;
+    color: $status-success-text;
+    border: 1px solid $status-success-border;
+  }
+
+  &.progressing,
+  &.pending {
+    background: $status-warning-bg;
+    color: $status-warning-text;
+    border: 1px solid $status-warning-border;
+  }
+
+  &.degraded,
+  &.failed,
+  &.notready {
+    background: $status-error-bg;
+    color: $status-error-text;
+    border: 1px solid $status-error-border;
+  }
+
+  &.released,
+  &.unknown {
+    background: $status-default-bg;
+    color: $status-default-text;
+    border: 1px solid $status-default-border;
+  }
+}

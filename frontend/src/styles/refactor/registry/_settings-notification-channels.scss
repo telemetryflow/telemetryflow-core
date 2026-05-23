@@ -1,0 +1,251 @@
+// TFO Style Registry — Settings Notification Channels
+// Source: src/views/settings/notification-channels/ (index.vue, ChannelModal.vue)
+
+// ─── notification-channels/index.vue ─────────────────────────────────────────────
+.notification-channels-view {
+  padding: 0;
+}
+
+.notification-channels-view .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.notification-channels-view .page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.notification-channels-view .title-icon {
+  font-size: 28px;
+  color: var(--primary-color);
+}
+
+.notification-channels-view .page-subtitle {
+  color: var(--text-color-3);
+  font-size: 14px;
+}
+
+// Stats
+.notification-channels-view .stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.notification-channels-view .stat-card {
+  .stat-content { display: flex; align-items: center; gap: 12px; }
+  .stat-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 8px;
+    background: rgba(99, 102, 241, 0.1); color: #6366f1; font-size: 20px;
+
+    &.enabled { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+    &.disabled { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    &.default { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+  }
+  .stat-info { display: flex; flex-direction: column; }
+  .stat-value { font-size: 1.25rem; font-weight: 700; }
+  .stat-label { font-size: 0.75rem; color: var(--n-text-color-3); }
+}
+
+// Defaults
+.notification-channels-view .defaults-card { margin-bottom: 16px; }
+
+.notification-channels-view .defaults-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.notification-channels-view .defaults-label { display: flex; align-items: center; gap: 12px; }
+.notification-channels-view .defaults-icon { font-size: 24px; color: #f59e0b; }
+
+// Responsive
+@media (max-width: 1024px) {
+  .notification-channels-view .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .notification-channels-view .page-header { flex-direction: column; gap: 12px; margin-bottom: 16px; }
+  .notification-channels-view .header-right { width: 100%; }
+  .notification-channels-view .header-right .n-button { width: 100%; }
+  .notification-channels-view .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .notification-channels-view .defaults-content { flex-direction: column; align-items: stretch; }
+}
+
+// Detail drawer styles (from notification-channels/index.vue)
+.notification-channels-view .detail-section { margin-top: 24px; &:first-child { margin-top: 0; } }
+
+.notification-channels-view .section-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.8125rem; font-weight: 600; color: var(--n-text-color-3);
+  margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+  svg { font-size: 16px; }
+}
+
+.notification-channels-view .notification-info-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--k8s-border-color, rgba(128, 128, 128, 0.2));
+  border-radius: 6px;
+  overflow: hidden;
+
+  tr:not(:last-child) td { border-bottom: 1px solid var(--k8s-border-color, rgba(128, 128, 128, 0.2)); }
+  td { padding: 10px 12px; }
+
+  .info-label {
+    font-weight: 500; color: var(--n-text-color-3); font-size: 0.8125rem;
+    width: 130px; min-width: 110px; background: rgba(100, 116, 139, 0.1);
+    :root.dark & { background: rgba(51, 65, 85, 0.4); }
+  }
+
+  .info-value {
+    color: var(--n-text-color); font-size: 0.8125rem;
+    code {
+      font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+      font-size: 0.8125rem; background: transparent; padding: 0; border: none;
+    }
+  }
+}
+
+.empty-rules-hint {
+  padding: 16px; text-align: center;
+  border: 1px dashed var(--k8s-border-color, rgba(128, 128, 128, 0.2));
+  border-radius: 6px;
+}
+
+.used-by-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.rule-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 12px; border-radius: 4px; font-size: 0.75rem;
+  font-weight: 600; white-space: nowrap;
+}
+
+.used-by-groups { display: flex; flex-direction: column; gap: 12px; }
+
+.usage-group {
+  border: 1px solid var(--k8s-border-color, rgba(128, 128, 128, 0.2));
+  border-radius: 6px; padding: 12px; background: var(--n-card-color);
+  :root.dark & { background: rgba(30, 41, 59, 0.5); }
+}
+
+.usage-group-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.75rem; font-weight: 600; color: var(--n-text-color-2);
+  margin-bottom: 10px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--k8s-border-color, rgba(128, 128, 128, 0.2));
+}
+
+// ─── ChannelModal.vue (scoped) ──────────────────────────────────────────────────
+.channel-modal-content {
+  display: flex;
+  gap: 16px;
+  max-height: calc(80vh - 100px);
+  overflow: hidden;
+}
+
+.channel-modal-content .channel-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 200px;
+  border-right: 1px solid var(--n-border-color);
+  padding-right: 16px;
+}
+
+.channel-modal-content .channel-tab-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--n-text-color-3);
+
+  &:hover:not(.disabled) { background: rgba(99, 102, 241, 0.08); color: var(--n-text-color); }
+  &.active { background: rgba(99, 102, 241, 0.15); color: var(--n-primary-color); .tab-icon { color: var(--n-primary-color); } }
+  &.disabled { opacity: 0.4; cursor: not-allowed; }
+  .tab-icon { font-size: 20px; transition: color 0.2s ease; }
+  .tab-label { white-space: nowrap; }
+}
+
+.channel-modal-content .channel-type-hint {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--n-border-color);
+  p { margin: 0; font-size: 0.75rem; color: var(--n-text-color-3); line-height: 1.5; }
+}
+
+.channel-modal-content .channel-form {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  .form-box {
+    min-width: 300px;
+    background: var(--n-action-color);
+    border: 1px solid var(--n-border-color);
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+
+  .n-input {
+    &:not(.n-input--textarea) {
+      .n-input__input-el { padding-left: 0 !important; font-size: 14px; line-height: 1; }
+      .n-input__placeholder { padding-left: 0 !important; font-size: 14px; display: flex !important; align-items: center !important; top: 0 !important; bottom: 0 !important; transform: none !important; height: 100% !important; line-height: 1; }
+    }
+    .n-input__textarea-el, .n-input__textarea-mirror { padding: 8px 0 !important; line-height: 1.5; font-size: 14px; }
+    .n-input__textarea-placeholder { padding: 8px 0 !important; font-size: 14px; }
+    .n-input-wrapper { background: transparent !important; }
+  }
+
+  .n-input-number {
+    .n-input__input-el, .n-input__placeholder { text-align: left; padding-left: 0 !important; font-size: 14px; }
+  }
+
+  .n-select { .n-base-selection-label { font-size: 14px; } }
+  .n-form-item { margin-bottom: 8px; &:last-child { margin-bottom: 0; } }
+  .n-form-item-label { font-weight: 500; font-size: 13px; margin-bottom: 2px; }
+  .required-asterisk { color: #e03050; margin-left: 2px; }
+}
+
+// form-row and form-hint used inside child components — deep selectors
+.form-row {
+  display: flex;
+  gap: 12px;
+  > .n-form-item { flex: 1; min-width: 0; }
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--n-text-color-3);
+  margin-top: 4px;
+}
+
+// Dark mode fixes (unscoped from ChannelModal.vue)
+:root.dark {
+  .n-modal {
+    .channel-form {
+      .n-input-wrapper {
+        background: transparent !important;
+      }
+    }
+  }
+}

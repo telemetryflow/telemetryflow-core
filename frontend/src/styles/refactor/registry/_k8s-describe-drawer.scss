@@ -1,0 +1,349 @@
+// TFO Style Registry — Kubernetes Describe Drawer
+// Vertical-tab drawer with info tables, conditions, events, containers, labels
+// Extracted from: PodDescribeDrawer.vue, NodeDescribeDrawer.vue, ServiceDescribeDrawer.vue
+
+// ─── Drawer Header ─────────────────────────────────────────────────────────────
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon {
+  font-size: 20px;
+  color: var(--n-text-color-3);
+}
+
+.header-title {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.header-node-name {
+  color: var(--n-text-color-3);
+  font-size: 0.8125rem;
+  font-family: monospace;
+  margin-left: 4px;
+
+  &::before {
+    content: "/ ";
+    color: var(--n-text-color-3);
+  }
+}
+
+// ─── Stat Cards Grid (Describe) ───────────────────────────────────────────────
+
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+// ─── Vertical Tab Layout ──────────────────────────────────────────────────────
+
+.describe-content {
+  display: flex;
+  gap: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 512px;
+  background: var(--n-card-color);
+
+  :root.dark & {
+    border-color: #334155;
+  }
+}
+
+.describe-tabs {
+  width: 156px;
+  min-width: 156px;
+  flex-shrink: 0;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  background: var(--n-action-color);
+
+  :root.dark & {
+    border-right-color: #334155;
+  }
+}
+
+.describe-tab-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: var(--n-text-color-3);
+  background: transparent;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  user-select: none;
+
+  :root.dark & {
+    border-bottom-color: #334155;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.06);
+    color: var(--n-text-color);
+  }
+
+  &.active {
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--n-primary-color);
+    font-weight: 600;
+    border-left: 3px solid var(--n-primary-color);
+    padding-left: 9px;
+  }
+}
+
+.tab-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.tab-label {
+  white-space: nowrap;
+}
+
+.describe-panel {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 520px;
+  border-left: 1px solid #e5e7eb;
+  margin-left: -1px;
+
+  :root.dark & {
+    border-left-color: #334155;
+  }
+}
+
+// ─── Info Table (Compact, Describe Style) ──────────────────────────────────────
+
+.info-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+
+  :root.dark & {
+    border-color: #334155;
+  }
+
+  thead th {
+    border-bottom: 1px solid #e5e7eb;
+
+    :root.dark & {
+      border-bottom-color: #334155;
+    }
+  }
+
+  tr {
+    &:not(:last-child) {
+      td {
+        border-bottom: 1px solid #e5e7eb;
+
+        :root.dark & {
+          border-bottom-color: #334155;
+        }
+      }
+    }
+  }
+
+  td {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+
+  th {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+
+  .info-label {
+    width: 230px;
+    min-width: 230px;
+    max-width: 300px;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f3f4f6;
+    border-right: 1px solid #e5e7eb;
+    font-size: 0.75rem;
+
+    :root.dark & {
+      color: #9ca3af;
+      background: rgba(51, 65, 85, 0.5);
+      border-right-color: #334155;
+    }
+  }
+
+  .info-value {
+    color: #1f2937;
+
+    :root.dark & {
+      color: #e5e7eb;
+    }
+
+    code {
+      font-family: "SF Mono", Monaco, "Courier New", monospace;
+      background: #e5e7eb;
+      color: #1f2937;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 0.75rem;
+
+      :root.dark & {
+        background: rgba(51, 65, 85, 0.8);
+        color: #e5e7eb;
+      }
+    }
+
+    &.mono {
+      font-family: "SF Mono", Monaco, "Courier New", monospace;
+      font-size: 0.75rem;
+    }
+
+    .hint {
+      color: var(--n-text-color-3);
+      font-size: 0.6875rem;
+      margin-left: 6px;
+    }
+  }
+}
+
+// ─── Sub-sections ─────────────────────────────────────────────────────────────
+
+.sub-section {
+  margin-top: 12px;
+}
+
+.sub-label {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--n-text-color-2);
+  margin-bottom: 6px;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+// ─── Section Label (Describe) ─────────────────────────────────────────────────
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  margin-bottom: 10px;
+  color: var(--n-text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+// ─── Labels Section ───────────────────────────────────────────────────────────
+
+.labels-section {
+  // Container for label/annotation blocks
+}
+
+// ─── Drawer Footer ─────────────────────────────────────────────────────────────
+
+.drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-top: 5px;
+  border-top: 1px solid var(--n-border-color);
+
+  .n-button {
+    width: 120px;
+    min-width: 100px;
+    height: 36px !important;
+    line-height: 34px;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+}
+
+// ─── Responsive ────────────────────────────────────────────────────────────────
+
+@media (max-width: 768px) {
+  .describe-content {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .describe-tabs {
+    width: 100%;
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 1px solid var(--n-border-color);
+    overflow-x: auto;
+  }
+
+  .describe-tab-item {
+    padding: 6px 10px;
+    flex-shrink: 0;
+    border-bottom: none;
+    border-right: 1px solid var(--n-border-color);
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &.active {
+      border-left: none;
+      padding-left: 10px;
+      border-bottom: 3px solid var(--n-primary-color);
+    }
+  }
+
+  .describe-panel {
+    max-height: none;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .describe-tab-item {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+  }
+
+  .tab-icon {
+    font-size: 14px;
+  }
+
+  .info-table {
+    font-size: 0.75rem;
+  }
+
+  .info-label {
+    width: 220px;
+    min-width: 220px;
+    max-width: 300px;
+  }
+}

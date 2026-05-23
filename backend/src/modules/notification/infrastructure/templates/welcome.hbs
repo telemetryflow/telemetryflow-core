@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>Welcome to TelemetryFlow</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:AllowPNG/>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    :root {
+      color-scheme: light dark;
+      supported-color-schemes: light dark;
+    }
+
+    * {
+      -ms-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    table, td {
+      mso-table-lspace: 0pt !important;
+      mso-table-rspace: 0pt !important;
+      border-collapse: collapse !important;
+    }
+
+    img {
+      -ms-interpolation-mode: bicubic;
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .info-box {
+      background-color: #f0fdfa;
+      border: 1px solid #99f6e4;
+      border-left: 4px solid #0d9488;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .info-box td {
+      color: #0f766e;
+    }
+
+    .success-box {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #16a34a;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .success-box td {
+      color: #166534;
+    }
+
+    .alert-box {
+      background-color: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #f59e0b;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .alert-box td {
+      color: #92400e;
+    }
+
+    .danger-box {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      border-left: 4px solid #ef4444;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .danger-box td {
+      color: #991b1b;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .email-bg { background-color: #0f172a !important; }
+      .email-container { background-color: #1e293b !important; }
+      .email-heading { color: #f1f5f9 !important; }
+      .email-text { color: #cbd5e1 !important; }
+      .email-text-muted { color: #94a3b8 !important; }
+      .email-divider { border-color: #334155 !important; }
+      .email-footer-text { color: #64748b !important; }
+      .email-footer-link { color: #94a3b8 !important; }
+      .info-box { background-color: #042f2e !important; border-color: #115e59 !important; }
+      .info-box td { color: #5eead4 !important; }
+      .success-box { background-color: #052e16 !important; border-color: #166534 !important; }
+      .success-box td { color: #86efac !important; }
+      .alert-box { background-color: #451a03 !important; border-color: #92400e !important; }
+      .alert-box td { color: #fcd34d !important; }
+      .danger-box { background-color: #450a0a !important; border-color: #991b1b !important; }
+      .danger-box td { color: #fca5a5 !important; }
+      .feature-card { background-color: #0f172a !important; border-color: #334155 !important; }
+      .feature-title { color: #f1f5f9 !important; }
+      .feature-desc { color: #94a3b8 !important; }
+      .feature-icon-bg { background-color: #134e4a !important; }
+      .protip-bg { background-color: #0f172a !important; }
+      .link-fallback { color: #2dd4bf !important; }
+    }
+
+    [data-ogsc] .email-bg { background-color: #0f172a !important; }
+    [data-ogsc] .email-container { background-color: #1e293b !important; }
+    [data-ogsc] .email-heading { color: #f1f5f9 !important; }
+    [data-ogsc] .email-text { color: #cbd5e1 !important; }
+    [data-ogsc] .email-text-muted { color: #94a3b8 !important; }
+
+    @media only screen and (max-width: 620px) {
+      .email-container {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .email-padding {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+      }
+      .email-stack {
+        display: block !important;
+        width: 100% !important;
+      }
+      .email-heading {
+        font-size: 22px !important;
+      }
+      .btn-full-width {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+      }
+      .feature-cell {
+        display: block !important;
+        width: 100% !important;
+        padding-bottom: 12px !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; word-spacing:normal; background-color:#f1f5f9;">
+  <div role="article" aria-roledescription="email" aria-label="Welcome to TelemetryFlow" lang="en" style="font-size:16px; font-size:1rem; font-size:max(16px,1rem);">
+
+    <!--[if mso]>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f5f9;">
+    <tr><td align="center">
+    <![endif]-->
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-bg" style="background-color:#f1f5f9;">
+      <tr>
+        <td align="center" style="padding:40px 16px;">
+
+          <!--[if mso]>
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0">
+          <tr><td>
+          <![endif]-->
+
+          <table role="presentation" class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:800px; width:100%; background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);">
+
+            <!-- HEADER WITH LOGO -->
+            <tr>
+              <td align="center" class="email-padding" style="padding:32px 40px 24px 40px; background-color:#ffffff;">
+                <!--[if !mso]><!-->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 60" width="280" height="60" style="display:block; margin:0 auto;">
+                  <g transform="translate(0,2)">
+                    <g stroke="#0d9488" stroke-width="3" stroke-linecap="round">
+                      <line x1="28" y1="28" x2="28" y2="8"/>
+                      <line x1="28" y1="28" x2="42" y2="14"/>
+                      <line x1="28" y1="28" x2="48" y2="28"/>
+                      <line x1="28" y1="28" x2="42" y2="42"/>
+                      <line x1="28" y1="28" x2="28" y2="48"/>
+                      <line x1="28" y1="28" x2="14" y2="42"/>
+                      <line x1="28" y1="28" x2="8" y2="28"/>
+                      <line x1="28" y1="28" x2="14" y2="14"/>
+                    </g>
+                    <g fill="none" stroke="#f97316" stroke-width="2.5">
+                      <circle cx="28" cy="8" r="5"/>
+                      <circle cx="42" cy="14" r="5"/>
+                      <circle cx="48" cy="28" r="5"/>
+                      <circle cx="42" cy="42" r="5"/>
+                      <circle cx="28" cy="48" r="5"/>
+                      <circle cx="14" cy="42" r="5"/>
+                      <circle cx="8" cy="28" r="5"/>
+                      <circle cx="14" cy="14" r="5"/>
+                    </g>
+                    <circle cx="28" cy="28" r="9" fill="none" stroke="#0d9488" stroke-width="3"/>
+                    <line x1="23" y1="23" x2="33" y2="33" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="33" y1="23" x2="23" y2="33" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round"/>
+                  </g>
+                  <text x="64" y="30" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="22" font-weight="800" fill="#0f172a">TelemetryFlow</text>
+                  <text x="64" y="46" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="8" font-weight="600" fill="#0d9488" letter-spacing="3">OBSERVABILITY PLATFORM</text>
+                </svg>
+                <!--<![endif]-->
+                <!--[if mso]>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding-right:12px; vertical-align:middle;">
+                    <img src="{{logoUrl}}" width="333" height="90" alt="{{appName}}" style="display:block; border-radius:8px;" border="0">
+                  </td>
+                  <td style="vertical-align:middle;">
+                    <span style="font-family:'Segoe UI',Roboto,sans-serif; font-size:22px; font-weight:800; color:#0f172a;">TelemetryFlow</span><br/>
+                    <span style="font-family:'Segoe UI',Roboto,sans-serif; font-size:8px; font-weight:600; color:#0d9488; letter-spacing:3px;">OBSERVABILITY PLATFORM</span>
+                  </td>
+                </tr>
+                </table>
+                <![endif]-->
+              </td>
+            </tr>
+
+            <!-- DIVIDER -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr><td class="email-divider" style="border-top:1px solid #e2e8f0; font-size:1px; line-height:1px;">&nbsp;</td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- HEADING -->
+            <tr>
+              <td align="center" class="email-padding" style="padding:32px 40px 8px 40px;">
+                <h1 class="email-heading" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:26px; font-weight:700; color:#0f172a; line-height:1.3;">
+                  Congratulations, {{firstName}} {{lastName}}!
+                </h1>
+              </td>
+            </tr>
+
+            <!-- BODY -->
+            <tr>
+              <td class="email-padding" style="padding:16px 40px 0 40px;">
+                <p class="email-text" style="margin:0 0 20px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:16px; line-height:1.6; color:#475569;">
+                  Your email has been successfully verified and your TelemetryFlow account is now fully active. You are ready to start monitoring your infrastructure and applications with enterprise-grade observability.
+                </p>
+              </td>
+            </tr>
+
+            <!-- SUCCESS BOX -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px 24px 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="success-box" style="background-color:#f0fdf4; border:1px solid #bbf7d0; border-left:4px solid #16a34a; border-radius:0 6px 6px 0;">
+                  <tr>
+                    <td style="padding:16px 20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:14px; line-height:1.5; color:#166534;">
+                      <strong>Account Verified</strong> &mdash; Your email address has been confirmed and your account is active. All platform features are now available to you.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- FEATURE HIGHLIGHTS HEADING -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px 16px 40px;">
+                <p class="email-heading" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:18px; font-weight:700; color:#0f172a; line-height:1.4;">
+                  Platform Features at Your Fingertips
+                </p>
+              </td>
+            </tr>
+
+            <!-- FEATURE: METRICS -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px 12px 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="feature-card" style="background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+                  <tr>
+                    <td width="56" valign="top" style="padding:16px 0 16px 16px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td class="feature-icon-bg" align="center" valign="middle" width="40" height="40" style="background-color:#f0fdfa; border-radius:8px;">
+                            <!--[if !mso]><!-->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            <!--<![endif]-->
+                            <!--[if mso]>
+                            <span style="font-size:18px; color:#0d9488;">&#9632;</span>
+                            <![endif]-->
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td valign="top" style="padding:16px 16px 16px 12px;">
+                      <p class="feature-title" style="margin:0 0 4px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:15px; font-weight:700; color:#0f172a; line-height:1.4;">Metrics</p>
+                      <p class="feature-desc" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:#64748b; line-height:1.4;">Monitor system and application metrics in real time with customizable retention and rollup policies.</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- FEATURE: LOGS -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px 12px 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="feature-card" style="background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+                  <tr>
+                    <td width="56" valign="top" style="padding:16px 0 16px 16px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td class="feature-icon-bg" align="center" valign="middle" width="40" height="40" style="background-color:#f0fdfa; border-radius:8px;">
+                            <!--[if !mso]><!-->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <!--<![endif]-->
+                            <!--[if mso]>
+                            <span style="font-size:18px; color:#0d9488;">&#9632;</span>
+                            <![endif]-->
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td valign="top" style="padding:16px 16px 16px 12px;">
+                      <p class="feature-title" style="margin:0 0 4px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:15px; font-weight:700; color:#0f172a; line-height:1.4;">Logs</p>
+                      <p class="feature-desc" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:#64748b; line-height:1.4;">Aggregate, search, and analyze logs across all your services with full-text search and structured filtering.</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- FEATURE: TRACES -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px 12px 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="feature-card" style="background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+                  <tr>
+                    <td width="56" valign="top" style="padding:16px 0 16px 16px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td class="feature-icon-bg" align="center" valign="middle" width="40" height="40" style="background-color:#f0fdfa; border-radius:8px;">
+                            <!--[if !mso]><!-->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <!--<![endif]-->
+                            <!--[if mso]>
+                            <span style="font-size:18px; color:#0d9488;">&#9632;</span>
+                            <![endif]-->
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td valign="top" style="padding:16px 16px 16px 12px;">
+                      <p class="feature-title" style="margin:0 0 4px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:15px; font-weight:700; color:#0f172a; line-height:1.4;">Traces</p>
+                      <p class="feature-desc" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:#64748b; line-height:1.4;">Trace requests end-to-end through distributed systems with span visualization and latency analysis.</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- FEATURE: DASHBOARDS -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px 12px 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="feature-card" style="background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+                  <tr>
+                    <td width="56" valign="top" style="padding:16px 0 16px 16px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td class="feature-icon-bg" align="center" valign="middle" width="40" height="40" style="background-color:#f0fdfa; border-radius:8px;">
+                            <!--[if !mso]><!-->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                            <!--<![endif]-->
+                            <!--[if mso]>
+                            <span style="font-size:18px; color:#0d9488;">&#9632;</span>
+                            <![endif]-->
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td valign="top" style="padding:16px 16px 16px 12px;">
+                      <p class="feature-title" style="margin:0 0 4px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:15px; font-weight:700; color:#0f172a; line-height:1.4;">Dashboards</p>
+                      <p class="feature-desc" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:#64748b; line-height:1.4;">Build custom dashboards with drag-and-drop widgets, TFQL queries, and real-time data visualization.</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- FEATURE: ALERTS -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px 24px 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="feature-card" style="background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+                  <tr>
+                    <td width="56" valign="top" style="padding:16px 0 16px 16px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td class="feature-icon-bg" align="center" valign="middle" width="40" height="40" style="background-color:#f0fdfa; border-radius:8px;">
+                            <!--[if !mso]><!-->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                            <!--<![endif]-->
+                            <!--[if mso]>
+                            <span style="font-size:18px; color:#f97316;">&#9632;</span>
+                            <![endif]-->
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td valign="top" style="padding:16px 16px 16px 12px;">
+                      <p class="feature-title" style="margin:0 0 4px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:15px; font-weight:700; color:#0f172a; line-height:1.4;">Alerts</p>
+                      <p class="feature-desc" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:#64748b; line-height:1.4;">Configure intelligent alerting rules with multi-channel notifications via email, Slack, PagerDuty, and webhooks.</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- CTA BUTTON -->
+            <tr>
+              <td align="center" class="email-padding" style="padding:0 40px 24px 40px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="center" style="background-color:#0d9488; border-radius:8px;">
+                      <!--[if mso]>
+                      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{loginLink}}" style="height:50px; v-text-anchor:middle; width:260px;" arcsize="16%" strokecolor="#0d9488" fillcolor="#0d9488">
+                      <w:anchorlock/>
+                      <center style="font-family:'Segoe UI',Roboto,sans-serif; font-size:16px; font-weight:700; color:#ffffff;">Get Started</center>
+                      </v:roundrect>
+                      <![endif]-->
+                      <!--[if !mso]><!-->
+                      <a href="{{loginLink}}" class="btn-full-width" style="display:inline-block; padding:14px 48px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:16px; font-weight:700; color:#ffffff; background-color:#0d9488; border-radius:8px; text-decoration:none; text-align:center; mso-padding-alt:0; transition:background-color 0.2s ease;">
+                        Get Started
+                      </a>
+                      <!--<![endif]-->
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- PRO TIP INFO BOX -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px 24px 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="info-box" style="background-color:#f0fdfa; border:1px solid #99f6e4; border-left:4px solid #0d9488; border-radius:0 6px 6px 0;">
+                  <tr>
+                    <td style="padding:16px 20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:14px; line-height:1.5; color:#0f766e;">
+                      <strong>Pro Tip:</strong> Navigate to <strong>Settings &rarr; Security</strong> to enable two-factor authentication (2FA). This adds an extra layer of protection by requiring a verification code from your authenticator app each time you sign in.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- CLOSING -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px 32px 40px;">
+                <p class="email-text" style="margin:0 0 16px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:16px; line-height:1.6; color:#475569;">
+                  If you have any questions or need help getting started, our documentation and support team are here to assist you.
+                </p>
+                <p class="email-text" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:16px; line-height:1.6; color:#475569;">
+                  Happy monitoring,<br>
+                  <strong style="color:#0f172a;">TelemetryFlow Observability - Team</strong>
+                </p>
+              </td>
+            </tr>
+
+            <!-- FOOTER -->
+            <tr>
+              <td class="email-padding" style="padding:0 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr><td class="email-divider" style="border-top:1px solid #e2e8f0; font-size:1px; line-height:1px;">&nbsp;</td></tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" class="email-padding" style="padding:24px 40px 32px 40px;">
+                <p class="email-footer-text" style="margin:0 0 8px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12px; line-height:1.5; color:#94a3b8;">
+                  &copy; {{year}} TelemetryFlow Observability. All rights reserved.
+                </p>
+                <p class="email-footer-text" style="margin:0 0 8px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12px; line-height:1.5; color:#94a3b8;">
+                  This is an automated message. Please do not reply directly to this email.
+                </p>
+                <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12px; line-height:1.5;">
+                  <a href="https://telemetryflow.id" class="email-footer-link" style="color:#94a3b8; text-decoration:underline;">telemetryflow.id</a>
+                </p>
+              </td>
+            </tr>
+
+          </table>
+
+          <!--[if mso]>
+          </td></tr>
+          </table>
+          <![endif]-->
+
+        </td>
+      </tr>
+    </table>
+
+    <!--[if mso]>
+    </td></tr>
+    </table>
+    <![endif]-->
+
+  </div>
+</body>
+</html>

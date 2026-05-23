@@ -1,0 +1,38 @@
+// TFO Style Registry — DB Monitoring — PostgreSQL
+
+// === postgresql/components/ReplicationTopology.vue ===
+.replication-topology {
+  .topology-standbys {
+    position: relative;
+    padding-left: 24px;
+    margin-top: 12px;
+  }
+  .topology-connector {
+    position: absolute;
+    left: 10px;
+    top: -6px;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+  }
+  .topology-connector::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3b82f6;
+  }
+  .standby-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+}
+
+// === postgresql/components/XIDWraparoundGauge.vue ===
+.xid-gauge {
+  padding: 16px 0;
+}

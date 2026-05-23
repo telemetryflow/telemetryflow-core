@@ -1,0 +1,733 @@
+// ═══════════════════════════════════════════════════════════════════
+// IAM Overview Styles
+// Extracted from: views/iam/overview/index.vue, overview/PermissionsModal.vue
+// ═══════════════════════════════════════════════════════════════════
+
+// ─── Overview Page (overview/index.vue) ───────────────────────────
+.rbac-overview-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// ─── Page Header ──────────────────────────────────────────────────
+.page-header {
+  .rbac-overview-page & {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .page-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+      color: var(--n-text-color);
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--n-text-color-3);
+      margin: 0;
+    }
+  }
+}
+
+// ─── Stats Grid ───────────────────────────────────────────────────
+.rbac-overview-page .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+// ─── Stat Cards ───────────────────────────────────────────────────
+.rbac-overview-page .stat-card {
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.rbac-overview-page .stat-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.rbac-overview-page .stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+
+  &.roles {
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  }
+
+  &.permissions {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+  }
+
+  &.users {
+    background: linear-gradient(135deg, #10b981, #14b8a6);
+  }
+
+  &.matrix {
+    background: linear-gradient(135deg, #3b82f6, #0ea5e9);
+  }
+}
+
+.rbac-overview-page .stat-info {
+  flex: 1;
+
+  .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-color-3);
+    margin-top: 2px;
+  }
+}
+
+// ─── Hierarchy ────────────────────────────────────────────────────
+.rbac-overview-page .hierarchy-card {
+  margin-bottom: 24px;
+
+  .n-card__content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.rbac-overview-page .hierarchy-timeline {
+  position: relative;
+  padding-left: 60px;
+  margin-left: 24px;
+  margin-right: 24px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: var(--border-color);
+  }
+}
+
+.rbac-overview-page .tier-item {
+  position: relative;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 4px;
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 0;
+    border-bottom: 2px dashed rgba(100, 116, 139, 0.25);
+    pointer-events: none;
+
+    :root.dark & {
+      border-bottom-color: rgba(148, 163, 184, 0.15);
+    }
+  }
+
+  &:last-child::after {
+    display: none;
+  }
+}
+
+.rbac-overview-page .tier-marker {
+  position: absolute;
+  left: -60px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 22px;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.rbac-overview-page .tier-content {
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--card-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.rbac-overview-page .tier-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.rbac-overview-page .tier-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+}
+
+.rbac-overview-page .tier-name {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.rbac-overview-page .tier-scope {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-color-2);
+  margin-bottom: 6px;
+}
+
+.rbac-overview-page .tier-description {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--text-color-3);
+  line-height: 1.5;
+}
+
+// ─── Content Grid ─────────────────────────────────────────────────
+.rbac-overview-page .content-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+// ─── Quick Actions ────────────────────────────────────────────────
+.rbac-overview-page .actions-card {
+  .n-card {
+    background: var(--card-color) !important;
+  }
+}
+
+.rbac-overview-page .quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .n-button {
+    border: 2px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    height: auto !important;
+    transition: all 0.2s ease !important;
+    background: var(--n-color) !important;
+
+    :root:not(.dark) & {
+      background: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      color: #1e293b !important;
+    }
+
+    :root.dark & {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-color: rgba(255, 255, 255, 0.15) !important;
+      color: #e2e8f0 !important;
+    }
+
+    &:hover {
+      border-color: var(--primary-color) !important;
+      transform: translateX(4px) !important;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2) !important;
+
+      :root:not(.dark) & {
+        background: #f8fafc !important;
+      }
+
+      :root.dark & {
+        background: rgba(255, 255, 255, 0.15) !important;
+      }
+    }
+  }
+}
+
+// ─── Resources Grid ───────────────────────────────────────────────
+.rbac-overview-page .resources-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rbac-overview-page .resource-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--n-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 72px;
+
+  :root:not(.dark) & {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+  }
+
+  :root.dark & {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  &:hover {
+    border-color: var(--primary-color) !important;
+    transform: translateY(-4px) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12) !important;
+
+    :root:not(.dark) & {
+      background: #f1f5f9 !important;
+    }
+
+    :root.dark & {
+      background: rgba(255, 255, 255, 0.12) !important;
+    }
+  }
+}
+
+.rbac-overview-page .resource-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1),
+    rgba(59, 130, 246, 0.05)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+  font-size: 22px;
+  flex-shrink: 0;
+
+  :root:not(.dark) & {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15),
+      rgba(59, 130, 246, 0.08)
+    ) !important;
+    color: #3b82f6 !important;
+  }
+
+  :root.dark & {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.25),
+      rgba(59, 130, 246, 0.15)
+    ) !important;
+    color: #60a5fa !important;
+  }
+}
+
+.rbac-overview-page .resource-info {
+  flex: 1;
+  min-width: 0;
+
+  .resource-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 2px;
+
+    :root:not(.dark) & {
+      color: #1e293b !important;
+    }
+
+    :root.dark & {
+      color: #e2e8f0 !important;
+    }
+  }
+
+  .resource-count {
+    font-size: 0.75rem;
+
+    :root:not(.dark) & {
+      color: #64748b !important;
+    }
+
+    :root.dark & {
+      color: #94a3b8 !important;
+    }
+  }
+}
+
+// ─── Roles Overview ───────────────────────────────────────────────
+.rbac-overview-page .roles-overview-card {
+  margin-bottom: 24px;
+}
+
+.rbac-overview-page .roles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rbac-overview-page .role-card {
+  padding: 18px;
+  background: var(--n-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+    filter: brightness(1.1) !important;
+  }
+}
+
+.rbac-overview-page .superadmin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  svg {
+    font-size: 14px;
+  }
+}
+
+.rbac-overview-page .role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  .role-icon {
+    font-size: 22px;
+    color: var(--primary-color);
+    transition: color 0.2s ease;
+  }
+
+  // Override System tag on gradient cards to frosted-glass style
+  .n-tag {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    backdrop-filter: blur(10px);
+
+    .n-tag__content {
+      color: white !important;
+    }
+  }
+}
+
+.rbac-overview-page .role-name {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--n-text-color);
+  transition: color 0.2s ease;
+}
+
+.rbac-overview-page .role-description {
+  font-size: 0.8125rem;
+  color: var(--text-color-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.5;
+  flex: 1;
+  transition: color 0.2s ease;
+}
+
+// ─── Responsive ───────────────────────────────────────────────────
+@media (max-width: 1400px) {
+  .rbac-overview-page .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .rbac-overview-page .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .rbac-overview-page .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .rbac-overview-page .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rbac-overview-page .hierarchy-timeline {
+    padding-left: 50px;
+
+    &::before {
+      left: 24px;
+    }
+  }
+
+  .rbac-overview-page .tier-marker {
+    left: -50px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+// ─── Permissions Modal (overview/PermissionsModal.vue) ────────────
+// These classes are used inside n-modal which is teleported to body,
+// so we use .permissions-modal as the root namespace.
+
+.permissions-modal .permissions-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.permissions-modal .permissions-role-info-header {
+  padding-bottom: 12px;
+  border-bottom: 2px solid;
+  margin-bottom: 8px;
+
+  :root:not(.dark) & {
+    border-bottom-color: #cbd5e1 !important;
+  }
+
+  :root.dark & {
+    border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  }
+}
+
+.permissions-modal .permissions-selected-role-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.permissions-modal .permissions-selected-role-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+}
+
+.permissions-modal .permissions-selected-role-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--n-text-color);
+}
+
+.permissions-modal .permissions-selected-role-meta {
+  font-size: 0.875rem;
+  color: var(--text-color-3);
+  margin-top: 2px;
+}
+
+.permissions-modal .permissions-system-role-alert {
+  margin-bottom: 8px;
+}
+
+.permissions-modal .permissions-modal-scroll {
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.permissions-modal .permissions-modal-group {
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.permissions-modal .permissions-modal-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--n-color);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-bottom: 2px solid var(--border-color);
+
+  :root:not(.dark) & {
+    background: #f1f5f9;
+    border-bottom-color: #e2e8f0;
+  }
+
+  :root.dark & {
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  svg {
+    font-size: 16px;
+    color: var(--primary-color);
+  }
+}
+
+.permissions-modal .permissions-modal-group-name {
+  flex: 1;
+  text-transform: capitalize;
+}
+
+.permissions-modal .permissions-modal-group-permissions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding-left: 8px;
+}
+
+.permissions-modal .permissions-modal-permission-item {
+  padding: 12px 14px;
+  border: 1px solid;
+  border-radius: 10px;
+  transition: all 0.2s;
+  background: var(--card-color);
+
+  :root:not(.dark) & {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(148, 163, 184, 0.4) !important;
+  }
+
+  :root.dark & {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  &.assigned {
+    :root:not(.dark) & {
+      background: rgba(34, 197, 94, 0.15) !important;
+      border-color: rgba(34, 197, 94, 0.6) !important;
+    }
+
+    :root.dark & {
+      background: rgba(34, 197, 94, 0.2) !important;
+      border-color: rgba(34, 197, 94, 0.7) !important;
+    }
+  }
+
+  &:hover {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2) !important;
+    transform: translateY(-1px);
+  }
+}
+
+.permissions-modal .permissions-modal-permission-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.permissions-modal .permissions-modal-permission-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+}
+
+.permissions-modal .permissions-modal-permission-description {
+  font-size: 0.75rem;
+  color: var(--text-color-3);
+  margin-top: 4px;
+  margin-left: 24px;
+  line-height: 1.4;
+}

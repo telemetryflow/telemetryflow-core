@@ -1,0 +1,21 @@
+// TFO Style Registry — Gauge Chart
+// Wrapper with optional border variant
+// Source: GaugeChart.vue
+
+.gauge-chart-wrapper {
+  width: 100%;
+  height: 100%;
+
+  &.with-border {
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    background: #ffffff;
+
+    @media (max-width: 768px) {
+      border-width: 1.5px;
+      border-radius: 6px;
+      padding: 12px;
+    }
+  }
+}

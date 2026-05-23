@@ -1,0 +1,343 @@
+// TFO Style Registry — ChatMessage
+// Extracted from: components/llm/ChatMessage.vue
+// Contains: message bubbles (user/assistant), avatar, attachments, timestamp, code blocks, prose rendering
+
+// =============================================================================
+// Image Thumbnails Inside User Message Bubble
+// =============================================================================
+
+.msg-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.msg-attachment-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+// =============================================================================
+// Footer: Meta + Actions
+// =============================================================================
+
+.message-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  min-height: 20px;
+}
+
+.message-meta {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.message-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+// Show actions on hover of the parent message row
+.flex:hover .message-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 4px;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 0.68rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+
+  &:hover {
+    color: #6366f1;
+    border-color: #6366f1;
+    background: rgba(99, 102, 241, 0.06);
+  }
+
+  &.copied {
+    color: #22c55e;
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.06);
+  }
+}
+
+// =============================================================================
+// Assistant Message Container
+// =============================================================================
+
+.message-assistant {
+  text-align: left;
+  min-width: 200px;
+}
+
+// =============================================================================
+// Prose (Markdown Rendered Content)
+// =============================================================================
+
+.prose {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.prose h1 {
+  font-size: 1.25rem;
+}
+
+.prose h2 {
+  font-size: 1.125rem;
+}
+
+.prose h3 {
+  font-size: 1rem;
+}
+
+.prose ul {
+  padding-left: 1.5rem;
+  margin: 0.5em 0;
+  list-style-type: disc;
+}
+
+.prose ol {
+  padding-left: 1.5rem;
+  margin: 0.5em 0;
+  list-style-type: decimal;
+}
+
+.prose ul ul {
+  list-style-type: circle;
+}
+
+.prose ul ul ul {
+  list-style-type: square;
+}
+
+.prose ol ol {
+  list-style-type: lower-alpha;
+}
+
+.prose ol ol ol {
+  list-style-type: lower-roman;
+}
+
+.prose li {
+  margin: 0.25em 0;
+  display: list-item;
+}
+
+.prose li::marker {
+  color: #6366f1;
+  font-weight: 500;
+}
+
+.prose code {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.8em;
+}
+
+.prose pre {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 0.5em 0;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+}
+
+.prose strong {
+  font-weight: 600;
+}
+
+.prose blockquote {
+  border-left: 3px solid #6366f1;
+  padding-left: 1rem;
+  margin: 0.5em 0;
+  color: inherit;
+  opacity: 0.9;
+}
+
+.prose p {
+  margin: 0.5em 0;
+}
+
+.prose p:first-child {
+  margin-top: 0;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+// =============================================================================
+// Table Styles (inside prose)
+// =============================================================================
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  font-size: 0.8em;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+
+.prose th {
+  background: rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+}
+
+.prose tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+// =============================================================================
+// Horizontal Rule
+// =============================================================================
+
+.prose hr {
+  border: none;
+  border-top: 1px solid rgba(128, 128, 128, 0.3);
+  margin: 1em 0;
+}
+
+// =============================================================================
+// Links
+// =============================================================================
+
+.prose a {
+  color: #6366f1;
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: #4f46e5;
+}
+
+// =============================================================================
+// Task List / Checkbox List
+// =============================================================================
+
+.prose ul.contains-task-list,
+.prose ul:has(> li > input[type="checkbox"]) {
+  list-style-type: none;
+  padding-left: 0.5rem;
+}
+
+.prose li > input[type="checkbox"] {
+  margin-right: 0.5rem;
+  accent-color: #6366f1;
+}
+
+// =============================================================================
+// Code Block Improvements
+// =============================================================================
+
+.prose pre {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+// =============================================================================
+// Definition List
+// =============================================================================
+
+.prose dl {
+  margin: 0.5em 0;
+}
+
+.prose dt {
+  font-weight: 600;
+  margin-top: 0.5em;
+}
+
+.prose dd {
+  margin-left: 1.5rem;
+  margin-bottom: 0.25em;
+}
+
+// =============================================================================
+// Dark Mode
+// =============================================================================
+
+html.dark {
+  .action-btn {
+    color: #6b7280;
+    border-color: rgba(255, 255, 255, 0.15);
+
+    &:hover {
+      color: #818cf8;
+      border-color: #818cf8;
+      background: rgba(129, 140, 248, 0.08);
+    }
+
+    &.copied {
+      color: #4ade80;
+      border-color: #4ade80;
+      background: rgba(74, 222, 128, 0.08);
+    }
+  }
+
+  // Dark mode table
+  .prose th {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .prose tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .prose th,
+  .prose td {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  // Dark mode list markers
+  .prose li::marker {
+    color: #818cf8;
+  }
+
+  .prose pre {
+    background: #0f172a;
+  }
+
+  .prose code {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}

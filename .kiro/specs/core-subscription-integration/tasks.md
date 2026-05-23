@@ -1,0 +1,402 @@
+# Implementation Plan: Frontend-Backend Subscription Integration
+
+## Overview
+
+This implementation plan breaks down the subscription integration into discrete, incremental coding tasks. Each task builds on previous work and includes testing to validate functionality early. The implementation follows Vue 3 Composition API patterns with TypeScript, Pinia state management, and Naive UI components.
+
+## Tasks
+
+- [ ] 1. Set up project structure and core types
+  - Create directory structure for subscription feature
+  - Define TypeScript interfaces for Plan, Subscription, Usage, Invoice, and Analytics
+  - Create barrel exports for types
+  - _Requirements: All requirements (foundation)_
+
+- [ ] 2. Implement API client for subscription endpoints
+  - [ ] 2.1 Create subscription API client with axios
+    - Implement methods for all subscription endpoints (plans, subscription, usage, invoices, analytics)
+    - Configure base URL and headers
+    - Add request/response interceptors for error handling
+    - _Requirements: 1.4, 2.2, 3.2, 4.2, 5.2, 5.5, 7.1, 9.7, 12.2, 12.5_
+  - [ ]\* 2.2 Write property test for API client endpoint correctness
+    - **Property 1: API Client Endpoint Correctness**
+    - **Validates: Requirements 1.4, 2.2, 3.2, 4.2, 5.2, 5.5, 7.1, 9.7, 12.2, 12.5**
+
+- [ ] 3. Implement Pinia subscription store
+  - [ ] 3.1 Create subscription store with state, getters, and actions
+    - Define state interface with subscription, plans, usage, invoices, loading, errors
+    - Implement getters for computed values (isActive, usagePercentages, warningMetrics, etc.)
+    - Implement actions for all subscription operations
+    - Add localStorage persistence for offline support
+    - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7_
+  - [ ]\* 3.2 Write unit tests for subscription store
+    - Test state initialization
+    - Test getters for all computed values
+    - Test actions for subscription operations
+    - Test localStorage persistence
+    - _Requirements: 10.2, 10.3, 10.4, 10.6, 10.7_
+  - [ ]\* 3.3 Write property test for store state completeness
+    - **Property 24: Store State Completeness**
+    - **Validates: Requirements 10.2**
+  - [ ]\* 3.4 Write property test for store getter correctness
+    - **Property 25: Store Getter Correctness**
+    - **Validates: Requirements 10.4**
+
+- [ ] 4. Implement core composables
+  - [ ] 4.1 Create useSubscription composable
+    - Implement subscription data access and actions
+    - Add computed properties for subscription status
+    - Integrate with subscription store
+    - _Requirements: 2.1, 2.2, 4.1, 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 12.1, 12.2, 12.3, 12.4, 12.5, 12.6_
+  - [ ] 4.2 Create useUsage composable
+    - Implement usage data access and limit checks
+    - Add auto-refresh functionality
+    - Calculate usage percentages and warning states
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
+  - [ ] 4.3 Create useFeatureGate composable
+    - Implement feature availability checks
+    - Add usage limit enforcement
+    - Integrate with subscription store for caching
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
+  - [ ] 4.4 Create useInvoices composable
+    - Implement invoice data access and actions
+    - Add filtering and sorting utilities
+    - Implement invoice download functionality
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7_
+  - [ ] 4.5 Create usePlans composable
+    - Implement plan data access
+    - Add plan comparison utilities
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6_
+  - [ ]\* 4.6 Write unit tests for all composables
+    - Test useSubscription actions and computed properties
+    - Test useUsage calculations and auto-refresh
+    - Test useFeatureGate access control
+    - Test useInvoices filtering and sorting
+    - Test usePlans comparison utilities
+    - _Requirements: All composable requirements_
+
+- [ ] 5. Checkpoint - Ensure core infrastructure tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 6. Implement common subscription components
+  - [ ] 6.1 Create SubscriptionStatus component
+    - Display subscription status badge with color coding
+    - Show trial countdown, cancellation notice, payment warnings
+    - _Requirements: 2.3, 2.4, 2.5, 11.1, 11.2_
+  - [ ] 6.2 Create UsageProgress component
+    - Display usage progress bar with percentage
+    - Implement color coding (green, yellow, red)
+    - Show unlimited indicator for null limits
+    - _Requirements: 3.3, 3.4, 3.5, 3.6_
+  - [ ] 6.3 Create FeatureGate component
+    - Implement slot-based feature gating
+    - Add configurable fallback behavior
+    - Show upgrade prompt for unavailable features
+    - _Requirements: 9.1, 9.2, 9.3_
+  - [ ] 6.4 Create UpgradePrompt component
+    - Display upgrade modal/banner
+    - Show feature/limit explanation
+    - Add plan comparison and upgrade action
+    - _Requirements: 9.3, 9.4_
+  - [ ]\* 6.5 Write unit tests for common components
+    - Test SubscriptionStatus rendering for all statuses
+    - Test UsageProgress color coding and calculations
+    - Test FeatureGate access control and fallbacks
+    - Test UpgradePrompt display and actions
+    - _Requirements: All common component requirements_
+
+- [ ] 7. Implement plan management components
+  - [ ] 7.1 Create PlanCard component
+    - Display plan information with features and pricing
+    - Show current plan indicator
+    - Implement select/upgrade button with state management
+    - _Requirements: 1.2, 17.6, 17.7_
+  - [ ] 7.2 Create PlanComparison component
+    - Display side-by-side plan comparison table
+    - Highlight current plan
+    - Show feature availability matrix
+    - Implement responsive layout
+    - _Requirements: 1.3, 17.1, 17.2, 17.3, 17.4, 17.5_
+  - [ ]\* 7.3 Write unit tests for plan components
+    - Test PlanCard data display and button states
+    - Test PlanComparison table rendering and highlighting
+    - _Requirements: 1.2, 1.3, 17.1-17.7_
+  - [ ]\* 7.4 Write property test for complete plan data display
+    - **Property 2: Complete Plan Data Display**
+    - **Validates: Requirements 1.2**
+  - [ ]\* 7.5 Write property test for plan comparison display completeness
+    - **Property 40: Plan Comparison Display Completeness**
+    - **Validates: Requirements 17.1, 17.2, 17.3, 17.4**
+
+- [ ] 8. Implement usage display components
+  - [ ] 8.1 Create UsageDisplay component
+    - Display all usage metrics with progress bars
+    - Implement auto-refresh functionality
+    - Show loading skeleton during refresh
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
+  - [ ]\* 8.2 Write unit tests for usage display
+    - Test metric rendering and progress bars
+    - Test auto-refresh behavior
+    - Test loading states
+    - _Requirements: 3.1-3.8_
+  - [ ]\* 8.3 Write property test for complete usage data display
+    - **Property 4: Complete Usage Data Display**
+    - **Validates: Requirements 3.1**
+  - [ ]\* 8.4 Write property test for usage percentage calculation
+    - **Property 5: Usage Percentage Calculation**
+    - **Validates: Requirements 3.3**
+  - [ ]\* 8.5 Write property test for usage warning state display
+    - **Property 6: Usage Warning State Display**
+    - **Validates: Requirements 3.4**
+  - [ ]\* 8.6 Write property test for usage error state display
+    - **Property 7: Usage Error State Display**
+    - **Validates: Requirements 3.5**
+
+- [ ] 9. Implement invoice management components
+  - [ ] 9.1 Create InvoiceList component
+    - Display invoice data table with sorting and filtering
+    - Implement pagination
+    - Add action buttons (view, download)
+    - _Requirements: 7.2, 7.3, 7.4, 7.5, 7.6, 7.7_
+  - [ ]\* 9.2 Write unit tests for invoice list
+    - Test table rendering and data display
+    - Test filtering and sorting
+    - Test action button availability
+    - _Requirements: 7.2-7.7_
+  - [ ]\* 9.3 Write property test for complete invoice data display
+    - **Property 16: Complete Invoice Data Display**
+    - **Validates: Requirements 7.2, 7.3**
+  - [ ]\* 9.4 Write property test for invoice filtering and sorting
+    - **Property 18: Invoice Filtering and Sorting**
+    - **Validates: Requirements 7.6, 7.7**
+
+- [ ] 10. Checkpoint - Ensure component tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 11. Implement subscription views
+  - [ ] 11.1 Create Subscription View (main page)
+    - Implement layout with subscription status, usage, and quick actions
+    - Integrate SubscriptionStatus, UsageDisplay, and action buttons
+    - Add recent invoices section
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.1-3.8_
+  - [ ] 11.2 Create Plans View (plan selection)
+    - Implement billing cycle toggle
+    - Integrate PlanComparison component
+    - Add plan selection and change confirmation dialog
+    - _Requirements: 1.1-1.6, 4.1-4.7, 17.1-17.7, 18.1-18.7_
+  - [ ] 11.3 Create Invoices View (invoice history)
+    - Implement filter controls
+    - Integrate InvoiceList component
+    - Add invoice detail modal
+    - _Requirements: 7.1-7.7_
+  - [ ]\* 11.4 Write integration tests for subscription views
+    - Test Subscription View data loading and display
+    - Test Plans View plan selection flow
+    - Test Invoices View filtering and detail display
+    - _Requirements: All view requirements_
+
+- [ ] 12. Implement subscription actions and dialogs
+  - [ ] 12.1 Create plan change confirmation dialog
+    - Display current and new plan comparison
+    - Show pricing difference and proration
+    - Implement upgrade/downgrade logic
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
+  - [ ] 12.2 Create cancellation confirmation dialog
+    - Display cancellation impact and effective date
+    - Implement cancellation and reactivation actions
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
+  - [ ] 12.3 Create pause/resume dialogs
+    - Display pause/resume confirmation
+    - Implement pause and resume actions
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7_
+  - [ ]\* 12.4 Write unit tests for action dialogs
+    - Test dialog display and content
+    - Test action execution and state updates
+    - Test error handling
+    - _Requirements: 4.1-4.7, 5.1-5.7, 12.1-12.7_
+  - [ ]\* 12.5 Write property test for state synchronization after actions
+    - **Property 12: State Synchronization After Actions**
+    - **Validates: Requirements 4.4, 5.3, 5.6, 10.3, 12.3, 12.6, 15.4**
+
+- [ ] 13. Implement payment integration
+  - [ ] 13.1 Create PaymentForm component with Stripe Elements
+    - Integrate Stripe Elements for card input
+    - Implement payment method validation
+    - Add loading and error states
+    - _Requirements: 6.1, 6.2, 6.3, 6.4_
+  - [ ] 13.2 Add payment method display and management
+    - Display current payment method
+    - Add update payment method flow
+    - Show payment history
+    - _Requirements: 6.1, 6.5, 6.6_
+  - [ ]\* 13.3 Write integration tests for payment flow
+    - Test Stripe Elements integration
+    - Test payment method validation
+    - Test error handling
+    - _Requirements: 6.1-6.6_
+
+- [ ] 14. Implement notification system
+  - [ ] 14.1 Create notification service
+    - Implement usage limit notifications (80%, 90%, 100%)
+    - Add trial ending notifications
+    - Add renewal notifications
+    - Implement notification deduplication
+    - Add dismissal and persistence
+    - _Requirements: 11.2, 11.5, 11.6, 11.7, 13.1, 13.2, 13.3, 13.5, 13.6, 13.7_
+  - [ ]\* 14.2 Write unit tests for notification service
+    - Test notification triggering at thresholds
+    - Test deduplication logic
+    - Test dismissal and persistence
+    - _Requirements: 11.2, 11.5, 11.6, 11.7, 13.1-13.7_
+  - [ ]\* 14.3 Write property test for usage threshold notifications
+    - **Property 32: Usage Threshold Notifications**
+    - **Validates: Requirements 13.1, 13.2, 13.3, 13.6**
+
+- [ ] 15. Implement error handling and recovery
+  - [ ] 15.1 Create error handling utilities
+    - Implement error categorization (API, network, validation, payment)
+    - Add error message formatting
+    - Implement retry with exponential backoff
+    - Add optimistic updates with rollback
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 15.5, 15.7_
+  - [ ] 15.2 Implement offline mode with cache
+    - Add cache management for subscription data
+    - Display staleness indicator
+    - Implement cache refresh on visibility change
+    - _Requirements: 15.1, 15.2, 15.3, 15.6_
+  - [ ]\* 15.3 Write unit tests for error handling
+    - Test error categorization and formatting
+    - Test retry logic with exponential backoff
+    - Test optimistic updates and rollback
+    - Test offline mode and cache
+    - _Requirements: 15.1-15.7, 16.1-16.7_
+  - [ ]\* 15.4 Write property test for error display and recovery
+    - **Property 13: Error Display and Recovery**
+    - **Validates: Requirements 1.6, 4.5, 6.4, 16.1, 16.2, 16.3, 16.4, 16.6**
+  - [ ]\* 15.5 Write property test for exponential backoff retry
+    - **Property 37: Exponential Backoff Retry**
+    - **Validates: Requirements 15.7**
+
+- [ ] 16. Checkpoint - Ensure error handling and notifications work
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 17. Implement analytics dashboard (admin)
+  - [ ] 17.1 Create useSubscriptionAnalytics composable
+    - Implement analytics data fetching
+    - Add time range filtering
+    - Calculate KPIs (MRR, conversion rate, etc.)
+    - _Requirements: 8.1, 8.5, 8.6_
+  - [ ] 17.2 Create AnalyticsCharts component
+    - Implement usage trend line charts with ECharts
+    - Create plan distribution pie chart
+    - Create organization usage bar chart
+    - Add interactive tooltips and responsive sizing
+    - _Requirements: 8.2, 8.3, 8.4_
+  - [ ] 17.3 Create Analytics View
+    - Implement time range selector
+    - Display KPI cards
+    - Integrate AnalyticsCharts component
+    - _Requirements: 8.1-8.7_
+  - [ ]\* 17.4 Write unit tests for analytics
+    - Test analytics data fetching and KPI calculations
+    - Test chart rendering with different data
+    - Test time range filtering
+    - _Requirements: 8.1-8.7_
+  - [ ]\* 17.5 Write property test for analytics chart data rendering
+    - **Property 19: Analytics Chart Data Rendering**
+    - **Validates: Requirements 8.2, 8.3, 8.4**
+
+- [ ] 18. Implement WebSocket integration for real-time updates
+  - [ ] 18.1 Create WebSocket service for subscription events
+    - Connect to WebSocket server
+    - Handle subscription webhook events (invoice.paid, payment_failed, subscription.deleted, subscription.updated)
+    - Update store state on events
+    - Display notifications for events
+    - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5, 19.6, 19.7_
+  - [ ]\* 18.2 Write integration tests for WebSocket events
+    - Test event handling for all webhook types
+    - Test state updates on events
+    - Test notification display
+    - _Requirements: 19.1-19.7_
+  - [ ]\* 18.3 Write property test for webhook event state updates
+    - **Property 45: Webhook Event State Updates**
+    - **Validates: Requirements 19.1, 19.2, 19.3, 19.4, 19.5**
+
+- [ ] 19. Implement usage export functionality
+  - [ ] 19.1 Create usage export utility
+    - Generate CSV with all usage metrics
+    - Include plan limits and organization details
+    - Add date range filtering
+    - Format CSV with proper headers
+    - Trigger browser download
+    - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7_
+  - [ ]\* 19.2 Write unit tests for usage export
+    - Test CSV generation with different data
+    - Test date range filtering
+    - Test CSV formatting
+    - _Requirements: 20.1-20.7_
+  - [ ]\* 19.3 Write property test for CSV export completeness
+    - **Property 47: CSV Export Completeness**
+    - **Validates: Requirements 20.1, 20.2, 20.3, 20.5, 20.6**
+
+- [ ] 20. Implement routing and navigation
+  - [ ] 20.1 Add subscription routes to router
+    - Add routes for subscription, plans, invoices, analytics views
+    - Configure route guards for admin-only analytics
+    - Add route meta for page titles
+    - _Requirements: All view requirements_
+  - [ ] 20.2 Add navigation menu items
+    - Add subscription menu items to main navigation
+    - Add breadcrumbs for subscription pages
+    - _Requirements: All view requirements_
+
+- [ ] 21. Implement responsive design and accessibility
+  - [ ] 21.1 Add responsive styles for all components
+    - Implement mobile-optimized layouts
+    - Add responsive breakpoints
+    - Ensure touch-friendly button sizes
+    - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7_
+  - [ ] 21.2 Add accessibility features
+    - Add ARIA labels and roles
+    - Ensure keyboard navigation
+    - Add screen reader announcements
+    - Ensure color contrast
+    - Manage focus for modals
+    - _Requirements: All requirements (accessibility)_
+  - [ ]\* 21.3 Write accessibility tests
+    - Test keyboard navigation
+    - Test screen reader compatibility
+    - Test color contrast
+    - _Requirements: All requirements (accessibility)_
+
+- [ ] 22. Integration and final testing
+  - [ ] 22.1 Wire all components together
+    - Connect views to composables and store
+    - Ensure data flows correctly
+    - Test all user workflows end-to-end
+    - _Requirements: All requirements_
+  - [ ]\* 22.2 Write end-to-end integration tests
+    - Test complete subscription lifecycle (view plans, upgrade, cancel, reactivate)
+    - Test usage tracking and limit enforcement
+    - Test invoice viewing and download
+    - Test error scenarios and recovery
+    - _Requirements: All requirements_
+  - [ ]\* 22.3 Run all property-based tests
+    - Execute all 49 property tests with 100 iterations each
+    - Verify all properties pass
+    - _Requirements: All requirements_
+
+- [ ] 23. Final checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+## Notes
+
+- Tasks marked with `*` are optional test tasks and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties with 100+ iterations
+- Unit tests validate specific examples and edge cases
+- Integration tests validate end-to-end workflows
+- All code uses TypeScript with Vue 3 Composition API
+- All components use Naive UI for consistent styling
+- All charts use ECharts for data visualization

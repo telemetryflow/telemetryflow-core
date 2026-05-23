@@ -1,4 +1,4 @@
-# Docker Setup - TelemetryFlow Core
+# Docker Setup - TelemetryFlow Core v1.4.0
 
 Complete guide for Docker Compose deployment with profiles.
 
@@ -8,12 +8,12 @@ Complete guide for Docker Compose deployment with profiles.
 
 TelemetryFlow Core uses Docker Compose profiles for flexible deployment:
 
-| Profile | Services | Use Case |
-|---------|----------|----------|
-| **core** | Backend, PostgreSQL, ClickHouse | Minimal IAM + Audit setup |
-| **monitoring** | OTEL, Jaeger, Prometheus, Grafana | Observability stack |
-| **tools** | Portainer | Container management |
-| **all** | All services | Complete stack |
+| Profile        | Services                                               | Use Case               |
+| -------------- | ------------------------------------------------------ | ---------------------- |
+| **core**       | Backend, Frontend, PostgreSQL, ClickHouse, Redis, NATS | Full application stack |
+| **monitoring** | Jaeger                                                 | Distributed tracing    |
+| **tools**      | Portainer                                              | Container management   |
+| **all**        | All services                                           | Complete stack         |
 
 ---
 
@@ -21,26 +21,26 @@ TelemetryFlow Core uses Docker Compose profiles for flexible deployment:
 
 ### Core Services (Profile: `core`)
 
-| Service | Port(s) | IP | Purpose |
-|---------|---------|-----|---------|
-| **Backend** | 3000 | 172.151.151.10 | NestJS API server |
-| **PostgreSQL** | 5432 | 172.151.151.20 | IAM data storage |
-| **ClickHouse** | 8123 (HTTP)<br/>9000 (Native)<br/>9363 (Metrics) | 172.151.151.40 | Audit log storage |
+| Service        | Port(s)                    | IP             | Purpose                     |
+| -------------- | -------------------------- | -------------- | --------------------------- |
+| **Backend**    | 3000                       | 172.154.154.10 | NestJS API server           |
+| **Frontend**   | 8080                       | 172.154.154.80 | Vue 3 SPA (Nginx)           |
+| **PostgreSQL** | 5432                       | 172.154.154.20 | IAM data storage            |
+| **ClickHouse** | 8123 (HTTP), 9000 (Native) | 172.154.154.40 | Audit log storage           |
+| **Redis**      | 6379                       | 172.154.154.30 | Cache + BullMQ queues       |
+| **NATS**       | 4222 (Client), 8222 (Mon)  | 172.154.154.35 | Event streaming (JetStream) |
 
 ### Monitoring Services (Profile: `monitoring`)
 
-| Service | Port(s) | IP | Purpose |
-|---------|---------|-----|---------|
-| **OTEL Collector** | 4317 (gRPC)<br/>4318 (HTTP)<br/>8889 (Metrics) | 172.151.151.30 | Telemetry collection |
-| **Jaeger** | 16686 (UI) | 172.151.151.60 | Distributed tracing UI |
-| **Prometheus** | 9090 | 172.151.151.50 | Metrics storage |
-| **Grafana** | 3001 | 172.151.151.70 | Metrics visualization |
+| Service    | Port(s) | IP              | Purpose                |
+| ---------- | ------- | --------------- | ---------------------- |
+| **Jaeger** | 16686   | (auto-assigned) | Distributed tracing UI |
 
 ### Tools Services (Profile: `tools`)
 
-| Service | Port(s) | IP | Purpose |
-|---------|---------|-----|---------|
-| **Portainer** | 9100 (HTTP)<br/>9443 (HTTPS) | 172.151.151.5 | Docker management UI |
+| Service       | Port(s)                   | IP            | Purpose              |
+| ------------- | ------------------------- | ------------- | -------------------- |
+| **Portainer** | 9100 (HTTP), 9443 (HTTPS) | 172.154.154.5 | Docker management UI |
 
 ---
 
@@ -49,7 +49,7 @@ TelemetryFlow Core uses Docker Compose profiles for flexible deployment:
 ### 1. Start Services by Profile
 
 ```bash
-# Core only (Backend + PostgreSQL + ClickHouse)
+# Core only (Backend + Frontend + PostgreSQL + ClickHouse + Redis + NATS)
 docker-compose --profile core up -d
 
 # Core + Monitoring
@@ -81,7 +81,8 @@ docker-compose logs -f
 # Specific service
 docker-compose logs -f backend
 docker-compose logs -f clickhouse
-docker-compose logs -f jaeger
+docker-compose logs -f redis
+docker-compose logs -f nats
 ```
 
 ### 4. Initialize Databases
@@ -116,31 +117,29 @@ pnpm db:seed
 
 ### Core Services
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| **Backend API** | http://localhost:3000 | REST API |
-| **Swagger Docs** | http://localhost:3000/api | Interactive API documentation |
-| **Health Check** | http://localhost:3000/health | Application health status |
-| **PostgreSQL** | postgresql://postgres:telemetryflow123@localhost:5432/telemetryflow_db | Database connection |
-| **ClickHouse HTTP** | http://localhost:8123 | HTTP interface |
-| **ClickHouse Native** | clickhouse://localhost:9000 | Native protocol |
-| **ClickHouse Metrics** | http://localhost:9363/metrics | Prometheus metrics |
+| Service               | URL                                                                    | Description                   |
+| --------------------- | ---------------------------------------------------------------------- | ----------------------------- |
+| **Frontend**          | http://localhost:8080                                                  | Vue 3 SPA                     |
+| **Backend API**       | http://localhost:3000                                                  | REST API                      |
+| **Swagger Docs**      | http://localhost:3000/api                                              | Interactive API documentation |
+| **Health Check**      | http://localhost:3000/health                                           | Application health status     |
+| **PostgreSQL**        | postgresql://postgres:telemetryflow123@localhost:5432/telemetryflow_db | Database connection           |
+| **ClickHouse HTTP**   | http://localhost:8123                                                  | HTTP interface                |
+| **ClickHouse Native** | clickhouse://localhost:9000                                            | Native protocol               |
+| **Redis**             | redis://localhost:6379                                                 | Cache & queue backend         |
+| **NATS Client**       | nats://localhost:4222                                                  | Event streaming               |
+| **NATS Monitoring**   | http://localhost:8222                                                  | NATS server monitoring        |
 
 ### Monitoring Services
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| **OTEL gRPC** | http://localhost:4317 | OTLP gRPC endpoint |
-| **OTEL HTTP** | http://localhost:4318 | OTLP HTTP endpoint |
-| **OTEL Metrics** | http://localhost:8889/metrics | Collector metrics |
+| Service       | URL                    | Description         |
+| ------------- | ---------------------- | ------------------- |
 | **Jaeger UI** | http://localhost:16686 | Trace visualization |
-| **Prometheus** | http://localhost:9090 | Metrics query UI |
-| **Grafana** | http://localhost:3001 | Dashboards (admin/admin) |
 
 ### Tools Services
 
-| Service | URL | Description |
-|---------|-----|-------------|
+| Service       | URL                   | Description          |
+| ------------- | --------------------- | -------------------- |
 | **Portainer** | http://localhost:9100 | Container management |
 
 ---
@@ -150,13 +149,16 @@ pnpm db:seed
 ### 1. PostgreSQL
 
 **Configuration**:
+
 - **Image**: postgres:16-alpine
 - **Database**: telemetryflow_db
 - **User**: postgres
-- **Password**: telemetryflow123 (change in production!)
-- **Volume**: /opt/data/docker/telemetryflow-core/postgres
+- **Password**: (set via `POSTGRES_PASSWORD`, empty by default)
+- **Volume**: /opt/data/docker/telemetryflow-core/postgresql
+- **IP**: 172.154.154.20
 
 **Connect**:
+
 ```bash
 # Using docker exec
 docker exec -it telemetryflow_core_postgres psql -U postgres -d telemetryflow_db
@@ -166,6 +168,7 @@ psql -h localhost -p 5432 -U postgres -d telemetryflow_db
 ```
 
 **Common Queries**:
+
 ```sql
 -- List all tables
 \dt
@@ -183,15 +186,18 @@ SELECT * FROM migrations ORDER BY timestamp;
 ### 2. ClickHouse
 
 **Configuration**:
+
 - **Image**: clickhouse/clickhouse-server:latest
 - **Database**: telemetryflow_db
 - **User**: default
-- **Password**: telemetryflow123
-- **Volumes**: 
+- **Password**: (set via `CLICKHOUSE_PASSWORD`, empty by default)
+- **Volumes**:
   - Data: /opt/data/docker/telemetryflow-core/clickhouse/data
   - Logs: /opt/data/docker/telemetryflow-core/clickhouse/logs
+- **IP**: 172.154.154.40
 
 **Connect**:
+
 ```bash
 # Using docker exec
 docker exec -it telemetryflow_core_clickhouse clickhouse-client
@@ -201,6 +207,7 @@ clickhouse-client --host localhost --port 9000
 ```
 
 **Common Queries**:
+
 ```sql
 -- Show databases
 SHOW DATABASES;
@@ -212,7 +219,7 @@ SHOW TABLES FROM telemetryflow_db;
 SELECT count() FROM telemetryflow_db.audit_logs;
 
 -- Recent audit logs
-SELECT * FROM telemetryflow_db.audit_logs 
+SELECT * FROM telemetryflow_db.audit_logs
 ORDER BY timestamp DESC LIMIT 10;
 
 -- Audit logs by event type
@@ -234,122 +241,148 @@ ORDER BY count DESC;
 ```
 
 **Health Check**:
+
 ```bash
 curl http://localhost:8123/ping
 ```
 
-**Metrics**:
-```bash
-curl http://localhost:9363/metrics
-```
-
-### 3. Backend (NestJS)
+### 3. Redis
 
 **Configuration**:
-- **Image**: Built from Dockerfile
-- **Port**: 3000
-- **Environment**: Production (configurable)
-- **Logs**: ./logs directory
+
+- **Image**: redis:7-alpine
+- **Port**: 6379
+- **Max Memory**: 512MB (configurable via `REDIS_MAX_MEMORY`)
+- **Policy**: noeviction
+- **Persistence**: RDB (every 60s if 1000+ keys) + AOF
+- **Volume**: /opt/data/docker/telemetryflow-core/redis
+- **IP**: 172.154.154.30
+
+**Redis is used for two databases**:
+
+- **DB 0** (`REDIS_CACHE_DB`): Caching and sessions
+- **DB 1** (`REDIS_QUEUE_DB`): BullMQ job queues
+
+**Connect**:
+
+```bash
+# Using docker exec
+docker exec -it telemetryflow_core_redis redis-cli
+
+# Check server info
+docker exec telemetryflow_core_redis redis-cli INFO server
+
+# Check memory usage
+docker exec telemetryflow_core_redis redis-cli INFO memory
+```
 
 **Health Check**:
+
+```bash
+docker exec telemetryflow_core_redis redis-cli ping
+```
+
+### 4. NATS
+
+**Configuration**:
+
+- **Image**: nats:2-alpine
+- **Ports**: 4222 (client), 8222 (monitoring)
+- **JetStream**: Enabled (`--js`)
+- **Max Memory Store**: 256MB
+- **Max File Store**: 1GB
+- **Volume**: /opt/data/docker/telemetryflow-core/nats
+- **IP**: 172.154.154.35
+
+**Health Check**:
+
+```bash
+curl http://localhost:8222/healthz
+```
+
+**Monitoring**:
+
+```bash
+# Server stats
+curl http://localhost:8222/statsz
+
+# JetStream info
+curl http://localhost:8222/jsz
+```
+
+### 5. Backend (NestJS)
+
+**Configuration**:
+
+- **Image**: Built from Dockerfile.backend
+- **Port**: 3000
+- **IP**: 172.154.154.10
+- **Depends on**: PostgreSQL, ClickHouse, Redis, NATS (all healthy)
+
+**Environment**:
+
+The backend connects to all core services:
+
+- PostgreSQL (host: `postgres`, port: 5432)
+- ClickHouse (host: `clickhouse`, port: 8123)
+- Redis (host: `redis`, port: 6379)
+- NATS (url: `nats://nats:4222`)
+
+**Health Check**:
+
 ```bash
 curl http://localhost:3000/health
 ```
 
 **API Documentation**:
+
 ```bash
 # Open Swagger UI
 open http://localhost:3000/api
 ```
 
-### 4. TFO-Collector (OTEL Collector)
+### 6. Frontend (Vue 3 + Nginx)
 
 **Configuration**:
-- **Image**: telemetryflow/telemetryflow-collector:latest (v1.1.1+)
-- **Config**: ./config/otel/tfo-collector.yaml
-- **Ports**: 4317 (gRPC), 4318 (HTTP), 8889 (metrics), 13133 (health)
-- **Features**: 100% OTLP compliant, SpanMetrics, ServiceGraph
 
-**Key Capabilities**:
-- OTLP gRPC/HTTP receivers and exporters
-- Native Jaeger V2 integration via OTLP
-- SpanMetrics connector with exemplars
-- ServiceGraph connector for dependencies
+- **Image**: Built from Dockerfile.frontend
+- **Port**: 8080 (maps to container port 80)
+- **IP**: 172.154.154.80
+- **Web Server**: Nginx
+- **Depends on**: Backend
 
-**Check Status**:
+**Access**:
+
 ```bash
-# Health check
-curl http://localhost:13133
-
-# Metrics
-curl http://localhost:8889/metrics
-
-# zPages debugging
-open http://localhost:55679/debug/tracez
+open http://localhost:8080
 ```
 
-### 5. Jaeger V2
+### 7. Jaeger
 
 **Configuration**:
+
 - **Image**: jaegertracing/jaeger:2.13.0
 - **Storage**: Memory (for development)
-- **Metrics**: Prometheus integration via SPM
-- **Protocol**: Native OTLP support (receives from TFO-Collector)
+- **Protocol**: Native OTLP support
+- **Profile**: `monitoring`
 
 **Access UI**:
+
 ```bash
 open http://localhost:16686
 ```
 
-### 6. Prometheus
-
-**Configuration**:
-- **Image**: prom/prometheus:latest
-- **Config**: ./config/prometheus/prometheus.yml
-- **Volume**: /opt/data/docker/telemetryflow-core/prometheus
-
-**Access UI**:
-```bash
-open http://localhost:9090
-```
-
-**Query Examples**:
-```promql
-# HTTP request rate
-rate(http_requests_total[5m])
-
-# Error rate
-rate(http_requests_total{status=~"5.."}[5m])
-
-# Response time
-histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
-```
-
-### 7. Grafana
-
-**Configuration**:
-- **Image**: grafana/grafana:latest
-- **Credentials**: admin/admin (change on first login)
-- **Dashboards**: ./config/grafana/dashboards
-
-**Access UI**:
-```bash
-open http://localhost:3001
-```
-
-**Pre-configured Dashboards**:
-- System Health
-- API Performance
-- Audit Statistics
-- User Activity
-
 ### 8. Portainer
 
 **Configuration**:
+
 - **Image**: portainer/portainer-ce:latest
+- **Ports**: 9100 (HTTP), 9443 (HTTPS)
 - **Volume**: /opt/data/docker/telemetryflow-core/portainer
+- **IP**: 172.154.154.5
 
 **Access UI**:
+
 ```bash
 open http://localhost:9100
 ```
@@ -358,24 +391,18 @@ open http://localhost:9100
 
 ## Volume Management
 
-### List Volumes
+### Volume Paths
 
-```bash
-docker volume ls | grep telemetryflow
-```
+All persistent data is stored under `/opt/data/docker/telemetryflow-core/`:
 
-### Inspect Volume
-
-```bash
-# PostgreSQL data
-docker volume inspect telemetryflow-core_vol_postgres_data
-
-# ClickHouse data
-docker volume inspect telemetryflow-core_vol_clickhouse_data
-
-# Prometheus data
-docker volume inspect telemetryflow-core_vol_prometheus_data
-```
+| Service    | Path                                                |
+| ---------- | --------------------------------------------------- |
+| PostgreSQL | /opt/data/docker/telemetryflow-core/postgresql      |
+| ClickHouse | /opt/data/docker/telemetryflow-core/clickhouse/data |
+| ClickHouse | /opt/data/docker/telemetryflow-core/clickhouse/logs |
+| Redis      | /opt/data/docker/telemetryflow-core/redis           |
+| NATS       | /opt/data/docker/telemetryflow-core/nats            |
+| Portainer  | /opt/data/docker/telemetryflow-core/portainer       |
 
 ### Backup Volumes
 
@@ -401,22 +428,21 @@ docker exec telemetryflow_core_clickhouse clickhouse-client --query "RESTORE DAT
 
 ## Network Configuration
 
-**Network Name**: telemetryflow_core_net  
-**Subnet**: 172.151.0.0/16  
+**Network Name**: telemetryflow_core_net
+**Subnet**: 172.154.0.0/16
 **Driver**: bridge
 
 ### Service IP Addresses
 
-| Service | IP Address |
-|---------|-----------|
-| Portainer | 172.151.151.5 |
-| Backend | 172.151.151.10 |
-| PostgreSQL | 172.151.151.20 |
-| OTEL Collector | 172.151.151.30 |
-| ClickHouse | 172.151.151.40 |
-| Prometheus | 172.151.151.50 |
-| Jaeger | 172.151.151.60 |
-| Grafana | 172.151.151.70 |
+| Service    | IP Address     |
+| ---------- | -------------- |
+| Portainer  | 172.154.154.5  |
+| Backend    | 172.154.154.10 |
+| PostgreSQL | 172.154.154.20 |
+| Redis      | 172.154.154.30 |
+| NATS       | 172.154.154.35 |
+| ClickHouse | 172.154.154.40 |
+| Frontend   | 172.154.154.80 |
 
 ### Inspect Network
 
@@ -451,8 +477,18 @@ docker-compose --profile core up -d clickhouse
 
 # PostgreSQL only
 docker-compose stop postgres
-docker volume rm telemetryflow-core_vol_postgres_data
+sudo rm -rf /opt/data/docker/telemetryflow-core/postgresql/*
 docker-compose --profile core up -d postgres
+
+# Redis only
+docker-compose stop redis
+sudo rm -rf /opt/data/docker/telemetryflow-core/redis/*
+docker-compose --profile core up -d redis
+
+# NATS only
+docker-compose stop nats
+sudo rm -rf /opt/data/docker/telemetryflow-core/nats/*
+docker-compose --profile core up -d nats
 ```
 
 ### Check Service Logs
@@ -481,6 +517,7 @@ docker inspect telemetryflow_core_backend --format='{{.State.Health.Status}}'
 ### ClickHouse Issues
 
 **Container Unhealthy**:
+
 ```bash
 # Check logs
 docker logs telemetryflow_core_clickhouse --tail 50
@@ -495,6 +532,7 @@ docker restart telemetryflow_core_clickhouse
 ```
 
 **Version Incompatibility**:
+
 ```bash
 # Clean data and restart
 docker stop telemetryflow_core_clickhouse
@@ -507,6 +545,7 @@ docker start telemetryflow_core_clickhouse
 ### Backend Issues
 
 **Cannot Connect to Database**:
+
 ```bash
 # Check PostgreSQL is running
 docker-compose ps postgres
@@ -519,6 +558,7 @@ docker exec telemetryflow_core_backend env | grep POSTGRES
 ```
 
 **Migration Errors**:
+
 ```bash
 # Run migrations manually
 docker exec telemetryflow_core_backend pnpm db:migrate
@@ -536,7 +576,11 @@ docker exec -it telemetryflow_core_postgres psql -U postgres -d telemetryflow_db
 ```env
 # JWT & Session (generate with: pnpm generate:secrets)
 JWT_SECRET=your-secret-key-min-32-chars
+JWT_REFRESH_SECRET=your-refresh-secret-min-32-chars
 SESSION_SECRET=your-session-secret-min-32-chars
+ENCRYPTION_KEY=your-encryption-key
+MFA_ENCRYPTION_KEY=your-mfa-encryption-key
+LLM_ENCRYPTION_KEY=your-llm-encryption-key
 ```
 
 ### Optional Variables
@@ -550,36 +594,37 @@ TZ=UTC
 # PostgreSQL
 POSTGRES_VERSION=16-alpine
 POSTGRES_USERNAME=postgres
-POSTGRES_PASSWORD=telemetryflow123
+POSTGRES_PASSWORD=
 POSTGRES_DB=telemetryflow_db
 
 # ClickHouse
 CLICKHOUSE_VERSION=latest
 CLICKHOUSE_USER=default
-CLICKHOUSE_PASSWORD=telemetryflow123
+CLICKHOUSE_PASSWORD=
 CLICKHOUSE_DB=telemetryflow_db
 
-# OpenTelemetry
-OTEL_ENABLED=true
-OTEL_SERVICE_NAME=telemetryflow-core
-OTEL_VERSION=latest
+# Redis
+REDIS_MAX_MEMORY=512mb
+REDIS_PASSWORD=
 
-# Monitoring
-JAEGER_VERSION=2.2.0
-PROMETHEUS_VERSION=latest
-GRAFANA_VERSION=latest
+# NATS
+NATS_CLUSTER_ID=telemetryflow-cluster
+
+# OpenTelemetry
+OTEL_ENABLED=false
+OTEL_SERVICE_NAME=telemetryflow-core
 
 # Tools
 PORTAINER_VERSION=latest
 
 # Logging
+LOGGER_TYPE=winston
 LOG_LEVEL=info
 LOG_PRETTY_PRINT=false
 LOG_FILE_ENABLED=true
 
-# Grafana
-GF_SECURITY_ADMIN_USER=admin
-GF_SECURITY_ADMIN_PASSWORD=admin
+# SMTP
+SMTP_ENABLED=false
 ```
 
 ---
@@ -589,59 +634,70 @@ GF_SECURITY_ADMIN_PASSWORD=admin
 ### 1. Security
 
 **Change Default Passwords**:
+
 ```env
 POSTGRES_PASSWORD=<strong-password>
 CLICKHOUSE_PASSWORD=<strong-password>
+REDIS_PASSWORD=<strong-password>
 JWT_SECRET=<generated-secret-min-32-chars>
+JWT_REFRESH_SECRET=<generated-secret-min-32-chars>
 SESSION_SECRET=<generated-secret-min-32-chars>
-GF_SECURITY_ADMIN_PASSWORD=<strong-password>
+ENCRYPTION_KEY=<generated-key>
+MFA_ENCRYPTION_KEY=<generated-key>
+LLM_ENCRYPTION_KEY=<generated-key>
 ```
 
 **Generate Secrets**:
+
 ```bash
 pnpm generate:secrets
 ```
 
 **Enable TLS**:
+
 - Configure ClickHouse HTTPS
-- Use reverse proxy (nginx/traefik) for backend
-- Enable Grafana HTTPS
+- Use reverse proxy (nginx/traefik) for backend and frontend
+- Enable HTTPS on Portainer (port 9443)
 
 ### 2. Resource Limits
 
 Add to docker-compose.yml:
+
 ```yaml
 services:
   backend:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: "2"
           memory: 2G
         reservations:
-          cpus: '1'
+          cpus: "1"
           memory: 1G
 ```
 
 ### 3. Persistent Storage
 
 **Bind Mounts** (Current):
-- PostgreSQL: /opt/data/docker/telemetryflow-core/postgres
+
+- PostgreSQL: /opt/data/docker/telemetryflow-core/postgresql
 - ClickHouse: /opt/data/docker/telemetryflow-core/clickhouse
-- Prometheus: /opt/data/docker/telemetryflow-core/prometheus
+- Redis: /opt/data/docker/telemetryflow-core/redis
+- NATS: /opt/data/docker/telemetryflow-core/nats
 - Portainer: /opt/data/docker/telemetryflow-core/portainer
 
 **Ensure Permissions**:
+
 ```bash
-sudo mkdir -p /opt/data/docker/telemetryflow-core/{postgres,clickhouse/{data,logs},prometheus,portainer}
-sudo chown -R 999:999 /opt/data/docker/telemetryflow-core/postgres
+sudo mkdir -p /opt/data/docker/telemetryflow-core/{postgresql,clickhouse/{data,logs},redis,nats,portainer}
+sudo chown -R 999:999 /opt/data/docker/telemetryflow-core/postgresql
 sudo chown -R 101:101 /opt/data/docker/telemetryflow-core/clickhouse
-sudo chown -R 65534:65534 /opt/data/docker/telemetryflow-core/prometheus
 ```
 
 ### 4. Backup Strategy
 
 **Automated Backups**:
+
 ```bash
 # PostgreSQL daily backup
 0 2 * * * docker exec telemetryflow_core_postgres pg_dump -U postgres telemetryflow_db | gzip > /backups/postgres-$(date +\%Y\%m\%d).sql.gz
@@ -652,23 +708,26 @@ sudo chown -R 65534:65534 /opt/data/docker/telemetryflow-core/prometheus
 
 ### 5. Monitoring & Alerting
 
-**Enable Prometheus Alerting**:
-- Configure alert rules in prometheus.yml
-- Set up Alertmanager
-- Configure notification channels (email, Slack, PagerDuty)
-
 **Monitor Disk Usage**:
+
 ```bash
 # Check volume sizes
 docker system df -v
 
 # Monitor ClickHouse disk usage
 docker exec telemetryflow_core_clickhouse clickhouse-client --query "SELECT database, formatReadableSize(sum(bytes)) AS size FROM system.parts WHERE active GROUP BY database"
+
+# Monitor Redis memory
+docker exec telemetryflow_core_redis redis-cli INFO memory
+
+# Monitor NATS JetStream
+curl http://localhost:8222/jsz
 ```
 
 ### 6. Log Rotation
 
 **Configure Log Rotation**:
+
 ```bash
 # /etc/logrotate.d/telemetryflow-core
 /opt/data/docker/telemetryflow-core/*/logs/*.log {
@@ -689,16 +748,14 @@ docker exec telemetryflow_core_clickhouse clickhouse-client --query "SELECT data
 - [Docker Compose Profiles](https://docs.docker.com/compose/profiles/)
 - [PostgreSQL Docker](https://hub.docker.com/_/postgres)
 - [ClickHouse Docker](https://hub.docker.com/r/clickhouse/clickhouse-server)
-- [TelemetryFlow Collector](https://github.com/telemetryflow/telemetryflow-collector) - Custom OTEL Collector with 100% OTLP compliance
-- [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)
+- [Redis Docker](https://hub.docker.com/_/redis)
+- [NATS Docker](https://hub.docker.com/_/nats)
 - [Jaeger V2 Documentation](https://www.jaegertracing.io/docs/)
-- [Prometheus Documentation](https://prometheus.io/docs/)
-- [Grafana Documentation](https://grafana.com/docs/)
 - [Portainer Documentation](https://docs.portainer.io/)
 
 ---
 
-**Last Updated**: 2026-01-01
+**Last Updated**: 2026-05-24
 **Docker Compose Version**: 2.x
-**Network**: 172.151.0.0/16
-**TFO-Collector Version**: v1.1.1+
+**Network**: 172.154.0.0/16
+**TelemetryFlow Core Version**: v1.4.0

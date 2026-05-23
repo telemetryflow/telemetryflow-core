@@ -1,0 +1,216 @@
+// Kubernetes Monitoring Color Variables
+// This file contains all color variables used in Kubernetes monitoring pages
+
+// =============================================================================
+// SCSS Variables (Compile-time)
+// =============================================================================
+// These variables are used at compile time and don't cause conflicts
+
+// Border Colors
+$border-light: #c1c5cc; // Visible gray border for light mode
+$border-dark: #5a6577; // Brighter gray for better visibility in dark mode
+
+// Background Colors
+$bg-card-light: #ffffff;
+$bg-card-dark: #1e293b;
+$bg-section-dark: rgba(30, 41, 59, 0.3);
+$bg-section-header-dark: rgba(30, 41, 59, 0.4);
+
+// Status Banner Colors
+$status-success-bg: rgba(34, 197, 94, 0.1);
+$status-success-text: #22c55e;
+$status-success-border: rgba(34, 197, 94, 0.2);
+
+$status-warning-bg: rgba(245, 158, 11, 0.1);
+$status-warning-text: #f59e0b;
+$status-warning-border: rgba(245, 158, 11, 0.2);
+
+$status-error-bg: rgba(239, 68, 68, 0.1);
+$status-error-text: #ef4444;
+$status-error-border: rgba(239, 68, 68, 0.2);
+
+$status-info-bg: rgba(59, 130, 246, 0.1);
+$status-info-text: #3b82f6;
+$status-info-border: rgba(59, 130, 246, 0.2);
+
+$status-default-bg: rgba(107, 114, 128, 0.1);
+$status-default-text: #6b7280;
+$status-default-border: rgba(107, 114, 128, 0.2);
+
+// Info Table Colors
+$table-border-light: #c1c5cc; // Visible gray border for light mode
+$table-border-dark: #5a6577; // Same as section borders for consistency
+$table-label-bg-light: #f3f4f6;
+$table-label-bg-dark: rgba(51, 65, 85, 0.5);
+$table-label-text-light: #6b7280;
+$table-label-text-dark: #9ca3af;
+$table-value-text-light: #1f2937;
+$table-value-text-dark: #e5e7eb;
+
+// Scrollbar Colors
+$scrollbar-track-light: #f1f1f1;
+$scrollbar-track-dark: #2a2a2a;
+$scrollbar-thumb-light: #c1c1c1;
+$scrollbar-thumb-hover-light: #a8a8a8;
+$scrollbar-thumb-dark: #4a4a4a;
+$scrollbar-thumb-hover-dark: #5a5a5a;
+
+// Scroll Indicator Gradient
+$scroll-indicator-light: linear-gradient(to left, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
+$scroll-indicator-dark: linear-gradient(to left, rgba(24, 24, 28, 0.9) 0%, rgba(24, 24, 28, 0) 100%);
+
+// Responsive Breakpoints
+$breakpoint-xs: 480px; // Extra small phones
+$breakpoint-sm: 640px; // Small phones
+$breakpoint-mobile: 768px; // Tablets / Large phones (md)
+$breakpoint-tablet: 1024px; // Small laptops (lg)
+$breakpoint-desktop: 1200px; // Desktops (xl)
+$breakpoint-2xl: 1536px; // Large desktops
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+// =============================================================================
+// CSS Custom Properties Mixin (to avoid conflicts)
+// =============================================================================
+// Use this mixin in your component's root element to define CSS custom properties
+// Example: @include k8s-theme-vars;
+
+@mixin k8s-theme-vars {
+  --k8s-border-color: #{$border-light};
+  --k8s-border-color-subtle: rgba(193, 197, 204, 0.5);
+  --k8s-card-bg: #{$bg-card-light};
+  --k8s-section-bg: var(--n-card-color);
+  --k8s-section-header-bg: var(--n-card-color);
+  --k8s-table-label-bg: #{$table-label-bg-light};
+  --k8s-table-label-text: #{$table-label-text-light};
+  --k8s-table-value-text: #{$table-value-text-light};
+  --k8s-table-header-bg: #f8fafc;
+  --k8s-table-header-text: #374151;
+  --k8s-scrollbar-track: #{$scrollbar-track-light};
+  --k8s-scrollbar-thumb: #{$scrollbar-thumb-light};
+  --k8s-scrollbar-thumb-hover: #{$scrollbar-thumb-hover-light};
+  --k8s-scroll-indicator: #{$scroll-indicator-light};
+
+  // Superadmin Badge Colors
+  --superadmin-bg: linear-gradient(135deg, #f59e0b, #d97706);
+  --superadmin-text: #ffffff;
+  --superadmin-border: rgba(245, 158, 11, 0.3);
+
+  :root.dark &,
+  html.dark & {
+    --k8s-border-color: #{$border-dark};
+    --k8s-border-color-subtle: rgba(90, 101, 119, 0.5);
+    --k8s-card-bg: #{$bg-card-dark};
+    --k8s-section-bg: #{$bg-section-dark};
+    --k8s-section-header-bg: #{$bg-section-header-dark};
+    --k8s-table-label-bg: #{$table-label-bg-dark};
+    --k8s-table-label-text: #{$table-label-text-dark};
+    --k8s-table-value-text: #{$table-value-text-dark};
+    --k8s-table-header-bg: rgba(51, 65, 85, 0.6);
+    --k8s-table-header-text: #e2e8f0;
+    --k8s-scrollbar-track: #{$scrollbar-track-dark};
+    --k8s-scrollbar-thumb: #{$scrollbar-thumb-dark};
+    --k8s-scrollbar-thumb-hover: #{$scrollbar-thumb-hover-dark};
+    --k8s-scroll-indicator: #{$scroll-indicator-dark};
+
+    // Superadmin Badge Colors for Dark Mode
+    --superadmin-bg: linear-gradient(135deg, #fb923c, #f97316);
+    --superadmin-text: #ffffff;
+    --superadmin-border: rgba(251, 146, 60, 0.3);
+  }
+}
+
+// =============================================================================
+// TFO Graph Color System — Global CSS Custom Properties
+// Reference: Region/Tenancy graph node ring colors
+//   Region → red (#ef4444)         = Error / Down
+//   Organization → amber (#f59e0b) = Warning / Degraded
+//   Workspace → blue (#3b82f6)     = Info / Server
+//   Tenant → green (#22c55e)       = Success / Healthy
+// =============================================================================
+
+:root {
+  // ── Node Status Colors ──────────────────────────────────────────────────
+  --tfo-status-healthy:     #22c55e; // green  (Tenant ring ref)
+  --tfo-status-degraded:    #f59e0b; // amber  (Org ring ref)
+  --tfo-status-down:        #ef4444; // red    (Region ring ref)
+  --tfo-status-unknown:     #6b7280; // gray
+  --tfo-status-maintenance: #8b5cf6; // purple
+
+  // ── Node Type Colors (Network Map) ──────────────────────────────────────
+  --tfo-node-server:        #3b82f6; // blue   (Workspace ring ref)
+  --tfo-node-gateway:       #f97316; // orange
+  --tfo-node-router:        #f59e0b; // amber
+  --tfo-node-switch:        #22c55e; // green
+  --tfo-node-firewall:      #ef4444; // red
+  --tfo-node-load-balancer: #8b5cf6; // purple
+  --tfo-node-database:      #06b6d4; // cyan
+  --tfo-node-cache:         #14b8a6; // teal
+  --tfo-node-cdn:           #ec4899; // pink
+  --tfo-node-dns:           #6366f1; // indigo
+
+  // ── Tenancy / Hierarchy Colors ───────────────────────────────────────────
+  --tfo-tier-region:        #ef4444; // red
+  --tfo-tier-organization:  #f59e0b; // amber
+  --tfo-tier-workspace:     #3b82f6; // blue
+  --tfo-tier-tenant:        #22c55e; // green
+
+  // ── Connection / Link Colors ─────────────────────────────────────────────
+  --tfo-link-active:        #22c55e; // green
+  --tfo-link-degraded:      #f59e0b; // amber
+  --tfo-link-down:          #ef4444; // red
+  --tfo-link-idle:          #6b7280; // gray
+
+  // ── Metric Bar Colors (Service Map graphs) ───────────────────────────────
+  --tfo-bar-request-rate:   #3b82f6; // blue
+  --tfo-bar-error-rate:     #ef4444; // red
+  --tfo-bar-latency:        #f59e0b; // amber
+  --tfo-bar-saturation:     #8b5cf6; // purple
+}
+
+// =============================================================================
+// Superadmin Badge Mixin
+// =============================================================================
+// Use this mixin to apply consistent superadmin badge styling
+// Example: @include superadmin-badge;
+
+@mixin superadmin-badge {
+  background: var(--superadmin-bg) !important;
+  color: var(--superadmin-text) !important;
+  border: 1px solid var(--superadmin-border) !important;
+  font-weight: 600 !important;
+  font-size: 10px !important;
+  padding: 5px 10px !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+  height: auto !important;
+
+  // Icon styling - ensure perfect alignment
+  svg {
+    width: 11px !important;
+    height: 11px !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin: 0 !important;
+  }
+
+  // Ensure text is centered and aligned with icon
+  .n-tag__content {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+  }
+}

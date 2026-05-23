@@ -5,23 +5,22 @@
     <img src="https://github.com/telemetryflow/.github/raw/main/docs/assets/tfo-logo-core-light.svg" alt="TelemetryFlow Logo" width="80%">
   </picture>
 
-  <h3>TelemetryFlow Core IAM service (5-Tier RBAC)</h3>
+  <h3>TelemetryFlow Core - IAM, AI Assistant & Audit Platform</h3>
 
-[![Version](https://img.shields.io/badge/Version-1.1.4-orange.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.4.0-orange.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs)](https://nestjs.com/)
+[![Vue 3](https://img.shields.io/badge/Vue%203-5.x-4FC08D?logo=vuedotjs)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
 [![ClickHouse](https://img.shields.io/badge/ClickHouse-latest-FFCC00?logo=clickhouse)](https://clickhouse.com/)
-[![DDD](https://img.shields.io/badge/Architecture-DDD%2FCQRS-blueviolet)](src/modules/iam/)
+[![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis)](https://redis.io/)
+[![DDD](https://img.shields.io/badge/Architecture-DDD%2FCQRS-blueviolet)](backend/src/modules/iam/)
 [![RBAC](https://img.shields.io/badge/Security-5--Tier%20RBAC-red)](README.md#5-tier-rbac-system)
-[![Migrations](https://img.shields.io/badge/migrations-PostgreSQL%208%20%7C%20ClickHouse%204-success.svg)](src/database)
-[![API Coverage](https://img.shields.io/badge/API%20coverage-100%25-brightgreen.svg)](docs/postman/BDD_TESTS.md)
-[![OpenTelemetry](https://img.shields.io/badge/OTLP-100%25%20Compliant-success?logo=opentelemetry)](https://opentelemetry.io/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://hub.docker.com/r/telemetryflow/telemetryflow-core)
 
 <p align="center">
-  <strong>TelemetryFlow Core</strong> is a lightweight, production-ready IAM service extracted from the TelemetryFlow Platform. It provides complete identity and access management with a 5-tier RBAC system, multi-tenancy support, and enterprise-grade security features.
+  <strong>TelemetryFlow Core</strong> is a full-stack monorepo providing IAM, AI Assistant, Alerting, Audit, Tenancy, and System management. Built with NestJS backend and Vue 3 frontend.
 </p>
 
 </div>
@@ -36,6 +35,7 @@ We release patches for security vulnerabilities in the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 1.4.x   | :white_check_mark: |
 | 1.1.x   | :white_check_mark: |
 | 1.0.x   | :x:                |
 | < 1.0   | :x:                |
@@ -49,6 +49,7 @@ We take the security of TelemetryFlow Core seriously. If you believe you have fo
 **Please DO NOT report security vulnerabilities through public GitHub issues.**
 
 Instead, please report them via email to:
+
 - **Security Team**: security@telemetryflow.id
 - **Project Lead**: support@telemetryflow.id
 
@@ -84,6 +85,7 @@ Please include the following information in your report:
 ### For Users
 
 #### 1. Environment Variables
+
 ```bash
 # Never commit .env files
 echo ".env" >> .gitignore
@@ -93,6 +95,7 @@ pnpm run generate:secrets
 ```
 
 #### 2. Database Security
+
 ```bash
 # Use strong passwords
 POSTGRES_PASSWORD=<strong-random-password>
@@ -103,6 +106,7 @@ CLICKHOUSE_PASSWORD=<strong-random-password>
 ```
 
 #### 3. JWT Configuration
+
 ```bash
 # Use minimum 32 characters for secrets
 JWT_SECRET=<min-32-chars-random-string>
@@ -113,6 +117,7 @@ JWT_EXPIRES_IN=24h  # Adjust based on your needs
 ```
 
 #### 4. Production Deployment
+
 ```bash
 # Always use NODE_ENV=production
 NODE_ENV=production
@@ -129,6 +134,7 @@ LOG_LEVEL=warn
 #### 1. Code Security
 
 **Never commit:**
+
 - Passwords or API keys
 - Private keys or certificates
 - Database credentials
@@ -136,6 +142,7 @@ LOG_LEVEL=warn
 - Personal information
 
 **Always:**
+
 - Use environment variables for sensitive data
 - Validate all user inputs
 - Sanitize database queries
@@ -158,6 +165,7 @@ pnpm update
 #### 3. Code Review
 
 All code changes must:
+
 - Pass security review
 - Include tests for security-critical features
 - Follow OWASP security guidelines
@@ -190,7 +198,7 @@ All code changes must:
 
 ### Network Security
 
-- **Docker network isolation** (172.151.151.0/24)
+- **Docker network isolation** (172.154.0.0/16)
 - **Service-to-service communication** on private network
 - **Exposed ports** only for necessary services
 - **CORS configuration** for API access control
@@ -204,6 +212,7 @@ No security vulnerabilities have been reported yet.
 ### Security Advisories
 
 Security advisories will be published at:
+
 - GitHub Security Advisories
 - Project documentation
 - Release notes
@@ -213,6 +222,7 @@ Security advisories will be published at:
 ### Standards
 
 TelemetryFlow Core follows:
+
 - **OWASP Top 10** security guidelines
 - **CWE/SANS Top 25** vulnerability prevention
 - **NIST Cybersecurity Framework** principles
@@ -220,22 +230,26 @@ TelemetryFlow Core follows:
 ### Certifications
 
 Currently pursuing:
+
 - SOC 2 Type II compliance
 - ISO 27001 certification
 
 ## Security Contacts
 
 ### Primary Contact
+
 - **Email**: security@telemetryflow.id
 - **Response Time**: 48 hours
 
 ### Alternative Contact
+
 - **Email**: support@telemetryflow.id
 - **GitHub**: [@telemetryflow](https://github.com/telemetryflow)
 
 ## Bug Bounty Program
 
 We currently do not have a formal bug bounty program, but we:
+
 - Acknowledge security researchers in release notes
 - Provide public recognition for valid reports
 - Consider monetary rewards for critical vulnerabilities (case-by-case basis)
@@ -245,10 +259,11 @@ We currently do not have a formal bug bounty program, but we:
 ### Notification Channels
 
 Stay informed about security updates:
+
 - **GitHub Releases**: Watch repository for releases
 - **Security Advisories**: Enable GitHub security alerts
 - **Changelog**: Check [CHANGELOG.md](./CHANGELOG.md)
-- **Release Notes**: Review [docs/RELEASE_NOTES_*.md](./docs/)
+- **Release Notes**: Review [docs/RELEASE*NOTES*\*.md](./docs/)
 
 ### Update Process
 
@@ -304,17 +319,20 @@ pnpm test
 ## Additional Resources
 
 ### Documentation
+
 - [README.md](./README.md) - Project overview
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - Contribution guidelines
 - [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) - Community standards
 
 ### Security Tools
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [npm audit](https://docs.npmjs.com/cli/v8/commands/npm-audit)
 - [Snyk](https://snyk.io/) - Vulnerability scanning
 - [SonarQube](https://www.sonarqube.org/) - Code quality & security
 
 ### Security Training
+
 - [OWASP WebGoat](https://owasp.org/www-project-webgoat/)
 - [PortSwigger Web Security Academy](https://portswigger.net/web-security)
 - [HackerOne Resources](https://www.hackerone.com/resources)
@@ -323,12 +341,12 @@ pnpm test
 
 We would like to thank the following security researchers for their contributions:
 
-*No security researchers have been acknowledged yet.*
+_No security researchers have been acknowledged yet._
 
 ---
 
-- **Last Updated**: December 5, 2025
-- **Version**: 1.1.2
+- **Last Updated**: May 24, 2026
+- **Version**: 1.4.0
 - **Project**: TelemetryFlow Core
 
-**Built with ❤️ by DevOpsCorner Indonesia**
+**Built with ❤️ by Telemetri Data Indonesia**

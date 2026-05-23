@@ -1,0 +1,268 @@
+// =============================================================================
+// TFO Modal Global Design System
+// =============================================================================
+//
+// Provides uniform header/footer dividers and layout for all modals.
+//
+// NaiveUI preset="card" renders:
+//   .n-card.n-modal-card
+//     .n-card__header     ← title area
+//     .n-card__content    ← body / scrollable content
+//     .n-card__footer     ← action buttons
+//
+// Classes:
+//   .tfo-modal            → standard modal (add to <n-modal>)
+//   .tfo-modal--tabbed    → vertical-tab variant
+//   .tfo-modal-footer     → use inside <template #footer> for button layout
+// =============================================================================
+
+
+// ─── 1. Universal: all preset="card" modals get header/footer dividers ────────
+//
+// NaiveUI injects component styles at runtime (after static CSS), so we must
+// use !important to guarantee our border overrides take precedence.
+// The n-modal with preset="card" renders: <div class="n-card n-modal-card">
+//
+// NOTE: --n-border-color on NaiveUI card resolves to transparent for non-bordered
+// cards. Use --n-divider-color instead (NaiveUI divider token) which is always visible.
+
+.n-modal-card,
+.n-card.n-modal-card {
+  // Header bottom divider
+  > .n-card__header {
+    border-bottom: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18)) !important;
+  }
+
+  // Footer top divider — the core design requirement
+  > .n-card__footer {
+    border-top: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18)) !important;
+    padding-top: 16px !important;
+  }
+
+  // Ensure content area scrolls independently without clipping header/footer
+  > .n-card__content {
+    overflow-y: auto;
+  }
+}
+
+
+// ─── 2. .tfo-modal — explicit class for semantic clarity + overrides ──────────
+
+.tfo-modal {
+  > .n-card__header {
+    border-bottom: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18)) !important;
+  }
+
+  > .n-card__footer {
+    border-top: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18)) !important;
+    padding-top: 16px !important;
+  }
+}
+
+
+// ─── 3. .tfo-modal-footer — standard footer button row ───────────────────────
+//
+// Use inside <template #footer>:
+//   <div class="tfo-modal-footer">
+//     <n-button @click="close">Cancel</n-button>
+//     <n-button type="primary" @click="save">Save</n-button>
+//   </div>
+//
+// The negative left/right margins extend the divider line to the full modal
+// width, compensating for NaiveUI card's 24px horizontal padding.
+
+.tfo-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+
+  // Full-width separator line — belt-and-suspenders alongside .n-card__footer rule
+  border-top: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18));
+  padding-top: 16px;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+// Variant: left-aligned info + right-aligned actions
+.tfo-modal-footer--spread {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18));
+  padding-top: 16px;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  .tfo-modal-footer__info {
+    font-size: 12px;
+    opacity: 0.55;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tfo-modal-footer__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+
+// ─── 4. .tfo-modal--tabbed — vertical tab variant ────────────────────────────
+//
+// Usage: <n-modal class="tfo-modal tfo-modal--tabbed" ...>
+//
+// Internal structure expected:
+//   <div class="tfo-modal-layout">        ← flex container
+//     <div class="tfo-modal-tabs">        ← left tab sidebar
+//       <div class="tfo-modal-tab-item [active]"> ... </div>
+//       <div class="tfo-modal-tab-desc"> ... </div>
+//     </div>
+//     <div class="tfo-modal-content">     ← right scrollable area
+//       ...
+//     </div>
+//   </div>
+
+// ── Layout container ──────────────────────────────────────────────────────────
+.tfo-modal-layout {
+  display: flex;
+  gap: 0;
+  min-height: 360px;
+}
+
+// ── Left vertical tab sidebar ─────────────────────────────────────────────────
+.tfo-modal-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 176px;
+  max-width: 176px;
+  border-right: 1px solid var(--n-divider-color, var(--n-border-color));
+  padding-right: 16px;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.tfo-modal-tab-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--n-text-color-3, rgba(194, 194, 194, 0.8));
+  user-select: none;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.08);
+    color: var(--n-text-color, inherit);
+  }
+
+  &.active {
+    background: rgba(99, 102, 241, 0.14);
+    color: var(--n-primary-color, #6366f1);
+
+    .tfo-modal-tab-icon {
+      color: var(--n-primary-color, #6366f1);
+    }
+  }
+}
+
+.tfo-modal-tab-icon {
+  font-size: 18px;
+  transition: color 0.18s ease;
+  flex-shrink: 0;
+}
+
+// Label + inline description group inside each tab item
+.tfo-modal-tab-label-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tfo-modal-tab-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+// Inline tab description (shown inside each tab item, below the label)
+.tfo-modal-tab-desc {
+  font-size: 0.7rem;
+  color: var(--n-text-color-3, rgba(194, 194, 194, 0.6));
+  line-height: 1.4;
+  white-space: normal;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+// ── Right content area ────────────────────────────────────────────────────────
+.tfo-modal-content {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+// ── Content section box (card-within-card) ────────────────────────────────────
+.tfo-modal-box {
+  background: var(--n-action-color, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--n-border-color);
+  border-radius: 8px;
+  padding: 16px;
+
+  > :deep(.n-form-item):last-child {
+    margin-bottom: 0;
+  }
+}
+
+
+// ─── 5. Responsive ───────────────────────────────────────────────────────────
+
+@media (max-width: 640px) {
+  // On small screens, stack vertical tabs horizontally at top
+  .tfo-modal-layout {
+    flex-direction: column;
+  }
+
+  .tfo-modal-tabs {
+    flex-direction: row;
+    min-width: unset;
+    max-width: unset;
+    border-right: none;
+    border-bottom: 1px solid var(--n-divider-color, var(--n-border-color));
+    padding-right: 0;
+    padding-bottom: 12px;
+    margin-right: 0;
+    margin-bottom: 16px;
+    overflow-x: auto;
+
+    .tfo-modal-tab-desc {
+      display: none; // hide description in compact horizontal mode
+    }
+  }
+
+  .tfo-modal-tab-item {
+    flex-shrink: 0;
+  }
+
+  .tfo-modal-footer,
+  .tfo-modal-footer--spread {
+    flex-wrap: wrap;
+  }
+}

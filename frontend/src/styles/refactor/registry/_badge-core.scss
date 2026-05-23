@@ -1,0 +1,132 @@
+// TFO Style Registry — Badge Core
+// Signal badges, severity, log levels
+
+@use "@/styles/variables" as *;
+
+// Log level badges
+.log-level {
+  padding: 2px 8px;
+  border-radius: $radius-sm;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+
+  &.trace {
+    background-color: rgba($gray-500, 0.1);
+    color: $gray-600;
+  }
+
+  &.debug {
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+  }
+
+  &.info {
+    background-color: rgba($success-color, 0.1);
+    color: $success-color;
+  }
+
+  &.warn {
+    background-color: rgba($warning-color, 0.1);
+    color: $warning-color;
+  }
+
+  &.error {
+    background-color: rgba($error-color, 0.1);
+    color: $error-color;
+  }
+
+  &.fatal {
+    background-color: rgba(#7c3aed, 0.1);
+    color: #7c3aed;
+  }
+}
+
+// Signal type badges
+.signal-badge {
+  padding: 4px 12px;
+  border-radius: $radius-sm;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &.metric {
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+  }
+
+  &.log {
+    background-color: rgba($success-color, 0.1);
+    color: $success-color;
+  }
+
+  &.trace {
+    background-color: rgba(#8b5cf6, 0.1);
+    color: #8b5cf6;
+  }
+
+  &.exemplar {
+    background-color: rgba($warning-color, 0.1);
+    color: $warning-color;
+  }
+}
+
+// Alert severity badges
+.severity-badge {
+  padding: 4px 12px;
+  border-radius: $radius-sm;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.critical {
+    background-color: rgba($error-color, 0.1);
+    color: $error-color;
+  }
+
+  &.warning {
+    background-color: rgba($warning-color, 0.1);
+    color: $warning-color;
+  }
+
+  &.info {
+    background-color: rgba($info-color, 0.1);
+    color: $info-color;
+  }
+}
+
+// Duration format
+.duration {
+  font-family: 'JetBrains Mono', 'Menlo', 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 0.875rem;
+
+  &.fast {
+    color: $success-color;
+  }
+
+  &.normal {
+    color: $gray-600;
+  }
+
+  &.slow {
+    color: $warning-color;
+  }
+
+  &.very-slow {
+    color: $error-color;
+  }
+}
+
+// Monospace text
+.mono {
+  font-family: 'JetBrains Mono', 'Menlo', 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 0.875em;
+}
+
+// NTag small default bold
+.n-tag.n-tag--small,
+.n-tag[data-n-size="small"] {
+  font-weight: 700 !important;
+}
+
+.n-tag__content {
+  font-weight: inherit !important;
+}

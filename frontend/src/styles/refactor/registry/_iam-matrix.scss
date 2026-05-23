@@ -1,0 +1,443 @@
+// ═══════════════════════════════════════════════════════════════════
+// IAM Matrix Styles
+// Extracted from: views/iam/matrix/index.vue
+// ═══════════════════════════════════════════════════════════════════
+
+.rbac-matrix-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rbac-matrix-page .stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.rbac-matrix-page .stats-row-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--n-text-color-3);
+  margin-bottom: -4px;
+
+  svg {
+    font-size: 14px;
+  }
+}
+
+.rbac-matrix-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--n-text-color);
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: var(--n-text-color-3);
+    margin: 0;
+  }
+}
+
+.rbac-matrix-page .filters-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: var(--card-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+
+  :root:not(.dark) & {
+    background: #ffffff;
+    border-color: #e2e8f0;
+  }
+
+  :root.dark & {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .search-input {
+    width: 250px;
+  }
+
+  .resource-filter {
+    flex: 1;
+    min-width: 320px;
+  }
+}
+
+.rbac-matrix-page .legend-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+
+  :root.dark & {
+    background: rgba(30, 41, 59, 0.6) !important;
+    border-color: rgba(71, 85, 105, 0.5) !important;
+  }
+
+  .legend-items {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #475569;
+
+    :root.dark & {
+      color: #94a3b8;
+    }
+  }
+
+  .legend-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.granted {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+
+      :root.dark & {
+        background: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+      }
+    }
+
+    &.denied {
+      background: rgba(100, 116, 139, 0.12);
+      color: #94a3b8;
+
+      :root.dark & {
+        background: rgba(100, 116, 139, 0.2);
+        color: #64748b;
+      }
+    }
+  }
+}
+
+.rbac-matrix-page .resource-section {
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  :root.dark & {
+    border-color: rgba(71, 85, 105, 0.5);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.rbac-matrix-page .resource-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+
+  :root.dark & {
+    background: linear-gradient(
+      135deg,
+      rgba(51, 65, 85, 0.6) 0%,
+      rgba(30, 41, 59, 0.8) 100%
+    );
+    border-color: rgba(71, 85, 105, 0.5);
+  }
+
+  .resource-icon {
+    font-size: 22px;
+    color: #6366f1;
+
+    :root.dark & {
+      color: #818cf8;
+    }
+  }
+
+  .resource-name {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: #1e293b;
+
+    :root.dark & {
+      color: #f1f5f9;
+    }
+  }
+}
+
+.rbac-matrix-page .matrix-container {
+  overflow-x: auto;
+}
+
+.rbac-matrix-page .matrix-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 800px;
+
+  th,
+  td {
+    padding: 16px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    text-align: center;
+
+    :root.dark & {
+      border-color: rgba(71, 85, 105, 0.4);
+    }
+  }
+
+  th {
+    background: #f8fafc;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 2px solid rgba(203, 213, 225, 0.8);
+
+    :root.dark & {
+      background: rgba(51, 65, 85, 0.6);
+      border-color: rgba(71, 85, 105, 0.6);
+    }
+  }
+
+  tbody tr {
+    &:hover {
+      background: rgba(59, 130, 246, 0.03);
+
+      :root.dark & {
+        background: rgba(59, 130, 246, 0.08);
+      }
+    }
+
+    td {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+  }
+}
+
+.rbac-matrix-page .permission-header {
+  text-align: left !important;
+  width: 280px;
+  min-width: 280px;
+  position: sticky;
+  left: 0;
+  background: #f8fafc !important;
+  z-index: 2;
+  font-size: 0.8125rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  :root.dark & {
+    background: rgba(51, 65, 85, 0.6) !important;
+    color: #94a3b8;
+  }
+}
+
+.rbac-matrix-page .role-header {
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
+  border-left: 1px solid rgba(226, 232, 240, 0.8);
+
+  :root.dark & {
+    border-color: rgba(71, 85, 105, 0.4);
+  }
+
+  &.system {
+    background: rgba(59, 130, 246, 0.06) !important;
+
+    :root.dark & {
+      background: rgba(59, 130, 246, 0.12) !important;
+    }
+  }
+}
+
+.rbac-matrix-page .role-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  .role-name {
+    font-size: 12px;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.3;
+  }
+
+  .role-count {
+    font-size: 10px;
+    color: var(--text-color-3);
+  }
+}
+
+.rbac-matrix-page .permission-cell {
+  text-align: left !important;
+  position: sticky;
+  left: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.08) 0%,
+    rgba(99, 102, 241, 0.04) 100%
+  ) !important;
+  z-index: 1;
+  border-right: 2px solid rgba(59, 130, 246, 0.2) !important;
+  padding: 16px !important;
+  vertical-align: top !important;
+
+  :root.dark & {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(99, 102, 241, 0.08) 100%
+    ) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+  }
+
+  .permission-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .permission-name {
+    font-weight: 500;
+    font-size: 14px;
+    color: #1e293b;
+    line-height: 1.4;
+
+    :root.dark & {
+      color: #f1f5f9;
+    }
+  }
+
+  .permission-count {
+    font-size: 12px;
+    color: #64748b;
+    display: block;
+
+    :root.dark & {
+      color: #94a3b8;
+    }
+  }
+}
+
+.rbac-matrix-page .check-cell {
+  vertical-align: middle;
+  text-align: center;
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
+  height: 56px;
+  border-left: 1px solid rgba(226, 232, 240, 0.8);
+  background: #ffffff;
+  transition: background 0.15s ease;
+
+  :root.dark & {
+    border-color: rgba(71, 85, 105, 0.3);
+    background: rgba(30, 41, 59, 0.4);
+  }
+
+  &.system {
+    background: rgba(59, 130, 246, 0.04);
+
+    :root.dark & {
+      background: rgba(59, 130, 246, 0.08);
+    }
+  }
+
+  &.granted {
+    background: rgba(16, 185, 129, 0.1);
+
+    :root.dark & {
+      background: rgba(16, 185, 129, 0.15);
+    }
+
+    &.system {
+      background: linear-gradient(
+        135deg,
+        rgba(16, 185, 129, 0.1) 0%,
+        rgba(59, 130, 246, 0.05) 100%
+      );
+
+      :root.dark & {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.15) 0%,
+          rgba(59, 130, 246, 0.08) 100%
+        );
+      }
+    }
+  }
+}
+
+.rbac-matrix-page .check-icon {
+  font-size: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+
+  &.granted {
+    color: #10b981;
+
+    :root.dark & {
+      color: #34d399;
+    }
+  }
+
+  &.denied {
+    color: #cbd5e1;
+
+    :root.dark & {
+      color: #475569;
+    }
+  }
+}
+
+.rbac-matrix-page .empty-state {
+  text-align: center;
+  padding: 48px;
+  color: var(--text-color-3);
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+}

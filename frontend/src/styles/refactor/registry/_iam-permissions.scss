@@ -1,0 +1,220 @@
+// ═══════════════════════════════════════════════════════════════════
+// IAM Permissions Styles
+// Extracted from: views/iam/permissions/index.vue
+// ═══════════════════════════════════════════════════════════════════
+
+.rbac-permissions-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rbac-permissions-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--n-text-color);
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: var(--n-text-color-3);
+    margin: 0;
+  }
+}
+
+.rbac-permissions-page .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rbac-permissions-page .filters-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 16px;
+  background: var(--card-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+
+  :root:not(.dark) & {
+    background: #ffffff;
+    border-color: #e2e8f0;
+  }
+
+  :root.dark & {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .search-input {
+    width: 250px;
+  }
+
+  .resource-filter {
+    width: 250px;
+  }
+}
+
+.rbac-permissions-page .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.rbac-permissions-page .permissions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 24px;
+}
+
+.rbac-permissions-page .resource-card {
+  .resource-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .resource-icon {
+      font-size: 20px;
+      color: var(--primary-color);
+    }
+
+    .resource-name {
+      font-weight: 600;
+      text-transform: capitalize;
+      flex: 1;
+    }
+  }
+}
+
+.rbac-permissions-page .permissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rbac-permissions-page .permission-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--card-color);
+  border-radius: 8px;
+  border: 2px solid;
+  transition: all 0.2s;
+
+  // Border colors based on action type
+  &[data-action="create"] {
+    border-color: #10b981;
+  }
+
+  &[data-action="read"] {
+    border-color: #3b82f6;
+  }
+
+  &[data-action="update"],
+  &[data-action="write"] {
+    border-color: #f59e0b;
+  }
+
+  &[data-action="delete"] {
+    border-color: #ef4444;
+  }
+
+  &[data-action="admin"],
+  &[data-action="manage"] {
+    border-color: #8b5cf6;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .permission-actions {
+      opacity: 1;
+    }
+  }
+}
+
+.rbac-permissions-page .permission-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex: 1;
+  gap: 12px;
+}
+
+.rbac-permissions-page .permission-info {
+  flex: 1;
+
+  .permission-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    margin-bottom: 4px;
+
+    .permission-icon {
+      color: var(--text-color-3);
+    }
+  }
+
+  .permission-description {
+    font-size: 12px;
+    color: var(--text-color-3);
+    padding-left: 24px;
+  }
+}
+
+.rbac-permissions-page .permission-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.rbac-permissions-page .empty-state {
+  text-align: center;
+  padding: 48px;
+  color: var(--text-color-3);
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .rbac-permissions-page .permissions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rbac-permissions-page .header-actions {
+    width: 100%;
+    flex-direction: column;
+
+    .search-input,
+    .resource-filter {
+      width: 100%;
+    }
+  }
+}

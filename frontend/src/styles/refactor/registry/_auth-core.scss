@@ -1,0 +1,238 @@
+// TFO Style Registry — Auth Core (Shared Layout)
+// Page wrapper, left/right panels, form container, header, footer, divider,
+// and responsive breakpoints.
+// Login, register, MFA, SSO pages — all selectors scoped to page-wrapper
+// classes to prevent style bleed.
+
+@use "auth-variables" as *;
+
+// ─── 1. Page wrapper ──────────────────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page {
+  min-height: 100vh;
+  display: flex;
+  background: $auth-bg-light;
+}
+
+// ─── 2. Left Panel ────────────────────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page {
+  .left-panel {
+    flex: 0 0 $auth-panel-width;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $auth-bg-dark;
+    padding: 40px 24px;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+  }
+}
+
+// ─── 3. Form / Content container ──────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page {
+
+  // Handles .form-container and .content-container naming conventions
+  .form-container,
+  .content-container {
+    width: 100%;
+    max-width: $auth-form-max-width;
+    z-index: 1;
+  }
+}
+
+// ─── 4. Page header (logo + title row) ────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page {
+
+  // All header class-name variants used across views
+  .login-header,
+  .register-header,
+  .forgot-header,
+  .reset-header,
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .header-logo {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+  }
+
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $auth-white;
+    margin: 0;
+    line-height: 1.3;
+  }
+}
+
+// login + register use a larger logo
+.login-page .header-logo,
+.register-page .header-logo {
+  width: 98px;
+  height: 98px;
+}
+
+// ─── 5. Page footer ───────────────────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page {
+
+  .page-footer,
+  .login-footer,
+  .register-footer {
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-size: 0.8125rem;
+    color: $auth-text-muted;
+    margin: 0;
+  }
+}
+
+// ─── 6. Right panel ───────────────────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page {
+  .right-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $auth-bg-light;
+    padding: 24px;
+    position: relative;
+  }
+
+  .illustration-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-image {
+    width: 80%;
+    height: auto;
+  }
+}
+
+// ─── 7. Divider ───────────────────────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page {
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: $auth-text-muted;
+    font-size: 0.8125rem;
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: $auth-border-subtle;
+    }
+  }
+}
+
+// ─── 15. Responsive ───────────────────────────────────────────────────────────
+
+@media (max-width: $auth-breakpoint) {
+  .login-page,
+  .register-page,
+  .forgot-password-page,
+  .reset-password-page,
+  .change-password-page,
+  .mfa-setup-page,
+  .mfa-verify-page,
+  .verify-email-page,
+  .verify-pending-page {
+    flex-direction: column;
+
+    .left-panel {
+      flex: none;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .right-panel {
+      display: none;
+    }
+  }
+}

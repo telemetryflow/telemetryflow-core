@@ -1,0 +1,17 @@
+// TFO Style Registry — Badge Count
+// NTag weight overrides for badge-count pattern
+
+.badge-count {
+  font-weight: 700 !important;
+}
+
+.n-tag .badge-count+span,
+.n-tag:not(:has(.badge-count)) {
+  font-weight: 400;
+}
+
+.n-tag:has(.badge-count) {
+  .n-tag__content {
+    font-weight: 400 !important;
+  }
+}

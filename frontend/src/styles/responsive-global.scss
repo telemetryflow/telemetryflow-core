@@ -1,0 +1,830 @@
+// Global Responsive Styles for TelemetryFlow-Viz
+// This file contains responsive utilities and mixins for all features
+
+@import './tfo-variables.scss';
+
+// Responsive Mixins
+@mixin mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-mobile + 1px}) and (max-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-tablet + 1px}) {
+    @content;
+  }
+}
+
+@mixin mobile-tablet {
+  @media (max-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+// Common Page Layout
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+
+  @include mobile {
+    gap: 12px;
+    padding: 12px;
+  }
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  @include mobile {
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--n-text-color);
+  margin: 0 0 4px 0;
+
+  @include mobile {
+    font-size: 1.25rem;
+  }
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+
+  @include mobile {
+    font-size: 0.8125rem;
+  }
+}
+
+// Card Grid Layouts
+.card-grid {
+  display: grid;
+  gap: 16px;
+
+  @include mobile {
+    gap: 12px;
+  }
+
+  &.cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &.cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+
+    @include mobile-tablet {
+      grid-template-columns: 1fr;
+    }
+
+    @include tablet {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &.cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+
+    @include tablet {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &.cols-auto {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Stat Cards Grid
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  @include tablet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// Chart Grid
+.chart-grid {
+  display: grid;
+  gap: 16px;
+
+  @include mobile {
+    gap: 12px;
+  }
+
+  &.cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &.cols-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Filter Bar
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--n-card-color);
+  border: 1px solid $border-light;
+  border-radius: 8px;
+
+  :global(html.dark) & {
+    border-color: $border-dark;
+  }
+
+  @include mobile {
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 180px;
+    flex: 1;
+    max-width: 250px;
+
+    @include mobile {
+      min-width: 100%;
+      max-width: none;
+    }
+  }
+
+  .filter-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--n-text-color-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    @include mobile {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+// Action Bar
+.action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  @include mobile {
+    gap: 8px;
+  }
+
+  .action-left,
+  .action-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    @include mobile {
+      width: 100%;
+      gap: 8px;
+    }
+  }
+
+  .search-input {
+    width: 280px;
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+
+  .button-group {
+    display: flex;
+    gap: 8px;
+
+    @include mobile {
+      width: 100%;
+
+      button {
+        flex: 1;
+      }
+    }
+  }
+}
+
+// Data Table Responsive
+.data-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @include mobile {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 40px;
+      background: $scroll-indicator-light;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+
+      :global(html.dark) & {
+        background: $scroll-indicator-dark;
+      }
+    }
+
+    &.scrolled-to-end::after {
+      opacity: 0;
+    }
+  }
+
+  table {
+    min-width: 100%;
+
+    @include mobile {
+      min-width: 800px;
+    }
+  }
+}
+
+// Tabs Responsive
+.tabs-container {
+  :deep(.n-tabs) {
+    .n-tabs-nav {
+      @include mobile {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+
+    .n-tabs-tab {
+      @include mobile {
+        font-size: 0.8125rem;
+        padding: 8px 12px;
+      }
+    }
+  }
+}
+
+// Modal/Drawer Responsive
+.drawer-content {
+  @include mobile {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+.modal-content {
+  @include mobile {
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+  }
+}
+
+// Form Responsive
+.form-grid {
+  display: grid;
+  gap: 16px;
+
+  @include mobile {
+    gap: 12px;
+  }
+
+  &.cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &.cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--n-text-color);
+
+    @include mobile {
+      font-size: 0.8125rem;
+    }
+  }
+}
+
+// Sidebar Layout
+.layout-with-sidebar {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
+
+  @include mobile-tablet {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sidebar {
+    @include mobile-tablet {
+      order: 2;
+    }
+  }
+
+  .main-content {
+    @include mobile-tablet {
+      order: 1;
+    }
+  }
+}
+
+// Split View Layout
+.split-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+// Timeline Responsive
+.timeline-container {
+  @include mobile {
+    :deep(.n-timeline) {
+      .n-timeline-item {
+        padding-left: 20px;
+
+        .n-timeline-item-timeline {
+          left: 0;
+        }
+      }
+    }
+  }
+}
+
+// Code Block Responsive
+.code-block {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  font-size: 0.875rem;
+
+  @include mobile {
+    font-size: 0.8125rem;
+  }
+
+  pre {
+    margin: 0;
+    white-space: pre;
+
+    @include mobile {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// Badge/Tag Responsive
+.badge-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  @include mobile {
+    gap: 6px;
+  }
+
+  .badge {
+    @include mobile {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+    }
+  }
+}
+
+// Breadcrumb Responsive
+.breadcrumb {
+  @include mobile {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+// Utility Classes
+.hide-mobile {
+  @include mobile {
+    display: none !important;
+  }
+}
+
+.hide-tablet {
+  @include tablet {
+    display: none !important;
+  }
+}
+
+.hide-desktop {
+  @include desktop {
+    display: none !important;
+  }
+}
+
+.show-mobile {
+  display: none !important;
+
+  @include mobile {
+    display: block !important;
+  }
+}
+
+.show-tablet {
+  display: none !important;
+
+  @include tablet {
+    display: block !important;
+  }
+}
+
+.show-desktop {
+  display: none !important;
+
+  @include desktop {
+    display: block !important;
+  }
+}
+
+// Text Responsive
+.text-responsive {
+  @include mobile {
+    font-size: 0.875rem;
+  }
+}
+
+.text-small-responsive {
+  @include mobile {
+    font-size: 0.75rem;
+  }
+}
+
+// Spacing Responsive
+.gap-responsive {
+  gap: 16px;
+
+  @include mobile {
+    gap: 12px;
+  }
+}
+
+.padding-responsive {
+  padding: 16px;
+
+  @include mobile {
+    padding: 12px;
+  }
+}
+
+.margin-responsive {
+  margin: 16px;
+
+  @include mobile {
+    margin: 12px;
+  }
+}
+
+// ============================================
+// Global Card Header Responsive Styles
+// ============================================
+
+// Naive UI Card Header - Global Responsive
+.n-card {
+  .n-card-header {
+    @include tablet {
+      padding: 12px 14px !important;
+    }
+
+    @include mobile {
+      padding: 10px 12px !important;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+
+  .n-card-header__main {
+    @include tablet {
+      font-size: 0.9375rem !important;
+    }
+
+    @include mobile {
+      font-size: 0.875rem !important;
+    }
+  }
+
+  .n-card-header__extra {
+    @include mobile {
+      width: 100%;
+
+      // Make action buttons full width on mobile
+      .n-button-group {
+        width: 100%;
+        display: flex;
+
+        .n-button {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// Global DataTable Responsive Styles
+// ============================================
+
+.n-data-table {
+
+  // Header styles
+  .n-data-table-thead {
+    .n-data-table-th {
+      @include tablet {
+        font-size: 0.6875rem !important;
+        padding: 10px 12px !important;
+      }
+
+      @include mobile {
+        font-size: 0.625rem !important;
+        padding: 6px 8px !important;
+        letter-spacing: 0.3px;
+      }
+    }
+  }
+
+  // Cell styles
+  .n-data-table-td {
+    @include tablet {
+      font-size: 0.8125rem !important;
+      padding: 10px 12px !important;
+    }
+
+    @include mobile {
+      font-size: 0.6875rem !important;
+      padding: 6px 8px !important;
+    }
+  }
+
+  // Pagination styles
+  .n-data-table__pagination {
+    @include tablet {
+      padding: 10px 12px;
+    }
+
+    @include mobile {
+      padding: 8px 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  }
+
+  .n-pagination-item {
+    @include tablet {
+      font-size: 0.8125rem;
+      min-width: 30px;
+      height: 30px;
+    }
+
+    @include mobile {
+      font-size: 0.75rem;
+      min-width: 28px;
+      height: 28px;
+    }
+  }
+
+  // Empty state
+  .n-data-table-empty {
+    @include mobile {
+      padding: 32px 16px;
+    }
+  }
+
+  // Loading wrapper
+  .n-data-table-loading-wrapper {
+    @include mobile {
+      min-height: 150px;
+    }
+  }
+}
+
+// ============================================
+// Small Mobile Breakpoint (≤480px)
+// ============================================
+@media (max-width: 480px) {
+  .n-card {
+    .n-card-header {
+      padding: 8px 10px !important;
+      gap: 6px;
+    }
+
+    .n-card-header__main {
+      font-size: 0.8125rem !important;
+    }
+
+    .n-card-header__extra {
+      .n-button {
+        padding: 0 8px;
+        font-size: 0.6875rem;
+      }
+
+      .n-button-group .n-button {
+        padding: 0 6px;
+        font-size: 0.6875rem;
+      }
+    }
+  }
+
+  .n-data-table {
+    .n-data-table-th {
+      font-size: 0.5625rem !important;
+      padding: 5px 6px !important;
+      letter-spacing: 0.2px;
+    }
+
+    .n-data-table-td {
+      font-size: 0.625rem !important;
+      padding: 5px 6px !important;
+    }
+
+    .n-data-table__pagination {
+      padding: 6px 8px;
+    }
+
+    .n-pagination-item {
+      font-size: 0.6875rem;
+      min-width: 24px;
+      height: 24px;
+    }
+
+    .n-data-table-empty {
+      padding: 24px 12px;
+    }
+  }
+}
+
+// ============================================
+// DataTableCard Specific Responsive Styles
+// ============================================
+
+.data-table-card {
+  .card-header {
+    @include tablet {
+      padding: 12px 14px;
+      gap: 10px;
+    }
+
+    @include mobile {
+      padding: 10px 12px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+
+  .card-title {
+    @include tablet {
+      font-size: 0.9375rem;
+    }
+
+    @include mobile {
+      font-size: 0.875rem;
+    }
+  }
+
+  .card-extra {
+    @include mobile {
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  }
+
+  .search-input {
+    @include tablet {
+      width: 200px;
+    }
+
+    @include mobile {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .data-table-card {
+    .card-header {
+      padding: 8px 10px;
+      gap: 6px;
+    }
+
+    .card-title {
+      font-size: 0.8125rem;
+    }
+
+    .card-extra {
+      gap: 6px;
+    }
+  }
+}
+
+// ============================================
+// Section Header Responsive Styles
+// ============================================
+
+.section-header,
+.panel-header {
+  @include tablet {
+    padding: 10px 14px;
+    font-size: 0.8125rem;
+    gap: 10px;
+  }
+
+  @include mobile {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .section-header,
+  .panel-header {
+    padding: 6px 10px;
+    font-size: 0.6875rem;
+    gap: 6px;
+  }
+}

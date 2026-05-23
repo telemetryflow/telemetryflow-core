@@ -1,0 +1,235 @@
+// TFO Style Registry — DB Monitoring — Query Analytics
+// Extracted from: db-monitoring/query-analytics/
+
+// === query-analytics/QANDetailPanel.vue ===
+.qan-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  min-width: 400px;
+  max-width: 600px;
+  border-left: 1px solid var(--n-border-color);
+  overflow-y: auto;
+}
+
+.qan-detail-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 300px;
+  border-left: 1px solid var(--n-border-color);
+  padding: 48px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.query-text-section {
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.time-distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.distribution-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.distribution-segment {
+  transition: width 0.3s ease;
+  min-width: 2px;
+}
+
+.distribution-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #999;
+}
+
+.legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.metric-label {
+  font-size: 11px;
+  color: #999;
+}
+
+.metric-value {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+// === query-analytics/QANFilterPanel.vue ===
+.qan-filter-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px;
+  min-width: 220px;
+  max-width: 260px;
+  border-right: 1px solid var(--n-border-color);
+  overflow-y: auto;
+}
+
+.filter-header {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--n-border-color);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-group-title {
+  margin-bottom: 4px;
+}
+
+.filter-value-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &.active {
+    background: rgba(24, 160, 88, 0.15);
+  }
+}
+
+.filter-value-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-value-name {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-value-count {
+  font-size: 11px;
+  color: #999;
+}
+
+.filter-value-bar-container {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.filter-value-bar {
+  height: 100%;
+  background: var(--n-primary-color, #18a058);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.filter-value-pct {
+  font-size: 10px;
+  color: #666;
+}
+
+// === query-analytics/QANOverviewPanel.vue ===
+.qan-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qan-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+// === query-analytics/QANView.vue ===
+.qan-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  padding: 16px;
+}
+
+.qan-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.qan-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--n-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--n-card-color);
+}
+
+.qan-main {
+  flex: 1;
+  padding: 12px;
+  overflow: auto;
+}

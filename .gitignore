@@ -1,10 +1,10 @@
 # compiled output
 /dist
 /node_modules
-.nuxt
-.output
-packages/*/dist
-packages/*/node_modules
+backend/dist
+backend/node_modules
+frontend/dist
+frontend/node_modules
 .turbo
 
 # Logs
@@ -44,11 +44,12 @@ frontend/coverage
 # Environment
 .env
 !.env.example
+backend/.env
+frontend/.env
 
 # Temp
 temp/
 tmp/
-.restructure-env.sh
 
 # Build artifacts
 build/
@@ -59,3 +60,6 @@ build/
 .yarn
 .npm
 .example
+
+# Legacy src (moved to backend/src)
+/src/

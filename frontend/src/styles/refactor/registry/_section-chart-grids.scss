@@ -1,0 +1,98 @@
+// TFO Style Registry — Section Chart Grids
+// 2/3/4-col grids, auto-grid, stats-panel-grid, mobile chart height floor
+@use '@/styles/responsive-utilities.scss' as *;
+
+// ─── 2-column grid (1 → 2) ──────────────────────────────────────────────────
+
+.charts-grid-2 {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  align-items: start;
+  padding: 16px;
+
+  @include sm-up {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  @include md-up {
+    gap: 16px;
+  }
+}
+
+// ─── 3-column grid (1 → 2 → 3) ──────────────────────────────────────────────
+
+.charts-grid-3 {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  align-items: start;
+  padding: 16px;
+
+  @include sm-up {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  @include lg-up {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+// ─── 4-column stat panels (2 → 4) ───────────────────────────────────────────
+
+.charts-grid-4 {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+
+  @include md-up {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @include lg-up {
+    gap: 16px;
+  }
+}
+
+// ─── Auto-fit grid (minimum 280px per column) ────────────────────────────────
+
+.charts-auto-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  align-items: start;
+
+  @include md-up {
+    gap: 16px;
+  }
+}
+
+// ─── Stats panel grid (alias for charts-grid-4) ──────────────────────────────
+
+.stats-panel-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+
+  @include md-up {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @include lg-up {
+    gap: 16px;
+  }
+}
+
+// ─── Mobile chart height floor ───────────────────────────────────────────────
+
+@include xs-down {
+  .time-series-chart,
+  .bar-chart {
+    min-height: 180px;
+  }
+}

@@ -1,0 +1,73 @@
+/**
+ * Stat Panel Registry — COST OPTIMIZATION (CST)
+ * 4 stat panel definitions
+ */
+
+import type { StatPanelDefinition } from "./types";
+
+export const CST_STAT_PANEL_REGISTRY: StatPanelDefinition[] = [
+  {
+    statPanelId: "CST20001",
+    module: "CST",
+    title: "Total Cost MTD",
+    icon: "carbon:cost-total",
+    color: "info",
+    valueColor: "#3b82f6",
+    unit: "USD",
+    size: "small",
+    dataSource: "costOptimizationStore.totalMtdCost",
+    hasTrend: false,
+    hasTimeRange: false,
+    description: "Total cloud spend month-to-date",
+    view: "ai-intelligence/cost-optimization/index.vue",
+    position: "stats-row",
+  },
+  {
+    statPanelId: "CST20002",
+    module: "CST",
+    title: "Cost Trend %",
+    icon: "carbon:growth",
+    color: "success",
+    valueColor: "#10b981",
+    unit: "%",
+    size: "small",
+    dataSource: "costOptimizationStore.costTrendChangePercent",
+    hasTrend: true,
+    hasTimeRange: false,
+    description: "Month-over-month cost change percentage",
+    view: "ai-intelligence/cost-optimization/index.vue",
+    position: "stats-row",
+  },
+  {
+    statPanelId: "CST20003",
+    module: "CST",
+    title: "Active Budgets",
+    icon: "carbon:wallet",
+    color: "info",
+    valueColor: "#8b5cf6",
+    unit: "count",
+    size: "small",
+    dataSource: "costOptimizationStore.activeBudgets.length",
+    hasTrend: false,
+    hasTimeRange: false,
+    description: "Number of active cost budgets",
+    view: "ai-intelligence/cost-optimization/index.vue",
+    position: "stats-row",
+  },
+  {
+    statPanelId: "CST20004",
+    module: "CST",
+    title: "Potential Savings",
+    icon: "carbon:piggy-bank",
+    color: "success",
+    valueColor: "#22c55e",
+    unit: "USD",
+    size: "small",
+    dataSource: "costOptimizationStore.totalSavingsOpportunity",
+    hasTrend: false,
+    hasTimeRange: false,
+    description: "Estimated monthly savings from open recommendations",
+    view: "ai-intelligence/cost-optimization/index.vue",
+    position: "stats-row",
+  },
+];

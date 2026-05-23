@@ -1,0 +1,467 @@
+# Implementation Plan: Frontend-Backend IAM Integration
+
+## Overview
+
+This implementation plan covers the integration between the Vue 3 frontend and NestJS backend for the IAM module. The approach follows an incremental strategy, building core infrastructure first, then implementing each IAM feature (users, roles, permissions, organizations, workspaces, tenants, sessions, audit logs) with their corresponding frontend and backend components, and finally wiring everything together with proper error handling, security, and testing.
+
+## Tasks
+
+- [ ] 1. Set up core integration infrastructure
+  - Create base API client configuration with Axios interceptors
+  - Set up authentication token management
+  - Create base Pinia store patterns
+  - Configure TypeScript types for IAM entities
+  - Set up error handling infrastructure
+  - _Requirements: 10.1, 10.2, 10.5, 17.1, 17.2_
+
+- [ ] 2. Implement User Management integration
+  - [ ] 2.1 Create user API client
+    - Implement usersApi with CRUD operations (getAll, getById, create, update, delete, search)
+    - Add pagination support
+    - _Requirements: 1.1, 1.2, 1.3, 1.4_
+  - [ ] 2.2 Create users Pinia store
+    - Implement state management with caching
+    - Add optimistic updates for create/update/delete
+    - Implement rollback logic for failed operations
+    - _Requirements: 1.5, 11.2, 11.5, 11.6_
+  - [ ] 2.3 Create user management UI components
+    - Build UserTable component with Naive UI DataTable
+    - Build UserForm component for create/edit
+    - Build UserFilters component for search
+    - Create users list page (views/iam/users/index.vue)
+    - Create user detail page (views/iam/users/detail.vue)
+    - _Requirements: 1.1, 12.1, 12.2_
+  - [ ]\* 2.4 Write property test for user CRUD round trip
+    - **Property 5: User CRUD Round Trip**
+    - **Validates: Requirements 1.2**
+  - [ ]\* 2.5 Write property test for user input validation
+    - **Property 8: User Input Validation**
+    - **Validates: Requirements 1.6**
+  - [ ]\* 2.6 Write unit tests for users store
+    - Test fetchUsers, createUser, updateUser, deleteUser
+    - Test optimistic updates and rollback
+    - Test error handling
+    - _Requirements: 1.2, 1.3, 1.4, 1.8_
+
+- [ ] 3. Implement Role Management integration
+  - [ ] 3.1 Create role API client
+    - Implement rolesApi with CRUD operations
+    - Add permission assignment endpoints
+    - _Requirements: 2.1, 2.2, 2.3_
+  - [ ] 3.2 Create roles Pinia store
+    - Implement state management with role hierarchy
+    - Add permission caching
+    - _Requirements: 2.4, 2.8, 11.2_
+  - [ ] 3.3 Create role management UI components
+    - Build RoleTable component
+    - Build RoleForm component
+    - Build PermissionsModal for assigning permissions
+    - Create roles list page (views/iam/roles/index.vue)
+    - _Requirements: 2.1, 2.2, 2.3, 12.1_
+  - [ ]\* 3.4 Write property test for role CRUD round trip
+    - **Property 10: Role CRUD Round Trip**
+    - **Validates: Requirements 2.2**
+  - [ ]\* 3.5 Write property test for role tier ordering
+    - **Property 12: Role Tier Ordering**
+    - **Validates: Requirements 2.4**
+  - [ ]\* 3.6 Write property test for role deletion constraint
+    - **Property 14: Role Deletion Constraint**
+    - **Validates: Requirements 2.6**
+
+- [ ] 4. Checkpoint - Ensure user and role management works
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 5. Implement Permission Management integration
+  - [ ] 5.1 Create permission API client
+    - Implement permissionsApi with CRUD operations
+    - Add search and filter endpoints
+    - _Requirements: 3.1, 3.2, 3.4_
+  - [ ] 5.2 Create permissions Pinia store
+    - Implement state management with grouping by resource
+    - Add role-permission relationship caching
+    - _Requirements: 3.1, 3.3, 11.2_
+  - [ ] 5.3 Create permission management UI components
+    - Build PermissionMatrix component
+    - Build PermissionForm component
+    - Create permissions list page (views/iam/permissions/index.vue)
+    - _Requirements: 3.1, 3.2, 3.3, 12.1_
+  - [ ]\* 5.4 Write property test for permission name format validation
+    - **Property 21: Permission Name Format Validation**
+    - **Validates: Requirements 3.7**
+  - [ ]\* 5.5 Write property test for permission cascade deletion
+    - **Property 22: Permission Cascade Deletion**
+    - **Validates: Requirements 3.8**
+  - [ ]\* 5.6 Write unit tests for permissions store
+    - Test permission grouping logic
+    - Test search and filter functionality
+    - _Requirements: 3.1, 3.4_
+
+- [ ] 6. Implement Organization and Workspace Management integration
+  - [ ] 6.1 Create organization and workspace API clients
+    - Implement organizationsApi with CRUD operations
+    - Implement workspacesApi with CRUD operations
+    - Add relationship endpoints (org workspaces, workspace members)
+    - _Requirements: 4.1, 4.2, 4.4, 4.5_
+  - [ ] 6.2 Create organizations and workspaces Pinia stores
+    - Implement state management with hierarchical relationships
+    - Add workspace membership caching
+    - _Requirements: 4.1, 4.8, 11.2_
+  - [ ] 6.3 Create organization and workspace UI components
+    - Build OrgTree component for hierarchical display
+    - Build OrgForm and WorkspaceForm components
+    - Build WorkspaceCard component
+    - Create organizations page (views/iam/organizations/index.vue)
+    - Create workspaces page (views/iam/workspaces/index.vue)
+    - _Requirements: 4.1, 4.2, 4.4, 12.1_
+  - [ ]\* 6.4 Write property test for organization cascade deletion
+    - **Property 27: Organization Cascade Deletion**
+    - **Validates: Requirements 4.7**
+  - [ ]\* 6.5 Write property test for workspace organization link
+    - **Property 25: Workspace Organization Link**
+    - **Validates: Requirements 4.4**
+
+- [ ] 7. Implement Tenant Management integration
+  - [ ] 7.1 Create tenant API client
+    - Implement tenantsApi with CRUD operations
+    - Add resource usage endpoints
+    - Add suspension/activation endpoints
+    - _Requirements: 5.1, 5.2, 5.5, 5.6_
+  - [ ] 7.2 Create tenants Pinia store
+    - Implement state management with resource usage tracking
+    - _Requirements: 5.1, 11.2_
+  - [ ] 7.3 Create tenant management UI components
+    - Build TenantCard component
+    - Build TenantForm component
+    - Build ResourceUsageChart component with ECharts
+    - Create tenants page (views/iam/tenants/index.vue)
+    - _Requirements: 5.1, 5.2, 5.3, 12.1, 13.1_
+  - [ ]\* 7.4 Write property test for tenant suspension cascade
+    - **Property 32: Tenant Suspension Cascade**
+    - **Validates: Requirements 5.5**
+  - [ ]\* 7.5 Write property test for tenant data archival
+    - **Property 34: Tenant Data Archival**
+    - **Validates: Requirements 5.8**
+
+- [ ] 8. Checkpoint - Ensure organization, workspace, and tenant management works
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 9. Implement User Profile Management integration
+  - [ ] 9.1 Create profile API client
+    - Implement profileApi with get/update operations
+    - Add avatar upload endpoint
+    - Add activity history endpoint
+    - _Requirements: 6.1, 6.2, 6.3, 6.5_
+  - [ ] 9.2 Create profile Pinia store
+    - Implement state management with optimistic updates
+    - Add preference caching
+    - _Requirements: 6.6, 11.5, 11.6_
+  - [ ] 9.3 Create profile UI components
+    - Build ProfileForm component
+    - Build AvatarUpload component
+    - Build ActivityHistory component
+    - Create profile page (views/account/profile.vue)
+    - _Requirements: 6.1, 6.2, 6.3, 6.5, 12.1_
+  - [ ]\* 9.4 Write property test for profile update round trip
+    - **Property 36: Profile Update Round Trip**
+    - **Validates: Requirements 6.2**
+  - [ ]\* 9.5 Write property test for profile validation
+    - **Property 40: Profile Validation**
+    - **Validates: Requirements 6.7**
+
+- [ ] 10. Implement MFA Configuration integration
+  - [ ] 10.1 Create MFA API client
+    - Implement mfaApi with enable/disable operations
+    - Add TOTP setup endpoint (QR code generation)
+    - Add verification endpoint
+    - Add backup code endpoints
+    - _Requirements: 7.2, 7.3, 7.4, 7.5_
+  - [ ] 10.2 Create MFA UI components
+    - Build MFASetup component with QR code display
+    - Build MFAVerification component
+    - Build BackupCodes component
+    - Add MFA section to profile page
+    - _Requirements: 7.2, 7.3, 7.4, 12.1_
+  - [ ]\* 10.3 Write property test for MFA backup code consumption
+    - **Property 47: MFA Backup Code Consumption**
+    - **Validates: Requirements 7.8**
+  - [ ]\* 10.4 Write unit tests for MFA flow
+    - Test TOTP setup flow
+    - Test verification flow
+    - Test backup code generation and usage
+    - _Requirements: 7.2, 7.3, 7.4, 7.8_
+
+- [ ] 11. Implement Session Management integration
+  - [ ] 11.1 Create session API client
+    - Implement sessionsApi with list/revoke operations
+    - Add bulk revocation endpoint
+    - _Requirements: 8.1, 8.2, 8.6_
+  - [ ] 11.2 Create sessions Pinia store
+    - Implement state management with session tracking
+    - Add current session identification
+    - _Requirements: 8.1, 11.2_
+  - [ ] 11.3 Create session management UI components
+    - Build SessionTable component
+    - Build SessionCard component with device info
+    - Create sessions page (views/account/sessions.vue)
+    - _Requirements: 8.1, 8.4, 8.7, 12.1_
+  - [ ]\* 11.4 Write property test for session revocation
+    - **Property 49: Session Revocation**
+    - **Validates: Requirements 8.2**
+  - [ ]\* 11.5 Write property test for bulk session revocation
+    - **Property 52: Bulk Session Revocation**
+    - **Validates: Requirements 8.6**
+  - [ ]\* 11.6 Write property test for session timeout enforcement
+    - **Property 54: Session Timeout Enforcement**
+    - **Validates: Requirements 8.8**
+
+- [ ] 12. Implement Audit Log integration
+  - [ ] 12.1 Create audit API client
+    - Implement auditApi with list/filter operations
+    - Add export endpoints (CSV, JSON)
+    - _Requirements: 9.1, 9.3, 9.7_
+  - [ ] 12.2 Create audit Pinia store
+    - Implement state management with filtering
+    - _Requirements: 9.1, 11.2_
+  - [ ] 12.3 Create audit log UI components
+    - Build AuditTable component with filters
+    - Build AuditDetail component with JSON viewer
+    - Build ActivityTrendChart component with ECharts
+    - Create audit log page (views/audit/index.vue)
+    - _Requirements: 9.1, 9.3, 9.5, 12.1, 13.1_
+  - [ ]\* 12.4 Write property test for IAM operation audit logging
+    - **Property 58: IAM Operation Audit Logging**
+    - **Validates: Requirements 9.6**
+  - [ ]\* 12.5 Write property test for audit log filtering
+    - **Property 55: Audit Log Fetch with Filters**
+    - **Validates: Requirements 9.1**
+
+- [ ] 13. Checkpoint - Ensure profile, MFA, session, and audit features work
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 14. Implement API integration layer enhancements
+  - [ ] 14.1 Add request/response interceptors
+    - Implement authentication token injection
+    - Implement retry logic with exponential backoff
+    - Implement request cancellation support
+    - _Requirements: 10.2, 10.3, 10.7_
+  - [ ] 14.2 Implement error handling and mapping
+    - Create error mapping utilities
+    - Implement field-specific validation error display
+    - Add user-friendly error messages
+    - _Requirements: 10.4, 10.6, 15.2_
+  - [ ]\* 14.3 Write property test for API retry logic
+    - **Property 60: API Retry Logic**
+    - **Validates: Requirements 10.3**
+  - [ ]\* 14.4 Write property test for authentication token inclusion
+    - **Property 1: Authentication Token Inclusion**
+    - **Validates: Requirements 10.2, 17.2**
+
+- [ ] 15. Implement state management enhancements
+  - [ ] 15.1 Add data caching layer
+    - Implement cache validity periods
+    - Add cache invalidation logic
+    - _Requirements: 11.2, 16.4_
+  - [ ] 15.2 Implement authentication state persistence
+    - Add localStorage persistence for auth state
+    - Implement state restoration on page reload
+    - Add logout cleanup
+    - _Requirements: 11.7, 11.8, 17.8_
+  - [ ]\* 15.3 Write property test for data caching consistency
+    - **Property 2: Data Caching Consistency**
+    - **Validates: Requirements 1.5, 11.2, 16.4**
+  - [ ]\* 15.4 Write property test for logout cleanup
+    - **Property 4: Logout Cleanup**
+    - **Validates: Requirements 11.8, 17.8**
+
+- [ ] 16. Implement routing and navigation
+  - [ ] 16.1 Define IAM routes
+    - Create routes for users, roles, permissions, organizations, workspaces, tenants, sessions
+    - Add route metadata for permissions
+    - _Requirements: 14.2_
+  - [ ] 16.2 Implement route guards
+    - Create authentication guard
+    - Create permission-based guard
+    - Add redirect logic for unauthorized access
+    - _Requirements: 14.3, 14.4, 17.5_
+  - [ ] 16.3 Add navigation components
+    - Update SideNav with IAM menu items
+    - Add breadcrumb navigation
+    - _Requirements: 14.2_
+  - [ ]\* 16.4 Write property test for protected route authentication
+    - **Property 68: Protected Route Authentication**
+    - **Validates: Requirements 14.3**
+  - [ ]\* 16.5 Write property test for permission-based route access
+    - **Property 69: Permission-Based Route Access**
+    - **Validates: Requirements 14.4**
+
+- [ ] 17. Implement security features
+  - [ ] 17.1 Add token refresh mechanism
+    - Implement automatic token refresh
+    - Add refresh failure handling with redirect
+    - _Requirements: 17.3, 17.4_
+  - [ ] 17.2 Implement permission-based UI rendering
+    - Create useIAMPermissions composable
+    - Add v-permission directive
+    - Hide/disable UI elements based on permissions
+    - _Requirements: 17.5, 17.6_
+  - [ ] 17.3 Verify backend authorization enforcement
+    - Ensure all controllers use @RequirePermissions decorator
+    - Verify permission validation in guards
+    - _Requirements: 17.7_
+  - [ ]\* 17.4 Write property test for token refresh
+    - **Property 76: Token Refresh**
+    - **Validates: Requirements 17.3**
+  - [ ]\* 17.5 Write property test for permission-based UI rendering
+    - **Property 78: Permission-Based UI Rendering**
+    - **Validates: Requirements 17.5**
+  - [ ]\* 17.6 Write property test for backend authorization enforcement
+    - **Property 80: Backend Authorization Enforcement**
+    - **Validates: Requirements 17.7**
+
+- [ ] 18. Implement performance optimizations
+  - [ ] 18.1 Add pagination to all list views
+    - Implement pagination controls
+    - Add page size configuration
+    - _Requirements: 16.2_
+  - [ ] 18.2 Add search debouncing
+    - Implement debounced search inputs
+    - Add loading indicators
+    - _Requirements: 16.3_
+  - [ ] 18.3 Implement request cancellation
+    - Add AbortController support to API client
+    - Cancel requests on component unmount
+    - _Requirements: 10.7, 16.7_
+  - [ ]\* 18.4 Write property test for search debouncing
+    - **Property 75: Search Debouncing**
+    - **Validates: Requirements 16.3**
+  - [ ]\* 18.5 Write property test for request cancellation
+    - **Property 3: Request Cancellation**
+    - **Validates: Requirements 10.7, 16.7**
+
+- [ ] 19. Checkpoint - Ensure all infrastructure and optimizations work
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 20. Create IAM overview dashboard
+  - [ ] 20.1 Build dashboard components
+    - Create StatCard components for user/role/permission counts
+    - Create UserGrowthChart with ECharts
+    - Create RoleDistributionChart with ECharts
+    - Create ActivityHeatmap with ECharts
+    - _Requirements: 13.1, 13.2, 13.3_
+  - [ ] 20.2 Create overview page
+    - Build IAM overview page (views/iam/overview/index.vue)
+    - Fetch and display aggregate statistics
+    - Add quick action buttons
+    - _Requirements: 13.1, 13.2, 13.3, 13.4_
+
+- [ ] 21. Implement error handling and user feedback
+  - [ ] 21.1 Add global error handler
+    - Implement Vue error handler
+    - Add error logging
+    - _Requirements: 15.3_
+  - [ ] 21.2 Create error boundary components
+    - Build ErrorBoundary component
+    - Add retry functionality
+    - _Requirements: 15.8_
+  - [ ] 21.3 Add notification system
+    - Implement success/error notifications
+    - Add loading states to all async operations
+    - _Requirements: 12.5, 15.1, 15.2_
+  - [ ]\* 21.4 Write property test for global exception handling
+    - **Property 72: Global Exception Handling**
+    - **Validates: Requirements 15.3**
+  - [ ]\* 21.5 Write property test for error boundary isolation
+    - **Property 73: Error Boundary Isolation**
+    - **Validates: Requirements 15.8**
+
+- [ ] 22. Add data visualization components
+  - [ ] 22.1 Create reusable chart components
+    - Build LineChart wrapper for ECharts
+    - Build PieChart wrapper for ECharts
+    - Build HeatmapChart wrapper for ECharts
+    - Build GaugeChart wrapper for ECharts
+    - _Requirements: 13.1, 13.2, 13.3, 13.4_
+  - [ ] 22.2 Implement chart interactivity
+    - Add tooltips to all charts
+    - Add zoom capabilities
+    - Implement consistent color schemes
+    - Add smooth transitions
+    - _Requirements: 13.6, 13.7, 13.8_
+
+- [ ] 23. Implement deployment and configuration
+  - [ ] 23.1 Add environment configuration
+    - Set up environment variables for API endpoints
+    - Add configuration for different environments (dev, staging, prod)
+    - _Requirements: 20.1, 20.2_
+  - [ ] 23.2 Add health check endpoint
+    - Implement backend health check endpoint
+    - Include database connectivity check
+    - _Requirements: 20.5_
+  - [ ] 23.3 Add environment variable validation
+    - Validate required environment variables on startup
+    - Display clear error messages for missing variables
+    - _Requirements: 20.6_
+  - [ ]\* 23.4 Write property test for health check endpoint
+    - **Property 81: Health Check Endpoint**
+    - **Validates: Requirements 20.5**
+  - [ ]\* 23.5 Write property test for environment variable error handling
+    - **Property 82: Environment Variable Error Handling**
+    - **Validates: Requirements 20.6**
+
+- [ ] 24. Integration testing and bug fixes
+  - [ ] 24.1 Run all property-based tests
+    - Execute all 82 property tests
+    - Fix any failing tests
+    - Ensure 100 iterations per test
+  - [ ] 24.2 Run all unit tests
+    - Execute frontend unit tests
+    - Execute backend unit tests
+    - Ensure ≥90% coverage
+  - [ ] 24.3 Run integration tests
+    - Execute backend e2e tests
+    - Test complete user workflows
+    - Fix any integration issues
+  - [ ] 24.4 Manual testing
+    - Test all IAM features in browser
+    - Verify responsive design
+    - Test error scenarios
+    - Verify permission-based access control
+
+- [ ] 25. Final checkpoint - Complete integration verification
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 26. Documentation and cleanup
+  - [ ] 26.1 Update API documentation
+    - Verify Swagger documentation is complete
+    - Add request/response examples
+    - _Requirements: 19.3_
+  - [ ] 26.2 Add code documentation
+    - Add JSDoc comments to API client functions
+    - Document composables with usage examples
+    - Add README files for component directories
+    - _Requirements: 19.1, 19.2, 19.6_
+  - [ ] 26.3 Create development guide
+    - Document setup instructions
+    - Add troubleshooting section
+    - Document testing procedures
+    - _Requirements: 19.8_
+  - [ ] 26.4 Code cleanup
+    - Remove unused imports
+    - Fix linting errors
+    - Optimize bundle size
+    - _Requirements: 18.8_
+
+## Notes
+
+- Tasks marked with `*` are optional property-based tests that can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation throughout implementation
+- Property tests validate universal correctness properties with 100 iterations minimum
+- Unit tests validate specific examples and edge cases
+- The implementation follows a feature-by-feature approach, completing both frontend and backend for each IAM entity before moving to the next
+- All API clients, stores, and components follow established patterns from the steering files
+- TypeScript strict mode is used throughout for type safety
+- All components use Naive UI for consistency
+- All visualizations use ECharts for consistency
+- Error handling is comprehensive at all layers
+- Security is enforced at both frontend (UI) and backend (API) levels

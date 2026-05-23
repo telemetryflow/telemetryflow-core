@@ -1,0 +1,47 @@
+// TFO Style Registry — Resource Events Section
+// Events container, severity badges, event details table, timeline overrides
+// Source: ResourceEventsSection.vue
+
+.resource-events-section {
+  margin-top: 4px;
+}
+
+.tfo-event-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.tfo-severity-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
+  flex-shrink: 0;
+}
+
+.tfo-event-reason {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--n-text-color);
+}
+
+.tfo-events-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  color: var(--n-text-color-3);
+  font-size: 0.875rem;
+}
+
+.tfo-events-empty-icon {
+  font-size: 20px;
+  color: #22c55e;
+}

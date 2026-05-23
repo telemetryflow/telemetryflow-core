@@ -1,0 +1,116 @@
+import type { GraphDefinition } from './types';
+
+// Allocated ID range: DBM10451-DBM10470
+export const DBM_AWS_RDS_MYSQL_GRAPHS: GraphDefinition[] = [
+  {
+    graphId: 'DBM10451', module: 'DBM', title: 'CPU Utilization', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: '%',
+    description: 'CPU utilization for RDS MySQL instance',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-cpu',
+    defaultQueries: [{ dialect: 'tfql', expression: 'rds.CPUUtilization', legend: 'CPU %' }],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10452', module: 'DBM', title: 'Database Connections', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'connections',
+    description: 'Active database connections',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-connections',
+    defaultQueries: [{ dialect: 'tfql', expression: 'rds.DatabaseConnections', legend: 'Connections' }],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10453', module: 'DBM', title: 'Freeable Memory', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'bytes',
+    description: 'Freeable memory on the instance',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-memory',
+    defaultQueries: [{ dialect: 'tfql', expression: 'rds.FreeableMemory', legend: 'Free Memory' }],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10454', module: 'DBM', title: 'Free Storage Space', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'bytes',
+    description: 'Available storage space',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-storage',
+    defaultQueries: [{ dialect: 'tfql', expression: 'rds.FreeStorageSpace', legend: 'Free Storage' }],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10455', module: 'DBM', title: 'IOPS (Read/Write)', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'iops',
+    description: 'Read and write IOPS',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-iops',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'rds.ReadIOPS', legend: 'Read IOPS' },
+      { dialect: 'tfql', expression: 'rds.WriteIOPS', legend: 'Write IOPS' },
+    ],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10456', module: 'DBM', title: 'Latency (Read/Write)', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'ms',
+    description: 'Read and write latency',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-latency',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'rds.ReadLatency', legend: 'Read Latency' },
+      { dialect: 'tfql', expression: 'rds.WriteLatency', legend: 'Write Latency' },
+    ],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10457', module: 'DBM', title: 'Throughput (Read/Write)', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'B/s',
+    description: 'Network throughput for read/write operations',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-throughput',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'rds.ReadThroughput', legend: 'Read' },
+      { dialect: 'tfql', expression: 'rds.WriteThroughput', legend: 'Write' },
+    ],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10458', module: 'DBM', title: 'Network Throughput', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'B/s',
+    description: 'Network receive and transmit throughput',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-network',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'rds.NetworkReceiveThroughput', legend: 'Receive' },
+      { dialect: 'tfql', expression: 'rds.NetworkTransmitThroughput', legend: 'Transmit' },
+    ],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10459', module: 'DBM', title: 'Disk Queue Depth', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'ops',
+    description: 'Number of outstanding IO requests',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-disk-queue',
+    defaultQueries: [{ dialect: 'tfql', expression: 'rds.DiskQueueDepth', legend: 'Queue Depth' }],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10460', module: 'DBM', title: 'Replica Lag', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'seconds',
+    description: 'Replication lag for read replicas',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-replica-lag',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'rds.ReplicaLag', legend: 'Lag' },
+      { dialect: 'tfql', expression: 'rds.ReplicaLagMaximum', legend: 'Max Lag' },
+    ],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10461', module: 'DBM', title: 'Database Load (PI)', component: 'RegistryGraphPanel',
+    chartType: 'stacked-area', signalType: 'metrics', unit: 'avg active sessions',
+    description: 'Database load by wait event type (requires Performance Insights)',
+    dataSource: 'db_rds_mysql_pi_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-pi-load',
+    defaultQueries: [{ dialect: 'tfql', expression: 'pi.db.load.avg', legend: '{{dimensionValue}}', seriesKey: 'dimensionValue' }],
+    toggleable: false,
+  },
+  {
+    graphId: 'DBM10462', module: 'DBM', title: 'Swap Usage', component: 'RegistryGraphPanel',
+    chartType: 'timeseries', signalType: 'metrics', unit: 'bytes',
+    description: 'Swap space usage',
+    dataSource: 'db_rds_mysql_metrics', view: 'db-monitoring/aws-rds-mysql/InstanceDetailView.vue', position: 'rds-mysql-swap',
+    defaultQueries: [{ dialect: 'tfql', expression: 'rds.SwapUsage', legend: 'Swap' }],
+    toggleable: false,
+  },
+];

@@ -1,0 +1,110 @@
+// TFO Style Registry — StatPanel Colors
+// Border/icon color per variant, dark mode tints
+
+// ---------------------------------------------------------------------------
+// Color variants — applied via inline borderLeftColor binding in the component,
+// but these utility classes are available for static usage or overrides.
+// ---------------------------------------------------------------------------
+
+// Primary (blue)
+.stat-panel--primary {
+  border-left-color: #3b82f6;
+
+  .stat-icon {
+    color: #3b82f6;
+    background: rgba(#3b82f6, 0.09);
+  }
+}
+
+// Success (green)
+.stat-panel--success {
+  border-left-color: #22c55e;
+
+  .stat-icon {
+    color: #22c55e;
+    background: rgba(#22c55e, 0.09);
+  }
+}
+
+// Warning (amber)
+.stat-panel--warning {
+  border-left-color: #f59e0b;
+
+  .stat-icon {
+    color: #f59e0b;
+    background: rgba(#f59e0b, 0.09);
+  }
+}
+
+// Error (red)
+.stat-panel--error {
+  border-left-color: #ef4444;
+
+  .stat-icon {
+    color: #ef4444;
+    background: rgba(#ef4444, 0.09);
+  }
+}
+
+// Info (cyan)
+.stat-panel--info {
+  border-left-color: #06b6d4;
+
+  .stat-icon {
+    color: #06b6d4;
+    background: rgba(#06b6d4, 0.09);
+  }
+}
+
+// Purple
+.stat-panel--purple {
+  border-left-color: #8b5cf6;
+
+  .stat-icon {
+    color: #8b5cf6;
+    background: rgba(#8b5cf6, 0.09);
+  }
+}
+
+// Default (gray)
+.stat-panel--default {
+  border-left-color: #6b7280;
+
+  .stat-icon {
+    color: #6b7280;
+    background: rgba(#6b7280, 0.09);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Dark mode overrides — slightly brighter tints for icon backgrounds
+// ---------------------------------------------------------------------------
+:root.dark {
+  .stat-panel--primary .stat-icon {
+    background: rgba(#3b82f6, 0.15);
+  }
+
+  .stat-panel--success .stat-icon {
+    background: rgba(#22c55e, 0.15);
+  }
+
+  .stat-panel--warning .stat-icon {
+    background: rgba(#f59e0b, 0.15);
+  }
+
+  .stat-panel--error .stat-icon {
+    background: rgba(#ef4444, 0.15);
+  }
+
+  .stat-panel--info .stat-icon {
+    background: rgba(#06b6d4, 0.15);
+  }
+
+  .stat-panel--purple .stat-icon {
+    background: rgba(#8b5cf6, 0.15);
+  }
+
+  .stat-panel--default .stat-icon {
+    background: rgba(#6b7280, 0.15);
+  }
+}

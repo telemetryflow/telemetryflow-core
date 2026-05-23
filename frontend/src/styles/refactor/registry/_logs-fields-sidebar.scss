@@ -1,0 +1,185 @@
+// Fields Sidebar — logs/components/FieldsSidebar.vue (scoped)
+.fields-sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: var(--n-card-color);
+  border: 1px solid var(--k8s-border-color, #e5e7eb);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.2s, min-width 0.2s;
+
+  &.collapsed {
+    width: 48px;
+    min-width: 48px;
+  }
+}
+
+.fields-sidebar .sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid var(--k8s-border-color, #e5e7eb);
+  background: var(--n-color-popover);
+}
+
+.fields-sidebar .sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  .title-icon { font-size: 16px; color: var(--n-primary-color); }
+}
+
+.fields-sidebar .collapsed .sidebar-title span { display: none; }
+
+.fields-sidebar .search-box {
+  padding: 12px;
+  border-bottom: 1px solid var(--k8s-border-color, #e5e7eb);
+}
+
+.fields-sidebar .field-group {
+  border-bottom: 1px solid var(--k8s-border-color, #e5e7eb);
+  &:last-child { border-bottom: none; }
+}
+
+.fields-sidebar .group-header {
+  display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+  color: #374151; background: #f1f5f9; border-top: 1px solid #e2e8f0;
+  border-bottom: 2px solid #e2e8f0; cursor: pointer; transition: background 0.15s;
+  &:hover { background: #e2e8f0; }
+  .group-icon {
+    font-size: 14px; flex-shrink: 0; min-width: 14px; color: #f59e0b;
+    &.selected { color: #22c55e; }
+    &.resource { color: #3b82f6; }
+    &.attributes { color: #8b5cf6; }
+  }
+  span { flex-shrink: 0; }
+  .count-badge { flex-shrink: 0; font-size: 0.625rem; font-weight: 600; padding: 0 6px; height: 18px; line-height: 18px; margin-left: 6px; }
+  .expand-icon { font-size: 14px; color: #64748b; flex-shrink: 0; margin-left: auto; }
+}
+
+// Dark mode for group-header
+:root.dark .fields-sidebar .group-header {
+  background: rgba(30, 41, 59, 0.6); color: rgba(255, 255, 255, 0.9);
+  border-top-color: rgba(255, 255, 255, 0.12); border-bottom-color: rgba(255, 255, 255, 0.12);
+  &:hover { background: rgba(30, 41, 59, 0.8); }
+  .group-icon { color: #fbbf24; &.selected { color: #4ade80; } &.resource { color: #60a5fa; } &.attributes { color: #a78bfa; } }
+  .expand-icon { color: rgba(255, 255, 255, 0.6); }
+}
+
+.fields-sidebar .field-list {
+  max-height: 300px;
+  overflow-y: auto;
+  &.selected-list { max-height: 150px; }
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.3); border-radius: 3px; &:hover { background: rgba(128, 128, 128, 0.5); } }
+}
+
+.fields-sidebar .field-item {
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  &:last-child { border-bottom: none; }
+  &.selected {
+    display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+    cursor: pointer; transition: background 0.15s;
+    &:hover { background: var(--n-color-hover); .remove-icon { opacity: 1; } }
+    .remove-icon { font-size: 12px; color: var(--n-text-color-3); opacity: 0; transition: opacity 0.15s; }
+    .field-name { font-size: 0.8125rem; }
+  }
+}
+
+:root.dark .fields-sidebar .field-item { border-bottom-color: rgba(255, 255, 255, 0.08); }
+
+.fields-sidebar .field-row {
+  display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+  cursor: pointer; transition: background 0.15s;
+  &:hover { background: var(--n-color-hover); }
+  .expand-icon { font-size: 12px; color: var(--n-text-color-3); }
+  .type-icon { font-size: 14px; }
+  .field-name { flex: 1; font-size: 0.8125rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+
+.fields-sidebar .field-details {
+  padding: 8px 12px 12px 32px;
+  background: var(--n-color-popover);
+  border-top: 1px solid var(--k8s-border-color, #e5e7eb);
+}
+
+.fields-sidebar .detail-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  .detail-label { font-size: 0.6875rem; color: var(--n-text-color-3); text-transform: uppercase; }
+  .detail-value { font-size: 0.8125rem; font-weight: 500; }
+  .detail-code { font-size: 0.6875rem; padding: 2px 6px; background: var(--n-color); border-radius: 4px; font-family: monospace; }
+}
+
+.fields-sidebar .top-values {
+  margin-top: 8px;
+  .detail-label { font-size: 0.6875rem; color: var(--n-text-color-3); text-transform: uppercase; margin-bottom: 6px; }
+}
+
+.fields-sidebar .top-value-item {
+  display: flex; align-items: center; gap: 8px; padding: 4px 6px; margin-bottom: 4px;
+  border-radius: 4px; cursor: pointer; transition: background 0.15s;
+  &:hover { background: var(--n-color); }
+  .value-bar { width: 40px; height: 6px; background: rgba(59, 130, 246, 0.15); border-radius: 3px; overflow: hidden; }
+  .value-bar-fill { height: 100%; background: #3b82f6; border-radius: 3px; }
+  .value-text { flex: 1; font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .value-count { font-size: 0.6875rem; color: var(--n-text-color-3); }
+}
+
+.fields-sidebar .field-actions {
+  margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--k8s-border-color, #e5e7eb);
+}
+
+.fields-sidebar .empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 32px 16px; text-align: center;
+  .empty-icon { font-size: 32px; color: var(--n-text-color-3); opacity: 0.5; margin-bottom: 12px; }
+  p { margin: 0; font-size: 0.8125rem; color: var(--n-text-color-3); }
+  .empty-hint { font-size: 0.75rem; margin-top: 4px; }
+}
+
+// Responsive — Tablet
+@media (max-width: 1024px) {
+  .fields-sidebar {
+    width: 100%; min-width: 100%; max-height: 300px; overflow-y: auto;
+    &.collapsed { width: 100%; min-width: 100%; max-height: 48px; }
+  }
+  .fields-sidebar .field-list { max-height: 200px; &.selected-list { max-height: 100px; } }
+}
+
+// Responsive — Mobile
+@media (max-width: 768px) {
+  .fields-sidebar {
+    max-height: 250px; border-radius: 6px;
+    &.collapsed { max-height: 44px; }
+  }
+  .fields-sidebar .sidebar-header { padding: 10px 12px; }
+  .fields-sidebar .sidebar-title { font-size: 0.8125rem; gap: 6px; .title-icon { font-size: 14px; } }
+  .fields-sidebar .search-box { padding: 10px 12px; }
+  .fields-sidebar .group-header { padding: 8px 10px; font-size: 0.6875rem; gap: 6px; .group-icon { font-size: 12px; } }
+  .fields-sidebar .field-list { max-height: 150px; &.selected-list { max-height: 80px; } }
+  .fields-sidebar .field-row { padding: 6px 10px; gap: 4px; .expand-icon { font-size: 10px; } .type-icon { font-size: 12px; } .field-name { font-size: 0.75rem; } }
+  .fields-sidebar .field-item.selected { padding: 4px 10px; gap: 4px; .remove-icon { font-size: 10px; } .field-name { font-size: 0.75rem; } }
+  .fields-sidebar .field-details { padding: 6px 10px 10px 24px; }
+  .fields-sidebar .detail-row { gap: 6px; margin-bottom: 4px; .detail-label { font-size: 0.625rem; } .detail-value { font-size: 0.75rem; } .detail-code { font-size: 0.625rem; padding: 1px 4px; } }
+  .fields-sidebar .top-value-item { padding: 3px 4px; gap: 6px; .value-bar { width: 30px; height: 4px; } .value-text { font-size: 0.6875rem; } .value-count { font-size: 0.625rem; } }
+  .fields-sidebar .empty-state { padding: 20px 12px; .empty-icon { font-size: 24px; margin-bottom: 8px; } p { font-size: 0.75rem; } .empty-hint { font-size: 0.6875rem; } }
+}
+
+// Responsive — Small Mobile
+@media (max-width: 480px) {
+  .fields-sidebar { max-height: 220px; &.collapsed { max-height: 40px; } }
+  .fields-sidebar .sidebar-header { padding: 8px 10px; }
+  .fields-sidebar .sidebar-title { font-size: 0.75rem; }
+  .fields-sidebar .search-box { padding: 8px 10px; .n-input { font-size: 0.75rem; } }
+  .fields-sidebar .field-list { max-height: 120px; }
+  .fields-sidebar .group-header { padding: 6px 8px; font-size: 0.625rem; }
+  .fields-sidebar .field-row { padding: 5px 8px; .field-name { font-size: 0.6875rem; } }
+  .fields-sidebar .top-values .detail-label { font-size: 0.5625rem; }
+}

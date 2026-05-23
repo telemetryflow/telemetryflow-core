@@ -1,0 +1,391 @@
+openapi: 3.0.3
+info:
+  title: TelemetryFlow Alerting API
+  description: Alerting & Notification module API
+  version: 1.0.0
+
+servers:
+  - url: /api/v2
+
+tags:
+  - name: Alert Rules
+    description: Alert rule management
+  - name: Alert Instances
+    description: Alert instance operations
+  - name: Notification Channels
+    description: Notification channel configuration
+
+paths:
+  /alert-rules:
+    post:
+      tags: [Alert Rules]
+      summary: Create alert rule
+      operationId: createAlertRule
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAlertRuleRequest"
+      responses:
+        "201":
+          description: Rule created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlertRule"
+    get:
+      tags: [Alert Rules]
+      summary: List alert rules
+      operationId: listAlertRules
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: severity
+          in: query
+          schema:
+            type: string
+            enum: [critical, warning, info]
+        - name: enabled
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Rule list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AlertRule"
+
+  /alert-rules/{id}:
+    get:
+      tags: [Alert Rules]
+      summary: Get alert rule
+      operationId: getAlertRule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Rule details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlertRule"
+    put:
+      tags: [Alert Rules]
+      summary: Update alert rule
+      operationId: updateAlertRule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAlertRuleRequest"
+      responses:
+        "200":
+          description: Rule updated
+    delete:
+      tags: [Alert Rules]
+      summary: Delete alert rule
+      operationId: deleteAlertRule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Rule deleted
+
+  /alert-instances:
+    get:
+      tags: [Alert Instances]
+      summary: List alert instances
+      operationId: listAlertInstances
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: state
+          in: query
+          schema:
+            type: string
+            enum: [pending, firing, resolved]
+        - name: severity
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Instance list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AlertInstance"
+
+  /alert-instances/{id}/acknowledge:
+    post:
+      tags: [Alert Instances]
+      summary: Acknowledge alert
+      operationId: acknowledgeAlert
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Alert acknowledged
+
+  /alert-instances/{id}/resolve:
+    post:
+      tags: [Alert Instances]
+      summary: Resolve alert
+      operationId: resolveAlert
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Alert resolved
+
+  /notification-channels:
+    post:
+      tags: [Notification Channels]
+      summary: Create notification channel
+      operationId: createNotificationChannel
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNotificationChannelRequest"
+      responses:
+        "201":
+          description: Channel created
+    get:
+      tags: [Notification Channels]
+      summary: List notification channels
+      operationId: listNotificationChannels
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Channel list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NotificationChannel"
+
+  /notification-channels/{id}/test:
+    post:
+      tags: [Notification Channels]
+      summary: Test notification channel
+      operationId: testNotificationChannel
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Test sent
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    AlertRule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        query:
+          type: string
+        duration:
+          type: string
+        severity:
+          type: string
+          enum: [critical, warning, info]
+        labels:
+          type: object
+        annotations:
+          type: object
+        isEnabled:
+          type: boolean
+        evaluationInterval:
+          type: integer
+        notificationChannels:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateAlertRuleRequest:
+      type: object
+      required: [name, query, severity]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        query:
+          type: string
+        duration:
+          type: string
+          default: 5m
+        severity:
+          type: string
+          enum: [critical, warning, info]
+        labels:
+          type: object
+        annotations:
+          type: object
+        evaluationInterval:
+          type: integer
+          default: 60
+        notificationChannels:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    UpdateAlertRuleRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        query:
+          type: string
+        duration:
+          type: string
+        severity:
+          type: string
+        labels:
+          type: object
+        annotations:
+          type: object
+        isEnabled:
+          type: boolean
+        notificationChannels:
+          type: array
+          items:
+            type: string
+
+    AlertInstance:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        ruleId:
+          type: string
+          format: uuid
+        ruleName:
+          type: string
+        state:
+          type: string
+          enum: [pending, firing, resolved]
+        severity:
+          type: string
+        labels:
+          type: object
+        annotations:
+          type: object
+        value:
+          type: number
+        startedAt:
+          type: string
+          format: date-time
+        resolvedAt:
+          type: string
+          format: date-time
+
+    NotificationChannel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: [email, slack, webhook, pagerduty, opsgenie, telegram]
+        config:
+          type: object
+        isEnabled:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateNotificationChannelRequest:
+      type: object
+      required: [name, type, config]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [email, slack, webhook, pagerduty, opsgenie, telegram]
+        config:
+          type: object
+          description: Type-specific configuration

@@ -1,0 +1,17 @@
+// TFO Style Registry — Kubernetes Events Table
+// Section label, event message, event count
+// Source: EventsTable.vue
+
+.events-section {
+  margin-top: 8px;
+}
+
+.event-message {
+  font-size: 0.8125rem;
+  color: var(--n-text-color-2);
+  word-break: break-word;
+}
+
+.event-count {
+  margin-top: 4px;
+}

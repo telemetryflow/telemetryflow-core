@@ -1,0 +1,34 @@
+// ============================================================================
+// BrandLogo Component Styles
+// Source: components/common/BrandLogo.vue
+// ============================================================================
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &__image {
+    display: block;
+    object-fit: contain;
+  }
+
+  &__text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--n-text-color);
+    white-space: nowrap;
+  }
+
+  &--small {
+    .brand-logo__text {
+      font-size: 0.875rem;
+    }
+  }
+
+  &--large {
+    .brand-logo__text {
+      font-size: 1.5rem;
+    }
+  }
+}

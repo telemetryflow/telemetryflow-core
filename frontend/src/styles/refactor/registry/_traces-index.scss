@@ -1,0 +1,1259 @@
+// Traces Index Page — traces/index.vue (scoped)
+.traces-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.traces-page .page-header {
+  margin-bottom: 8px;
+}
+
+.traces-page .page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--n-text-color);
+}
+
+.traces-page .page-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+}
+
+.traces-page .main-tabs {
+}
+
+.traces-page .tab-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.traces-page .tab-icon {
+  font-size: 16px;
+}
+
+.traces-page .search-layout {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.traces-page .filter-sidebar-card {
+  width: 280px;
+  min-width: 280px;
+  flex-shrink: 0;
+  height: fit-content;
+  position: sticky;
+  top: 16px;
+  transition:
+    width 0.2s,
+    min-width 0.2s;
+
+  &.collapsed {
+    width: 56px;
+    min-width: 56px;
+  }
+}
+
+.traces-page .main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.traces-page .stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 5px;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
+}
+
+.traces-page .traces-list-card {
+  min-height: 300px;
+}
+
+// Data table styling - matching Kubernetes tables
+.traces-page .n-data-table {
+  border: 1px solid var(--k8s-border-color, #c1c5cc);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.traces-page .n-data-table-thead {
+  background: var(--k8s-table-header-bg, #f8fafc) !important;
+}
+
+.traces-page .n-data-table-th {
+  font-weight: 700 !important;
+  background: var(--k8s-table-header-bg, #f8fafc) !important;
+  color: var(--k8s-table-header-text, #374151) !important;
+  border-bottom: 1px solid var(--k8s-border-color, #c1c5cc) !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.traces-page .n-data-table-tr td {
+  border-bottom: 1px solid var(--k8s-border-color, #c1c5cc) !important;
+}
+
+.traces-page .n-data-table-tr:last-child td {
+  border-bottom: none !important;
+}
+
+.traces-page .n-data-table-pagination {
+  padding: 20px 16px;
+  border-top: 1px solid var(--k8s-border-color, #c1c5cc);
+  margin-top: 12px;
+  background: var(--k8s-table-header-bg, #f8fafc);
+}
+
+.traces-page .n-card-header__main {
+  font-weight: 700 !important;
+}
+
+// Responsive — Tablet
+@media (max-width: 1024px) {
+  .traces-page .search-layout {
+    flex-direction: column;
+  }
+
+  .traces-page .filter-sidebar-card {
+    width: 100%;
+    min-width: 100%;
+    position: static;
+
+    &.collapsed {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+
+  .traces-page .stats-row {
+    justify-content: center;
+  }
+}
+
+// Responsive — Mobile
+@media (max-width: 768px) {
+  .traces-page {
+    gap: 12px;
+  }
+
+  .traces-page .page-header {
+    margin-bottom: 4px;
+  }
+
+  .traces-page .page-title {
+    font-size: 1.25rem;
+  }
+
+  .traces-page .page-subtitle {
+    font-size: 0.8125rem;
+  }
+
+  .traces-page .main-tabs {
+    .n-tabs-rail {
+      padding: 3px;
+    }
+
+    .n-tabs-tab {
+      padding: 6px 12px;
+    }
+  }
+
+  .traces-page .tab-label {
+    gap: 6px;
+
+    span {
+      font-size: 0.8125rem;
+    }
+  }
+
+  .traces-page .tab-icon {
+    font-size: 14px;
+  }
+
+  .traces-page .search-layout {
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .traces-page .main-content {
+    gap: 12px;
+  }
+
+  .traces-page .stats-row {
+    gap: 8px;
+    padding: 0;
+  }
+
+  .traces-page .traces-list-card {
+    min-height: 250px;
+
+    .n-card__content {
+      padding: 12px;
+    }
+  }
+}
+
+// Responsive — Small Mobile
+@media (max-width: 480px) {
+  .traces-page {
+    gap: 10px;
+  }
+
+  .traces-page .page-title {
+    font-size: 1.125rem;
+  }
+
+  .traces-page .page-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .traces-page .tab-label {
+    gap: 4px;
+
+    span {
+      font-size: 0.75rem;
+    }
+  }
+
+  .traces-page .tab-icon {
+    font-size: 12px;
+  }
+
+  .traces-page .search-layout {
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .traces-page .main-content {
+    gap: 10px;
+  }
+
+  .traces-page .stats-row {
+    gap: 6px;
+  }
+
+  .traces-page .traces-list-card {
+    min-height: 200px;
+
+    .n-card-header {
+      padding: 10px 12px;
+    }
+
+    .n-card__content {
+      padding: 10px;
+    }
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// TraceFilterSidebar — traces/components/TraceFilterSidebar.vue (scoped)
+// ────────────────────────────────────────────────────────────────────────────────
+
+.trace-filter-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  transition:
+    width 0.2s,
+    min-width 0.2s,
+    padding 0.2s;
+
+  &.collapsed {
+    padding: 12px 8px;
+    gap: 0;
+  }
+}
+
+.trace-filter-sidebar .sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+
+  .collapsed & {
+    margin-bottom: 0;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.trace-filter-sidebar .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.trace-filter-sidebar .sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--n-text-color);
+
+  .title-icon {
+    font-size: 16px;
+    color: var(--n-primary-color);
+  }
+
+  .collapsed & span {
+    display: none;
+  }
+}
+
+.trace-filter-sidebar .filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.trace-filter-sidebar .filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trace-filter-sidebar .tags-input-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.trace-filter-sidebar .tag-equals {
+  color: var(--n-text-color-3);
+  font-weight: 500;
+}
+
+.trace-filter-sidebar .tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.trace-filter-sidebar .filter-actions {
+  margin-top: 16px;
+}
+
+// TraceFilterSidebar Responsive — Tablet
+@media (max-width: 1024px) {
+  .trace-filter-sidebar {
+    padding: 14px;
+    gap: 10px;
+
+    &.collapsed {
+      padding: 10px;
+      max-height: 48px;
+      overflow: hidden;
+    }
+  }
+
+  .trace-filter-sidebar .sidebar-header {
+    .collapsed & {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  .trace-filter-sidebar .sidebar-title {
+    .collapsed & span {
+      display: inline;
+    }
+  }
+}
+
+// TraceFilterSidebar Responsive — Mobile
+@media (max-width: 768px) {
+  .trace-filter-sidebar {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .trace-filter-sidebar .sidebar-header {
+    margin-bottom: 6px;
+  }
+
+  .trace-filter-sidebar .sidebar-title {
+    font-size: 0.9375rem;
+    gap: 6px;
+
+    .title-icon {
+      font-size: 14px;
+    }
+  }
+
+  .trace-filter-sidebar .filter-section {
+    gap: 4px;
+  }
+
+  .trace-filter-sidebar .filter-label {
+    font-size: 0.6875rem;
+  }
+
+  .trace-filter-sidebar .tags-input-row {
+    gap: 4px;
+    flex-wrap: wrap;
+
+    .n-input {
+      min-width: 80px;
+    }
+  }
+
+  .trace-filter-sidebar .tag-equals {
+    font-size: 0.875rem;
+  }
+
+  .trace-filter-sidebar .tags-list {
+    gap: 3px;
+    margin-top: 4px;
+  }
+
+  .trace-filter-sidebar .filter-actions {
+    margin-top: 12px;
+  }
+}
+
+// TraceFilterSidebar Responsive — Small Mobile
+@media (max-width: 480px) {
+  .trace-filter-sidebar {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .trace-filter-sidebar .sidebar-header {
+    margin-bottom: 4px;
+  }
+
+  .trace-filter-sidebar .header-actions {
+    gap: 2px;
+  }
+
+  .trace-filter-sidebar .sidebar-title {
+    font-size: 0.875rem;
+    gap: 4px;
+
+    .title-icon {
+      font-size: 12px;
+    }
+  }
+
+  .trace-filter-sidebar .filter-section {
+    gap: 3px;
+  }
+
+  .trace-filter-sidebar .filter-label {
+    font-size: 0.625rem;
+  }
+
+  .trace-filter-sidebar .tags-input-row {
+    gap: 3px;
+
+    .n-input {
+      min-width: 70px;
+    }
+
+    .n-button {
+      padding: 0 8px;
+    }
+  }
+
+  .trace-filter-sidebar .tag-equals {
+    font-size: 0.75rem;
+  }
+
+  .trace-filter-sidebar .tags-list {
+    gap: 2px;
+    margin-top: 3px;
+
+    .n-tag {
+      font-size: 0.6875rem;
+    }
+  }
+
+  .trace-filter-sidebar .filter-actions {
+    margin-top: 10px;
+  }
+
+  .trace-filter-sidebar .n-select {
+    font-size: 0.8125rem;
+  }
+
+  .trace-filter-sidebar .n-input-number {
+    font-size: 0.8125rem;
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// TraceListItem — traces/components/TraceListItem.vue (scoped)
+// ────────────────────────────────────────────────────────────────────────────────
+
+.trace-list-item {
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: var(--n-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--n-primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
+}
+
+.trace-list-item .trace-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.trace-list-item .trace-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.trace-list-item .trace-service {
+  font-weight: 600;
+  color: var(--n-primary-color);
+}
+
+.trace-list-item .trace-separator {
+  color: var(--n-text-color-3);
+}
+
+.trace-list-item .trace-operation {
+  font-weight: 500;
+  color: var(--n-text-color);
+}
+
+.trace-list-item .trace-time {
+  font-size: 0.75rem;
+  color: var(--n-text-color-3);
+}
+
+.trace-list-item .trace-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.trace-list-item .trace-id {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--n-text-color-3);
+}
+
+.trace-list-item .trace-id-icon {
+  font-size: 12px;
+}
+
+.trace-list-item .trace-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.trace-list-item .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &.duration {
+    color: var(--n-text-color-2);
+    padding: 12px;
+    min-width: 100px;
+  }
+
+  &.spans {
+    color: var(--n-text-color-2);
+    padding: 12px;
+    min-width: 100px;
+  }
+
+  &.errors {
+    color: #ef4444;
+    padding: 12px;
+    min-width: 100px;
+  }
+
+  &.logs {
+    color: #3b82f6;
+    padding: 12px;
+    min-width: 100px;
+  }
+}
+
+.trace-list-item .service-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+// TraceListItem Responsive — Tablet
+@media (max-width: 1024px) {
+  .trace-list-item {
+    padding: 10px 14px;
+  }
+
+  .trace-list-item .trace-stats {
+    gap: 10px;
+  }
+}
+
+// TraceListItem Responsive — Mobile
+@media (max-width: 768px) {
+  .trace-list-item {
+    padding: 10px 12px;
+    border-radius: 6px;
+  }
+
+  .trace-list-item .trace-header {
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+
+  .trace-list-item .trace-info {
+    font-size: 0.875rem;
+  }
+
+  .trace-list-item .trace-service {
+    font-size: 0.875rem;
+  }
+
+  .trace-list-item .trace-operation {
+    font-size: 0.8125rem;
+  }
+
+  .trace-list-item .trace-time {
+    font-size: 0.6875rem;
+  }
+
+  .trace-list-item .trace-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .trace-list-item .trace-id {
+    font-size: 0.6875rem;
+  }
+
+  .trace-list-item .trace-id-icon {
+    font-size: 11px;
+  }
+
+  .trace-list-item .trace-stats {
+    gap: 8px;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .trace-list-item .stat-item {
+    font-size: 0.6875rem;
+    gap: 3px;
+  }
+
+  .trace-list-item .service-breakdown {
+    gap: 4px;
+
+    .n-tag {
+      font-size: 0.6875rem;
+      padding: 0 6px;
+    }
+  }
+}
+
+// TraceListItem Responsive — Small Mobile
+@media (max-width: 480px) {
+  .trace-list-item {
+    padding: 8px 10px;
+  }
+
+  .trace-list-item .trace-header {
+    gap: 3px;
+    margin-bottom: 5px;
+  }
+
+  .trace-list-item .trace-info {
+    font-size: 0.8125rem;
+  }
+
+  .trace-list-item .trace-service {
+    font-size: 0.8125rem;
+  }
+
+  .trace-list-item .trace-separator {
+    font-size: 0.75rem;
+  }
+
+  .trace-list-item .trace-operation {
+    font-size: 0.75rem;
+  }
+
+  .trace-list-item .trace-time {
+    font-size: 0.625rem;
+  }
+
+  .trace-list-item .trace-details {
+    gap: 5px;
+    margin-bottom: 6px;
+  }
+
+  .trace-list-item .trace-id {
+    font-size: 0.625rem;
+    gap: 3px;
+  }
+
+  .trace-list-item .trace-id-icon {
+    font-size: 10px;
+  }
+
+  .trace-list-item .trace-stats {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .trace-list-item .stat-item {
+    font-size: 0.625rem;
+    gap: 2px;
+  }
+
+  .trace-list-item .service-breakdown {
+    gap: 3px;
+
+    .n-tag {
+      font-size: 0.625rem;
+      padding: 0 5px;
+      height: 18px;
+    }
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// TraceNodeGraph — traces/components/TraceNodeGraph.vue (scoped)
+// ────────────────────────────────────────────────────────────────────────────────
+
+.node-graph-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.node-graph-wrapper .layout-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 4px 16px 4px 0;
+  gap: 8px;
+}
+
+.node-graph-wrapper .layout-buttons {
+  margin-right: 0;
+}
+
+.node-graph-wrapper .expand-btn {
+  min-width: 32px !important;
+  height: 28px;
+  margin-left: 12px;
+  padding: 0 8px;
+  font-size: 16px;
+  color: var(--n-text-color-2);
+  background: var(--n-color);
+  border: 1px solid var(--n-border-color);
+  border-radius: 3px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--n-primary-color);
+    border-color: var(--n-primary-color);
+    background: var(--n-primary-color-hover);
+  }
+}
+
+.node-graph-wrapper .node-graph-container {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.node-graph-wrapper .node-graph-canvas {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.node-graph-wrapper .legend {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  gap: 16px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+  font-size: 12px;
+  color: #e5e7eb;
+
+  &.light-theme {
+    background: rgba(255, 255, 255, 0.95);
+    color: #374151;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+.node-graph-wrapper .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.node-graph-wrapper .legend-color {
+  width: 20px;
+  height: 4px;
+  border-radius: 2px;
+
+  &.total-time {
+    background: #f59e0b;
+  }
+
+  &.self-time {
+    background: #ef4444;
+  }
+}
+
+.node-graph-wrapper .zoom-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+
+  // Default dark theme - light icons
+  .n-button {
+    color: #e5e7eb !important;
+
+    &:hover {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+
+  &.light-theme {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    // Light theme - dark icons
+    .n-button {
+      color: #374151 !important;
+
+      &:hover {
+        color: #1f2937 !important;
+        background: rgba(0, 0, 0, 0.05) !important;
+      }
+    }
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// TracesByGrouping — traces/components/TracesByGrouping.vue (scoped)
+// ────────────────────────────────────────────────────────────────────────────────
+
+.traces-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px;
+}
+
+.trace-group {
+  border: 1px solid var(--k8s-border-color, #334155);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.trace-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.trace-group-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+
+  .group-toggle-icon {
+    font-size: 14px;
+    color: var(--n-text-color-3);
+    flex-shrink: 0;
+  }
+
+  .trace-service {
+    font-weight: 600;
+    color: var(--n-text-color);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .trace-separator {
+    color: var(--n-text-color-3);
+    margin: 0 2px;
+    flex-shrink: 0;
+  }
+
+  .trace-operation {
+    color: var(--n-text-color-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .group-count-badge {
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+}
+
+.trace-group-stats {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  color: var(--n-text-color-3);
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+
+    &.errors {
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    &.duration {
+      color: var(--n-text-color-2);
+    }
+
+    &.duration-range {
+      color: var(--n-text-color-3);
+      font-size: 0.75rem;
+    }
+  }
+}
+
+.trace-group-items {
+  border-top: 1px solid var(--k8s-border-color, #334155);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trace-group-more {
+  text-align: center;
+  padding: 8px;
+  font-size: 0.8rem;
+  color: var(--n-text-color-3);
+}
+
+.traces-pagination {
+  padding: 16px;
+  border-top: 1px solid var(--k8s-border-color, #c1c5cc);
+  display: flex;
+  justify-content: center;
+}
+
+// TracesByGrouping Responsive
+@media (max-width: 768px) {
+  .traces-list {
+    gap: 10px;
+    padding: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .traces-list {
+    gap: 8px;
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// TraceMonitorTab — traces/components/TraceMonitorTab.vue (scoped)
+// ────────────────────────────────────────────────────────────────────────────────
+
+.trace-monitor-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.trace-monitor-tab .monitor-filters {
+  display: flex;
+  gap: 85px;
+  padding: 12px 16px;
+  background: var(--n-color);
+  border: 1px solid var(--n-border-color);
+  border-radius: 8px;
+}
+
+.trace-monitor-tab .filter-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.trace-monitor-tab .service-filter {
+  flex: 1 1 0;
+
+  .n-select {
+    width: 100%;
+  }
+}
+
+.trace-monitor-tab .kind-filter {
+  flex: 0 0 auto;
+
+  .n-select {
+    width: 160px;
+  }
+}
+
+.trace-monitor-tab .filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.trace-monitor-tab .section-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trace-monitor-tab .graphs-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 16px;
+  gap: 16px;
+  align-items: start;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.trace-monitor-tab .operations-table-card {
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.trace-monitor-tab .n-card-header__main {
+  font-weight: 700 !important;
+}
+
+.trace-monitor-tab .operation-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trace-monitor-tab .operation-name {
+  font-weight: 500;
+}
+
+.trace-monitor-tab .error-rate-cell,
+.trace-monitor-tab .impact-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trace-monitor-tab .error-rate-text,
+.trace-monitor-tab .impact-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--n-text-color-2);
+}
+
+// TraceMonitorTab Responsive — Tablet
+@media (max-width: 1024px) {
+  .trace-monitor-tab {
+    gap: 14px;
+  }
+
+  .trace-monitor-tab .monitor-filters {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px 14px;
+  }
+
+  .trace-monitor-tab .filter-item {
+    flex: 1;
+    min-width: 150px;
+
+    .n-select {
+      width: 100% !important;
+    }
+  }
+}
+
+// TraceMonitorTab Responsive — Mobile
+@media (max-width: 768px) {
+  .trace-monitor-tab {
+    gap: 12px;
+  }
+
+  .trace-monitor-tab .monitor-filters {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .trace-monitor-tab .filter-item {
+    width: 100%;
+    min-width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    .n-select {
+      width: 100% !important;
+    }
+  }
+
+  .trace-monitor-tab .filter-label {
+    font-size: 0.6875rem;
+  }
+
+  .trace-monitor-tab .operations-table-card {
+    margin-top: 4px;
+    margin-bottom: 12px;
+
+    .n-card-header {
+      padding: 10px 12px;
+    }
+
+    .n-card__content {
+      padding: 10px;
+    }
+  }
+}
+
+// TraceMonitorTab Responsive — Small Mobile
+@media (max-width: 480px) {
+  .trace-monitor-tab {
+    gap: 10px;
+  }
+
+  .trace-monitor-tab .monitor-filters {
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+  }
+
+  .trace-monitor-tab .filter-item {
+    gap: 3px;
+  }
+
+  .trace-monitor-tab .filter-label {
+    font-size: 0.625rem;
+  }
+
+  .trace-monitor-tab .operations-table-card {
+    margin-top: 2px;
+    margin-bottom: 10px;
+
+    .n-card-header {
+      padding: 8px 10px;
+    }
+
+    .n-card__content {
+      padding: 8px;
+    }
+  }
+
+  .trace-monitor-tab .operation-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .trace-monitor-tab .operation-name {
+    font-size: 0.6875rem;
+  }
+
+  .trace-monitor-tab .error-rate-cell,
+  .trace-monitor-tab .impact-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .trace-monitor-tab .error-rate-text,
+  .trace-monitor-tab .impact-text {
+    font-size: 0.6875rem;
+  }
+}

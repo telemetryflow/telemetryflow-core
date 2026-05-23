@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>Monitor Recovered - TelemetryFlow</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:AllowPNG/>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    :root {
+      color-scheme: light dark;
+      supported-color-schemes: light dark;
+    }
+
+    body, table, td, a {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    table, td {
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+    img {
+      -ms-interpolation-mode: bicubic;
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+    }
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      background-color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .info-box {
+      background-color: #f0fdfa;
+      border: 1px solid #99f6e4;
+      border-left: 4px solid #0d9488;
+      border-radius: 0 6px 6px 0;
+    }
+    .alert-box {
+      background-color: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #d97706;
+      border-radius: 0 6px 6px 0;
+    }
+    .danger-box {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      border-left: 4px solid #dc2626;
+      border-radius: 0 6px 6px 0;
+    }
+    .success-box {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #16a34a;
+      border-radius: 0 6px 6px 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body, .body-bg {
+        background-color: #0f172a !important;
+      }
+      .email-container {
+        background-color: #1e293b !important;
+      }
+      .header-bg {
+        background-color: #0f172a !important;
+      }
+      h1, h2, h3, .heading-text {
+        color: #f1f5f9 !important;
+      }
+      .body-text, p {
+        color: #cbd5e1 !important;
+      }
+      .detail-label {
+        color: #94a3b8 !important;
+      }
+      .detail-value {
+        color: #f1f5f9 !important;
+      }
+      .detail-row-bg {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+      }
+      .detail-row-alt {
+        background-color: #0f172a !important;
+      }
+      .danger-box {
+        background-color: #450a0a !important;
+        border-color: #7f1d1d !important;
+        border-left-color: #dc2626 !important;
+      }
+      .danger-box-text {
+        color: #fca5a5 !important;
+      }
+      .alert-box {
+        background-color: #451a03 !important;
+        border-color: #78350f !important;
+        border-left-color: #d97706 !important;
+      }
+      .alert-box-text {
+        color: #fde68a !important;
+      }
+      .info-box {
+        background-color: #042f2e !important;
+        border-color: #115e59 !important;
+        border-left-color: #0d9488 !important;
+      }
+      .info-box-text {
+        color: #5eead4 !important;
+      }
+      .success-box {
+        background-color: #052e16 !important;
+        border-color: #14532d !important;
+        border-left-color: #16a34a !important;
+      }
+      .success-box-text {
+        color: #86efac !important;
+      }
+      .footer-text {
+        color: #64748b !important;
+      }
+      .footer-link {
+        color: #0d9488 !important;
+      }
+      .footer-border {
+        border-top-color: #334155 !important;
+      }
+    }
+
+    @media only screen and (max-width: 620px) {
+      .email-container {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .email-padding {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+      }
+      .header-padding {
+        padding: 24px 20px !important;
+      }
+      .button-a {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        font-size: 16px !important;
+        padding: 14px 20px !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f1f5f9;">
+  <!--[if mso]>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f5f9;">
+  <tr><td align="center">
+  <![endif]-->
+
+  <table role="presentation" class="body-bg" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f5f9;">
+    <tr>
+      <td align="center" style="padding: 24px 16px;">
+
+        <!-- Email Container -->
+        <!--[if mso]>
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;">
+        <tr><td>
+        <![endif]-->
+        <table role="presentation" class="email-container" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:800px; background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);">
+
+          <!-- Header with Logo -->
+          <tr>
+            <td class="header-bg header-padding" align="center" style="background-color:#0f172a; padding:32px 40px;">
+              <!--[if mso]>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                <span style="font-size:22px; font-weight:800; color:#ffffff;">TelemetryFlow</span><br/>
+                <span style="font-size:8px; font-weight:600; color:#0d9488; letter-spacing:3px;">OBSERVABILITY PLATFORM</span>
+              </td></tr></table>
+              <![endif]-->
+              <!--[if !mso]><!-->
+              <img src="{{logoUrl}}" width="333" height="90" alt="{{appName}}" style="display:block; border-radius:8px;" border="0">
+              <!--<![endif]-->
+            </td>
+          </tr>
+
+          <!-- Green Accent Bar -->
+          <tr>
+            <td style="height:4px; font-size:0; line-height:0; background-color:#16a34a;">&nbsp;</td>
+          </tr>
+
+          <!-- Body Content -->
+          <tr>
+            <td class="email-padding" style="padding:40px;">
+
+              <!-- Status Icon + Badge -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="padding-bottom:8px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td align="center" style="width:56px; height:56px; background-color:#f0fdf4; border-radius:50%;" valign="middle">
+                          <!--[if mso]>
+                          <span style="font-size:28px; color:#16a34a;">&#9989;</span>
+                          <![endif]-->
+                          <!--[if !mso]><!-->
+                          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="9 12 12 15 16 10"/>
+                          </svg>
+                          <!--<![endif]-->
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:8px;">
+                    <!-- Status Badge -->
+                    <span style="display:inline-block; padding:4px 14px; border-radius:12px; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#ffffff; background-color:#16a34a; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                      UP
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:24px;">
+                    <h1 class="heading-text" style="margin:0; font-size:24px; font-weight:700; color:#0f172a; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">{{monitorName}}</h1>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Monitor Description -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="body-text" style="font-size:15px; line-height:1.6; color:#475569; padding-bottom:24px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                    Your uptime monitor <strong style="color:#0f172a;">{{monitorName}}</strong> has recovered and the monitored endpoint is responding successfully again. The service has been restored and is back online.
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Monitor Details Table -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">
+                <tr>
+                  <td style="background-color:#f8fafc; padding:12px 20px; border-bottom:1px solid #e2e8f0;">
+                    <h3 class="heading-text" style="margin:0; font-size:14px; font-weight:700; color:#0f172a; text-transform:uppercase; letter-spacing:0.5px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">Monitor Details</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="detail-row-bg" style="padding:12px 20px; border-bottom:1px solid #e2e8f0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="detail-label" width="140" style="font-size:13px; font-weight:500; color:#64748b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">Monitor URL</td>
+                        <td class="detail-value" style="font-size:14px; font-weight:700; color:#1e293b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">{{monitorUrl}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="detail-row-bg detail-row-alt" style="padding:12px 20px; border-bottom:1px solid #e2e8f0; background-color:#f8fafc;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="detail-label" width="140" style="font-size:13px; font-weight:500; color:#64748b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">Status Code</td>
+                        <td class="detail-value" style="font-size:14px; font-weight:700; color:#16a34a; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">{{statusCode}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="detail-row-bg" style="padding:12px 20px; border-bottom:1px solid #e2e8f0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="detail-label" width="140" style="font-size:13px; font-weight:500; color:#64748b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">Response Time</td>
+                        <td class="detail-value" style="font-size:14px; font-weight:700; color:#1e293b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">{{responseTime}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="detail-row-bg detail-row-alt" style="padding:12px 20px; border-bottom:1px solid #e2e8f0; background-color:#f8fafc;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="detail-label" width="140" style="font-size:13px; font-weight:500; color:#64748b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">Region</td>
+                        <td class="detail-value" style="font-size:14px; font-weight:700; color:#1e293b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">{{region}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="detail-row-bg" style="padding:12px 20px; border-bottom:1px solid #e2e8f0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="detail-label" width="140" style="font-size:13px; font-weight:500; color:#64748b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">Recovered At</td>
+                        <td class="detail-value" style="font-size:14px; font-weight:700; color:#1e293b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">{{recoveredAt}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="detail-row-bg detail-row-alt" style="padding:12px 20px; background-color:#f8fafc;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="detail-label" width="140" style="font-size:13px; font-weight:500; color:#64748b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">Downtime Duration</td>
+                        <td class="detail-value" style="font-size:14px; font-weight:700; color:#1e293b; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">{{downtimeDuration}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Success Box -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+                <tr>
+                  <td class="success-box" style="padding:16px 20px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td>
+                          <p class="success-box-text" style="margin:0; font-size:14px; line-height:1.6; color:#065f46; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                            <strong>Recovered:</strong> This monitor has recovered and is responding normally. The service is back online and all health checks are passing successfully.
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- View Monitor Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
+                <tr>
+                  <td align="center">
+                    <!--[if mso]>
+                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{monitorLink}}" style="height:44px;v-text-anchor:middle;width:200px;" arcsize="14%" strokecolor="#0d9488" fillcolor="#0d9488">
+                      <w:anchorlock/>
+                      <center style="color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;font-weight:600;">View Monitor</center>
+                    </v:roundrect>
+                    <![endif]-->
+                    <!--[if !mso]><!-->
+                    <a class="button-a" href="{{monitorLink}}" style="display:inline-block; background-color:#0d9488; color:#ffffff; text-decoration:none; padding:12px 32px; border-radius:6px; font-weight:600; font-size:14px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; mso-hide:all;">View Monitor</a>
+                    <!--<![endif]-->
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Closing -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="body-text" style="font-size:15px; line-height:1.6; color:#475569; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                    Stay informed,<br>
+                    <strong style="color:#0f172a;">TelemetryFlow - Uptime Monitoring System</strong>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="email-padding" style="padding:0 40px 32px 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="footer-border" style="border-top:1px solid #e2e8f0; padding-top:24px;" align="center">
+                    <p class="footer-text" style="margin:0 0 8px 0; font-size:12px; line-height:1.5; color:#94a3b8; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                      &copy; {{year}} TelemetryFlow Observability. All rights reserved.
+                    </p>
+                    <p class="footer-text" style="margin:0 0 8px 0; font-size:12px; line-height:1.5; color:#94a3b8; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                      You are receiving this because uptime monitor notifications are enabled for your account.
+                    </p>
+                    <p class="footer-text" style="margin:0; font-size:12px; line-height:1.5; color:#94a3b8; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                      <a class="footer-link" href="https://telemetryflow.id" style="color:#0d9488; text-decoration:underline;">telemetryflow.id</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+        <!--[if mso]>
+        </td></tr></table>
+        <![endif]-->
+
+      </td>
+    </tr>
+  </table>
+
+  <!--[if mso]>
+  </td></tr></table>
+  <![endif]-->
+</body>
+</html>

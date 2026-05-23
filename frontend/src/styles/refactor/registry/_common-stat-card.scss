@@ -1,0 +1,276 @@
+// ============================================================================
+// StatCard Component Styles
+// Source: components/common/StatCard.vue
+// ============================================================================
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  border-radius: 12px;
+  min-width: 0;
+  min-height: 90px;
+  flex: 1 1 180px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.02);
+  }
+
+  // Small size variant
+  &.small {
+    padding: 16px 20px;
+    min-width: 0;
+    min-height: 90px;
+    flex: 1 1 140px;
+    border-radius: 8px;
+
+    .stat-header {
+      gap: 8px;
+    }
+
+    .stat-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .stat-title {
+      font-size: 0.75rem;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      word-break: break-word;
+    }
+
+    .stat-trend {
+      font-size: 0.7rem;
+    }
+
+    .trend-icon {
+      font-size: 12px;
+    }
+  }
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 16px;
+}
+
+.stat-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  order: 2;
+}
+
+.stat-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  order: 1;
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.stat-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.title-suffix {
+  font-weight: 600;
+  opacity: 0.9;
+  margin-left: 5px;
+}
+
+.stat-value {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  word-break: break-word;
+  text-align: right;
+  color: #1f2937;
+}
+
+.value-suffix {
+  font-size: 0.5em;
+  font-weight: 500;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+.stat-trend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+
+  &.up {
+    color: #22c55e;
+  }
+
+  &.down {
+    color: #ef4444;
+  }
+
+  &.neutral {
+    color: #9ca3af;
+  }
+}
+
+.trend-icon {
+  font-size: 14px;
+}
+
+.trend-value {
+  font-weight: 500;
+}
+
+// Mobile responsive styles
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 14px 16px;
+    min-height: 70px;
+    flex: 1 1 calc(50% - 8px);
+    min-width: calc(50% - 8px);
+
+    &.small {
+      padding: 12px 14px;
+      min-height: 65px;
+      flex: 1 1 calc(50% - 8px);
+      min-width: calc(50% - 8px);
+
+      .stat-icon {
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
+      }
+
+      .stat-title {
+        font-size: 0.65rem;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+      }
+
+      .stat-trend {
+        font-size: 0.6rem;
+      }
+    }
+  }
+
+  .stat-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 14px;
+  }
+
+  .stat-title {
+    font-size: 0.7rem;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .value-suffix {
+    font-size: 0.55em;
+  }
+
+  .stat-trend {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 12px 14px;
+    min-height: 60px;
+    flex: 1 1 calc(50% - 6px);
+    min-width: calc(50% - 6px);
+
+    &.small {
+      padding: 10px 12px;
+      min-height: 55px;
+
+      .stat-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+      }
+
+      .stat-title {
+        font-size: 0.6rem;
+      }
+
+      .stat-value {
+        font-size: 1.25rem;
+      }
+
+      .stat-trend {
+        font-size: 0.55rem;
+      }
+    }
+  }
+
+  .stat-header {
+    gap: 6px;
+  }
+
+  .stat-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+
+  .stat-title {
+    font-size: 0.625rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .value-suffix {
+    font-size: 0.5em;
+  }
+
+  .stat-trend {
+    font-size: 0.625rem;
+  }
+
+  .trend-icon {
+    font-size: 10px;
+  }
+}

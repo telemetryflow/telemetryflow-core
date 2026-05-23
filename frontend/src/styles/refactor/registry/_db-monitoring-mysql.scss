@@ -1,0 +1,132 @@
+// TFO Style Registry — DB Monitoring — MySQL
+
+// === db-mysql/instance-detail.vue ===
+.instance-detail {
+  .page-header {
+    margin-bottom: 16px;
+  }
+  .meta-text {
+    color: #666;
+    font-size: 13px;
+  }
+}
+
+// === db-mysql/instances.vue ===
+.db-mysql-instances {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+}
+
+// === db-mysql/overview.vue ===
+.db-mysql-overview {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .stat-success .n-statistic-value {
+    color: #18a058;
+  }
+  .stat-warning .n-statistic-value {
+    color: #f0a020;
+  }
+  .stat-error .n-statistic-value {
+    color: #d03050;
+  }
+  .instance-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: #666;
+    font-size: 13px;
+  }
+}
+
+// === db-mysql/query-analytics.vue ===
+.query-analytics {
+  h2 {
+    margin-bottom: 16px;
+  }
+}
+
+// === db-mysql/replication.vue ===
+.replication-view {
+  h2 {
+    margin-bottom: 16px;
+  }
+}
+
+// === db-mysql/schema-browser.vue ===
+.schema-browser {
+  h2 {
+    margin-bottom: 16px;
+  }
+}
+
+// === db-mysql/components/ConnectionTestResult.vue ===
+.connection-test-result {
+  padding: 8px 0;
+}
+
+// === db-mysql/components/PXCTopology.vue ===
+.pxc-topology {
+  position: relative;
+  min-height: 220px;
+}
+
+// === db-mysql/components/ReplicationTopology.vue ===
+.replication-topology {
+  .topology-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 24px;
+  }
+  .topology-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    min-width: 160px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .topology-node:hover {
+    border-color: #4098fc;
+  }
+  .node-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+  .node-body {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    word-break: break-all;
+  }
+  .topology-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .arrow-label {
+    font-size: 11px;
+    color: #999;
+  }
+}
+
+// === db-mysql/components/SchemaTreeView.vue ===
+.schema-tree-view {
+  min-height: 200px;
+}

@@ -1,0 +1,111 @@
+/**
+ * Graph Registry — DB MONITORING INVENTORY (INV)
+ * 6 graph definitions
+ */
+
+import type { GraphDefinition } from './types';
+
+export const INV_GRAPHS: GraphDefinition[] = [
+  {
+    graphId: 'INV10001',
+    module: 'INV',
+    title: 'Instances by Database Type',
+    component: 'ChartCard',
+    chartType: 'gauge',
+    signalType: 'infrastructure',
+    unit: 'count',
+    description: 'Distribution of instances by database type',
+    dataSource: 'statsByType',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'FETCH db_instances AGGREGATE count(*) GROUP BY type', legendFormat: '{{type}}', seriesKey: 'type' },
+    ],
+    view: 'db-monitoring/inventory/index.vue',
+    position: 'charts-row-1',
+    toggleable: false,
+  },
+  {
+    graphId: 'INV10002',
+    module: 'INV',
+    title: 'Instances by Provider',
+    component: 'ChartCard',
+    chartType: 'gauge',
+    signalType: 'infrastructure',
+    unit: 'count',
+    description: 'Distribution of instances by provider',
+    dataSource: 'statsByProvider',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'FETCH db_instances AGGREGATE count(*) GROUP BY provider', legendFormat: '{{provider}}', seriesKey: 'provider' },
+    ],
+    view: 'db-monitoring/inventory/index.vue',
+    position: 'charts-row-1',
+    toggleable: false,
+  },
+  {
+    graphId: 'INV10003',
+    module: 'INV',
+    title: 'Instances by Status',
+    component: 'ChartCard',
+    chartType: 'gauge',
+    signalType: 'infrastructure',
+    unit: 'count',
+    description: 'Distribution of instances by status',
+    dataSource: 'statsByStatus',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'FETCH db_instances AGGREGATE count(*) GROUP BY status', legendFormat: '{{status}}', seriesKey: 'status' },
+    ],
+    view: 'db-monitoring/inventory/index.vue',
+    position: 'charts-row-1',
+    toggleable: false,
+  },
+  {
+    graphId: 'INV10004',
+    module: 'INV',
+    title: 'Instances by Environment',
+    component: 'ChartCard',
+    chartType: 'bar',
+    signalType: 'infrastructure',
+    unit: 'count',
+    description: 'Distribution of instances by environment',
+    dataSource: 'statsByEnvironment',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'FETCH db_instances AGGREGATE count(*) GROUP BY environment', legendFormat: '{{environment}}', seriesKey: 'environment' },
+    ],
+    view: 'db-monitoring/inventory/index.vue',
+    position: 'charts-row-2',
+    toggleable: false,
+  },
+  {
+    graphId: 'INV10005',
+    module: 'INV',
+    title: 'Fleet Status Over Time',
+    component: 'ChartCard',
+    chartType: 'timeseries',
+    signalType: 'infrastructure',
+    unit: 'count',
+    description: 'Fleet status counts over time',
+    dataSource: 'fleetStatusTimeline',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'FETCH db_inventory_events AGGREGATE count(*) GROUP BY status STEP 5m', legendFormat: '{{status}}', seriesKey: 'status' },
+    ],
+    view: 'db-monitoring/inventory/index.vue',
+    position: 'charts-row-2',
+    toggleable: true,
+  },
+  {
+    graphId: 'INV10006',
+    module: 'INV',
+    title: 'Instance Registration Trend',
+    component: 'ChartCard',
+    chartType: 'timeseries',
+    signalType: 'infrastructure',
+    unit: 'count',
+    description: 'New instance registrations over last 30 days',
+    dataSource: 'registrationTrend',
+    defaultQueries: [
+      { dialect: 'tfql', expression: 'FETCH db_inventory_events WHERE event_type=registered AGGREGATE count(*) STEP 1d', legendFormat: 'Registrations', seriesKey: '__name__' },
+    ],
+    view: 'db-monitoring/inventory/index.vue',
+    position: 'charts-row-2',
+    toggleable: true,
+  },
+];

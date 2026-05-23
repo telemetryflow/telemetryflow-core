@@ -1,0 +1,232 @@
+// TFO Style Registry — K8S Clusters
+// Source: views/monitoring/kubernetes/clusters.vue
+
+.clusters-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--n-text-color);
+  margin: 0 0 4px 0;
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+}
+
+// Stat cards
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+// Section
+.section {
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--n-card-color);
+  border: 1px solid var(--k8s-border-color);
+}
+
+:global(html.dark) .section {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  background: var(--n-card-color);
+  border-bottom: 1px solid var(--k8s-border-color);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+:global(html.dark) .section-header {
+  background: rgba(30, 41, 59, 0.4);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-icon {
+  font-size: 18px;
+  color: var(--n-text-color-3);
+}
+
+.section-content {
+  padding: 0;
+}
+
+.table-content .n-pagination {
+  margin-top: 1px;
+  padding: 0 16px 12px;
+  justify-content: flex-end;
+}
+
+.table-content .n-data-table-base-table-body {
+  border-bottom: 1px solid var(--k8s-border-color);
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  width: 220px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+// Modal
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+// Success panel
+.success-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.success-icon-wrap {
+  font-size: 48px;
+  color: #22c55e;
+  line-height: 1;
+}
+
+.success-icon {
+  font-size: inherit;
+}
+
+.success-subtitle {
+  margin: 0;
+  color: var(--n-text-color-3);
+  font-size: 0.875rem;
+  max-width: 440px;
+}
+
+.cluster-id-box {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--k8s-border-color);
+  overflow: hidden;
+
+  .cluster-id-label {
+    display: block;
+    padding: 6px 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--n-text-color-3);
+    background: var(--n-code-color, rgba(0, 0, 0, 0.04));
+    border-bottom: 1px solid var(--k8s-border-color);
+  }
+
+  .cluster-id-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+
+    .cluster-id-code {
+      flex: 1;
+      font-family: monospace;
+      font-size: 0.85rem;
+      word-break: break-all;
+      text-align: left;
+      color: var(--n-text-color);
+    }
+  }
+}
+
+.setup-alert {
+  width: 100%;
+  text-align: left;
+}
+
+.code-block {
+  margin: 6px 0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: var(--n-code-color, rgba(0, 0, 0, 0.06));
+  font-family: monospace;
+  font-size: 0.78rem;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--n-text-color);
+}
+
+:global(html.dark) .code-block {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+// Bind panel
+.bind-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bind-cluster-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: var(--n-code-color, rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--k8s-border-color);
+}
+
+:global(html.dark) .bind-cluster-info {
+  background: rgba(0, 0, 0, 0.2);
+}

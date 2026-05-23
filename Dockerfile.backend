@@ -1,0 +1,89 @@
+# =============================================================================
+# TelemetryFlow Core - Backend Dockerfile
+# Multi-stage build for pnpm workspace monorepo
+# =============================================================================
+
+# Build stage
+FROM node:23-alpine AS builder
+
+WORKDIR /app
+
+# Install system dependencies (native modules: argon2, bcrypt)
+RUN apk add --no-cache python3 g++ make
+
+# Install pnpm
+RUN npm install -g pnpm@10.24.0
+
+# Copy workspace configuration files (required for pnpm workspace)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+
+# Copy backend source code and nest-cli config
+COPY backend/ ./backend/
+
+# Install all dependencies (workspace-aware)
+RUN pnpm install --frozen-lockfile
+
+# Build only the backend
+RUN pnpm build:backend
+
+# =============================================================================
+# Production stage
+# =============================================================================
+FROM node:23-alpine
+
+# =============================================================================
+# TelemetryFlow Metadata Labels (OCI Image Spec)
+# =============================================================================
+# Labels
+LABEL org.opencontainers.image.title="TelemetryFlow Core"
+LABEL org.opencontainers.image.description="TelemetryFlow Core - IAM, AI Assistant & Audit Platform"
+LABEL org.opencontainers.image.version="1.4.0"
+LABEL org.opencontainers.image.vendor="TelemetryFlow"
+LABEL org.opencontainers.image.authors="TelemetryFlow <support@telemetryflow.id>"
+LABEL org.opencontainers.image.url="https://telemetryflow.id"
+LABEL org.opencontainers.image.documentation="https://docs.telemetryflow.id"
+LABEL org.opencontainers.image.source="https://github.com/telemetryflow/telemetryflow-core"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.base.name="node:23-alpine"
+LABEL io.telemetryflow.product="TelemetryFlow Core"
+LABEL io.telemetryflow.component="telemetryflow-core-backend"
+LABEL io.telemetryflow.maintainer="TelemetryFlow"
+
+WORKDIR /app
+
+# Update packages to get security patches (CVE fixes) and install runtime dependencies
+RUN apk upgrade --no-cache && \
+    apk add --no-cache dumb-init wget python3 g++ make
+
+# Install pnpm
+RUN npm install -g pnpm@10.24.0
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nestjs -u 1001
+
+# Copy workspace configuration for production install
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY backend/package.json ./backend/package.json
+
+# Install production dependencies only
+RUN pnpm install --prod --frozen-lockfile
+
+# Copy built application from builder
+COPY --from=builder --chown=nestjs:nodejs /app/backend/dist ./backend/dist
+
+# Switch to non-root user
+USER nestjs
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the application
+CMD ["node", "backend/dist/main"]

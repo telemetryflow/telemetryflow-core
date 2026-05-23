@@ -1,0 +1,297 @@
+// TFO Style Registry — Stat Panel
+// Horizontal stat card with icon, value, trend, mini chart
+// Source: StatPanel.vue
+
+.stat-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border: 1px solid var(--n-border-color);
+  border-left: 4px solid var(--n-primary-color, #3b82f6);
+  border-radius: 12px;
+  min-height: 110px;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.stat-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+
+  .title-suffix {
+    font-weight: 700;
+    margin-left: 5px;
+    text-transform: lowercase;
+  }
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--n-text-color);
+  line-height: 1;
+
+  :root.dark & {
+    color: #ffffff;
+  }
+}
+
+.stat-unit {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--n-text-color-3);
+  margin-left: 4px;
+}
+
+.stat-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 16px;
+}
+
+.stat-trend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  min-height: 16px;
+
+  .trend-suffix {
+    color: var(--n-text-color-3);
+    font-weight: 400;
+    margin-left: 2px;
+  }
+}
+
+.stat-chart {
+  flex-shrink: 0;
+  width: 140px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  // Ensure chart fits properly
+  .vue-echarts {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+// Small size variant
+.stat-panel.small {
+  padding: 12px 16px;
+  min-height: 75px;
+  gap: 12px;
+  border-radius: 10px;
+  border-left-width: 3px;
+  flex: 1 1 180px;
+
+  .stat-content {
+    gap: 6px;
+  }
+
+  .stat-header {
+    gap: 6px;
+  }
+
+  .stat-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+  }
+
+  .stat-title {
+    font-size: 0.65rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-unit {
+    font-size: 0.65rem;
+  }
+
+  .stat-trend {
+    font-size: 0.625rem;
+    min-height: 14px;
+  }
+
+  .stat-status {
+    min-height: 14px;
+  }
+
+  .stat-chart {
+    width: 60px;
+    height: 40px;
+  }
+}
+
+// ─── Stats Grid (2-col mini chart layout) ─────────────────────────────────────
+// Used by AnomalyEventDrawer, LogsPatternsTab, and other mini-chart sections
+
+.stats-grid.mini {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  background: var(--n-action-color);
+  border-radius: 8px;
+
+  .stat-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--n-text-color-3);
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--n-text-color);
+  }
+}
+
+// Mobile responsive styles
+@media (max-width: 768px) {
+  .stat-panel {
+    padding: 14px 16px;
+    min-height: 95px;
+    flex: 1 1 calc(50% - 8px);
+    min-width: calc(50% - 8px);
+
+    &.small {
+      padding: 10px 14px;
+      min-height: 75px;
+      flex: 1 1 calc(50% - 8px);
+      min-width: calc(50% - 8px);
+
+      .stat-icon {
+        width: 22px;
+        height: 22px;
+      }
+
+      .stat-title {
+        font-size: 0.6rem;
+      }
+
+      .stat-value {
+        font-size: 1.25rem;
+      }
+
+      .stat-trend {
+        font-size: 0.55rem;
+      }
+    }
+  }
+
+  .stat-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .stat-title {
+    font-size: 0.65rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-trend {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-panel {
+    padding: 10px 12px;
+    min-height: 80px;
+    flex: 1 1 calc(50% - 6px);
+    min-width: calc(50% - 6px);
+
+    &.small {
+      padding: 8px 10px;
+      min-height: 65px;
+
+      .stat-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .stat-title {
+        font-size: 0.55rem;
+      }
+
+      .stat-value {
+        font-size: 1.1rem;
+      }
+
+      .stat-trend {
+        font-size: 0.5rem;
+      }
+    }
+  }
+
+  .stat-header {
+    gap: 5px;
+  }
+
+  .stat-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .stat-title {
+    font-size: 0.6rem;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .stat-unit {
+    font-size: 0.6rem;
+  }
+
+  .stat-trend {
+    font-size: 0.55rem;
+  }
+}

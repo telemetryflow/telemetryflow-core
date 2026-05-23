@@ -1,0 +1,190 @@
+// TFO Style Registry — Settings Notifications
+// Source: src/views/settings/notifications/index.vue
+
+.notifications-settings {
+  padding: 0;
+}
+
+.notifications-settings .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.notifications-settings .header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notifications-settings .page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.notifications-settings .title-icon {
+  font-size: 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.notifications-settings .page-subtitle {
+  color: var(--text-color-3);
+  font-size: 14px;
+}
+
+.notifications-settings .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1024px) {
+  .notifications-settings .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notifications-settings .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+.notifications-settings .settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.notifications-settings .settings-card {
+  &.colorful-card {
+    .n-card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--n-border-color);
+      background: rgba(128, 128, 128, 0.02);
+    }
+
+    .n-card__content {
+      padding: 0;
+    }
+  }
+}
+
+.card-header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.header-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--n-text-color);
+}
+
+.header-subtitle {
+  font-size: 13px;
+  color: var(--n-text-color-3);
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--n-border-color);
+  gap: 16px;
+  transition: background 0.2s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.colorful-item {
+    &:hover {
+      background: rgba(128, 128, 128, 0.03);
+    }
+  }
+}
+
+.setting-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.setting-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--n-text-color);
+}
+
+.setting-description {
+  font-size: 13px;
+  color: var(--n-text-color-3);
+}
+
+.actions-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .notifications-settings .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .notifications-settings .card-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

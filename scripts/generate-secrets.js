@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Generate Secure Secrets for TelemetryFlow SDK
+ * Generate Secure Secrets for TelemetryFlow Core
  *
  * Usage:
  *   node scripts/generate-secrets.js              # Generate all secrets
@@ -50,7 +50,7 @@ for (let i = 0; i < args.length; i++) {
     case '--help':
     case '-h':
       console.log(`
-TelemetryFlow SDK - Secure Secret Generator
+TelemetryFlow Core - Secure Secret Generator
 
 Usage:
   node scripts/generate-secrets.js [options]
@@ -121,6 +121,9 @@ if (generateJwtSecrets) {
   secrets.JWT_SECRET = generateSecret(length, format);
   secrets.JWT_REFRESH_SECRET = generateSecret(length, format);
   secrets.SESSION_SECRET = generateSecret(length, format);
+  secrets.ENCRYPTION_KEY = generateSecret(length, format);
+  secrets.MFA_ENCRYPTION_KEY = generateSecret(length, format);
+  secrets.LLM_ENCRYPTION_KEY = generateSecret(length, format);
 }
 
 // Output
@@ -139,6 +142,9 @@ if (envOnly) {
     console.log(`JWT_EXPIRATION=24h`);
     console.log(`JWT_REFRESH_EXPIRATION=168h`);
     console.log(`SESSION_SECRET=${secrets.SESSION_SECRET}`);
+    console.log(`ENCRYPTION_KEY=${secrets.ENCRYPTION_KEY}`);
+    console.log(`MFA_ENCRYPTION_KEY=${secrets.MFA_ENCRYPTION_KEY}`);
+    console.log(`LLM_ENCRYPTION_KEY=${secrets.LLM_ENCRYPTION_KEY}`);
   }
 } else {
   // Decorated output
@@ -160,6 +166,9 @@ if (envOnly) {
     console.log(`  JWT Secret:         ${secrets.JWT_SECRET}`);
     console.log(`  JWT Refresh Secret: ${secrets.JWT_REFRESH_SECRET}`);
     console.log(`  Session Secret:     ${secrets.SESSION_SECRET}`);
+    console.log(`  Encryption Key:     ${secrets.ENCRYPTION_KEY}`);
+    console.log(`  MFA Encryption Key: ${secrets.MFA_ENCRYPTION_KEY}`);
+    console.log(`  LLM Encryption Key: ${secrets.LLM_ENCRYPTION_KEY}`);
     console.log('');
   }
 
@@ -175,6 +184,9 @@ if (envOnly) {
     console.log(`JWT_EXPIRATION=24h`);
     console.log(`JWT_REFRESH_EXPIRATION=168h`);
     console.log(`SESSION_SECRET=${secrets.SESSION_SECRET}`);
+    console.log(`ENCRYPTION_KEY=${secrets.ENCRYPTION_KEY}`);
+    console.log(`MFA_ENCRYPTION_KEY=${secrets.MFA_ENCRYPTION_KEY}`);
+    console.log(`LLM_ENCRYPTION_KEY=${secrets.LLM_ENCRYPTION_KEY}`);
   }
   console.log('');
 
@@ -188,9 +200,10 @@ if (envOnly) {
   if (generateJwtSecrets) {
     dockerEnvs.push(`  -e JWT_SECRET="${secrets.JWT_SECRET}"`);
     dockerEnvs.push(`  -e SESSION_SECRET="${secrets.SESSION_SECRET}"`);
+    dockerEnvs.push(`  -e ENCRYPTION_KEY="${secrets.ENCRYPTION_KEY}"`);
   }
   console.log(`docker run -d \\\n${dockerEnvs.join(' \\\n')} \\`);
-  console.log('  TelemetryFlow SDK:latest\n');
+  console.log('  telemetryflow-core:latest\n');
 
   console.log('Security Tips:');
   console.log('--------------');

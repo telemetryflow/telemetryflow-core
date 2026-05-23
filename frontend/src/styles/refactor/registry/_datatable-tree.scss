@@ -1,0 +1,72 @@
+// TFO Style Registry — DataTable Tree
+// Expand/collapse, indent guides, parent/child rows
+
+.table-content {
+  .n-data-table {
+    .n-data-table-indent {
+      width: 28px !important;
+      min-width: 28px !important;
+      position: relative;
+    }
+
+    .n-data-table-indent__guide {
+      display: none !important;
+    }
+
+    .n-data-table-expand-trigger {
+      cursor: pointer;
+      color: var(--primary-color);
+      margin-right: 8px;
+      font-size: 16px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+    }
+
+    .n-data-table-expand-trigger .n-base-icon {
+      display: none;
+    }
+
+    .n-data-table-expand-trigger::before {
+      content: "▼";
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+      line-height: 1;
+    }
+
+    .n-data-table-expand-trigger--expanded::before {
+      transform: rotate(180deg);
+    }
+
+    // Parent row (group header)
+    .n-data-table-tr--expanded>.n-data-table-td {
+      background: rgba(99, 102, 241, 0.12) !important;
+      font-weight: 600 !important;
+    }
+
+    .n-data-table-tr:has(.n-data-table-expand-trigger)>.n-data-table-td {
+      background: rgba(99, 102, 241, 0.12) !important;
+      font-weight: 600 !important;
+    }
+
+    // Child rows
+    .n-data-table-tr:not(:has(.n-data-table-expand-trigger))>.n-data-table-td {
+      background: transparent;
+    }
+
+    // Hover — parent vs child
+    .n-data-table-tr:has(.n-data-table-expand-trigger):hover>.n-data-table-td {
+      background: rgba(99, 102, 241, 0.18) !important;
+    }
+
+    .n-data-table-tr:not(:has(.n-data-table-expand-trigger)):hover>.n-data-table-td {
+      background: rgba(99, 102, 241, 0.06) !important;
+    }
+  }
+}

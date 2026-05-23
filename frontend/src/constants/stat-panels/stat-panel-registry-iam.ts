@@ -1,0 +1,86 @@
+/**
+ * Stat Panel Registry — IAM (IAM)
+ * 5 stat panel registry definitions
+ */
+
+import type { StatPanelDefinition } from "./types";
+
+export const IAM_STAT_PANEL_REGISTRY: StatPanelDefinition[] = [
+  // │ IAM (IAM) — 4 stat panels
+  // └──────────────────────────────────────────────────────────────────────────────
+  {
+    statPanelId: "IAM20001",
+    module: "IAM",
+    title: "Total Users",
+    icon: "carbon:user-multiple",
+    color: "primary",
+    unit: "count",
+    size: "small",
+    dataSource: "usersStore.totalUsers",
+    hasTrend: true,
+    hasTimeRange: true,
+    description: "Total registered users",
+    view: "iam/users/index.vue",
+    position: "stats-row",
+  },
+  {
+    statPanelId: "IAM20002",
+    module: "IAM",
+    title: "Active Users",
+    icon: "carbon:checkmark-filled",
+    color: "success",
+    unit: "count",
+    size: "small",
+    dataSource: "usersStore.activeUsers",
+    hasTrend: true,
+    hasTimeRange: true,
+    description: "Currently active users",
+    view: "iam/users/index.vue",
+    position: "stats-row",
+  },
+  {
+    statPanelId: "IAM20003",
+    module: "IAM",
+    title: "Roles",
+    icon: "carbon:user-role",
+    color: "purple",
+    unit: "count",
+    size: "small",
+    dataSource: "rolesStore.totalRoles",
+    hasTrend: false,
+    hasTimeRange: false,
+    description: "Total defined roles",
+    view: "iam/roles/index.vue",
+    position: "stats-row",
+  },
+  {
+    statPanelId: "IAM20004",
+    module: "IAM",
+    title: "Assignments",
+    icon: "carbon:task",
+    color: "info",
+    unit: "count",
+    size: "small",
+    dataSource: "assignmentsStore.totalAssignments",
+    hasTrend: false,
+    hasTimeRange: false,
+    description: "Total role assignments",
+    view: "iam/assignments/index.vue",
+    position: "stats-row",
+  },
+  {
+    statPanelId: "IAM20005",
+    module: "IAM",
+    title: "Registrations Today",
+    icon: "carbon:user-follow",
+    color: "success",
+    unit: "count",
+    size: "small",
+    dataSource: "iam.registrationsToday",
+    hasTrend: true,
+    hasTimeRange: true,
+    description: "New user registrations today",
+    view: "iam/overview/index.vue",
+    position: "stats-row",
+  },
+];

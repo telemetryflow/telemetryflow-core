@@ -1,0 +1,563 @@
+# Implementation Plan: Frontend-Backend SSO Integration
+
+## Overview
+
+This implementation plan breaks down the SSO integration feature into discrete, incremental tasks. The approach follows:
+
+1. Backend domain and infrastructure setup
+2. OAuth2/OIDC implementation
+3. SAML implementation
+4. User provisioning and session management
+5. Frontend authentication store and components
+6. Frontend admin UI for provider management
+7. Integration and testing
+
+Each task builds on previous work, with property-based tests integrated throughout to validate correctness early.
+
+## Tasks
+
+- [ ] 1. Set up backend SSO module structure
+  - Create module directory structure following DDD/CQRS pattern
+  - Set up domain, application, infrastructure, and presentation layers
+  - Configure module imports and exports in NestJS
+  - _Requirements: 10.1, 10.2, 10.3_
+
+- [ ] 2. Implement domain layer for SSO
+  - [ ] 2.1 Create value objects
+    - Implement ProviderId, ProviderType, OAuth2Config, SAMLConfig value objects
+    - Implement ProviderUserId, AuthenticationState, PKCEChallenge value objects
+    - Add validation logic for each value object
+    - _Requirements: 1.2, 1.3, 2.1_
+  - [ ] 2.2 Create SSOProvider aggregate
+    - Implement SSOProvider aggregate root with properties and methods
+    - Add enable(), disable(), updateConfiguration(), validate() methods
+    - Implement domain events: ProviderCreated, ProviderEnabled, ProviderDisabled, ProviderConfigurationUpdated
+    - _Requirements: 1.1, 1.7_
+  - [ ] 2.3 Create SSOAuthentication aggregate
+    - Implement SSOAuthentication aggregate with session properties
+    - Add isExpired(), refresh(), invalidate() methods
+    - Implement domain events: UserAuthenticatedViaSSO, AuthenticationExpired, AuthenticationInvalidated
+    - _Requirements: 5.1, 5.2, 5.4_
+  - [ ] 2.4 Create SSOUserLink aggregate
+    - Implement SSOUserLink aggregate for provider-user relationships
+    - Add updateProfile(), unlink() methods
+    - Implement domain events: ProviderLinked, ProviderUnlinked, ProfileUpdated
+    - _Requirements: 4.3, 4.4_
+  - [ ] 2.5 Define repository interfaces
+    - Create ISSOProviderRepository interface
+    - Create ISSOAuthenticationRepository interface
+    - Create ISSOUserLinkRepository interface
+    - _Requirements: 1.1_
+
+- [ ] 3. Create database schema and migrations
+  - [ ] 3.1 Create PostgreSQL migrations
+    - Create sso_providers table migration
+    - Create sso_user_links table migration with foreign keys
+    - Create sso_authentications table migration with foreign keys
+    - Add indexes for performance (user_id, provider_id combinations)
+    - _Requirements: 1.1, 4.7, 5.2_
+  - [ ] 3.2 Create TypeORM entities
+    - Implement SSOProviderEntity with decorators
+    - Implement SSOUserLinkEntity with relationships
+    - Implement SSOAuthenticationEntity with relationships
+    - _Requirements: 1.1, 4.7, 5.2_
+  - [ ] 3.3 Create seed data
+    - Create seed for default SSO providers (Google, Microsoft, etc.)
+    - Include sample OAuth2 and SAML configurations
+    - _Requirements: 1.4_
+
+- [ ] 4. Implement infrastructure services
+  - [ ] 4.1 Implement PKCEService
+    - Create generateCodeVerifier() method
+    - Create generateCodeChallenge() method using SHA-256
+    - Create validateChallenge() method
+    - _Requirements: 2.1, 9.1_
+  - [ ]\* 4.2 Write property test for PKCEService
+    - **Property 4: PKCE Generation**
+    - **Validates: Requirements 2.1, 9.1**
+  - [ ] 4.3 Implement StateService
+    - Create generateState() method with crypto.randomBytes
+    - Create storeState() method (in-memory cache with TTL)
+    - Create validateState() method
+    - Create retrieveState() method
+    - _Requirements: 2.2, 2.3_
+  - [ ]\* 4.4 Write property test for StateService
+    - **Property 5: State Parameter Inclusion and Validation**
+    - **Validates: Requirements 2.2, 2.3**
+  - [ ] 4.5 Implement OAuth2Service
+    - Create generateAuthorizationUrl() method
+    - Create exchangeCodeForTokens() method with PKCE
+    - Create validateIdToken() method (signature, issuer, audience, expiration)
+    - Create refreshToken() method
+    - Support Google, Microsoft, Apple, Slack, Cognito configurations
+    - _Requirements: 2.4, 2.5, 2.6, 9.8_
+  - [ ]\* 4.6 Write property test for OAuth2Service token validation
+    - **Property 7: ID Token Validation**
+    - **Validates: Requirements 2.5**
+  - [ ] 4.7 Implement SAMLService
+    - Create generateAuthRequest() method with required fields
+    - Create signSAMLRequest() method (optional signing)
+    - Create validateSAMLResponse() method (signature, issuer, audience, time)
+    - Create extractAttributes() method
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
+  - [ ]\* 4.8 Write property test for SAMLService validation
+    - **Property 13: SAML Response Validation**
+    - **Validates: Requirements 3.4, 3.5**
+
+- [ ] 5. Implement user provisioning service
+  - [ ] 5.1 Implement UserProvisioningService
+    - Create provisionUser() method (create new user from SSO data)
+    - Create updateUserProfile() method (sync profile changes)
+    - Create linkProvider() method (link SSO to existing user)
+    - Create unlinkProvider() method
+    - Implement default role assignment logic
+    - _Requirements: 2.7, 4.1, 4.2, 4.3, 4.4, 4.5_
+  - [ ]\* 5.2 Write property test for user provisioning
+    - **Property 9: User Provisioning**
+    - **Validates: Requirements 2.7, 4.1, 4.2, 4.3, 4.4**
+  - [ ]\* 5.3 Write unit tests for provisioning error handling
+    - Test duplicate email handling
+    - Test missing required fields
+    - Test role assignment logic
+    - _Requirements: 4.6_
+
+- [ ] 6. Implement repository implementations
+  - [ ] 6.1 Implement SSOProviderRepository
+    - Implement CRUD operations using TypeORM
+    - Implement findByType() and findEnabled() queries
+    - Encrypt sensitive fields (client_secret, certificate) before saving
+    - Decrypt when loading from database
+    - _Requirements: 1.1, 9.4_
+  - [ ]\* 6.2 Write property test for secret encryption
+    - **Property 32: Secret Encryption**
+    - **Validates: Requirements 9.4**
+  - [ ] 6.3 Implement SSOAuthenticationRepository
+    - Implement create, update, delete operations
+    - Implement findByUserId() and findByProvider() queries
+    - Implement session expiration cleanup
+    - _Requirements: 5.1, 5.2_
+  - [ ] 6.4 Implement SSOUserLinkRepository
+    - Implement CRUD operations
+    - Implement findByUserId(), findByProvider(), findByEmail() queries
+    - _Requirements: 4.3, 4.7_
+
+- [ ] 7. Checkpoint - Ensure infrastructure tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 8. Implement application layer commands and handlers
+  - [ ] 8.1 Implement provider management commands
+    - Create CreateSSOProviderCommand and handler
+    - Create UpdateSSOProviderCommand and handler
+    - Create EnableSSOProviderCommand and handler
+    - Create DisableSSOProviderCommand and handler
+    - Create DeleteSSOProviderCommand and handler
+    - _Requirements: 1.1, 1.7_
+  - [ ]\* 8.2 Write property test for provider configuration validation
+    - **Property 1: Provider Configuration Validation**
+    - **Validates: Requirements 1.1, 1.2, 1.3**
+  - [ ]\* 8.3 Write property test for configuration change events
+    - **Property 3: Configuration Change Events**
+    - **Validates: Requirements 1.7**
+  - [ ] 8.4 Implement OAuth2 authentication commands
+    - Create InitiateOAuth2FlowCommand and handler
+    - Create HandleOAuth2CallbackCommand and handler
+    - Integrate PKCEService, StateService, OAuth2Service
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
+  - [ ]\* 8.5 Write property test for OAuth2 token exchange
+    - **Property 6: Token Exchange**
+    - **Validates: Requirements 2.4**
+  - [ ]\* 8.6 Write property test for user information extraction
+    - **Property 8: User Information Extraction**
+    - **Validates: Requirements 2.6**
+  - [ ] 8.7 Implement SAML authentication commands
+    - Create InitiateSAMLFlowCommand and handler
+    - Create HandleSAMLCallbackCommand and handler
+    - Integrate SAMLService
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
+  - [ ]\* 8.8 Write property test for SAML attribute extraction
+    - **Property 14: SAML Attribute Extraction and Mapping**
+    - **Validates: Requirements 3.6, 3.7**
+  - [ ] 8.9 Implement provider linking commands
+    - Create LinkSSOProviderCommand and handler
+    - Create UnlinkSSOProviderCommand and handler
+    - _Requirements: 4.3_
+  - [ ] 8.10 Implement token refresh command
+    - Create RefreshSSOTokenCommand and handler
+    - _Requirements: 9.8_
+  - [ ]\* 8.11 Write property test for token refresh
+    - **Property 36: Token Refresh Support**
+    - **Validates: Requirements 9.8**
+
+- [ ] 9. Implement application layer queries and handlers
+  - [ ] 9.1 Implement provider queries
+    - Create GetSSOProviderQuery and handler
+    - Create GetAllSSOProvidersQuery and handler
+    - Create GetEnabledSSOProvidersQuery and handler
+    - Implement sensitive data exclusion in response DTOs
+    - _Requirements: 1.5_
+  - [ ]\* 9.2 Write property test for sensitive data exclusion
+    - **Property 2: Sensitive Data Exclusion**
+    - **Validates: Requirements 1.5**
+  - [ ] 9.3 Implement user link queries
+    - Create GetUserSSOLinksQuery and handler
+    - _Requirements: 4.3_
+  - [ ] 9.4 Implement authentication queries
+    - Create GetSSOAuthenticationQuery and handler
+    - Create ValidateSSOTokenQuery and handler
+    - _Requirements: 5.6_
+
+- [ ] 10. Implement presentation layer controllers
+  - [ ] 10.1 Implement SSOController
+    - POST /api/sso/providers (admin only)
+    - PUT /api/sso/providers/:id (admin only)
+    - DELETE /api/sso/providers/:id (admin only)
+    - GET /api/sso/providers (admin only)
+    - GET /api/sso/providers/enabled (public)
+    - GET /api/sso/initiate/:provider
+    - GET /api/sso/callback/:provider
+    - GET /api/sso/saml/initiate/:provider
+    - POST /api/sso/saml/callback/:provider
+    - POST /api/sso/link/:provider
+    - DELETE /api/sso/link/:provider
+    - GET /api/sso/links
+    - POST /api/sso/refresh
+    - Add Swagger decorators for all endpoints
+    - _Requirements: 1.1, 2.1, 2.2, 2.3, 3.1, 4.3, 9.8_
+  - [ ]\* 10.2 Write property test for redirect URI validation
+    - **Property 31: Redirect URI Validation**
+    - **Validates: Requirements 9.3**
+  - [ ]\* 10.3 Write property test for HTTPS enforcement
+    - **Property 33: HTTPS Enforcement**
+    - **Validates: Requirements 9.5**
+  - [ ] 10.4 Implement guards and decorators
+    - Create SSOAuthGuard for JWT validation
+    - Create AdminGuard for admin-only endpoints
+    - Add rate limiting decorator for SSO endpoints
+    - _Requirements: 9.6_
+  - [ ]\* 10.5 Write property test for rate limiting
+    - **Property 34: Rate Limiting**
+    - **Validates: Requirements 9.6**
+
+- [ ] 11. Implement event processors and logging
+  - [ ] 11.1 Implement domain event processors
+    - Create UserAuthenticatedViaSSO event processor
+    - Create ProviderLinked event processor
+    - Create ProviderConfigurationUpdated event processor
+    - _Requirements: 10.4_
+  - [ ]\* 11.2 Write property test for domain event emission
+    - **Property 37: Domain Event Emission**
+    - **Validates: Requirements 10.4**
+  - [ ] 11.3 Implement audit logging
+    - Log all authentication attempts with context
+    - Log all SSO errors with details
+    - Send logs to Winston and ClickHouse
+    - _Requirements: 8.8, 9.7_
+  - [ ]\* 11.4 Write property test for authentication audit logging
+    - **Property 35: Authentication Audit Logging**
+    - **Validates: Requirements 9.7**
+  - [ ]\* 11.5 Write property test for error logging
+    - **Property 30: Error Logging**
+    - **Validates: Requirements 8.8**
+
+- [ ] 12. Implement error handling
+  - [ ] 12.1 Create custom exception classes
+    - Create ConfigurationError exception
+    - Create ProviderUnavailableError exception
+    - Create AuthenticationError exception
+    - Create ProvisioningError exception
+    - Create ValidationError exception
+    - Create RateLimitError exception
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+  - [ ] 12.2 Implement global exception filter
+    - Transform exceptions to structured error responses
+    - Include error code, type, message, details, timestamp, requestId
+    - Map exceptions to appropriate HTTP status codes
+    - _Requirements: 8.1_
+  - [ ]\* 12.3 Write property test for structured error responses
+    - **Property 29: Structured Error Responses**
+    - **Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5**
+  - [ ]\* 12.4 Write unit tests for error handling
+    - Test each exception type
+    - Test error response format
+    - Test HTTP status code mapping
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+
+- [ ] 13. Checkpoint - Ensure backend tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 14. Implement frontend TypeScript types
+  - [ ] 14.1 Create SSO type definitions
+    - Create ProviderType enum
+    - Create OAuth2Config interface
+    - Create SAMLConfig interface
+    - Create SSOProvider interface
+    - Create SSOUserLink interface
+    - Create SSOAuthenticationResponse interface
+    - Create error type interfaces
+    - _Requirements: 1.1, 1.2, 1.3_
+
+- [ ] 15. Implement frontend API service
+  - [ ] 15.1 Create SSOService
+    - Implement getEnabledProviders() method
+    - Implement getAllProviders() method (admin)
+    - Implement createProvider() method (admin)
+    - Implement updateProvider() method (admin)
+    - Implement deleteProvider() method (admin)
+    - Implement enableProvider() method (admin)
+    - Implement disableProvider() method (admin)
+    - Implement initiateSSOLogin() method (redirect to backend)
+    - Implement getUserLinks() method
+    - Implement linkProvider() method
+    - Implement unlinkProvider() method
+    - Implement validateToken() method
+    - Add error handling for all API calls
+    - _Requirements: 1.1, 2.1, 4.3, 5.6_
+  - [ ]\* 15.2 Write unit tests for SSOService
+    - Test all API methods
+    - Test error handling
+    - Mock Axios responses
+    - _Requirements: 1.1, 2.1, 4.3_
+
+- [ ] 16. Implement frontend authentication store
+  - [ ] 16.1 Create AuthStore with Pinia
+    - Define state: user, token, isAuthenticated, loading, error, ssoProviders, linkedProviders
+    - Define getters: isLoggedIn, currentUser, enabledSSOProviders, hasLinkedProvider
+    - Implement initiateSSOLogin() action
+    - Implement handleSSOCallback() action
+    - Implement fetchSSOProviders() action
+    - Implement fetchLinkedProviders() action
+    - Implement linkSSOProvider() action
+    - Implement unlinkSSOProvider() action
+    - Implement logout() action
+    - Implement validateToken() action
+    - _Requirements: 1.6, 2.9, 5.3, 5.6, 5.7_
+  - [ ]\* 16.2 Write property test for token storage
+    - **Property 11: Frontend Token Storage**
+    - **Validates: Requirements 2.9**
+  - [ ]\* 16.3 Write property test for token validation on init
+    - **Property 21: Token Validation on Initialization**
+    - **Validates: Requirements 5.6, 5.7**
+  - [ ]\* 16.4 Write unit tests for AuthStore
+    - Test all actions and getters
+    - Test state mutations
+    - Mock API responses
+    - _Requirements: 1.6, 2.9, 5.3, 5.6, 5.7_
+
+- [ ] 17. Implement frontend login components
+  - [ ] 17.1 Create SSOProviderButton component
+    - Accept provider prop
+    - Display provider logo and name
+    - Emit click event
+    - Style with Naive UI
+    - _Requirements: 7.1, 7.2_
+  - [ ] 17.2 Update LoginPage component
+    - Fetch enabled SSO providers on mount
+    - Display SSOProviderButton for each enabled provider
+    - Handle SSO button clicks (call AuthStore.initiateSSOLogin)
+    - Display error messages from AuthStore
+    - Maintain existing username/password form as fallback
+    - _Requirements: 7.1, 7.2, 7.3, 8.7_
+  - [ ]\* 17.3 Write property test for authentication flow initiation
+    - **Property 25: Authentication Flow Initiation**
+    - **Validates: Requirements 7.3, 7.4**
+  - [ ]\* 17.4 Write unit tests for LoginPage
+    - Test SSO provider rendering
+    - Test button click handling
+    - Test error display
+    - _Requirements: 7.1, 7.2, 7.3_
+
+- [ ] 18. Implement SSO callback handler
+  - [ ] 18.1 Create SSOCallbackHandler component
+    - Extract token from URL query parameters
+    - Extract error from URL query parameters (if present)
+    - Call AuthStore.handleSSOCallback(token) on mount
+    - Display loading state during token processing
+    - Display error message if authentication failed
+    - Redirect to intended destination or dashboard on success
+    - _Requirements: 7.5, 7.6, 7.8_
+  - [ ]\* 18.2 Write property test for token extraction and storage
+    - **Property 27: Token Extraction and Storage**
+    - **Validates: Requirements 7.6**
+  - [ ]\* 18.3 Write property test for deep link support
+    - **Property 28: Deep Link Support**
+    - **Validates: Requirements 7.8**
+  - [ ]\* 18.4 Write unit tests for SSOCallbackHandler
+    - Test token extraction
+    - Test error handling
+    - Test redirect logic
+    - _Requirements: 7.5, 7.6, 7.8_
+
+- [ ] 19. Implement frontend admin store
+  - [ ] 19.1 Create SSOAdminStore with Pinia
+    - Define state: providers, selectedProvider, loading, error
+    - Implement fetchProviders() action
+    - Implement createProvider() action
+    - Implement updateProvider() action
+    - Implement deleteProvider() action
+    - Implement enableProvider() action
+    - Implement disableProvider() action
+    - _Requirements: 1.1, 6.5, 6.7_
+  - [ ]\* 19.2 Write property test for provider status update
+    - **Property 24: Provider Status Update**
+    - **Validates: Requirements 6.7**
+  - [ ]\* 19.3 Write unit tests for SSOAdminStore
+    - Test all actions
+    - Test state mutations
+    - Mock API responses
+    - _Requirements: 1.1, 6.5, 6.7_
+
+- [ ] 20. Implement frontend admin components
+  - [ ] 20.1 Create SSOProviderForm component
+    - Accept provider and mode props (create/edit)
+    - Display dynamic form fields based on provider type
+    - OAuth2 fields: clientId, clientSecret, authorizationUrl, tokenUrl, redirectUri, scopes
+    - SAML fields: entityId, ssoUrl, certificate, metadataUrl, signRequests
+    - Implement client-side validation for required fields
+    - Emit save event with form data
+    - _Requirements: 6.3, 6.4_
+  - [ ]\* 20.2 Write property test for form validation
+    - **Property 22: Frontend Form Validation**
+    - **Validates: Requirements 6.4**
+  - [ ]\* 20.3 Write unit tests for SSOProviderForm
+    - Test form rendering for each provider type
+    - Test validation logic
+    - Test save event emission
+    - _Requirements: 6.3, 6.4_
+  - [ ] 20.4 Create SSOSettingsPage component
+    - Fetch all providers on mount (admin only)
+    - Display provider list with status indicators
+    - Provide create button to open form modal
+    - Provide edit/delete actions for each provider
+    - Provide enable/disable toggle for each provider
+    - Display error messages from SSOAdminStore
+    - Use Naive UI components (NDataTable, NModal, NButton, etc.)
+    - _Requirements: 6.1, 6.2, 6.5, 6.7_
+  - [ ]\* 20.5 Write unit tests for SSOSettingsPage
+    - Test provider list rendering
+    - Test create/edit/delete actions
+    - Test enable/disable toggle
+    - _Requirements: 6.1, 6.2, 6.5, 6.7_
+
+- [ ] 21. Implement user SSO links component
+  - [ ] 21.1 Create UserSSOLinks component
+    - Fetch user's linked providers on mount
+    - Display linked providers with last authentication time
+    - Provide link button for unlinked providers
+    - Provide unlink button for linked providers
+    - Handle link/unlink actions via AuthStore
+    - Display success/error messages
+    - _Requirements: 4.3_
+  - [ ]\* 21.2 Write unit tests for UserSSOLinks
+    - Test linked provider display
+    - Test link/unlink actions
+    - Test error handling
+    - _Requirements: 4.3_
+
+- [ ] 22. Configure frontend routing
+  - [ ] 22.1 Add SSO routes to Vue Router
+    - Add /login route (existing, update with SSO)
+    - Add /auth/sso/callback route for SSOCallbackHandler
+    - Add /settings/sso route for SSOSettingsPage (admin only)
+    - Configure route guards for authentication and admin access
+    - _Requirements: 7.1, 7.5_
+  - [ ]\* 22.2 Write unit tests for route configuration
+    - Test route guards
+    - Test admin-only routes
+    - _Requirements: 7.1, 7.5_
+
+- [ ] 23. Implement session management
+  - [ ] 23.1 Implement session expiration detection
+    - Add token expiration check in AuthStore
+    - Implement automatic token validation on app initialization
+    - Clear auth state and redirect to login on expiration
+    - _Requirements: 5.3, 5.6, 5.7_
+  - [ ]\* 23.2 Write property test for session expiration detection
+    - **Property 19: Session Expiration Detection**
+    - **Validates: Requirements 5.3**
+  - [ ] 23.2 Implement logout with SSO
+    - Update AuthStore.logout() to call backend logout endpoint
+    - Handle provider logout redirect if supported
+    - Clear all authentication state
+    - _Requirements: 5.4, 5.5_
+  - [ ]\* 23.3 Write property test for session invalidation
+    - **Property 20: Session Invalidation on Logout**
+    - **Validates: Requirements 5.4, 5.5**
+  - [ ]\* 23.4 Write unit tests for session management
+    - Test expiration detection
+    - Test logout flow
+    - Test state clearing
+    - _Requirements: 5.3, 5.4, 5.5, 5.6, 5.7_
+
+- [ ] 24. Checkpoint - Ensure frontend tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 25. Integration testing
+  - [ ]\* 25.1 Write E2E test for OAuth2 flow
+    - Test full OAuth2 flow from login to dashboard
+    - Mock provider responses
+    - Verify token storage and authentication state
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9_
+  - [ ]\* 25.2 Write E2E test for SAML flow
+    - Test full SAML flow from login to dashboard
+    - Mock SAML responses
+    - Verify token storage and authentication state
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
+  - [ ]\* 25.3 Write E2E test for provider management
+    - Test create, update, enable, disable, delete provider
+    - Verify admin-only access
+    - _Requirements: 1.1, 1.7, 6.1, 6.2, 6.3, 6.4, 6.5, 6.7_
+  - [ ]\* 25.4 Write E2E test for user provisioning
+    - Test first-time user creation
+    - Test existing user linking
+    - Test profile updates
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
+  - [ ]\* 25.5 Write E2E test for session management
+    - Test session creation
+    - Test session expiration
+    - Test logout
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
+  - [ ]\* 25.6 Write E2E test for error handling
+    - Test authentication failures
+    - Test provider unavailable
+    - Test validation errors
+    - Test fallback to username/password
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.7_
+
+- [ ] 26. Documentation and OpenAPI
+  - [ ] 26.1 Generate OpenAPI specification
+    - Ensure all SSO endpoints have Swagger decorators
+    - Generate openapi.yaml for SSO module
+    - _Requirements: 10.8_
+  - [ ] 26.2 Create Mermaid diagrams
+    - Create OAuth2 flow diagram (already in design)
+    - Create SAML flow diagram (already in design)
+    - Create architecture diagram (already in design)
+    - Create ERD diagram (already in design)
+    - _Requirements: 10.7_
+  - [ ] 26.3 Write module README
+    - Document SSO module structure
+    - Document supported providers
+    - Document configuration requirements
+    - Document API endpoints
+    - Document testing approach
+    - _Requirements: 10.7, 10.8_
+
+- [ ] 27. Final checkpoint - Ensure all tests pass
+  - Run all unit tests (backend and frontend)
+  - Run all property-based tests
+  - Run all E2E tests
+  - Verify test coverage meets requirements (≥90%)
+  - Ensure all tests pass, ask the user if questions arise.
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties
+- Unit tests validate specific examples and edge cases
+- E2E tests validate complete user flows
+- Backend follows DDD/CQRS architecture with strict layer separation
+- Frontend follows Vue 3 Composition API patterns with Pinia stores
+- All sensitive data is encrypted at rest and excluded from API responses
+- All authentication flows include CSRF protection and security best practices

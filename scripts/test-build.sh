@@ -98,16 +98,19 @@ fi
 
 # Test 4: Check build output
 print_status "Test 4: Checking build output..."
-if [ -d "dist" ] && [ -f "dist/main.js" ]; then
-    DIST_SIZE=$(du -sh dist | cut -f1)
-    print_success "Build output found in dist/ directory (Size: $DIST_SIZE)"
-    
-    # List main files in dist
-    print_status "Main build files:"
-    ls -la dist/ | head -10
+if [ -d "backend/dist" ] && [ -f "backend/dist/main.js" ]; then
+    DIST_SIZE=$(du -sh backend/dist | cut -f1)
+    print_success "Backend build output found (Size: $DIST_SIZE)"
 else
-    print_error "Build output not found or incomplete"
+    print_error "Backend build output not found or incomplete"
     exit 1
+fi
+
+if [ -d "frontend/dist" ]; then
+    FE_DIST_SIZE=$(du -sh frontend/dist | cut -f1)
+    print_success "Frontend build output found (Size: $FE_DIST_SIZE)"
+else
+    print_warning "Frontend build output not found"
 fi
 
 # Test 5: Run tests (optional)
@@ -136,11 +139,17 @@ else
 fi
 
 # Check for source files
-if [ -d "src" ] && [ -f "src/main.ts" ]; then
-    print_success "Source files found"
+if [ -d "backend/src" ] && [ -f "backend/src/main.ts" ]; then
+    print_success "Backend source files found"
 else
-    print_error "Source files missing"
+    print_error "Backend source files missing"
     exit 1
+fi
+
+if [ -d "frontend/src" ]; then
+    print_success "Frontend source files found"
+else
+    print_warning "Frontend source files missing"
 fi
 
 # Summary
@@ -155,8 +164,8 @@ print_status "The build process is working correctly!"
 print_status "This means the Docker build should also work."
 echo ""
 print_status "Next steps:"
-echo "  1. Test Docker build: docker build -t telemetryflow-core ."
-echo "  2. Run the application: docker run -p 3000:3000 telemetryflow-core"
+echo "  1. Test Docker build: docker-compose --profile core build"
+echo "  2. Run the application: docker-compose --profile core up -d"
 echo "  3. Check health: curl http://localhost:3000/health"
 echo ""
 print_success "🚀 Ready for deployment!"

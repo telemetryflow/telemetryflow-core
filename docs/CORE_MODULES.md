@@ -1,34 +1,66 @@
-# TelemetryFlow Core - Modules Documentation
+# TelemetryFlow Core v1.4.0 - Modules Documentation
 
 ## Overview
 
-TelemetryFlow Core consists of two primary modules: **IAM (Identity and Access Management)** and **Audit**. These modules work together to provide secure identity management with comprehensive audit logging.
+TelemetryFlow Core is a full-stack monorepo consisting of a **backend** (`@telemetryflow/backend`, NestJS) and **frontend** (`@telemetryflow/viz`, Vue 3). The backend comprises **13 modules** located in `backend/src/modules/`, working together to provide identity management, authentication, observability, alerting, retention, AI assistance, and more.
+
+### Backend Modules
+
+| #   | Module           | Description                                                                            |
+| --- | ---------------- | -------------------------------------------------------------------------------------- |
+| 1   | **IAM**          | Identity & Access Management — DDD, 8 aggregates, 33 commands, 18 queries, 5-tier RBAC |
+| 2   | **Auth**         | JWT, MFA, Sessions, Refresh Tokens                                                     |
+| 3   | **SSO**          | SAML and OAuth2 SSO providers                                                          |
+| 4   | **API Keys**     | Scoped API key management                                                              |
+| 5   | **Audit**        | ClickHouse-based audit logging                                                         |
+| 6   | **Tenancy**      | Multi-tenancy (Tenant → Organization → Workspace hierarchy)                            |
+| 7   | **Alerting**     | Alert rules engine (DDD, TFQL-based)                                                   |
+| 8   | **Query**        | TFQL query engine (alerting dependency)                                                |
+| 9   | **LLM**          | AI Assistant with multi-provider LLM support                                           |
+| 10  | **Notification** | Notification service                                                                   |
+| 11  | **Data Masking** | Data masking policies                                                                  |
+| 12  | **Cache**        | Caching service (L1 in-memory + L2 Redis)                                              |
+| 13  | **Retention**    | Data retention policies with automated enforcement                                     |
+
+---
 
 ## Architecture Overview
 
 ```mermaid
 graph TB
-    subgraph "TelemetryFlow Core"
+    subgraph "TelemetryFlow Core v1.4.0"
         subgraph "Presentation Layer"
             API[REST API Controllers]
             Swagger[Swagger/OpenAPI]
         end
 
         subgraph "Application Layer"
-            Commands[Commands<br/>33 Operations]
-            Queries[Queries<br/>18 Operations]
-            Handlers[CQRS Handlers<br/>51 Total]
+            Commands[Commands<br/>33+ Operations]
+            Queries[Queries<br/>18+ Operations]
+            Handlers[CQRS Handlers]
         end
 
-        subgraph "Domain Layer"
+        subgraph "Domain Modules"
             IAM[IAM Module<br/>8 Aggregates]
+            Auth[Auth Module<br/>JWT / MFA / Sessions]
+            SSO[SSO Module<br/>SAML / OAuth2]
+            APIKeys[API Keys Module<br/>Scoped Keys]
             Audit[Audit Module<br/>Event Logging]
-            Events[Domain Events<br/>25+ Events]
+            Tenancy[Tenancy Module<br/>Tenant → Org → Workspace]
+            Alerting[Alerting Module<br/>TFQL Rules Engine]
+            Query[Query Module<br/>TFQL Engine]
+            LLM[LLM Module<br/>AI Assistant]
+            Notification[Notification Module<br/>Notifications]
+            DataMasking[Data Masking Module<br/>Masking Policies]
+            Cache[Cache Module<br/>L1 Memory + L2 Redis]
+            Retention[Retention Module<br/>Data Retention Policies]
         end
 
         subgraph "Infrastructure Layer"
             PG[(PostgreSQL<br/>IAM Data)]
             CH[(ClickHouse<br/>Audit Logs)]
+            Redis[(Redis<br/>Cache + Queues)]
+            NATS[NATS<br/>Event Streaming]
             OTEL[OpenTelemetry<br/>Tracing]
             PROM[Prometheus<br/>Metrics]
         end
@@ -40,9 +72,11 @@ graph TB
     Queries --> Handlers
     Handlers --> IAM
     Handlers --> Audit
-    IAM --> Events
     IAM --> PG
     Audit --> CH
+    Cache --> Redis
+    Alerting --> Query
+    IAM --> NATS
     API --> OTEL
 ```
 
@@ -54,19 +88,26 @@ sequenceDiagram
     participant Controller
     participant Handler
     participant IAM
+    participant Auth
     participant Audit
+    participant Cache
     participant PostgreSQL
     participant ClickHouse
+    participant Redis
+    participant NATS
 
     Client->>Controller: HTTP Request
+    Controller->>Auth: Authenticate + Authorize
+    Auth->>Cache: Check Session Cache
+    Cache->>Redis: L2 Lookup
+    Auth-->>Controller: Authenticated
     Controller->>Handler: Execute Command
     Handler->>IAM: Business Logic
     IAM->>PostgreSQL: Save Data
     PostgreSQL-->>IAM: Success
-    IAM->>Audit: Log Event
+    IAM->>NATS: Publish Domain Event
+    NATS->>Audit: Consume Event
     Audit->>ClickHouse: Store Audit Log
-    ClickHouse-->>Audit: Confirmed
-    Audit-->>IAM: Logged
     IAM-->>Handler: Result
     Handler-->>Controller: Response
     Controller-->>Client: HTTP Response
@@ -314,6 +355,82 @@ mindmap
 
 ---
 
+## Auth Module
+
+### Overview
+
+The Auth module handles authentication security layers including JWT token issuance/validation, multi-factor authentication (MFA), session management, and refresh token rotation.
+
+### Key Capabilities
+
+- **JWT Authentication** — Access and refresh token pair issuance with configurable expiry
+- **MFA** — TOTP-based multi-factor authentication with recovery codes
+- **Sessions** — Concurrent session tracking and remote session revocation
+- **Refresh Tokens** — Secure token rotation with reuse detection
+
+### Auth Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant AuthController
+    participant AuthService
+    participant JWT
+    participant MFA
+    participant Session
+    participant IAM
+
+    Client->>AuthController: POST /auth/login
+    AuthController->>AuthService: validateCredentials()
+    AuthService->>IAM: lookupUser()
+    IAM-->>AuthService: User
+    AuthService->>AuthService: verifyPassword()
+
+    alt MFA Enabled
+        AuthService-->>AuthController: MFA Required
+        Client->>AuthController: POST /auth/mfa/verify
+        AuthController->>MFA: verifyTOTP()
+        MFA-->>AuthService: Verified
+    end
+
+    AuthService->>JWT: generateTokenPair()
+    AuthService->>Session: createSession()
+    AuthService-->>AuthController: Tokens
+    AuthController-->>Client: 200 + Access/Refresh Tokens
+```
+
+---
+
+## SSO Module
+
+### Overview
+
+The SSO module integrates with enterprise identity providers via **SAML 2.0** and **OAuth 2.0** protocols, enabling federated authentication for organizational users.
+
+### Key Capabilities
+
+- **SAML 2.0** — SP-initiated and IdP-initiated SSO flows
+- **OAuth 2.0** — Authorization Code flow with PKCE support
+- **Provider Management** — Configure multiple SSO providers per tenant
+- **User Provisioning** — Just-in-time user creation on first SSO login
+
+---
+
+## API Keys Module
+
+### Overview
+
+The API Keys module provides scoped, long-lived API key management for programmatic access to the TelemetryFlow API.
+
+### Key Capabilities
+
+- **Scoped Keys** — Assign fine-grained permission scopes to each key
+- **Key Rotation** — Create replacement keys before revoking old ones
+- **Usage Tracking** — Per-key request counts and last-used timestamps
+- **Expiry** — Configurable expiration dates for keys
+
+---
+
 ## Audit Module
 
 ### Overview
@@ -491,6 +608,131 @@ gantt
 
 ---
 
+## Tenancy Module
+
+### Overview
+
+The Tenancy module manages the multi-tenancy hierarchy: **Tenant → Organization → Workspace**. It provides isolation boundaries ensuring data and configuration are scoped correctly across the platform.
+
+### Hierarchy
+
+```mermaid
+graph TD
+    T[Tenant<br/>Top-level entity] --> O1[Organization A]
+    T --> O2[Organization B]
+    O1 --> W1[Workspace A-1]
+    O1 --> W2[Workspace A-2]
+    O2 --> W3[Workspace B-1]
+```
+
+---
+
+## Alerting Module
+
+### Overview
+
+The Alerting module provides a DDD-based alert rules engine powered by **TFQL** (TelemetryFlow Query Language). Users define alert conditions as TFQL queries that are continuously evaluated against incoming telemetry data.
+
+### Key Capabilities
+
+- **Alert Rules** — Create, update, enable/disable, and delete alert rules
+- **TFQL-based Conditions** — Express alert thresholds and patterns via TFQL
+- **Severity Levels** — Categorize alerts by severity (critical, warning, info)
+- **Notification Routing** — Route triggered alerts to the Notification module
+
+```mermaid
+graph LR
+    TFQL[TFQL Query Engine] -->|evaluates| Alerting[Alert Rules Engine]
+    Alerting -->|triggers| Notification[Notification Service]
+    Alerting -->|logs| Audit[Audit Module]
+```
+
+---
+
+## Query Module
+
+### Overview
+
+The Query module implements the **TFQL (TelemetryFlow Query Language)** engine. It serves as the foundation for the Alerting module, providing parsing, validation, and execution of TFQL queries against telemetry data stores.
+
+### Key Capabilities
+
+- **TFQL Parser** — Parse and validate query syntax
+- **Query Execution** — Execute queries against configured data sources
+- **Result Transformation** — Map results into structured DTOs
+
+---
+
+## LLM Module
+
+### Overview
+
+The LLM module powers the TelemetryFlow **AI Assistant** with multi-provider LLM support. It abstracts over multiple large language model providers to deliver intelligent query assistance, anomaly explanation, and natural-language interaction.
+
+### Key Capabilities
+
+- **Multi-Provider** — Pluggable support for OpenAI, Anthropic, and other LLM providers
+- **Context Enrichment** — Injects tenant/organization context into prompts
+- **Conversation History** — Maintains per-user conversation threads
+- **Streaming Responses** — Server-sent events for real-time token streaming
+
+---
+
+## Notification Module
+
+### Overview
+
+The Notification module is a centralized service for delivering notifications across multiple channels (email, webhook, in-app). It consumes events from Alerting, IAM, and other modules.
+
+### Key Capabilities
+
+- **Multi-Channel** — Email, webhook, and in-app notification delivery
+- **Template Engine** — Configurable notification templates per event type
+- **User Preferences** — Per-user notification preference management
+- **Delivery Tracking** — Notification delivery status and retry logic
+
+---
+
+## Data Masking Module
+
+### Overview
+
+The Data Masking module provides policy-based data masking to protect sensitive fields in API responses and query results. Administrators define masking policies that are applied transparently based on user roles and context.
+
+### Key Capabilities
+
+- **Masking Policies** — Define field-level masking rules per resource type
+- **Role-Based Application** — Apply different masks depending on the caller's RBAC tier
+- **Masking Strategies** — Redaction, partial reveal, hashing, and tokenization
+
+---
+
+## Cache Module
+
+### Overview
+
+The Cache module provides a two-level caching service: **L1** (in-memory, process-local) and **L2** (Redis, shared across instances). It is consumed by Auth (sessions), IAM (permission lookups), and other modules for high-throughput read paths.
+
+### Architecture
+
+```mermaid
+graph LR
+    Caller[Module Caller] -->|get/set| CacheService[Cache Service]
+    CacheService -->|L1| InMem[L1 In-Memory Cache]
+    CacheService -->|L2| Redis[(L2 Redis Cache)]
+    InMem -->|miss| Redis
+    Redis -->|miss| Origin[Origin Data Source]
+```
+
+### Key Capabilities
+
+- **L1 / L2 Tiering** — Fast in-memory lookups with Redis fallback
+- **TTL Management** — Per-key configurable expiry
+- **Cache Invalidation** — Event-driven invalidation via NATS pub/sub
+- **Cache-Aside Pattern** — Transparent integration for consuming modules
+
+---
+
 ## IAM-Audit Integration
 
 ### Integration Points
@@ -632,18 +874,20 @@ flowchart TD
 
 ```mermaid
 graph TB
-    subgraph "Docker Network: 172.151.0.0/16"
+    subgraph "Docker Network: 172.154.0.0/16"
+        subgraph "Frontend"
+            FE[Vue 3 Frontend<br/>@telemetryflow/viz<br/>172.154.154.80:80]
+        end
+
         subgraph "Backend Service"
-            BE[NestJS Backend<br/>172.151.151.10:3000]
+            BE[NestJS Backend<br/>@telemetryflow/backend<br/>172.154.154.10:3000]
         end
 
         subgraph "Data Layer"
-            PG[(PostgreSQL<br/>172.151.151.20:5432<br/>IAM Data)]
-            CH[(ClickHouse<br/>172.151.151.40:8123<br/>Audit Logs)]
-        end
-
-        subgraph "Observability"
-            OTEL[OTEL Collector<br/>172.151.151.30:4317/4318]
+            PG[(PostgreSQL<br/>172.154.154.20:5432<br/>IAM Data)]
+            CH[(ClickHouse<br/>172.154.154.40:8123<br/>Audit Logs)]
+            Redis[(Redis<br/>172.154.154.30:6379<br/>Cache + Queues)]
+            NATS[NATS<br/>172.154.154.35:4222<br/>Event Streaming]
         end
     end
 
@@ -652,38 +896,60 @@ graph TB
         Swagger[Swagger UI]
     end
 
+    Client -->|HTTP :80| FE
     Client -->|HTTP :3000| BE
     Swagger -->|HTTP :3000/api| BE
+    FE -->|API Calls| BE
     BE -->|SQL| PG
     BE -->|HTTP| CH
-    BE -->|OTLP| OTEL
+    BE -->|Redis Protocol| Redis
+    BE -->|NATS Protocol| NATS
 
     style BE fill:#4ecdc4
+    style FE fill:#42b883
     style PG fill:#336791
     style CH fill:#ffa500
-    style OTEL fill:#f5a623
+    style Redis fill:#dc382d
+    style NATS fill:#27aae1
 ```
+
+### Service Endpoints
+
+| Service                            | IP Address     | Port(s)     | Purpose             |
+| ---------------------------------- | -------------- | ----------- | ------------------- |
+| Backend (`@telemetryflow/backend`) | 172.154.154.10 | 3000        | NestJS API server   |
+| Frontend (`@telemetryflow/viz`)    | 172.154.154.80 | 80          | Vue 3 SPA           |
+| PostgreSQL                         | 172.154.154.20 | 5432        | IAM relational data |
+| Redis                              | 172.154.154.30 | 6379        | L2 cache + queues   |
+| NATS                               | 172.154.154.35 | 4222        | Event streaming     |
+| ClickHouse                         | 172.154.154.40 | 8123 / 9000 | Audit log storage   |
 
 ### Service Dependencies
 
 ```mermaid
 graph LR
     Backend[Backend Service]
+    FE[Frontend]
     PG[(PostgreSQL)]
     CH[(ClickHouse)]
-    OTEL[OTEL Collector]
+    Redis[(Redis)]
+    NATS[NATS]
 
     Backend -->|depends_on| PG
     Backend -->|depends_on| CH
-    Backend -->|depends_on| OTEL
+    Backend -->|depends_on| Redis
+    Backend -->|depends_on| NATS
+    FE -->|depends_on| Backend
 
     PG -->|health_check| Ready1[Ready]
     CH -->|health_check| Ready2[Ready]
-    OTEL -->|service_started| Ready3[Started]
+    Redis -->|health_check| Ready3[Ready]
+    NATS -->|health_check| Ready4[Ready]
 
     Ready1 --> Start[Backend Starts]
     Ready2 --> Start
     Ready3 --> Start
+    Ready4 --> Start
 ```
 
 ---
@@ -844,22 +1110,22 @@ stateDiagram-v2
     note right of Healthy
         PostgreSQL: ✓
         ClickHouse: ✓
-        OTEL: ✓
-        Prometheus: ✓
+        Redis: ✓
+        NATS: ✓
     end note
 
     note right of Degraded
         PostgreSQL: ✓
         ClickHouse: ✗
-        OTEL: ✓
-        Prometheus: ✓
+        Redis: ✓
+        NATS: ✓
     end note
 
     note right of Unhealthy
         PostgreSQL: ✗
         ClickHouse: ✗
-        OTEL: ✗
-        Prometheus: ✗
+        Redis: ✗
+        NATS: ✗
     end note
 ```
 
@@ -869,39 +1135,49 @@ stateDiagram-v2
 
 ### Module Statistics
 
-| Metric | IAM Module | Audit Module | Total |
-|--------|-----------|--------------|-------|
-| **Aggregates** | 8 | 1 | 9 |
-| **Commands** | 33 | 0 | 33 |
-| **Queries** | 18 | 0 | 18 |
-| **Handlers** | 51 | 0 | 51 |
-| **Controllers** | 9 | 0 | 9 |
-| **Domain Events** | 25+ | 0 | 25+ |
-| **Integration Points** | 51 | - | 51 |
-| **Database Tables** | 13 | 1 | 14 |
+| Metric                 | IAM | Auth | SSO | API Keys | Audit | Tenancy | Alerting | Query | LLM | Notification | Data Masking | Cache | Total |
+| ---------------------- | --- | ---- | --- | -------- | ----- | ------- | -------- | ----- | --- | ------------ | ------------ | ----- | ----- |
+| **Aggregates**         | 8   | —    | —   | —        | 1     | —       | —        | —     | —   | —            | —            | —     | 9     |
+| **Commands**           | 33  | —    | —   | —        | 0     | —       | —        | —     | —   | —            | —            | —     | 33    |
+| **Queries**            | 18  | —    | —   | —        | 0     | —       | —        | —     | —   | —            | —            | —     | 18    |
+| **Handlers**           | 51  | —    | —   | —        | 0     | —       | —        | —     | —   | —            | —            | —     | 51    |
+| **Controllers**        | 9   | —    | —   | —        | 0     | —       | —        | —     | —   | —            | —            | —     | 9     |
+| **Domain Events**      | 25+ | —    | —   | —        | 0     | —       | —        | —     | —   | —            | —            | —     | 25+   |
+| **Integration Points** | 51  | —    | —   | —        | —     | —       | —        | —     | —   | —            | —            | —     | 51    |
+| **Database Tables**    | 13  | —    | —   | —        | 1     | —       | —        | —     | —   | —            | —            | —     | 14    |
 
 ### Technology Stack
 
 ```mermaid
 mindmap
-  root((TelemetryFlow Core))
+  root((TelemetryFlow Core v1.4.0))
+    Frontend
+      Vue 3
+      @telemetryflow/viz
     Backend
       NestJS 11
       TypeScript 5.9
       Node.js 18+
+      @telemetryflow/backend
     Databases
       PostgreSQL 16
       ClickHouse Latest
+    Infrastructure
+      Redis Cache + Queues
+      NATS Event Streaming
     Architecture
       DDD
       CQRS
       Event-Driven
+      12 Backend Modules
     Observability
       OpenTelemetry
       Winston Logger
       Swagger/OpenAPI
     Security
       JWT
+      MFA
+      SAML / OAuth2 SSO
       Argon2
       5-Tier RBAC
 ```

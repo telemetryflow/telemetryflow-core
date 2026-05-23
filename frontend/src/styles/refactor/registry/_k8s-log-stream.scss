@@ -1,0 +1,511 @@
+// TFO Style Registry — Kubernetes Log Stream
+// Log container, controls, follow, streaming log entries
+// Extracted from: PodLogStreamPanel.vue, inline pod-log-terminal in nodes.vue/pods.vue
+
+// ─── Stream Tab Layout ────────────────────────────────────────────────────────
+
+.stream-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+// ─── Controls Card ─────────────────────────────────────────────────────────────
+
+.controls-card {
+  padding: 12px 16px;
+  border: 1px solid var(--n-border-color);
+  border-radius: 8px;
+  background: var(--n-card-color);
+}
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-label {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+}
+
+.stats-group {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.filter-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--n-border-color);
+}
+
+// ─── Error Banner ─────────────────────────────────────────────────────────────
+
+.log-error-banner {
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  color: var(--n-error-color);
+  font-size: 0.8125rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+// ─── Stream Container (Full Log Viewer) ────────────────────────────────────────
+
+.stream-container {
+  flex: 1;
+  min-height: 220px;
+  max-height: 480px;
+  overflow-y: auto;
+  background: #1a1a2e;
+  border: 1px solid var(--n-border-color, #3a3a5a);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
+// ─── Inline Pod Log Terminal (Compact) ─────────────────────────────────────────
+
+.pod-log-terminal {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  font-size: 0.72rem;
+  line-height: 1.5;
+
+  :root:not(.dark) & {
+    background: #1a1b1e;
+    border-color: #2d2d2d;
+  }
+}
+
+// ─── Empty State ───────────────────────────────────────────────────────────────
+
+.stream-container .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 180px;
+  color: #6b7280;
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+// ─── Log Entries ───────────────────────────────────────────────────────────────
+
+.log-entries {
+  display: flex;
+  flex-direction: column;
+}
+
+.more-logs-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 4px;
+  color: #60a5fa;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  svg {
+    font-size: 1rem;
+  }
+}
+
+.log-entry {
+  display: flex;
+  align-items: flex-start;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &.error-entry {
+    background: rgba(239, 68, 68, 0.1);
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.15);
+    }
+  }
+}
+
+.log-time {
+  color: #6b7280;
+  white-space: nowrap;
+  margin-right: 12px;
+}
+
+.log-level {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  margin-right: 12px;
+}
+
+.log-source {
+  color: #60a5fa;
+  white-space: nowrap;
+  margin-right: 12px;
+  min-width: 150px;
+}
+
+.log-body {
+  color: #e5e7eb;
+  word-break: break-word;
+  flex: 1;
+}
+
+// ─── Inline Pod Log Line (Compact) ────────────────────────────────────────────
+
+.pod-log-line {
+  display: flex;
+  gap: 6px;
+  padding: 1px 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.pod-log-ts {
+  color: #6e7681;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.pod-log-container {
+  color: #58a6ff;
+  flex-shrink: 0;
+}
+
+.pod-log-text {
+  color: #e6edf3;
+  flex: 1;
+}
+
+.pod-log-error {
+  color: #f85149;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+// ─── Logs Action Card (Navigation Card) ───────────────────────────────────────
+
+.logs-action-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+
+  :root.dark & {
+    background: rgba(14, 165, 233, 0.1);
+    border-color: rgba(14, 165, 233, 0.3);
+  }
+}
+
+.logs-action-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logs-action-icon {
+  font-size: 24px;
+  color: #0ea5e9;
+}
+
+.logs-action-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logs-action-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0c4a6e;
+
+  :root.dark & {
+    color: #e0f2fe;
+  }
+}
+
+.logs-action-desc {
+  font-size: 0.75rem;
+  color: #0369a1;
+
+  :root.dark & {
+    color: #7dd3fc;
+  }
+}
+
+// ─── Logs Link Card (Gradient Card) ───────────────────────────────────────────
+
+.logs-link-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.08) 0%,
+    rgba(139, 92, 246, 0.08) 100%
+  );
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.12) 0%,
+      rgba(139, 92, 246, 0.12) 100%
+    );
+  }
+
+  :root.dark & {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(139, 92, 246, 0.15) 100%
+    );
+    border-color: rgba(59, 130, 246, 0.3);
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.5);
+    }
+  }
+}
+
+.logs-link-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logs-icon {
+  font-size: 24px;
+  color: #3b82f6;
+}
+
+.logs-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logs-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--n-text-color);
+}
+
+.logs-subtitle {
+  font-size: 0.75rem;
+  color: var(--n-text-color-3);
+}
+
+// ─── Responsive - Tablet ──────────────────────────────────────────────────────
+
+@media (max-width: 1024px) {
+  .controls-row {
+    gap: 12px;
+  }
+
+  .stats-group {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 8px;
+  }
+
+  .filter-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .log-source {
+    min-width: 120px;
+  }
+}
+
+// ─── Responsive - Mobile ──────────────────────────────────────────────────────
+
+@media (max-width: 768px) {
+  .stream-tab {
+    gap: 10px;
+  }
+
+  .controls-card {
+    padding: 10px 12px;
+  }
+
+  .controls-row {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .control-group {
+    gap: 6px;
+  }
+
+  .control-label {
+    font-size: 0.8125rem;
+  }
+
+  .stats-group {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .filter-row {
+    margin-top: 10px;
+    padding-top: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .stream-container {
+    max-height: 360px;
+    min-height: 180px;
+    padding: 8px;
+    font-size: 0.6875rem;
+  }
+
+  .empty-state {
+    min-height: 140px;
+
+    .empty-icon {
+      font-size: 36px;
+    }
+
+    p {
+      font-size: 0.875rem;
+      text-align: center;
+    }
+  }
+
+  .log-entry {
+    padding: 4px 6px;
+    flex-wrap: wrap;
+  }
+
+  .log-time {
+    margin-right: 8px;
+    font-size: 0.625rem;
+  }
+
+  .log-level {
+    margin-right: 8px;
+    font-size: 0.625rem;
+    padding: 1px 4px;
+  }
+
+  .log-source {
+    display: none;
+  }
+
+  .log-body {
+    width: 100%;
+    margin-top: 2px;
+    font-size: 0.6875rem;
+  }
+}
+
+// ─── Responsive - Small Mobile ────────────────────────────────────────────────
+
+@media (max-width: 480px) {
+  .control-group:first-child {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .stream-container {
+    max-height: 300px;
+    padding: 6px;
+    border-radius: 6px;
+  }
+
+  .log-time {
+    font-size: 0.5625rem;
+  }
+
+  .log-level {
+    font-size: 0.5625rem;
+  }
+
+  .log-body {
+    font-size: 0.625rem;
+  }
+}

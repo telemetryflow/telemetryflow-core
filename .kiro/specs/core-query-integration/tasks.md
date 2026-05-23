@@ -1,0 +1,445 @@
+# Implementation Plan: Frontend-Backend Query Integration
+
+## Overview
+
+This implementation plan breaks down the query integration feature into discrete, incremental coding tasks. Each task builds on previous work and includes testing to validate functionality early. The implementation follows DDD/CQRS patterns on the backend and Vue 3 Composition API patterns on the frontend.
+
+## Tasks
+
+- [ ] 1. Set up backend query module structure
+  - Create module directory structure following DDD layers (domain, application, infrastructure, presentation)
+  - Set up module registration in NestJS
+  - Configure TypeORM entities and repositories
+  - Create database migrations for query tables (saved_queries, query_history, query_templates, query_snippets)
+  - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6_
+
+- [ ] 2. Implement domain layer for query module
+  - [ ] 2.1 Create domain aggregates and value objects
+    - Implement Query aggregate with business logic
+    - Implement SavedQuery aggregate with sharing logic
+    - Implement QueryTemplate and QuerySnippet aggregates
+    - Create value objects (QueryId, TFQL, DataSource, UserId)
+    - _Requirements: 11.3_
+  - [ ]\* 2.2 Write property test for Query aggregate
+    - **Property 1: Query execution completeness**
+    - **Validates: Requirements 2.3, 2.6**
+  - [ ] 2.3 Create domain events
+    - Implement QueryExecutedEvent, QuerySavedEvent, QuerySharedEvent
+    - _Requirements: 11.8_
+  - [ ] 2.4 Define repository interfaces
+    - Create IQueryRepository interface
+    - Create IQueryHistoryRepository interface
+    - _Requirements: 11.4_
+  - [ ] 2.5 Implement domain services
+    - Create QueryValidatorService with syntax and semantic validation
+    - Define IQueryExecutor interface
+    - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.6_
+  - [ ]\* 2.6 Write property tests for QueryValidatorService
+    - **Property 6: Syntax validation correctness**
+    - **Property 7: Syntax error detection**
+    - **Property 8: Semantic validation with suggestions**
+    - **Validates: Requirements 3.5, 3.2, 3.4**
+
+- [ ] 3. Implement infrastructure layer
+  - [ ] 3.1 Create TypeORM entities
+    - Implement SavedQueryEntity, QueryHistoryEntity, QueryTemplateEntity, QuerySnippetEntity
+    - Add proper decorators, relationships, and indexes
+    - _Requirements: 11.5, 11.6_
+  - [ ] 3.2 Implement repository implementations
+    - Create QueryRepository implementing IQueryRepository
+    - Create QueryHistoryRepository implementing IQueryHistoryRepository
+    - Implement mappers for domain ↔ entity conversion
+    - _Requirements: 11.5_
+  - [ ]\* 3.3 Write property tests for repositories
+    - **Property 16: Saved query completeness**
+    - **Property 17: Saved query name uniqueness**
+    - **Property 21: Entity deletion**
+    - **Validates: Requirements 5.1, 5.2, 4.6, 5.6**
+  - [ ] 3.4 Implement ClickHouse query executor
+    - Create ClickHouseQueryExecutor implementing IQueryExecutor
+    - Implement TFQL to SQL conversion logic
+    - Add timeout handling (30 seconds)
+    - Apply default time range and result limits
+    - _Requirements: 2.1, 2.5, 9.2, 9.3, 11.7_
+  - [ ]\* 3.5 Write property tests for query executor
+    - **Property 2: Query execution timeout enforcement**
+    - **Property 37: Default time range application**
+    - **Property 38: Result limit enforcement**
+    - **Validates: Requirements 2.1, 9.2, 9.3**
+
+- [ ] 4. Checkpoint - Ensure backend domain and infrastructure tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 5. Implement application layer (CQRS)
+  - [ ] 5.1 Create commands and command handlers
+    - Implement ExecuteQueryCommand and ExecuteQueryHandler
+    - Implement SaveQueryCommand and SaveQueryHandler
+    - Implement ShareQueryCommand and ShareQueryHandler
+    - Implement ValidateQueryCommand and ValidateQueryHandler
+    - _Requirements: 2.1, 2.3, 5.1, 5.7, 3.1_
+  - [ ]\* 5.2 Write property tests for command handlers
+    - **Property 11: History record creation**
+    - **Property 46: Domain event emission**
+    - **Validates: Requirements 4.1, 11.8**
+  - [ ] 5.3 Create queries and query handlers
+    - Implement GetQueryHistoryQuery and handler
+    - Implement GetSavedQueriesQuery and handler
+    - Implement GetQueryTemplatesQuery and handler
+    - Implement GetQuerySnippetsQuery and handler
+    - _Requirements: 4.2, 5.3, 6.1, 7.1_
+  - [ ]\* 5.4 Write property tests for query handlers
+    - **Property 12: History data isolation**
+    - **Property 13: History filtering by date range**
+    - **Property 18: Saved query retrieval**
+    - **Validates: Requirements 4.7, 4.4, 5.3**
+  - [ ] 5.5 Create DTOs for requests and responses
+    - Implement ExecuteQueryRequestDto, QueryResultResponseDto
+    - Implement SaveQueryRequestDto, SavedQueryDto
+    - Implement ValidationResponseDto with error details
+    - Add class-validator decorators for validation
+    - _Requirements: 12.10_
+
+- [ ] 6. Implement presentation layer (REST API)
+  - [ ] 6.1 Create Query controller with all endpoints
+    - Implement POST /api/v1/query/execute endpoint
+    - Implement POST /api/v1/query/validate endpoint
+    - Implement GET /api/v1/query/history endpoint
+    - Implement POST /api/v1/query/saved endpoint
+    - Implement GET /api/v1/query/saved endpoint
+    - Implement GET /api/v1/query/templates endpoint
+    - Implement GET /api/v1/query/snippets endpoint
+    - Implement POST /api/v1/query/share/:id endpoint
+    - Add Swagger decorators for API documentation
+    - Add JWT authentication guards
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7, 12.8, 12.9_
+  - [ ]\* 6.2 Write integration tests for API endpoints
+    - **Property 47: API endpoint functionality**
+    - **Property 48: Authentication requirement**
+    - **Property 49: Request validation**
+    - **Validates: Requirements 12.3-12.10**
+
+- [ ] 7. Checkpoint - Ensure backend API tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 8. Set up frontend query module structure
+  - Create directory structure for query components, store, and API client
+  - Set up Pinia store for query state management
+  - Configure Monaco Editor integration
+  - Set up ECharts for visualization
+  - _Requirements: 13.1, 13.2_
+
+- [ ] 9. Implement query API client
+  - [ ] 9.1 Create query API client with Axios
+    - Implement executeQuery, validateQuery, getHistory methods
+    - Implement saveQuery, getSavedQueries methods
+    - Implement getTemplates, getSnippets methods
+    - Add error handling and request/response interceptors
+    - _Requirements: 12.3, 12.4, 12.5, 12.6, 12.7, 12.8_
+  - [ ]\* 9.2 Write unit tests for API client
+    - Test request formatting and error handling
+    - Mock API responses with MSW
+
+- [ ] 10. Implement Query Pinia store
+  - [ ] 10.1 Create query store with state, getters, and actions
+    - Define state (currentQuery, queryResults, loading, error, history, savedQueries)
+    - Implement getters (recentQueries, queriesByDataSource, hasValidationErrors)
+    - Implement actions (executeQuery, validateQuery, saveQuery, fetchHistory)
+    - Add localStorage persistence for current query
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6, 13.7_
+  - [ ]\* 10.2 Write property tests for query store
+    - **Property 50: Store getter correctness**
+    - **Property 51: Query execution state updates**
+    - **Property 52: Query persistence**
+    - **Validates: Requirements 13.3, 13.4, 13.5, 13.6, 13.7**
+
+- [ ] 11. Implement TFQL syntax highlighter
+  - [ ] 11.1 Create TFQL language definition for Monaco Editor
+    - Define keywords, functions, operators
+    - Create tokenizer rules for syntax highlighting
+    - Configure color theme for different token types
+    - _Requirements: 1.2, 15.2, 15.3, 15.4_
+  - [ ]\* 11.2 Write property tests for syntax highlighting
+    - **Property 55: Keyword highlighting**
+    - **Property 56: Function highlighting**
+    - **Property 57: Token type highlighting**
+    - **Validates: Requirements 15.2, 15.3, 15.4**
+  - [ ] 11.3 Implement autocomplete provider
+    - Create autocomplete suggestions for keywords and functions
+    - Add schema-based field name suggestions
+    - Implement context-aware suggestions based on cursor position
+    - _Requirements: 1.3, 1.4_
+  - [ ]\* 11.4 Write property tests for autocomplete
+    - **Property 3: Autocomplete suggestion validity**
+    - **Property 4: Schema-specific autocomplete**
+    - **Validates: Requirements 1.3, 1.4**
+
+- [ ] 12. Implement Query Builder component
+  - [ ] 12.1 Create QueryBuilder Vue component
+    - Integrate Monaco Editor with TFQL language
+    - Add toolbar with common TFQL operations
+    - Implement keyboard shortcuts (Ctrl+Enter, Ctrl+Shift+F)
+    - Add validation error markers and tooltips
+    - Connect to Query Store for state management
+    - _Requirements: 1.1, 1.5, 1.6, 3.2, 3.3, 15.5_
+  - [ ]\* 12.2 Write unit tests for Query Builder
+    - Test component rendering and toolbar functionality
+    - Test keyboard shortcuts
+    - Test error marker display
+  - [ ] 12.3 Implement snippet insertion functionality
+    - Add snippet selection UI
+    - Implement snippet insertion at cursor position
+    - Handle placeholder cursor positioning
+    - _Requirements: 7.2, 7.3, 7.4_
+  - [ ]\* 12.4 Write property tests for snippet insertion
+    - **Property 27: Snippet insertion**
+    - **Property 28: Snippet cursor positioning**
+    - **Validates: Requirements 7.3, 7.4**
+
+- [ ] 13. Checkpoint - Ensure frontend query builder tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 14. Implement query result visualization
+  - [ ] 14.1 Create QueryResultsVisualization component
+    - Implement data table view with Naive UI DataTable
+    - Add virtual scrolling for large result sets (>10,000 rows)
+    - Display result metadata (row count, execution time, data source)
+    - _Requirements: 8.1, 8.6, 8.7_
+  - [ ]\* 14.2 Write property tests for table visualization
+    - **Property 30: Default table visualization**
+    - **Property 34: Result metadata display**
+    - **Validates: Requirements 8.1, 8.7**
+  - [ ] 14.3 Implement chart visualization with ECharts
+    - Add chart type selection (line, area, bar, pie, gauge)
+    - Implement time-series chart rendering
+    - Implement aggregated data chart rendering
+    - Add chart interactivity (zoom, tooltip)
+    - _Requirements: 8.2, 8.3, 8.4_
+  - [ ]\* 14.4 Write property tests for chart visualization
+    - **Property 31: Time-series chart options**
+    - **Property 32: Chart rendering**
+    - **Property 33: Aggregated data chart types**
+    - **Validates: Requirements 8.2, 8.3, 8.4**
+  - [ ] 14.5 Implement export functionality
+    - Add CSV export with proper escaping
+    - Add JSON export with formatting
+    - Implement clipboard copy in tab-separated format
+    - _Requirements: 8.5, 16.1, 16.2, 16.3_
+  - [ ]\* 14.6 Write property tests for export
+    - **Property 35: Export format support**
+    - **Property 36: Clipboard copy format**
+    - **Validates: Requirements 8.5, 16.1, 16.2, 16.3**
+
+- [ ] 15. Implement query history management
+  - [ ] 15.1 Create QueryHistory component
+    - Display query history list with filters
+    - Implement date range filtering
+    - Implement text search
+    - Add query selection and loading
+    - Add delete functionality
+    - _Requirements: 4.2, 4.3, 4.4, 4.5, 4.6_
+  - [ ]\* 15.2 Write property tests for history management
+    - **Property 13: History filtering by date range**
+    - **Property 14: History text search**
+    - **Property 15: History query loading**
+    - **Validates: Requirements 4.4, 4.5, 4.3**
+
+- [ ] 16. Implement saved queries management
+  - [ ] 16.1 Create SavedQueries component
+    - Display saved queries list
+    - Implement save query dialog with name and description
+    - Add query loading functionality
+    - Add update and delete functionality
+    - Implement query sharing toggle
+    - Display shared queries with author information
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8_
+  - [ ]\* 16.2 Write property tests for saved queries
+    - **Property 19: Saved query loading**
+    - **Property 20: Saved query update**
+    - **Property 22: Query sharing visibility**
+    - **Validates: Requirements 5.4, 5.5, 5.7, 5.8**
+
+- [ ] 17. Implement query templates and snippets
+  - [ ] 17.1 Create QueryTemplates component
+    - Display templates organized by category
+    - Implement template selection and loading
+    - Handle placeholder highlighting and replacement
+    - _Requirements: 6.1, 6.2, 6.3, 6.4_
+  - [ ]\* 17.2 Write property tests for templates
+    - **Property 23: Template organization**
+    - **Property 24: Template placeholder handling**
+    - **Validates: Requirements 6.2, 6.3, 6.4**
+  - [ ] 17.3 Create QuerySnippets component
+    - Display snippets with search
+    - Implement snippet creation dialog
+    - _Requirements: 7.1, 7.5, 7.6_
+  - [ ]\* 17.4 Write property tests for snippets
+    - **Property 29: User snippet storage**
+    - **Validates: Requirements 7.5, 7.6**
+
+- [ ] 18. Checkpoint - Ensure frontend components tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 19. Implement query parameterization
+  - [ ] 19.1 Add parameter detection and highlighting
+    - Detect parameter placeholders in queries
+    - Highlight parameters in editor
+    - _Requirements: 17.1_
+  - [ ] 19.2 Create parameter input dialog
+    - Display parameter inputs with types
+    - Show default values
+    - Validate parameter types
+    - _Requirements: 17.2, 17.4, 17.6_
+  - [ ] 19.3 Implement parameter substitution
+    - Substitute parameters before execution
+    - Sanitize parameter values
+    - Store parameters with saved queries
+    - _Requirements: 17.3, 17.5, 17.7_
+  - [ ]\* 19.4 Write property tests for parameterization
+    - **Property 62: Parameter detection**
+    - **Property 64: Parameter substitution**
+    - **Property 68: Parameter sanitization**
+    - **Validates: Requirements 17.1, 17.3, 17.7**
+
+- [ ] 20. Implement query sharing and collaboration
+  - [ ] 20.1 Add shareable link generation
+    - Generate unique links for shared queries
+    - Implement read-only query access
+    - Display author and timestamp for shared queries
+    - _Requirements: 10.1, 10.2, 10.5_
+  - [ ]\* 20.2 Write property tests for sharing
+    - **Property 40: Shareable link uniqueness**
+    - **Property 41: Shared query access**
+    - **Property 44: Shared query metadata**
+    - **Validates: Requirements 10.1, 10.2, 10.5**
+  - [ ] 20.3 Implement query collections
+    - Create collection management UI
+    - Add queries to collections
+    - Display collections with grouped queries
+    - _Requirements: 10.6, 10.7_
+  - [ ]\* 20.4 Write property tests for collections
+    - **Property 45: Query collection management**
+    - **Validates: Requirements 10.6, 10.7**
+
+- [ ] 21. Implement query scheduling (backend)
+  - [ ] 21.1 Create schedule management
+    - Implement ScheduleQueryCommand and handler
+    - Add cron expression parsing and validation
+    - Store schedules in database
+    - Implement schedule limit enforcement (10 per user)
+    - _Requirements: 18.1, 18.4, 18.7_
+  - [ ] 21.2 Implement scheduled query execution
+    - Create background job processor for scheduled queries
+    - Execute queries on schedule
+    - Store results and update status
+    - Handle execution failures with logging and notifications
+    - _Requirements: 18.2, 18.5_
+  - [ ] 21.3 Add alert triggering
+    - Evaluate alert conditions on results
+    - Trigger notifications when conditions met
+    - _Requirements: 18.3_
+  - [ ]\* 21.4 Write property tests for scheduling
+    - **Property 69: Schedule storage**
+    - **Property 70: Scheduled execution**
+    - **Property 75: Schedule limit enforcement**
+    - **Validates: Requirements 18.1, 18.2, 18.7**
+
+- [ ] 22. Implement query scheduling (frontend)
+  - [ ] 22.1 Create ScheduledQueries component
+    - Display scheduled queries with status
+    - Show next execution time and last result
+    - Add schedule creation dialog
+    - Implement schedule editing and deletion
+    - _Requirements: 18.6_
+  - [ ]\* 22.2 Write property tests for schedule UI
+    - **Property 74: Schedule metadata display**
+    - **Validates: Requirements 18.6**
+
+- [ ] 23. Implement caching and performance optimizations
+  - [ ] 23.1 Add query result caching
+    - Implement cache service with 5-minute TTL
+    - Add cache key generation based on query and parameters
+    - Return cached results with cache metadata
+    - _Requirements: 9.6, 9.7_
+  - [ ]\* 23.2 Write property tests for caching
+    - **Property 39: Query result caching**
+    - **Validates: Requirements 9.6, 9.7**
+  - [ ] 23.3 Add slow query logging
+    - Log queries exceeding 10 seconds
+    - Include query text and execution time in logs
+    - _Requirements: 9.5_
+
+- [ ] 24. Implement error handling and user feedback
+  - [ ] 24.1 Add comprehensive error handling
+    - Implement error display in Query Builder
+    - Add toast notifications for execution errors
+    - Handle network errors with retry
+    - Display timeout messages with suggestions
+    - Show empty state for no results
+    - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5_
+  - [ ] 24.2 Add error logging
+    - Log all errors to Winston with context
+    - Include user_id and query_id in logs
+    - _Requirements: 14.6, 14.7_
+  - [ ]\* 24.3 Write property tests for error handling
+    - **Property 53: Error notification display**
+    - **Property 54: Error logging with context**
+    - **Validates: Requirements 14.2, 14.6, 14.7**
+
+- [ ] 25. Implement result sharing
+  - [ ] 25.1 Add result link generation and access
+    - Generate shareable links with embedded results
+    - Display results in read-only mode from links
+    - Implement link expiration (7 days)
+    - Require authentication for sensitive data
+    - _Requirements: 16.4, 16.5, 16.6, 16.7_
+  - [ ]\* 25.2 Write property tests for result sharing
+    - **Property 59: Result link generation**
+    - **Property 60: Result link access**
+    - **Property 61: Result link authentication**
+    - **Validates: Requirements 16.4, 16.5, 16.7**
+
+- [ ] 26. Create main query page integration
+  - [ ] 26.1 Create QueryPage component
+    - Integrate QueryBuilder, QueryResultsVisualization
+    - Add tabs for History, Saved Queries, Templates, Snippets
+    - Implement layout with split panels
+    - Add responsive design
+  - [ ] 26.2 Add routing and navigation
+    - Create route for /query page
+    - Add navigation menu item
+    - Handle query parameters for shared links
+
+- [ ] 27. Final checkpoint - Integration testing
+  - [ ] 27.1 Run end-to-end tests
+    - Test complete user workflows (build, execute, save, share)
+    - Test error scenarios
+    - Test concurrent operations
+  - [ ] 27.2 Verify all property tests pass
+    - Ensure all 75 properties are tested
+    - Verify 100+ iterations per property test
+    - Check test coverage meets requirements (≥90%)
+  - [ ] 27.3 Manual testing and validation
+    - Test in different browsers
+    - Verify responsive design
+    - Check accessibility
+    - Validate API documentation
+
+- [ ] 28. Documentation and cleanup
+  - Update API documentation with examples
+  - Add inline code comments
+  - Create user guide for query features
+  - Document TFQL syntax and functions
+  - Clean up unused code and dependencies
+
+## Notes
+
+- Tasks marked with `*` are optional property-based tests that can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation at key milestones
+- Property tests validate universal correctness properties with 100+ iterations
+- Unit tests validate specific examples and edge cases
+- The implementation follows DDD/CQRS on backend and Vue 3 patterns on frontend
+- All database operations use TypeORM with proper migrations
+- All API endpoints require JWT authentication
+- Frontend uses Pinia for state management and Monaco Editor for code editing
+- Visualization uses ECharts for charts and Naive UI for tables

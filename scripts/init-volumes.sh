@@ -7,26 +7,26 @@
 
 set -e
 
-BASE_PATH="/opt/data/docker/telemetryflow-core"
+BASE_PATH="${VOLUMES_BASE_PATH:-/opt/data/docker/telemetryflow-core}"
 
 echo "Creating volume directories at ${BASE_PATH}..."
 
 # Create directories
+sudo mkdir -p "${BASE_PATH}/postgresql/pgdata"
 sudo mkdir -p "${BASE_PATH}/clickhouse/data"
 sudo mkdir -p "${BASE_PATH}/clickhouse/logs"
-sudo mkdir -p "${BASE_PATH}/grafana"
+sudo mkdir -p "${BASE_PATH}/redis"
+sudo mkdir -p "${BASE_PATH}/nats"
 sudo mkdir -p "${BASE_PATH}/portainer"
-sudo mkdir -p "${BASE_PATH}/postgres"
-sudo mkdir -p "${BASE_PATH}/prometheus"
 
 # Set permissions
-sudo chown -R $(id -u):$(id -g) "${BASE_PATH}"
+sudo chown -R $(whoami) "${BASE_PATH}"
 sudo chmod -R 755 "${BASE_PATH}"
 
-echo "✓ Volume directories created successfully:"
+echo "Volume directories created successfully:"
+echo "  - ${BASE_PATH}/postgresql/pgdata"
 echo "  - ${BASE_PATH}/clickhouse/data"
 echo "  - ${BASE_PATH}/clickhouse/logs"
-echo "  - ${BASE_PATH}/grafana"
+echo "  - ${BASE_PATH}/redis"
+echo "  - ${BASE_PATH}/nats"
 echo "  - ${BASE_PATH}/portainer"
-echo "  - ${BASE_PATH}/postgres"
-echo "  - ${BASE_PATH}/prometheus"

@@ -1,0 +1,751 @@
+// =============================================================================
+// TelemetryFlow Responsive Utilities
+// =============================================================================
+// Comprehensive responsive mixins, variables, and utility classes
+// for mobile-first design across all features (TASK-02 to TASK-11)
+//
+// Usage: @import '@/styles/responsive-utilities.scss';
+
+@import './tfo-variables.scss';
+
+// =============================================================================
+// Breakpoint Variables
+// =============================================================================
+
+$bp-xs: 480px; // Extra small phones
+$bp-sm: 640px; // Small phones
+$bp-md: 768px; // Tablets / Large phones
+$bp-lg: 1024px; // Small laptops / Tablets landscape
+$bp-xl: 1280px; // Desktops
+$bp-2xl: 1536px; // Large desktops
+
+// =============================================================================
+// Responsive Mixins
+// =============================================================================
+
+// Mobile-first: Apply styles from this breakpoint and up
+@mixin xs-up {
+  @media (min-width: $bp-xs) {
+    @content;
+  }
+}
+
+@mixin sm-up {
+  @media (min-width: $bp-sm) {
+    @content;
+  }
+}
+
+@mixin md-up {
+  @media (min-width: $bp-md) {
+    @content;
+  }
+}
+
+@mixin lg-up {
+  @media (min-width: $bp-lg) {
+    @content;
+  }
+}
+
+@mixin xl-up {
+  @media (min-width: $bp-xl) {
+    @content;
+  }
+}
+
+@mixin xxl-up {
+  @media (min-width: $bp-2xl) {
+    @content;
+  }
+}
+
+// Desktop-first: Apply styles up to this breakpoint (max-width)
+@mixin xs-down {
+  @media (max-width: #{$bp-xs - 1px}) {
+    @content;
+  }
+}
+
+@mixin sm-down {
+  @media (max-width: #{$bp-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin md-down {
+  @media (max-width: #{$bp-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin lg-down {
+  @media (max-width: #{$bp-lg - 1px}) {
+    @content;
+  }
+}
+
+@mixin xl-down {
+  @media (max-width: #{$bp-xl - 1px}) {
+    @content;
+  }
+}
+
+// Range-based: Apply styles only within breakpoint range
+@mixin xs-only {
+  @media (max-width: #{$bp-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin sm-only {
+  @media (min-width: $bp-sm) and (max-width: #{$bp-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin md-only {
+  @media (min-width: $bp-md) and (max-width: #{$bp-lg - 1px}) {
+    @content;
+  }
+}
+
+@mixin lg-only {
+  @media (min-width: $bp-lg) and (max-width: #{$bp-xl - 1px}) {
+    @content;
+  }
+}
+
+// Shorthand aliases (for backwards compatibility)
+@mixin mobile {
+  @media (max-width: #{$bp-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: $bp-md) and (max-width: #{$bp-lg - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $bp-lg) {
+    @content;
+  }
+}
+
+// =============================================================================
+// Responsive Container Mixin
+// =============================================================================
+
+@mixin responsive-container {
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  @include sm-up {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  @include md-up {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  @include lg-up {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+// =============================================================================
+// Responsive Grid System
+// =============================================================================
+
+@mixin responsive-grid($min-col-width: 280px, $gap: 16px) {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: repeat(auto-fit, minmax(min($min-col-width, 100%), 1fr));
+}
+
+// Fixed column grid with responsive breakpoints
+@mixin fixed-grid($cols-mobile: 1, $cols-tablet: 2, $cols-desktop: 4, $gap: 16px) {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: repeat($cols-mobile, 1fr);
+
+  @include md-up {
+    grid-template-columns: repeat($cols-tablet, 1fr);
+  }
+
+  @include lg-up {
+    grid-template-columns: repeat($cols-desktop, 1fr);
+  }
+}
+
+// =============================================================================
+// Responsive Flex Utilities
+// =============================================================================
+
+@mixin flex-responsive($direction-mobile: column, $direction-desktop: row) {
+  display: flex;
+  flex-direction: $direction-mobile;
+
+  @include md-up {
+    flex-direction: $direction-desktop;
+  }
+}
+
+@mixin flex-wrap-responsive {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  @include mobile {
+    flex-direction: column;
+  }
+}
+
+// =============================================================================
+// Responsive Typography
+// =============================================================================
+
+@mixin responsive-heading($size-mobile: 1.25rem, $size-tablet: 1.5rem, $size-desktop: 1.75rem) {
+  font-size: $size-mobile;
+  line-height: 1.3;
+
+  @include md-up {
+    font-size: $size-tablet;
+  }
+
+  @include lg-up {
+    font-size: $size-desktop;
+  }
+}
+
+@mixin responsive-text($size-mobile: 0.8125rem, $size-desktop: 0.875rem) {
+  font-size: $size-mobile;
+
+  @include md-up {
+    font-size: $size-desktop;
+  }
+}
+
+// =============================================================================
+// Responsive Spacing
+// =============================================================================
+
+@mixin responsive-padding($mobile: 12px, $tablet: 16px, $desktop: 20px) {
+  padding: $mobile;
+
+  @include md-up {
+    padding: $tablet;
+  }
+
+  @include lg-up {
+    padding: $desktop;
+  }
+}
+
+@mixin responsive-gap($mobile: 12px, $tablet: 16px, $desktop: 20px) {
+  gap: $mobile;
+
+  @include md-up {
+    gap: $tablet;
+  }
+
+  @include lg-up {
+    gap: $desktop;
+  }
+}
+
+@mixin responsive-margin-bottom($mobile: 16px, $tablet: 20px, $desktop: 24px) {
+  margin-bottom: $mobile;
+
+  @include md-up {
+    margin-bottom: $tablet;
+  }
+
+  @include lg-up {
+    margin-bottom: $desktop;
+  }
+}
+
+// =============================================================================
+// Page Layout Mixins
+// =============================================================================
+
+@mixin page-view {
+  @include responsive-padding(16px, 20px, 24px);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include md-up {
+    gap: 20px;
+  }
+
+  @include lg-up {
+    gap: 24px;
+  }
+}
+
+@mixin page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  @include md-up {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+}
+
+@mixin page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+
+  @include md-up {
+    font-size: 1.5rem;
+    gap: 12px;
+  }
+}
+
+@mixin page-subtitle {
+  color: var(--n-text-color-3);
+  font-size: 0.8125rem;
+  margin: 0;
+
+  @include md-up {
+    font-size: 0.875rem;
+  }
+}
+
+// =============================================================================
+// Stat Cards Layout
+// =============================================================================
+
+@mixin stat-cards-row {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+
+  @include sm-up {
+    gap: 14px;
+  }
+
+  @include md-up {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  @include lg-up {
+    gap: 20px;
+  }
+}
+
+// =============================================================================
+// Section/Card Styles
+// =============================================================================
+
+@mixin section-card {
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--n-card-color);
+  border: 1px solid var(--k8s-border-color);
+
+  :global(html.dark) & {
+    background: rgba(30, 41, 59, 0.3);
+  }
+}
+
+@mixin section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 14px;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  background: var(--n-card-color);
+  border-bottom: 1px solid var(--k8s-border-color);
+
+  @include md-up {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    font-size: 0.875rem;
+  }
+
+  :global(html.dark) & {
+    background: rgba(30, 41, 59, 0.4);
+  }
+}
+
+@mixin section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  @include md-up {
+    gap: 10px;
+  }
+}
+
+@mixin section-content {
+  @include responsive-padding(12px, 14px, 16px);
+}
+
+// =============================================================================
+// Table Responsive Utilities
+// =============================================================================
+
+@mixin responsive-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  // Hide scrollbar on desktop, show on mobile
+  @include desktop {
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+  }
+
+  @include mobile {
+    margin: 0 -12px;
+    padding: 0 12px;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+  }
+}
+
+@mixin responsive-table {
+  width: 100%;
+  min-width: 100%;
+
+  @include mobile {
+    min-width: 700px; // Ensure table doesn't collapse too much
+  }
+}
+
+// =============================================================================
+// Form Responsive Utilities
+// =============================================================================
+
+@mixin responsive-form-grid($cols-desktop: 2) {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+
+  @include md-up {
+    grid-template-columns: repeat($cols-desktop, 1fr);
+  }
+}
+
+@mixin responsive-form-actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  margin-top: 20px;
+
+  @include sm-up {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .n-button {
+    @include mobile {
+      width: 100%;
+    }
+  }
+}
+
+// =============================================================================
+// Modal Responsive Utilities
+// =============================================================================
+
+@mixin responsive-modal($width-desktop: 600px) {
+  width: calc(100vw - 32px);
+  max-width: $width-desktop;
+  max-height: calc(100vh - 48px);
+
+  @include sm-up {
+    width: calc(100vw - 48px);
+    max-height: calc(100vh - 64px);
+  }
+
+  @include md-up {
+    width: $width-desktop;
+  }
+}
+
+// =============================================================================
+// Drawer Responsive Utilities
+// =============================================================================
+
+@mixin responsive-drawer {
+  width: 100% !important;
+
+  @include sm-up {
+    width: 400px !important;
+  }
+
+  @include md-up {
+    width: 480px !important;
+  }
+}
+
+// =============================================================================
+// Filter Bar Responsive
+// =============================================================================
+
+@mixin filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+
+  @include md-up {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+  }
+}
+
+@mixin filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  @include sm-up {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+@mixin filter-item($width-mobile: 100%, $width-desktop: 160px) {
+  width: $width-mobile;
+
+  @include sm-up {
+    width: auto;
+    min-width: $width-desktop;
+  }
+}
+
+// =============================================================================
+// Action Buttons Responsive
+// =============================================================================
+
+@mixin action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+
+  @include sm-up {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: auto;
+  }
+
+  .n-button {
+    @include mobile {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// =============================================================================
+// Hide/Show Utilities
+// =============================================================================
+
+@mixin hide-mobile {
+  @include mobile {
+    display: none !important;
+  }
+}
+
+@mixin hide-desktop {
+  @include desktop {
+    display: none !important;
+  }
+}
+
+@mixin show-mobile-only {
+  display: none !important;
+
+  @include mobile {
+    display: flex !important;
+  }
+}
+
+@mixin show-desktop-only {
+  display: none !important;
+
+  @include desktop {
+    display: flex !important;
+  }
+}
+
+// =============================================================================
+// Touch-Friendly Utilities
+// =============================================================================
+
+@mixin touch-target {
+  min-height: 44px;
+  min-width: 44px;
+
+  @include desktop {
+    min-height: 32px;
+    min-width: auto;
+  }
+}
+
+@mixin touch-spacing {
+  padding: 12px;
+
+  @include desktop {
+    padding: 8px;
+  }
+}
+
+// =============================================================================
+// ChatBox / Floating Widget Responsive
+// =============================================================================
+
+@mixin floating-widget {
+  position: fixed;
+  z-index: 1000;
+
+  // Mobile: Full screen
+  @include mobile {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: auto;
+    width: 100%;
+    height: 70vh;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  // Desktop: Fixed size widget
+  @include desktop {
+    bottom: 20px;
+    right: 20px;
+    width: 400px;
+    height: 500px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+@mixin floating-widget-minimized {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  z-index: 1000;
+
+  @include mobile {
+    bottom: 16px;
+    right: 16px;
+  }
+}
+
+// =============================================================================
+// CSS Utility Classes (Optional - use with caution)
+// =============================================================================
+
+// Container
+.responsive-container {
+  @include responsive-container;
+}
+
+// Page layouts
+.page-view {
+  @include page-view;
+}
+
+// Grid utilities
+.stat-cards-row {
+  @include stat-cards-row;
+}
+
+// Section styles
+.section {
+  @include section-card;
+}
+
+.section-header {
+  @include section-header;
+}
+
+.section-title {
+  @include section-title;
+}
+
+.section-content {
+  @include section-content;
+}
+
+// Hide/Show utilities
+.hide-mobile {
+  @include hide-mobile;
+}
+
+.hide-desktop {
+  @include hide-desktop;
+}
+
+.show-mobile-only {
+  @include show-mobile-only;
+}
+
+.show-desktop-only {
+  @include show-desktop-only;
+}
+
+// Touch utilities
+.touch-target {
+  @include touch-target;
+}
+
+// Flex responsive
+.flex-responsive {
+  @include flex-responsive;
+}
+
+// Action buttons
+.action-buttons {
+  @include action-buttons;
+}
+
+// Filter bar
+.filter-bar {
+  @include filter-bar;
+}
+
+.filter-group {
+  @include filter-group;
+}

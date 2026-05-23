@@ -1,0 +1,106 @@
+// TFO Style Registry — DB Monitoring — MongoDB
+// Extracted from: db-monitoring/mongodb-community/ and db-monitoring/mongodb-atlas/
+
+// === mongodb-community/MongodbCommunityCollectionsView.vue ===
+.mongodb-community-collections {
+  padding: 16px;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+}
+
+// === mongodb-community/MongodbCommunityInstanceDetailView.vue ===
+.mongodb-community-instance-detail {
+  padding: 16px;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+}
+
+// === mongodb-community/MongodbCommunityInstanceListView.vue ===
+.mongodb-community-instances {
+  padding: 16px;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+}
+
+// === mongodb-community/MongodbCommunityOverviewView.vue ===
+.mongodb-community-overview {
+  padding: 16px;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .stat-row {
+    margin-bottom: 0;
+  }
+
+  .stat-success .n-statistic-value {
+    color: #18a058;
+  }
+
+  .stat-warning .n-statistic-value {
+    color: #f0a020;
+  }
+
+  .stat-error .n-statistic-value {
+    color: #d03050;
+  }
+}
+
+// === mongodb-community/MongodbCommunityQueryAnalyticsView.vue ===
+.mongodb-community-query-analytics {
+  padding: 16px;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+}
+
+// === mongodb-community/MongodbCommunityReplicaSetView.vue ===
+.mongodb-community-replica-set {
+  padding: 16px;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .selected {
+    border: 2px solid #18a058;
+  }
+}
+
+// === mongodb-community/MongodbCommunityShardingView.vue ===
+.mongodb-community-sharding {
+  padding: 16px;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+}

@@ -1,0 +1,412 @@
+// ═══════════════════════════════════════════════════════════════════
+// IAM Assignments Styles
+// Extracted from: views/iam/assignments/index.vue,
+//   assignments/components/RoleManagementModal.vue,
+//   assignments/components/UserDetailsModal.vue,
+//   assignments/components/UserEditModal.vue
+// ═══════════════════════════════════════════════════════════════════
+@import "@/styles/tfo-variables.scss";
+
+// ─── Assignments Page (assignments/index.vue) ─────────────────────
+
+.rbac-assignments-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rbac-assignments-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .page-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--n-text-color);
+  }
+
+  .title-icon {
+    font-size: 28px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: var(--n-text-color-3);
+    margin: 0;
+  }
+}
+
+.rbac-assignments-page .stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.rbac-assignments-page .filters-card {
+  .filters-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    .search-input {
+      flex: 1;
+      min-width: 300px;
+    }
+  }
+}
+
+.rbac-assignments-page .user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rbac-assignments-page .user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  .user-name {
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .user-email {
+    font-size: 12px;
+    color: var(--n-text-color-3);
+  }
+}
+
+@media (max-width: 600px) {
+  .rbac-assignments-page .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .rbac-assignments-page .filters-bar {
+    .search-input {
+      min-width: 100%;
+    }
+  }
+}
+
+// ─── Role Management Modal (assignments/components/RoleManagementModal.vue)
+.role-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.role-modal-content .modal-user-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(128, 128, 128, 0.05);
+  border-radius: 12px;
+
+  .user-avatar-large {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .user-name {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .user-email {
+      font-size: 13px;
+      color: var(--n-text-color-3);
+    }
+  }
+}
+
+.role-modal-content .roles-section {
+  .section-header-modal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--n-border-color);
+
+    .section-icon-wrapper {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+      flex: 1;
+      font-size: 15px;
+    }
+  }
+}
+
+.role-modal-content .roles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.role-modal-content .role-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid var(--n-border-color);
+  transition: all 0.2s ease;
+  background: var(--n-card-color);
+
+  &.assigned {
+    background: rgba(16, 185, 129, 0.04);
+    border-color: rgba(16, 185, 129, 0.2);
+
+    &:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    }
+  }
+
+  &.available {
+    &:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+
+  .role-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .role-info {
+    flex: 1;
+    min-width: 0;
+
+    .role-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .role-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .role-description {
+      font-size: 12px;
+      color: var(--n-text-color-3);
+      line-height: 1.4;
+    }
+  }
+
+  .role-actions {
+    flex-shrink: 0;
+  }
+}
+
+.role-modal-content .empty-roles {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--n-text-color-3);
+
+  .empty-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+
+  .empty-icon {
+    font-size: 32px;
+  }
+
+  .empty-text {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--n-text-color);
+  }
+
+  .empty-hint {
+    margin: 0;
+    font-size: 13px;
+    color: var(--n-text-color-3);
+  }
+}
+
+@media (max-width: 600px) {
+  .role-modal-content .role-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    .role-actions {
+      width: 100%;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  .role-modal-content .modal-user-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+// ─── User Details Modal (assignments/components/UserDetailsModal.vue)
+.user-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.user-details-content .user-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(128, 128, 128, 0.05);
+  border-radius: 12px;
+
+  .user-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 28px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .user-info {
+    flex: 1;
+
+    .user-name {
+      margin: 0 0 4px 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .user-email {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: var(--n-text-color-3);
+    }
+  }
+}
+
+// ─── User Edit Modal (assignments/components/UserEditModal.vue) ───
+.user-edit-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.user-edit-content .user-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(128, 128, 128, 0.05);
+  border-radius: 12px;
+
+  .user-avatar-large {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .user-info {
+    flex: 1;
+
+    .user-name {
+      margin: 0 0 4px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .user-id {
+      margin: 0;
+      font-size: 13px;
+      color: var(--n-text-color-3);
+
+      code {
+        font-size: 12px;
+        background: rgba(128, 128, 128, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+// TFO Style Registry — Node Graph Tooltip
+// Tooltip table with light/dark theme support
+
+.node-graph-tooltip {
+  position: fixed;
+  z-index: 1000;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  width: fit-content;
+  max-width: 380px;
+
+  &.light-tooltip {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
+    .tooltip-table td {
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .tooltip-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tooltip-label {
+      color: #6b7280;
+    }
+
+    .tooltip-value {
+      color: #1f2937;
+    }
+  }
+}
+
+.tooltip-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  td {
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.tooltip-label {
+  color: #9ca3af;
+  font-size: 11px;
+  white-space: nowrap;
+  vertical-align: top;
+  text-align: left;
+  padding-right: 8px !important;
+}
+
+.tooltip-value {
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 500;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 240px;
+  vertical-align: top;
+  text-align: left;
+  padding-left: 0 !important;
+}

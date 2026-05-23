@@ -1,0 +1,877 @@
+/**
+ * TFO Trace Visualizations - Global Styles
+ *
+ * Global styling for trace visualization components:
+ * - Waterfall View
+ * - Flame Graph
+ * - Node Graph
+ * - Service Map
+ * - Network Map
+ *
+ * Usage: Automatically imported in main.ts
+ * These styles are shared across all trace visualization views.
+ */
+
+// ============================================================================
+// WATERFALL VIEW STYLES
+// ============================================================================
+
+.waterfall-container {
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+
+  :root.dark & {
+    background: #0f172a;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+
+  :root.dark & {
+    background: #1e293b;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.timeline-info-spacer {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+
+.tree-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.timeline-grid-area {
+  flex: 1;
+  margin: 0 16px;
+}
+
+.timeline-duration-spacer {
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.timeline-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #64748b;
+
+  :root.dark & {
+    color: #94a3b8;
+  }
+}
+
+.spans-list {
+  max-height: calc(100vh - 400px);
+  min-height: 300px;
+  overflow-y: auto;
+  background: #ffffff;
+
+  :root.dark & {
+    background: #0f172a;
+  }
+}
+
+.span-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-bottom: 1px dashed #e2e8f0;
+  transition: background 0.15s ease;
+
+  :root.dark & {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:hover {
+    background: #f1f5f9;
+
+    :root.dark & {
+      background: #1e293b;
+    }
+
+    .span-name {
+      color: var(--n-primary-color);
+    }
+  }
+
+  &.selected {
+    background: rgba(59, 130, 246, 0.1);
+
+    :root.dark & {
+      background: rgba(59, 130, 246, 0.15);
+    }
+  }
+
+  &.error {
+    background: rgba(239, 68, 68, 0.05);
+
+    :root.dark & {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .span-name {
+      color: #ef4444;
+    }
+  }
+
+  &.has-children {
+    .span-name {
+      font-weight: 500;
+    }
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.span-info {
+  width: 280px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+// Tree connector styles
+.tree-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.tree-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: #e2e8f0;
+
+  :root.dark & {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:hover {
+    background: #cbd5e1;
+
+    :root.dark & {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .toggle-icon {
+    font-size: 12px;
+    color: #64748b;
+
+    :root.dark & {
+      color: #94a3b8;
+    }
+  }
+}
+
+.tree-leaf-spacer {
+  width: 18px;
+  height: 18px;
+}
+
+.child-count-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 0 6px;
+  height: 16px;
+  line-height: 16px;
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border-radius: 8px;
+  flex-shrink: 0;
+
+  &.collapsed {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+  }
+
+  :root.dark & {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+
+    &.collapsed {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+  }
+}
+
+.service-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.span-name {
+  font-size: 0.8125rem;
+  color: #1f2937;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  flex: 1;
+  min-width: 0;
+
+  :root.dark & {
+    color: #e5e7eb;
+  }
+}
+
+.span-timeline {
+  flex: 1;
+  height: 24px;
+  background: transparent;
+  border-radius: 4px;
+  position: relative;
+  margin: 0 16px;
+  cursor: pointer;
+}
+
+.timeline-grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.grid-line {
+  width: 1px;
+  height: 100%;
+  border-left: 1px dashed #cbd5e1;
+
+  :root.dark & {
+    border-left-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.span-bar {
+  position: absolute;
+  height: 100%;
+  border-radius: 3px;
+  min-width: 2px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  z-index: 1;
+  transition: filter 0.15s ease;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+}
+
+.span-bar-label {
+  padding: 0 6px;
+  font-size: 0.7rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
+}
+
+.span-marker-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 2px dashed var(--marker-color, #94a3b8);
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.6;
+
+  :root.dark & {
+    opacity: 0.8;
+  }
+
+  &.start-line {
+    --marker-color: #22c55e;
+  }
+
+  &.end-line {
+    --marker-color: #ef4444;
+  }
+}
+
+.span-row:hover .span-marker-line {
+  opacity: 1;
+
+  &.start-line {
+    --marker-color: #16a34a;
+  }
+
+  &.end-line {
+    --marker-color: #dc2626;
+  }
+}
+
+.span-duration {
+  width: 80px;
+  text-align: right;
+  font-size: 0.75rem;
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  color: #64748b;
+
+  :root.dark & {
+    color: #94a3b8;
+  }
+}
+
+// ============================================================================
+// FLAME GRAPH STYLES
+// ============================================================================
+
+.flamegraph-container {
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+
+  :root.dark & {
+    background: #0f172a;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.flamegraph-stack {
+  padding: 8px;
+  max-height: calc(100vh - 400px);
+  min-height: 300px;
+  overflow-y: auto;
+  background: #ffffff;
+
+  :root.dark & {
+    background: #0f172a;
+  }
+}
+
+.flamegraph-level {
+  position: relative;
+  height: 26px;
+  margin-bottom: 1px;
+}
+
+.flame-bar-wrapper {
+  position: absolute;
+  height: 100%;
+
+  &:hover .flame-marker-line {
+    opacity: 1;
+
+    &.start-line {
+      --marker-color: #16a34a;
+    }
+
+    &.end-line {
+      --marker-color: #dc2626;
+    }
+  }
+}
+
+.flame-marker-line {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 0;
+  border-left: 2px dashed var(--marker-color, #94a3b8);
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.6;
+
+  :root.dark & {
+    opacity: 0.8;
+  }
+
+  &.start-line {
+    left: 0;
+    --marker-color: #22c55e;
+  }
+
+  &.end-line {
+    right: 0;
+    --marker-color: #ef4444;
+  }
+}
+
+.flame-bar {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  overflow: hidden;
+  transition: filter 0.15s ease;
+  min-width: 3px;
+  box-sizing: border-box;
+
+  &:hover {
+    filter: brightness(1.15);
+    z-index: 10;
+  }
+
+  &.hovered {
+    filter: brightness(1.15);
+  }
+
+  &.total-bar {
+    position: relative;
+    width: 100%;
+    background-color: #64748b; // slate-500 - unique color not used by services
+  }
+}
+
+.flame-bar-text {
+  font-size: 0.65rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+}
+
+// ============================================================================
+// NODE GRAPH / SERVICE MAP / NETWORK MAP STYLES
+// ============================================================================
+
+.node-graph-container,
+.service-map-container,
+.network-map-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+
+  :root.dark & {
+    background: #0f172a;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Graph canvas wrapper
+.graph-canvas-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+// Graph controls (zoom, layout, etc.)
+.graph-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.graph-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  :root.dark & {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.graph-control-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+
+  :root.dark & {
+    color: #94a3b8;
+  }
+
+  &:hover {
+    background: #f1f5f9;
+    color: #3b82f6;
+
+    :root.dark & {
+      background: rgba(255, 255, 255, 0.1);
+      color: #60a5fa;
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.active {
+    background: #dbeafe;
+    color: #3b82f6;
+
+    :root.dark & {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+    }
+  }
+}
+
+// Graph legend
+.graph-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+
+  :root.dark & {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.graph-legend-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  :root.dark & {
+    color: #94a3b8;
+  }
+}
+
+.graph-legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.graph-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #475569;
+
+  :root.dark & {
+    color: #cbd5e1;
+  }
+}
+
+.graph-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+// Graph node styles (for custom rendering)
+.graph-node {
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+
+  &.selected {
+    filter: brightness(1.2);
+  }
+
+  &.error {
+    filter: hue-rotate(-15deg) saturate(1.5);
+  }
+}
+
+.graph-node-label {
+  font-size: 11px;
+  font-weight: 500;
+  fill: #1f2937;
+  text-anchor: middle;
+  pointer-events: none;
+
+  :root.dark & {
+    fill: #e5e7eb;
+  }
+}
+
+.graph-edge {
+  stroke: #cbd5e1;
+  stroke-width: 1.5;
+  fill: none;
+  transition: all 0.2s ease;
+
+  :root.dark & {
+    stroke: rgba(255, 255, 255, 0.2);
+  }
+
+  &:hover {
+    stroke: #3b82f6;
+    stroke-width: 2;
+
+    :root.dark & {
+      stroke: #60a5fa;
+    }
+  }
+
+  &.error {
+    stroke: #ef4444;
+    stroke-width: 2;
+  }
+}
+
+.graph-edge-label {
+  font-size: 10px;
+  fill: #64748b;
+  text-anchor: middle;
+  pointer-events: none;
+
+  :root.dark & {
+    fill: #94a3b8;
+  }
+}
+
+// Graph loading state
+.graph-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #64748b;
+
+  :root.dark & {
+    color: #94a3b8;
+  }
+}
+
+// Graph empty state
+.graph-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  text-align: center;
+
+  :root.dark & {
+    color: #64748b;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    opacity: 0.5;
+  }
+
+  .empty-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .empty-description {
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+}
+
+// ============================================================================
+// SHARED UTILITIES
+// ============================================================================
+
+// Service color palette (consistent across all visualizations)
+.service-color-1 {
+  background-color: #3b82f6;
+}
+
+// blue
+.service-color-2 {
+  background-color: #22c55e;
+}
+
+// green
+.service-color-3 {
+  background-color: #f59e0b;
+}
+
+// amber
+.service-color-4 {
+  background-color: #8b5cf6;
+}
+
+// violet
+.service-color-5 {
+  background-color: #06b6d4;
+}
+
+// cyan
+.service-color-6 {
+  background-color: #ec4899;
+}
+
+// pink
+.service-color-7 {
+  background-color: #f97316;
+}
+
+// orange
+.service-color-8 {
+  background-color: #14b8a6;
+}
+
+// teal
+.service-color-9 {
+  background-color: #a855f7;
+}
+
+// purple
+.service-color-10 {
+  background-color: #84cc16;
+}
+
+// lime
+
+// Status colors
+.status-ok {
+  color: #22c55e;
+}
+
+.status-warning {
+  color: #f59e0b;
+}
+
+.status-error {
+  color: #ef4444;
+}
+
+.status-unknown {
+  color: #94a3b8;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .timeline-info-spacer {
+    width: 200px;
+  }
+
+  .span-info {
+    width: 200px;
+  }
+
+  .span-duration {
+    width: 60px;
+  }
+
+  .graph-controls {
+    top: 8px;
+    right: 8px;
+  }
+
+  .graph-legend {
+    bottom: 8px;
+    left: 8px;
+  }
+
+  .node-graph-container,
+  .service-map-container,
+  .network-map-container {
+    height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-info-spacer {
+    width: 150px;
+  }
+
+  .span-info {
+    width: 150px;
+  }
+
+  .span-duration {
+    width: 50px;
+    font-size: 0.6875rem;
+  }
+
+  .span-bar-label {
+    font-size: 0.625rem;
+  }
+
+  .flame-bar-text {
+    font-size: 0.6rem;
+  }
+
+  .node-graph-container,
+  .service-map-container,
+  .network-map-container {
+    height: 300px;
+  }
+}

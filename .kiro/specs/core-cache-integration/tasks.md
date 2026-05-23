@@ -1,0 +1,691 @@
+# Implementation Plan: Frontend-Backend Cache Integration
+
+## Overview
+
+This implementation plan breaks down the frontend-backend cache integration into discrete, incremental tasks. The approach follows a layered implementation strategy: backend domain and infrastructure first, then backend API layer, followed by frontend state management, and finally frontend UI components. Each task builds on previous work, with testing integrated throughout.
+
+The implementation leverages existing backend DDD/CQRS architecture and frontend Vue 3 + Pinia patterns. WebSocket integration is implemented early to enable real-time cache metrics updates throughout development.
+
+## Tasks
+
+- [ ] 1. Backend: Enhance Domain Layer
+  - [ ] 1.1 Review and validate existing Cache aggregate and value objects
+    - Verify CacheKey, CacheEntry, CacheMetadata value objects
+    - Ensure domain logic for TTL management and expiration
+    - Ensure domain events are properly defined (CacheKeyInvalidated, CacheConfigurationChanged)
+    - _Requirements: 2.1, 3.1, 14.1_
+  - [ ]\* 1.2 Write property test for Cache aggregate operations
+    - **Property 1: Cache Entry CRUD Operations**
+    - **Validates: Requirements 2.1, 3.1, 4.1, 5.1**
+  - [ ]\* 1.3 Write property test for TTL management
+    - **Property 2: TTL Management**
+    - **Validates: Requirements 14.1, 14.2, 14.3, 14.4**
+
+- [ ] 2. Backend: Implement Cache Statistics Service
+  - [ ] 2.1 Create or enhance CacheStatistics.service.ts
+    - Fetch statistics from Redis INFO command
+    - Calculate hit rate, miss rate, memory usage
+    - Track total keys, total hits, total misses
+    - Aggregate custom counters atomically
+    - _Requirements: 1.1, 1.3, 1.4, 1.6_
+  - [ ]\* 2.2 Write property test for statistics calculation
+    - **Property 3: Cache Statistics Calculation**
+    - **Validates: Requirements 1.1, 1.3, 1.4**
+
+- [ ] 3. Backend: Implement Cache Key Management Service
+  - [ ] 3.1 Create CacheKeyManagement.service.ts
+    - Implement paginated key listing with metadata
+    - Support pattern matching with wildcards
+    - Implement filtering by namespace, TTL range, size
+    - Implement sorting by name, size, TTL, last accessed
+    - Add performance limits to prevent degradation
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 17.1, 17.2, 17.7_
+  - [ ]\* 3.2 Write property test for key listing and pagination
+    - **Property 4: Cache Key Listing and Pagination**
+    - **Validates: Requirements 2.1, 2.2, 2.6**
+  - [ ]\* 3.3 Write property test for pattern matching
+    - **Property 5: Cache Key Pattern Matching**
+    - **Validates: Requirements 2.3, 17.1, 17.7**
+  - [ ]\* 3.4 Write property test for filtering and sorting
+    - **Property 6: Cache Key Filtering and Sorting**
+    - **Validates: Requirements 2.4, 2.5, 17.2**
+
+- [ ] 4. Backend: Implement Cache Inspection Service
+  - [ ] 4.1 Create CacheInspection.service.ts
+    - Fetch cache entry with value, metadata, and statistics
+    - Format JSON, strings, and binary data appropriately
+    - Handle large values with truncation
+    - Return 404 for non-existent keys
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.7_
+  - [ ]\* 4.2 Write property test for cache inspection
+    - **Property 7: Cache Entry Inspection**
+    - **Validates: Requirements 3.1, 3.2, 3.4, 3.5**
+
+- [ ] 5. Backend: Implement Cache Invalidation Service
+  - [ ] 5.1 Create CacheInvalidation.service.ts
+    - Implement single key invalidation
+    - Implement pattern-based bulk invalidation
+    - Return count of invalidated keys
+    - Update statistics immediately
+    - Log all invalidation operations in audit trail
+    - _Requirements: 4.1, 4.2, 4.3, 4.5, 4.7, 16.2_
+  - [ ]\* 5.2 Write property test for invalidation operations
+    - **Property 8: Cache Key Invalidation**
+    - **Validates: Requirements 4.1, 4.2, 4.3, 4.7**
+  - [ ]\* 5.3 Write property test for audit logging
+    - **Property 9: Cache Operation Audit Trail**
+    - **Validates: Requirements 4.5, 16.1, 16.2, 16.7**
+
+- [ ] 6. Backend: Implement Cache Deletion Service
+  - [ ] 6.1 Create CacheDeletion.service.ts
+    - Implement single key deletion
+    - Implement bulk deletion with confirmation
+    - Validate patterns to prevent accidental deletion
+    - Protect critical key patterns
+    - Log all deletion operations
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
+  - [ ]\* 6.2 Write property test for deletion operations
+    - **Property 10: Cache Key Deletion**
+    - **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.7**
+  - [ ]\* 6.3 Write property test for protected key validation
+    - **Property 11: Protected Key Pattern Validation**
+    - \*\*Validates: Requirements 5.4, 5.6\_
+
+- [ ] 7. Backend: Implement Cache Analytics Service
+  - [ ] 7.1 Create CacheAnalytics.service.ts
+    - Aggregate hit/miss data from Redis at intervals
+    - Store time-series data in ClickHouse
+    - Calculate hit rate percentage over time
+    - Support time range filtering (1h, 6h, 24h, 7d, 30d)
+    - Generate performance analytics (response time, throughput, error rate)
+    - Track top accessed keys with hit counts
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 11.1, 11.2, 11.3, 11.4, 11.6_
+  - [ ]\* 7.2 Write property test for analytics aggregation
+    - **Property 12: Cache Analytics Aggregation**
+    - **Validates: Requirements 6.1, 6.2, 6.3, 11.1, 11.2**
+  - [ ]\* 7.3 Write property test for time range filtering
+    - **Property 13: Analytics Time Range Filtering**
+    - **Validates: Requirements 6.4, 11.6**
+
+- [ ] 8. Backend: Implement Cache Configuration Service
+  - [ ] 8.1 Create CacheConfiguration.service.ts
+    - Fetch current configuration from Redis
+    - Validate configuration updates
+    - Apply configuration changes to Redis
+    - Log configuration changes in audit trail
+    - Rollback on failure
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7_
+  - [ ]\* 8.2 Write property test for configuration management
+    - **Property 14: Cache Configuration Management**
+    - **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.6**
+  - [ ]\* 8.3 Write property test for configuration validation
+    - **Property 15: Configuration Validation**
+    - **Validates: Requirements 7.2, 7.5**
+
+- [ ] 9. Backend: Implement Eviction Policy Management
+  - [ ] 9.1 Create EvictionPolicy.service.ts
+    - Validate eviction policy against Redis supported policies
+    - Update Redis configuration with new policy
+    - Track eviction events in ClickHouse
+    - Calculate eviction rate over time
+    - _Requirements: 8.1, 8.2, 8.3, 8.5, 8.6_
+  - [ ]\* 9.2 Write property test for eviction policy management
+    - **Property 16: Eviction Policy Management**
+    - **Validates: Requirements 8.1, 8.2, 8.3**
+  - [ ]\* 9.3 Write property test for eviction tracking
+    - **Property 17: Eviction Event Tracking**
+    - **Validates: Requirements 8.5, 8.6**
+
+- [ ] 10. Backend: Implement Cache Warming Service
+  - [ ] 10.1 Create CacheWarming.service.ts
+    - Store warming strategies in PostgreSQL
+    - Validate warming strategy configuration
+    - Execute warming strategies on schedule
+    - Fetch data from source and populate cache
+    - Track success rate and failures
+    - Support manual trigger
+    - Emit events through WebSocket on completion
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
+  - [ ]\* 10.2 Write property test for warming strategy execution
+    - **Property 18: Cache Warming Strategy Execution**
+    - **Validates: Requirements 9.1, 9.2, 9.3, 9.4**
+  - [ ]\* 10.3 Write property test for warming failure handling
+    - **Property 19: Warming Failure Handling**
+    - **Validates: Requirements 9.5**
+
+- [ ] 11. Backend: Implement Real-Time Metrics Service
+  - [ ] 11.1 Create CacheMetrics.service.ts
+    - Collect real-time metrics (hit rate, miss rate, memory usage, ops/sec)
+    - Emit metric events through WebSocket gateway
+    - Throttle updates to prevent overwhelming clients
+    - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.7_
+  - [ ]\* 11.2 Write property test for metrics collection
+    - **Property 20: Real-Time Metrics Collection**
+    - **Validates: Requirements 10.1, 10.2, 10.4**
+
+- [ ] 12. Backend: Implement WebSocket Gateway
+  - [ ] 12.1 Create or enhance CacheGateway for real-time updates
+    - Implement room-based subscriptions for tenant isolation
+    - Emit events for cache metrics updates
+    - Emit events for cache health changes
+    - Emit events for warming completion
+    - Handle client subscribe/unsubscribe
+    - Implement reconnection sync
+    - _Requirements: 10.1, 10.2, 10.3, 10.5, 10.6, 10.7_
+  - [ ]\* 12.2 Write property test for WebSocket event emission
+    - **Property 21: Real-Time WebSocket Updates**
+    - **Validates: Requirements 10.2, 10.3, 10.7**
+  - [ ]\* 12.3 Write property test for tenant isolation
+    - **Property 22: Tenant Isolation in WebSocket**
+    - **Validates: Requirements 10.6**
+
+- [ ] 13. Backend: Implement Namespace Management Service
+  - [ ] 13.1 Create CacheNamespace.service.ts
+    - Group keys by namespace prefix
+    - Calculate per-namespace statistics (key count, size, hit rate)
+    - Support namespace-based invalidation
+    - Enforce namespace naming conventions
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.6, 12.7_
+  - [ ]\* 13.2 Write property test for namespace operations
+    - **Property 23: Cache Namespace Management**
+    - **Validates: Requirements 12.1, 12.2, 12.3, 12.4, 12.7**
+
+- [ ] 14. Backend: Implement Memory Usage Monitoring
+  - [ ] 14.1 Create MemoryMonitoring.service.ts
+    - Fetch memory metrics from Redis INFO command
+    - Calculate fragmentation ratio
+    - Track memory usage by namespace
+    - Store memory snapshots in ClickHouse
+    - Generate memory usage trends
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6, 13.7_
+  - [ ]\* 14.2 Write property test for memory monitoring
+    - **Property 24: Memory Usage Monitoring**
+    - **Validates: Requirements 13.1, 13.2, 13.3, 13.7**
+
+- [ ] 15. Backend: Implement Cache Health Monitoring
+  - [ ] 15.1 Create CacheHealth.service.ts
+    - Verify Redis connectivity and responsiveness
+    - Check connection status, response time, error rate
+    - Perform health checks at intervals
+    - Emit health events through WebSocket
+    - Trigger alerts on repeated failures
+    - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7_
+  - [ ]\* 15.2 Write property test for health monitoring
+    - **Property 25: Cache Health Monitoring**
+    - **Validates: Requirements 15.1, 15.2, 15.3, 15.6**
+
+- [ ] 16. Backend: Implement Bulk Operations Service
+  - [ ] 16.1 Create BulkOperations.service.ts
+    - Process bulk delete, invalidate, and TTL update operations
+    - Process keys in batches to prevent timeout
+    - Return detailed results for each key
+    - Log each operation in audit trail
+    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5, 18.6_
+  - [ ]\* 16.2 Write property test for bulk operations
+    - **Property 26: Bulk Cache Operations**
+    - **Validates: Requirements 18.1, 18.2, 18.3, 18.4, 18.6**
+
+- [ ] 17. Backend: Implement Export and Import Service
+  - [ ] 17.1 Create CacheExportImport.service.ts
+    - Generate export files with keys, values, and metadata
+    - Support filtering by namespace, pattern, TTL range
+    - Process large exports asynchronously
+    - Validate import file format
+    - Support conflict resolution strategies (skip, overwrite, merge)
+    - Log export/import operations in audit trail
+    - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5, 19.6, 19.7_
+  - [ ]\* 17.2 Write property test for export operations
+    - **Property 27: Cache Export Operations**
+    - **Validates: Requirements 19.1, 19.2, 19.3, 19.6**
+  - [ ]\* 17.3 Write property test for import operations
+    - **Property 28: Cache Import Operations**
+    - **Validates: Requirements 19.4, 19.5, 19.6, 19.7**
+
+- [ ] 18. Backend: Implement Performance Recommendations Service
+  - [ ] 18.1 Create CacheRecommendations.service.ts
+    - Analyze usage patterns from analytics data
+    - Generate recommendations for TTL, eviction policy, memory
+    - Suggest cache warming strategies for low hit rates
+    - Suggest capacity increases for high memory usage
+    - Track recommendation effectiveness
+    - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7_
+  - [ ]\* 18.2 Write property test for recommendation generation
+    - **Property 29: Performance Recommendations**
+    - **Validates: Requirements 20.1, 20.2, 20.3, 20.4**
+
+- [ ] 19. Backend: Enhance API Controllers
+  - [ ] 19.1 Create or enhance Cache.controller.ts
+    - Implement statistics endpoint (GET /cache/statistics)
+    - Implement keys listing endpoint (GET /cache/keys)
+    - Implement key detail endpoint (GET /cache/keys/:key)
+    - Implement key invalidation endpoint (DELETE /cache/keys/:key/invalidate)
+    - Implement key deletion endpoint (DELETE /cache/keys/:key)
+    - Implement bulk operations endpoint (POST /cache/bulk)
+    - Add Swagger documentation
+    - Add permission guards
+    - Add validation decorators
+    - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 18.1_
+  - [ ] 19.2 Create CacheConfiguration.controller.ts
+    - Implement get configuration endpoint (GET /cache/configuration)
+    - Implement update configuration endpoint (PUT /cache/configuration)
+    - Implement eviction policy endpoint (PUT /cache/configuration/eviction-policy)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 7.1, 7.2, 8.1, 8.2_
+  - [ ] 19.3 Create CacheAnalytics.controller.ts
+    - Implement analytics endpoint (GET /cache/analytics)
+    - Implement export endpoint (GET /cache/analytics/export)
+    - Implement namespace stats endpoint (GET /cache/namespaces)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 6.1, 11.1, 11.7, 12.1_
+  - [ ] 19.4 Create CacheWarming.controller.ts
+    - Implement list strategies endpoint (GET /cache/warming)
+    - Implement create strategy endpoint (POST /cache/warming)
+    - Implement trigger strategy endpoint (POST /cache/warming/:id/trigger)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 9.1, 9.4, 9.6_
+  - [ ] 19.5 Create CacheExport.controller.ts
+    - Implement export endpoint (POST /cache/export)
+    - Implement import endpoint (POST /cache/import)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 19.1, 19.4_
+
+- [ ] 20. Checkpoint - Backend Core Complete
+  - Ensure all backend tests pass
+  - Verify API endpoints are accessible
+  - Test WebSocket gateway with manual client
+  - Ask the user if questions arise
+
+- [ ] 21. Frontend: Create Cache Types
+  - [ ] 21.1 Create or enhance types/cache.ts with comprehensive types
+    - Define CacheStatistics, CacheHealth, CacheKey interfaces
+    - Define CacheEntry, CacheConfiguration, CacheMetadata interfaces
+    - Define CacheAnalytics, NamespaceStatistics, WarmingStrategy interfaces
+    - Define TimeSeriesData, CacheRecommendation interfaces
+    - Export all types
+    - _Requirements: All_
+
+- [ ] 22. Frontend: Create Cache API Client
+  - [ ] 22.1 Create api/cache-statistics.ts for statistics endpoints
+    - Implement getStatistics method
+    - Implement getHealth method
+    - Add error handling
+    - _Requirements: 1.1, 15.1_
+  - [ ] 22.2 Create api/cache-keys.ts for key management endpoints
+    - Implement listKeys, getKey, deleteKey, invalidateKey methods
+    - Implement updateTTL, bulkDelete, bulkInvalidate methods
+    - Implement searchKeys with pattern matching
+    - Add error handling
+    - _Requirements: 2.1, 2.3, 3.1, 4.1, 5.1, 14.1, 17.1, 18.1_
+  - [ ] 22.3 Create api/cache-analytics.ts for analytics endpoints
+    - Implement getAnalytics method with time range support
+    - Implement getNamespaceStats method
+    - Implement exportAnalytics method
+    - Add error handling
+    - _Requirements: 6.1, 11.1, 11.7, 12.1_
+  - [ ] 22.4 Create api/cache-configuration.ts for configuration endpoints
+    - Implement getConfiguration, updateConfiguration methods
+    - Implement updateEvictionPolicy method
+    - Add error handling
+    - _Requirements: 7.1, 7.2, 8.1, 8.2_
+  - [ ] 22.5 Create api/cache-warming.ts for warming endpoints
+    - Implement listStrategies, createStrategy, triggerStrategy methods
+    - Add error handling
+    - _Requirements: 9.1, 9.4, 9.6_
+  - [ ] 22.6 Create api/cache-export.ts for export/import endpoints
+    - Implement exportCache, importCache methods
+    - Add error handling
+    - _Requirements: 19.1, 19.4_
+
+- [ ] 23. Frontend: Create WebSocket Client
+  - [ ] 23.1 Create or enhance streaming/cache-websocket.ts
+    - Implement connection management with reconnection logic
+    - Implement exponential backoff (max 5 attempts)
+    - Implement room-based subscription for tenant isolation
+    - Add event listeners for cache metrics, health, warming events
+    - Add state sync on reconnection
+    - _Requirements: 10.1, 10.2, 10.3, 10.5, 10.6_
+  - [ ]\* 23.2 Write property test for WebSocket reconnection
+    - **Property 30: WebSocket Reconnection**
+    - **Validates: Requirements 10.5, 10.6**
+
+- [ ] 24. Frontend: Create Cache Pinia Store
+  - [ ] 24.1 Create or enhance store/cache.ts with comprehensive state management
+    - Define state: statistics, health, keys, analytics, configuration, loading, error
+    - Implement getters: healthStatus, topNamespaces, criticalMemoryUsage
+    - Implement actions: fetchStatistics, fetchKeys, fetchAnalytics, updateConfiguration
+    - Implement WebSocket event handlers for real-time updates
+    - Add error handling
+    - _Requirements: 1.1-1.7, 2.1-2.7, 3.1-3.7, 6.1-6.7, 7.1-7.7, 10.1-10.7_
+  - [ ]\* 24.2 Write property test for store synchronization
+    - **Property 31: Frontend Store Synchronization**
+    - **Validates: Requirements 1.6, 10.2, 10.3**
+  - [ ]\* 24.3 Write unit tests for store actions
+    - Test CRUD operations with mocked API
+    - Test WebSocket event handlers
+    - Test error handling
+    - _Requirements: 1.1-1.7, 10.2_
+
+- [ ] 25. Frontend: Create Cache Dashboard Component
+  - [ ] 25.1 Create views/cache/dashboard.vue for main dashboard
+    - Display cache statistics in stat cards (total keys, memory usage, hit rate, miss rate)
+    - Display cache health indicator with status
+    - Display real-time metrics charts using ECharts
+    - Add auto-refresh toggle
+    - Show trend indicators for key metrics
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 15.4_
+  - [ ]\* 25.2 Write property test for dashboard real-time updates
+    - **Property 32: Dashboard Real-Time Updates**
+    - **Validates: Requirements 1.5, 10.2, 10.3**
+
+- [ ] 26. Frontend: Create Cache Keys List Component
+  - [ ] 26.1 Create views/cache/keys.vue for cache keys list
+    - Display paginated list of cache keys with metadata
+    - Add search functionality with pattern matching
+    - Add filtering by namespace, TTL range, size range
+    - Add sorting by name, size, TTL, last accessed
+    - Show key selection checkboxes for bulk operations
+    - Add bulk action buttons (delete, invalidate, update TTL)
+    - Display warning when key count exceeds limit
+    - Persist filter preferences to local storage
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 17.1, 17.2, 17.3, 17.4, 17.5, 18.1_
+  - [ ]\* 26.2 Write property test for key filtering
+    - **Property 33: Cache Key Filtering**
+    - **Validates: Requirements 2.4, 17.2, 17.3**
+  - [ ]\* 26.3 Write property test for filter persistence
+    - **Property 34: Filter Persistence**
+    - **Validates: Requirements 17.5**
+
+- [ ] 27. Frontend: Create Cache Key Detail Component
+  - [ ] 27.1 Create views/cache/key-detail.vue for key details
+    - Display full cache entry information (key, value, TTL, size, timestamps)
+    - Format JSON, strings, and binary data appropriately
+    - Add truncation for large values with expand option
+    - Add copy-to-clipboard button for value
+    - Add action buttons (update TTL, invalidate, delete)
+    - Show hex dump or base64 for binary data
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 14.1_
+  - [ ]\* 27.2 Write property test for value formatting
+    - **Property 35: Cache Value Formatting**
+    - **Validates: Requirements 3.2, 3.3, 3.7**
+
+- [ ] 28. Frontend: Create Cache Analytics Component
+  - [ ] 28.1 Create views/cache/analytics.vue for analytics dashboard
+    - Display hit rate time-series chart using ECharts
+    - Display memory usage time-series chart
+    - Display top accessed keys table with hit counts
+    - Display namespace statistics breakdown
+    - Add time range selector (1h, 6h, 24h, 7d, 30d)
+    - Add export button (CSV/JSON)
+    - Show warning when hit rate drops below threshold
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 11.1, 11.2, 11.3, 11.4, 11.5, 11.7_
+  - [ ]\* 28.2 Write property test for analytics time range filtering
+    - **Property 36: Analytics Time Range Filtering**
+    - **Validates: Requirements 6.4, 11.6**
+
+- [ ] 29. Frontend: Create Cache Configuration Component
+  - [ ] 29.1 Create views/cache/configuration.vue for configuration management
+    - Display current configuration (default TTL, max memory, eviction policy)
+    - Implement configuration form with validation
+    - Add eviction policy selector with descriptions
+    - Show recommended ranges for values
+    - Add save and reset buttons
+    - Display confirmation dialog for changes
+    - Show validation errors inline
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.7, 8.1, 8.2, 8.3, 8.4_
+  - [ ]\* 29.2 Write property test for configuration validation
+    - **Property 37: Configuration Validation**
+    - **Validates: Requirements 7.2, 7.5**
+
+- [ ] 30. Frontend: Create Cache Namespace Component
+  - [ ] 30.1 Create components/cache/CacheNamespaces.vue
+    - Display namespace list with statistics (key count, size, hit rate)
+    - Show namespace tree view or grouped list
+    - Add namespace selection for filtering keys
+    - Add namespace invalidation button with confirmation
+    - Display memory usage breakdown by namespace
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 13.5_
+  - [ ]\* 30.2 Write property test for namespace operations
+    - **Property 38: Namespace Operations**
+    - **Validates: Requirements 12.1, 12.2, 12.3, 12.4**
+
+- [ ] 31. Frontend: Create Cache Memory Monitoring Component
+  - [ ] 31.1 Create components/cache/MemoryMonitor.vue
+    - Display memory usage gauge chart with current usage and capacity
+    - Show memory metrics (used, peak, fragmentation ratio, evicted keys)
+    - Display memory usage breakdown by namespace
+    - Display memory usage time-series chart
+    - Show warning alert when usage exceeds threshold
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6_
+  - [ ]\* 31.2 Write property test for memory threshold alerts
+    - **Property 39: Memory Threshold Alerts**
+    - **Validates: Requirements 13.4**
+
+- [ ] 32. Frontend: Create Cache Warming Component
+  - [ ] 32.1 Create views/cache/warming.vue for warming strategies
+    - Display list of warming strategies with status
+    - Show strategy details (name, schedule, last run, success rate)
+    - Add create strategy button and form
+    - Add manual trigger button for each strategy
+    - Display warming execution results
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
+  - [ ]\* 32.2 Write property test for warming strategy CRUD
+    - **Property 40: Warming Strategy CRUD**
+    - **Validates: Requirements 9.1, 9.2, 9.3, 9.4**
+
+- [ ] 33. Frontend: Create Cache Health Component
+  - [ ] 33.1 Create components/cache/CacheHealth.vue
+    - Display health status indicator (healthy, degraded, unhealthy)
+    - Show health check details (connection status, response time, error rate)
+    - Display specific issues and recommended actions
+    - Update health status in real-time via WebSocket
+    - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
+  - [ ]\* 33.2 Write property test for health status updates
+    - **Property 41: Health Status Updates**
+    - **Validates: Requirements 15.3, 15.4**
+
+- [ ] 34. Frontend: Create Cache Audit Trail Component
+  - [ ] 34.1 Create views/cache/audit.vue for audit trail
+    - Display chronological list of cache operations
+    - Show timestamp, user, operation type, affected keys, result
+    - Add filtering by user, operation type, key pattern, date range
+    - Add export button (CSV/JSON)
+    - Implement pagination for large audit logs
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7_
+  - [ ]\* 34.2 Write property test for audit trail filtering
+    - **Property 42: Audit Trail Filtering**
+    - **Validates: Requirements 16.3, 16.4**
+
+- [ ] 35. Frontend: Create Cache Export/Import Component
+  - [ ] 35.1 Create components/cache/CacheExportImport.vue
+    - Implement export form with filtering options
+    - Implement import form with file upload
+    - Add conflict resolution strategy selector
+    - Display export/import progress indicator
+    - Show summary of imported/skipped/failed entries
+    - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5, 19.6, 19.7_
+  - [ ]\* 35.2 Write property test for export/import operations
+    - **Property 43: Export/Import Operations**
+    - **Validates: Requirements 19.1, 19.4, 19.5, 19.7**
+
+- [ ] 36. Frontend: Create Cache Recommendations Component
+  - [ ] 36.1 Create components/cache/CacheRecommendations.vue
+    - Display list of recommendations with priority levels
+    - Show estimated impact for each recommendation
+    - Add apply button to implement recommendations
+    - Display recommendation effectiveness tracking
+    - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7_
+  - [ ]\* 36.2 Write property test for recommendation application
+    - **Property 44: Recommendation Application**
+    - **Validates: Requirements 20.5, 20.6, 20.7**
+
+- [ ] 37. Frontend: Create Bulk Operations Component
+  - [ ] 37.1 Create components/cache/BulkOperations.vue
+    - Display selected keys count
+    - Add bulk action buttons (delete, invalidate, update TTL)
+    - Show confirmation dialog with affected keys count
+    - Display progress indicator during bulk operations
+    - Show summary of successful and failed operations
+    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5, 18.6, 18.7_
+  - [ ]\* 37.2 Write property test for bulk operations
+    - **Property 45: Bulk Operations**
+    - **Validates: Requirements 18.1, 18.2, 18.3, 18.4, 18.6**
+
+- [ ] 38. Frontend: Create TTL Management Component
+  - [ ] 38.1 Create components/cache/TtlManager.vue
+    - Display remaining TTL with visual indicators
+    - Highlight keys about to expire with warning color
+    - Add TTL update form with preset options (1h, 1d, 1w, never)
+    - Support bulk TTL updates
+    - Show "Never expires" for keys without TTL
+    - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7_
+  - [ ]\* 38.2 Write property test for TTL updates
+    - **Property 46: TTL Updates**
+    - **Validates: Requirements 14.1, 14.4, 14.5, 14.6**
+
+- [ ] 39. Frontend: Integrate WebSocket with Store
+  - [ ] 39.1 Connect WebSocket client to Pinia store
+    - Initialize WebSocket connection on app mount
+    - Subscribe to tenant room
+    - Wire event handlers to store actions
+    - Handle connection state in UI (connected/disconnected indicator)
+    - Sync state on reconnection
+    - _Requirements: 10.1, 10.2, 10.3, 10.5, 10.6, 10.7_
+
+- [ ] 40. Frontend: Add Router Configuration
+  - [ ] 40.1 Add cache routes to router/routes.ts
+    - /cache/dashboard - Cache dashboard
+    - /cache/keys - Cache keys list
+    - /cache/keys/:key - Cache key detail
+    - /cache/analytics - Cache analytics
+    - /cache/configuration - Cache configuration
+    - /cache/warming - Cache warming strategies
+    - /cache/audit - Cache audit trail
+    - Add route guards for permissions
+    - _Requirements: All_
+
+- [ ] 41. Checkpoint - Frontend Core Complete
+  - Ensure all frontend tests pass
+  - Verify all components render correctly
+  - Test WebSocket connection and real-time updates
+  - Test CRUD operations end-to-end
+  - Ask the user if questions arise
+
+- [ ] 42. Integration: End-to-End Testing
+  - [ ] 42.1 Write E2E test for cache key lifecycle
+    - Create cache entry via backend
+    - Verify entry appears in keys list
+    - View key detail
+    - Update TTL
+    - Invalidate key
+    - Verify key is removed
+    - Verify audit trail recorded
+    - _Requirements: 2.1, 3.1, 4.1, 14.1, 16.1_
+  - [ ] 42.2 Write E2E test for real-time metrics updates
+    - Open dashboard
+    - Trigger cache operations in backend
+    - Verify statistics update in real-time via WebSocket
+    - Verify charts update with new data
+    - _Requirements: 1.5, 10.2, 10.3_
+  - [ ] 42.3 Write E2E test for bulk operations
+    - Select multiple keys
+    - Perform bulk invalidation
+    - Verify confirmation dialog
+    - Verify all keys invalidated
+    - Verify summary displayed
+    - _Requirements: 18.1, 18.2, 18.3, 18.4_
+  - [ ] 42.4 Write E2E test for configuration management
+    - View current configuration
+    - Update eviction policy
+    - Verify configuration saved
+    - Verify audit trail recorded
+    - _Requirements: 7.1, 7.2, 8.1, 8.2, 16.1_
+
+- [ ] 43. Integration: Performance Testing
+  - [ ] 43.1 Test key list performance with large datasets
+    - Create 100,000 cache keys
+    - Verify list loads within 2 seconds
+    - Verify filtering and pagination work smoothly
+    - Verify search with patterns performs well
+    - _Requirements: 2.1, 2.2, 2.6, 17.7_
+  - [ ] 43.2 Test WebSocket performance with many concurrent connections
+    - Simulate 100 concurrent WebSocket connections
+    - Trigger cache metric updates
+    - Verify all clients receive updates within 1 second
+    - Verify throttling prevents overwhelming clients
+    - _Requirements: 10.7_
+  - [ ] 43.3 Test bulk operations performance
+    - Select 10,000 keys
+    - Perform bulk invalidation
+    - Verify operation completes within 30 seconds
+    - Verify batching prevents timeout
+    - _Requirements: 18.3_
+
+- [ ] 44. Integration: Security Testing
+  - [ ] 44.1 Test permission enforcement
+    - Test with user having cache:read only
+    - Verify create/edit/delete buttons are hidden
+    - Verify API returns 403 for unauthorized operations
+    - Test with user having full cache permissions
+    - Verify all operations work correctly
+    - _Requirements: All (implicit permission requirements)_
+  - [ ] 44.2 Test tenant isolation
+    - Create cache entries for tenant A
+    - Login as tenant B user
+    - Verify tenant B cannot see tenant A's cache entries
+    - Verify WebSocket events are tenant-isolated
+    - _Requirements: 10.6_
+  - [ ] 44.3 Test protected key patterns
+    - Attempt to delete protected key pattern
+    - Verify operation is rejected
+    - Verify appropriate error message displayed
+    - _Requirements: 5.6_
+
+- [ ] 45. Documentation: Update API Documentation
+  - [ ] 45.1 Update backend OpenAPI specification
+    - Document all cache endpoints
+    - Include request/response examples
+    - Document error responses
+    - Document WebSocket events
+    - _Requirements: All_
+  - [ ] 45.2 Create frontend component documentation
+    - Document all cache components
+    - Include usage examples
+    - Document props and events
+    - Document store structure and actions
+    - _Requirements: All_
+
+- [ ] 46. Documentation: Create User Guide
+  - [ ] 46.1 Write user guide for cache management
+    - How to view cache statistics and health
+    - How to search and filter cache keys
+    - How to inspect and manage cache entries
+    - How to configure cache settings
+    - How to use cache warming strategies
+    - How to view analytics and recommendations
+    - How to export and import cache data
+    - How to use the audit trail
+    - _Requirements: All_
+
+- [ ] 47. Final Checkpoint - Integration Complete
+  - Ensure all tests pass (unit, property, integration, E2E)
+  - Verify test coverage meets requirements (≥90%)
+  - Verify all features work end-to-end
+  - Verify documentation is complete
+  - Ask the user if questions arise
+
+## Notes
+
+- Tasks marked with `*` are optional property-based and unit tests that can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation and provide opportunities for user feedback
+- Property tests validate universal correctness properties across all inputs
+- Unit tests validate specific examples and edge cases
+- Integration and E2E tests validate complete workflows
+- The implementation follows a backend-first approach to ensure API stability before frontend development
+- WebSocket integration is implemented early to enable real-time features throughout development
+- Permission enforcement is tested at both backend (API) and frontend (UI) layers
+- Performance testing ensures the system handles large-scale cache operations efficiently

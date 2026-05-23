@@ -1,0 +1,38 @@
+// TFO Style Registry — DataTable Dark Mode
+// Dark theme table overrides for tree tables and fixed columns
+
+html.dark {
+  .table-content {
+    .n-data-table {
+      // Enhanced expanded row background in dark mode
+      .n-data-table-tr--expanded>.n-data-table-td {
+        background: rgba(34, 197, 94, 0.1) !important;
+      }
+
+      // Fixed columns dark mode
+      .n-data-table-th--fixed-right,
+      .n-data-table-th--fixed-left {
+        background: var(--k8s-table-header-bg, #1e293b) !important;
+      }
+
+      .n-data-table-td--fixed-right,
+      .n-data-table-td--fixed-left {
+        background: var(--card-color, #1e293b) !important;
+      }
+
+      .n-data-table-tr:nth-child(even) {
+        .n-data-table-td--fixed-right,
+        .n-data-table-td--fixed-left {
+          background: rgba(255, 255, 255, 0.02) !important;
+        }
+      }
+
+      .n-data-table-tr:hover {
+        .n-data-table-td--fixed-right,
+        .n-data-table-td--fixed-left {
+          background: rgba(255, 255, 255, 0.05) !important;
+        }
+      }
+    }
+  }
+}

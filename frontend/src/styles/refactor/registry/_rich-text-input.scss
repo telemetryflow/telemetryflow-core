@@ -1,0 +1,226 @@
+// TFO Style Registry — RichTextInput
+// Extracted from: components/llm/RichTextInput.vue
+// Contains: editor, toolbar, formatting buttons, content area, preview
+
+// =============================================================================
+// Rich Text Input Container
+// =============================================================================
+
+.rich-text-input {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+// =============================================================================
+// Toolbar
+// =============================================================================
+
+.toolbar {
+  background: #f8fafc;
+}
+
+// =============================================================================
+// Input Textarea
+// =============================================================================
+
+.input-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  background: transparent;
+  color: inherit;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--resizable {
+    resize: vertical;
+    overflow-y: auto;
+  }
+}
+
+// =============================================================================
+// Preview Container
+// =============================================================================
+
+.preview-container {
+  background: #f9fafb;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.preview-content {
+  font-size: 13px;
+  line-height: 1.5;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #f1f5f9;
+      font-weight: 600;
+    }
+  }
+
+  code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+
+    code {
+      background: transparent;
+      padding: 0;
+    }
+  }
+
+  blockquote {
+    border-left: 3px solid #6366f1;
+    padding-left: 12px;
+    margin: 8px 0;
+    color: #64748b;
+  }
+
+  ul, ol {
+    padding-left: 20px;
+    margin: 8px 0;
+  }
+
+  h1, h2, h3 {
+    margin: 8px 0;
+    font-weight: 600;
+  }
+
+  a {
+    color: #6366f1;
+    text-decoration: underline;
+  }
+}
+
+// =============================================================================
+// Dark Mode
+// =============================================================================
+
+html.dark {
+  .rich-text-input {
+    border-color: #4f46e5 !important;
+    background: #1e293b !important;
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3);
+  }
+
+  .toolbar {
+    background: #0f172a !important;
+    border-bottom: 1px solid #334155 !important;
+
+    // Toolbar buttons styling
+    .n-button {
+      color: #94a3b8 !important;
+
+      &:hover:not(:disabled) {
+        color: #e2e8f0 !important;
+        background: rgba(99, 102, 241, 0.2) !important;
+      }
+    }
+
+    // Dividers
+    .n-divider {
+      background-color: #334155 !important;
+    }
+  }
+
+  .input-textarea {
+    color: #f1f5f9 !important;
+    background: #1e293b !important;
+
+    &::placeholder {
+      color: #64748b !important;
+    }
+  }
+
+  .input-container {
+    background: #1e293b !important;
+  }
+
+  .preview-container {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+  }
+
+  .preview-content {
+    color: #e2e8f0;
+
+    table {
+      th, td {
+        border-color: #475569;
+      }
+
+      th {
+        background: #334155;
+      }
+    }
+
+    code {
+      background: #475569;
+    }
+
+    blockquote {
+      color: #94a3b8;
+    }
+  }
+
+  // Table popover styling
+  .n-popover {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+
+    .n-button--primary-type {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+      border: none !important;
+      color: #ffffff !important;
+
+      .n-button__content {
+        color: #ffffff !important;
+      }
+
+      &:hover {
+        background: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%) !important;
+      }
+    }
+  }
+
+  // Toolbar icon buttons
+  .toolbar .n-button {
+    .n-icon {
+      color: inherit !important;
+    }
+  }
+}

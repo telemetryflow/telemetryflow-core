@@ -1,0 +1,13 @@
+// TFO Style Registry — Report Tables Section
+// Section wrapper, tables row layout
+// Source: ReportTablesSection.vue
+
+.report-tables-section {
+  margin-bottom: 16px;
+}
+
+.tables-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

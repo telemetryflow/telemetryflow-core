@@ -1,196 +1,123 @@
-# Project Structure & Organization
+# Project Structure
 
-## Root Directory Structure
-
-```
-telemetryflow-core/
-├── src/                    # Source code (TypeScript)
-├── config/                 # Service configurations (ClickHouse, PostgreSQL, OTEL, etc.)
-├── docs/                   # Documentation and guides
-├── scripts/                # Utility scripts (bootstrap, database, secrets)
-├── coverage/               # Test coverage reports
-├── logs/                   # Application logs (development)
-├── dist/                   # Compiled JavaScript (production build)
-└── node_modules/           # Dependencies (managed by pnpm)
-```
-
-## Source Code Architecture (src/)
-
-The codebase follows Domain-Driven Design (DDD) with Clean Architecture:
+## Root Layout
 
 ```
-src/
-├── main.ts                 # Application entry point with OpenTelemetry bootstrap
-├── app.module.ts           # Root NestJS module with global configuration
-├── app.controller.ts       # Root controller (basic endpoints)
-│
-├── shared/                 # Shared domain primitives
-│   ├── domain/             # Base classes for DDD
-│   │   ├── Entity.ts       # Base entity class
-│   │   ├── ValueObject.ts  # Base value object class
-│   │   ├── AggregateRoot.ts # Base aggregate root
-│   │   └── DomainEvent.ts  # Base domain event
-│   └── clickhouse/         # Shared ClickHouse service
-│
-├── logger/                 # Winston logging module
-│   ├── config/             # Logger configuration
-│   ├── transports/         # Custom transports (ClickHouse, etc.)
-│   ├── middleware/         # Request context middleware
-│   ├── decorators/         # @Log() decorator
-│   └── logger.service.ts   # Main logger service
-│
-├── health/                 # Health check module
-├── otel/                   # OpenTelemetry configuration
-├── database/               # Database configuration and migrations
-│   ├── config/             # Database connection config
-│   ├── postgres/           # PostgreSQL migrations and seeds
-│   ├── clickhouse/         # ClickHouse migrations and seeds
-│   └── typeorm.config.ts   # TypeORM configuration
-│
-└── modules/                # Business modules
-    ├── audit/              # Audit logging module
-    ├── auth/               # Authentication guards and decorators
-    ├── cache/              # Caching service
-    └── iam/                # Identity and Access Management (main module)
+telemetryflow-platform/
+├── backend/          # NestJS backend (@telemetryflow/backend)
+├── frontend/         # Vue 3 frontend (@telemetryflow/viz)
+├── config/           # Infrastructure configs (nginx, clickhouse, otel, postgres, certbot)
+├── docs/             # Architecture docs, API docs, Postman collections, guides
+├── scripts/          # Dev/CI shell scripts and utilities
+├── _infra/           # Helm charts, Ansible playbooks, ingress configs
+├── .kiro/            # Kiro specs and steering files
+├── turbo.json        # Turborepo task pipeline
+├── pnpm-workspace.yaml
+└── Makefile          # Unified dev/CI commands
 ```
 
-## IAM Module Structure (DDD Implementation)
-
-The IAM module follows strict DDD layering:
+## Backend (`backend/src/`)
 
 ```
-src/modules/iam/
-├── domain/                 # Business logic layer
-│   ├── aggregates/         # Domain aggregates (User, Role, Permission, etc.)
-│   ├── entities/           # Domain entities (MFASettings, UserProfile)
-│   ├── value-objects/      # Value objects (UserId, Email, RoleId)
-│   ├── events/             # Domain events (UserCreated, RoleAssigned)
-│   ├── repositories/       # Repository interfaces
-│   └── services/           # Domain services
-│
-├── application/            # Use cases layer (CQRS)
-│   ├── commands/           # Write operations (33 commands)
-│   ├── queries/            # Read operations (18 queries)
-│   ├── handlers/           # Command/Query handlers (51 total)
-│   └── dto/                # Application DTOs
-│
-├── infrastructure/         # Technical implementation
-│   ├── persistence/        # TypeORM entities and repositories
-│   │   ├── entities/       # Database entities (*.entity.ts)
-│   │   └── repositories/   # Repository implementations
-│   ├── messaging/          # Event processors
-│   └── processors/         # Background job processors
-│
-├── presentation/           # API layer
-│   ├── controllers/        # REST controllers (9 controllers)
-│   ├── dto/                # Request/Response DTOs
-│   ├── guards/             # Authorization guards
-│   └── decorators/         # Custom decorators
-│
-├── __tests__/              # Module-specific tests
-├── docs/                   # Module documentation
-└── iam.module.ts           # NestJS module configuration
+backend/src/
+├── main.ts                  # App entry point (bootstraps NestJS + OTEL)
+├── app.module.ts            # Root module
+├── shared/
+│   ├── domain/              # Base classes: Entity, ValueObject, AggregateRoot, DomainEvent
+│   ├── dto/                 # Shared DTOs (pagination, etc.)
+│   ├── errors/              # Shared error types
+│   ├── filters/             # Global exception filters
+│   ├── cache/               # Cache utilities
+│   └── clickhouse/          # Shared ClickHouse client
+├── database/
+│   ├── postgres/            # TypeORM config, migrations, seeds, migration-runner
+│   └── clickhouse/          # ClickHouse migrations, seeds, migration-runner
+├── logger/                  # Winston logger module with OTEL transport
+├── otel/                    # OpenTelemetry tracing setup
+├── health/                  # Health check endpoint
+└── modules/
+    ├── auth/                # JWT auth (login, refresh, logout, me)
+    ├── iam/                 # IAM module — full DDD/CQRS (see below)
+    ├── audit/               # Audit logging (ClickHouse)
+    ├── cache/               # Caching layer
+    ├── telemetry/           # Telemetry ingestion/query
+    ├── monitoring/          # Uptime monitoring
+    ├── alerting/            # Alert rules and notifications
+    ├── dashboard/           # Dashboard management
+    ├── query/               # Query engine (TFQL)
+    ├── reporting/           # Reports
+    ├── notification/        # Notification channels
+    ├── api-keys/            # API key management
+    ├── sso/                 # SSO providers
+    ├── subscription/        # Subscription management
+    ├── retention/           # Data retention policies
+    ├── tenancy/             # Tenancy management
+    └── llm/                 # LLM/AI integration
 ```
 
-## Configuration Structure (config/)
-
-Service configurations are organized by technology:
+### IAM Module DDD Structure (canonical pattern for all modules)
 
 ```
-config/
-├── clickhouse/             # ClickHouse configuration
-│   ├── config.xml          # Server settings
-│   ├── users.xml           # User accounts
-│   └── migrations/         # Schema migrations
-├── postgresql/             # PostgreSQL configuration
-│   └── postgresql.conf     # Server settings
-├── otel/                   # OpenTelemetry Collector
-│   ├── otel-collector-config.yaml
-│   └── examples/           # Configuration examples
-├── prometheus/             # Metrics collection
-│   └── prometheus.yml
-└── grafana/                # Dashboards and datasources
-    ├── dashboards/
-    └── provisioning/
+modules/iam/
+├── domain/
+│   ├── aggregates/          # User, Role, Permission, Tenant, Organization, Workspace, Group, Region
+│   ├── entities/            # MFASettings, UserProfile
+│   ├── value-objects/       # UserId, Email, RoleId, etc.
+│   ├── events/              # Domain events (UserCreated, RoleAssigned, etc.)
+│   ├── repositories/        # Repository interfaces (ports)
+│   └── services/            # Domain services
+├── application/
+│   ├── commands/            # Write operation definitions
+│   ├── queries/             # Read operation definitions
+│   ├── handlers/            # Command + Query handlers
+│   └── dto/                 # Application-layer DTOs
+├── infrastructure/
+│   ├── persistence/         # TypeORM entities + repository implementations
+│   └── messaging/           # Event processors
+└── presentation/
+    ├── controllers/         # REST controllers
+    ├── dto/                 # Request/Response DTOs (with Swagger decorators)
+    ├── guards/              # Authorization guards
+    └── decorators/          # Custom metadata decorators
 ```
 
-## Naming Conventions
+Tests live in `modules/iam/__tests__/` — unit tests named `<Entity>.spec.ts`, controller tests `<Entity>.controller.spec.ts`.
 
-### Files and Directories
-- **Modules**: PascalCase (e.g., `IAMModule`, `LoggerModule`)
-- **Controllers**: `{Entity}.controller.ts` (e.g., `User.controller.ts`)
-- **Services**: `{Entity}.service.ts` (e.g., `logger.service.ts`)
-- **Entities**: `{Entity}.entity.ts` or `{Entity}Entity.ts`
-- **Repositories**: `{Entity}Repository.ts`
-- **Handlers**: `{Action}{Entity}.handler.ts` (e.g., `CreateUser.handler.ts`)
-- **DTOs**: `{Action}{Entity}.dto.ts` or descriptive names
-- **Tests**: `{Entity}.spec.ts` or `{Entity}.e2e.spec.ts`
-
-### Code Conventions
-- **Interfaces**: Prefix with `I` (e.g., `IUserRepository`)
-- **Domain Events**: Suffix with `Event` (e.g., `UserCreatedEvent`)
-- **Value Objects**: Descriptive names (e.g., `UserId`, `Email`)
-- **Commands**: Action-based (e.g., `CreateUserCommand`)
-- **Queries**: Query-based (e.g., `GetUserQuery`)
-
-## Database Structure
-
-### PostgreSQL (IAM Data)
-- **Migrations**: `src/database/postgres/migrations/`
-- **Seeds**: `src/database/postgres/seeds/`
-- **Naming**: Timestamp prefix (e.g., `1704240000001-CreateUsersTable.ts`)
-
-### ClickHouse (Analytics)
-- **Migrations**: `src/database/clickhouse/migrations/`
-- **Seeds**: `src/database/clickhouse/seeds/`
-- **Tables**: `audit_logs`, `logs`, `metrics`, `traces`
-
-## Testing Structure
-
-### Unit Tests
-- **Location**: Alongside source files (`*.spec.ts`)
-- **Coverage**: 90% threshold for all metrics
-- **Mocking**: Jest mocks for external dependencies
-
-### Integration Tests
-- **Location**: `__tests__/` directories within modules
-- **Naming**: `{Entity}.e2e.spec.ts`
-- **Database**: Test database with cleanup
-
-### API Tests (BDD)
-- **Location**: `docs/postman/`
-- **Format**: Postman collections with Newman runner
-- **Scenarios**: 33 BDD test scenarios with Given-When-Then
-
-## Documentation Structure
+## Frontend (`frontend/src/`)
 
 ```
-docs/
-├── references/             # Technical references and guides
-├── postman/                # API testing collections
-├── winston-logger/         # Logger documentation
-├── dependabot/             # Dependency management
-└── assets/                 # Images and diagrams
+frontend/src/
+├── api/              # Axios API clients (one file per domain: auth.ts, iam.ts, users.ts, etc.)
+├── components/       # Reusable Vue components (auth/, charts/, common/, dashboard/, etc.)
+├── composables/      # Vue composables (useXxx.ts pattern)
+├── config/           # App config (collector.ts, theme.ts, whitelabel.ts)
+├── constants/        # Static registries (graph-registry, datatable-registry, stat-panel-registry)
+├── directives/       # Custom Vue directives (v-permission)
+├── layouts/          # App shell (MainLayout, SideNav, TopBar)
+├── mocks/            # Mock data for development (TELEMETRYFLOW_USE_MOCK=true)
+├── router/           # Vue Router (routes.ts + guards)
+├── store/            # Pinia stores (auth.ts, metrics.ts, logs.ts, traces.ts, etc.)
+├── streaming/        # WebSocket + SSE streaming handlers
+├── styles/           # SCSS global styles and variables
+├── types/            # TypeScript type definitions (one file per domain)
+├── utils/            # Pure utility functions
+└── views/            # Page-level Vue components organized by feature
+    ├── auth/         # Login page
+    ├── iam/          # IAM management (users, roles, permissions, tenants, etc.)
+    ├── telemetry/    # Metrics, logs, traces views
+    ├── dashboards/   # Dashboard views
+    ├── alerts/       # Alerting views
+    ├── monitoring/   # Uptime monitoring
+    └── ...
 ```
 
-## Import Path Conventions
+## Key Conventions
 
-- **Relative imports**: For files within the same module
-- **Absolute imports**: From `src/` root for cross-module dependencies
-- **Barrel exports**: Use `index.ts` files for clean imports
-- **Interface imports**: Always import interfaces, not implementations
-
-## Module Dependencies
-
-- **Shared modules**: Can be imported by any module
-- **Domain layer**: No dependencies on other layers
-- **Application layer**: Depends only on domain
-- **Infrastructure layer**: Implements domain interfaces
-- **Presentation layer**: Depends on application layer
-
-## Environment-Specific Files
-
-- **Development**: `.env` (local configuration)
-- **Production**: Environment variables or secrets management
-- **Docker**: `docker-compose.yml` with profiles
-- **CI/CD**: GitHub Actions workflows in `.github/`
+- **Path alias**: `@/` maps to `frontend/src/`
+- **API clients**: Each domain has its own file in `src/api/`. IAM calls use JWT bearer token via Axios interceptor in `src/api/iam.ts`.
+- **Composables**: Named `useXxx.ts`. Mock variants named `useXxx.mock.ts`.
+- **Stores**: One Pinia store per domain in `src/store/`.
+- **Tests (backend)**: Jest, co-located in `__tests__/` within the module. Property-based tests use `fast-check`.
+- **Tests (frontend)**: Vitest, files named `*.spec.ts` or `*.test.ts` inside `__tests__/` subdirectories.
+- **Migrations**: Postgres migrations in `backend/src/database/postgres/`, ClickHouse in `backend/src/database/clickhouse/`.
+- **Specs**: Kiro specs live in `.kiro/specs/{feature-name}/` with `requirements.md`, `design.md`, `tasks.md`.

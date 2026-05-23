@@ -1,0 +1,51 @@
+// TFO Style Registry — Bar Chart
+// Wrapper, no-data overlay, time-range badge
+// Source: BarChart.vue
+
+.bar-chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.no-data-overlay {
+  position: absolute;
+  // Center within chart canvas area (accounting for ~50px bottom space: zoom + legend)
+  top: calc(50% - 25px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--n-text-color-3, #9ca3af);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.no-data-icon {
+  opacity: 0.5;
+}
+
+.no-data-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.time-range-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  z-index: 100;
+}

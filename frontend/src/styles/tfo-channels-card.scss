@@ -1,0 +1,57 @@
+// Shared Notification Channels Card styles
+// Used in alert detail drawers, rule detail panels, and other notification channel displays
+// Import this file in any component that needs to display notification channel badges
+
+@import './tfo-variables.scss';
+
+.channels-card {
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.channels-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--n-text-color);
+  background: rgba(100, 116, 139, 0.1);
+  border-bottom: 1px solid var(--k8s-border-color);
+
+  :root.dark & {
+    background: rgba(51, 65, 85, 0.4);
+  }
+
+  :deep(svg) {
+    font-size: 16px;
+    color: var(--n-text-color-3);
+  }
+}
+
+.channels-card-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+}
+
+.channels-card-empty {
+  font-size: 0.8125rem;
+  color: var(--n-text-color-3);
+}
+
+.channel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}

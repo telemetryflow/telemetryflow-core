@@ -1,0 +1,476 @@
+# Implementation Plan: Frontend-Backend LLM Integration
+
+## Overview
+
+This implementation plan breaks down the LLM integration feature into discrete, incremental coding tasks. Each task builds on previous work and includes testing to validate functionality early. The plan follows the DDD/CQRS architecture on the backend and Vue 3 Composition API patterns on the frontend.
+
+## Tasks
+
+- [ ] 1. Set up backend domain layer and core interfaces
+  - Create domain aggregates (LLMQuery, Conversation, PromptTemplate, LLMProvider)
+  - Define value objects (TokenUsage, ModelConfiguration)
+  - Create domain events (QuerySubmitted, ResponseReceived, ConversationCreated)
+  - Define repository interfaces
+  - _Requirements: 1.1, 3.1, 5.1, 9.1_
+
+- [ ]\* 1.1 Write property test for domain aggregates
+  - **Property 1: LLM Query Submission and Persistence**
+  - **Validates: Requirements 1.1, 1.2, 1.3, 1.4**
+
+- [ ] 2. Implement backend infrastructure layer
+  - [ ] 2.1 Create TypeORM entities for PostgreSQL
+    - LLM providers, models, conversations, messages, templates, shared conversations, function registry
+    - _Requirements: 9.1, 2.1, 5.1, 3.1, 16.1, 17.3_
+  - [ ] 2.2 Implement repository implementations
+    - Provider repository, model repository, conversation repository, template repository
+    - _Requirements: 9.1, 2.1, 5.1, 3.1_
+  - [ ] 2.3 Create ClickHouse entities and repositories
+    - Query history, token usage aggregates, cost analytics, function executions, response cache
+    - _Requirements: 6.1, 7.1, 8.1, 17.7, 15.1_
+  - [ ]\* 2.4 Write integration tests for repositories
+    - Test CRUD operations with real database
+    - _Requirements: 9.1, 5.1, 3.1_
+
+- [ ] 3. Implement LLM provider adapters
+  - [ ] 3.1 Create base provider interface and abstract class
+    - Define common methods (query, stream, test, getModels)
+    - _Requirements: 9.1, 1.1, 4.1_
+  - [ ] 3.2 Implement OpenAI provider adapter
+    - Support completion and chat endpoints
+    - Support streaming
+    - Support function calling
+    - Support vision (image inputs)
+    - _Requirements: 9.2, 1.7, 4.1, 17.1, 18.1_
+  - [ ] 3.3 Implement Anthropic provider adapter
+    - Support Claude models with streaming
+    - _Requirements: 9.2, 4.1_
+  - [ ] 3.4 Implement Google AI provider adapter
+    - Support Gemini models
+    - _Requirements: 9.2_
+  - [ ] 3.5 Implement Azure OpenAI provider adapter
+    - Support Azure-specific authentication and endpoints
+    - _Requirements: 9.2_
+  - [ ]\* 3.6 Write unit tests for provider adapters
+    - Test with mocked external APIs
+    - Test error handling and retries
+    - _Requirements: 9.3, 1.6_
+
+- [ ] 4. Implement backend application layer (CQRS)
+  - [ ] 4.1 Create commands and command handlers
+    - SubmitQuery, CreatePromptTemplate, UpdatePromptTemplate, DeletePromptTemplate
+    - ConfigureProvider, CreateConversation, ShareConversation
+    - _Requirements: 1.1, 3.1, 3.3, 3.4, 9.1, 5.1, 16.1_
+  - [ ] 4.2 Create queries and query handlers
+    - GetQueryHistory, ListPromptTemplates, GetConversation, GetTokenUsage
+    - GetCostAnalytics, ListProviders
+    - _Requirements: 6.1, 3.2, 5.4, 7.2, 8.2, 9.1_
+  - [ ] 4.3 Implement streaming service
+    - Handle streaming connections to providers
+    - Emit chunks via WebSocket
+    - Handle cancellation
+    - _Requirements: 4.1, 4.2, 4.7_
+  - [ ] 4.4 Implement cache service
+    - Query hash generation
+    - Cache lookup and storage
+    - TTL and LRU eviction
+    - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.7_
+  - [ ] 4.5 Implement rate limiting service
+    - Per-user and per-tenant rate limits
+    - Sliding window algorithm
+    - Violation tracking
+    - _Requirements: 14.1, 14.2, 14.3, 14.5, 14.7_
+  - [ ]\* 4.6 Write property tests for command handlers
+    - **Property 7: Prompt Template CRUD Operations**
+    - **Validates: Requirements 3.1, 3.2, 3.3, 3.4**
+  - [ ]\* 4.7 Write property tests for streaming service
+    - **Property 10: Response Streaming**
+    - **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 10.2, 10.3**
+  - [ ]\* 4.8 Write property tests for cache service
+    - **Property 27: Response Caching**
+    - **Validates: Requirements 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7**
+  - [ ]\* 4.9 Write property tests for rate limiting service
+    - **Property 26: Rate Limiting Enforcement**
+    - **Validates: Requirements 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7**
+
+- [ ] 5. Checkpoint - Ensure backend core functionality works
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 6. Implement backend presentation layer (REST controllers)
+  - [ ] 6.1 Create LLM queries controller
+    - POST /api/llm/queries (submit query)
+    - GET /api/llm/queries/history (get history with pagination and filtering)
+    - GET /api/llm/queries/:id (get single query)
+    - POST /api/llm/queries/:id/cancel (cancel streaming query)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 1.1, 6.1, 1.3, 4.7, 13.1_
+  - [ ] 6.2 Create prompt templates controller
+    - POST /api/llm/templates (create template)
+    - GET /api/llm/templates (list templates with pagination)
+    - GET /api/llm/templates/:id (get single template)
+    - PUT /api/llm/templates/:id (update template)
+    - DELETE /api/llm/templates/:id (delete template)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 13.2_
+  - [ ] 6.3 Create conversations controller
+    - POST /api/llm/conversations (create conversation)
+    - GET /api/llm/conversations (list conversations)
+    - GET /api/llm/conversations/:id (get conversation with messages)
+    - DELETE /api/llm/conversations/:id (delete conversation)
+    - POST /api/llm/conversations/:id/share (share conversation)
+    - POST /api/llm/conversations/:id/export (export conversation)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 5.1, 5.4, 5.5, 16.1, 5.7, 13.1_
+  - [ ] 6.4 Create providers controller
+    - POST /api/llm/providers (add provider)
+    - GET /api/llm/providers (list providers)
+    - GET /api/llm/providers/:id (get provider)
+    - PUT /api/llm/providers/:id (update provider)
+    - DELETE /api/llm/providers/:id (delete provider)
+    - POST /api/llm/providers/:id/test (test provider)
+    - GET /api/llm/providers/:id/models (get provider models)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 9.1, 9.3, 9.4, 9.5, 2.1, 13.3_
+  - [ ] 6.5 Create analytics controller
+    - GET /api/llm/analytics/token-usage (get token usage)
+    - GET /api/llm/analytics/costs (get cost analytics)
+    - GET /api/llm/analytics/dashboard (get dashboard data)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 7.2, 8.2, 19.1, 13.4_
+  - [ ]\* 6.6 Write e2e tests for controllers
+    - Test all endpoints with real database
+    - Test permission enforcement
+    - Test error handling
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.6_
+
+- [ ] 7. Implement WebSocket gateway
+  - [ ] 7.1 Create LLM WebSocket gateway
+    - Handle subscribe/unsubscribe events
+    - Handle cancel events
+    - Emit response chunks
+    - Emit response complete/error events
+    - Emit token warnings
+    - Support room-based subscriptions for user isolation
+    - _Requirements: 4.2, 4.7, 10.2, 7.5, 10.6_
+  - [ ]\* 7.2 Write integration tests for WebSocket gateway
+    - Test streaming with real Socket.IO connections
+    - Test room isolation
+    - Test cancellation
+    - _Requirements: 10.6, 4.7_
+
+- [ ] 8. Implement token usage and cost tracking
+  - [ ] 8.1 Create token counting service
+    - Calculate tokens for prompts and responses
+    - Track usage per user, model, provider
+    - Emit warnings when thresholds exceeded
+    - _Requirements: 7.1, 7.4, 7.5_
+  - [ ] 8.2 Create cost calculation service
+    - Calculate costs based on token usage and model pricing
+    - Track costs by dimensions (user, model, provider, time)
+    - Trigger cost alerts
+    - _Requirements: 8.1, 8.4, 8.5_
+  - [ ] 8.3 Implement ClickHouse aggregation queries
+    - Token usage aggregates
+    - Cost analytics aggregates
+    - Dashboard metrics
+    - _Requirements: 7.2, 7.3, 8.2, 8.3, 19.1_
+  - [ ]\* 8.4 Write property tests for token and cost tracking
+    - **Property 16: Token Usage Tracking and Display**
+    - **Property 17: Cost Calculation and Monitoring**
+    - **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 7.7, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7**
+
+- [ ] 9. Implement context window management
+  - [ ] 9.1 Create context truncation service
+    - Calculate token counts for conversations
+    - Truncate older messages when approaching limits
+    - Preserve system messages and recent context
+    - Support configurable truncation strategies
+    - _Requirements: 5.3, 20.1, 20.2, 20.4, 20.7_
+  - [ ]\* 9.2 Write property tests for context management
+    - **Property 13: Conversation Context Management**
+    - **Property 32: Context Window Management**
+    - **Validates: Requirements 5.1, 5.2, 5.3, 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7**
+
+- [ ] 10. Checkpoint - Ensure backend is fully functional
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 11. Set up frontend project structure
+  - Create Pinia stores (llm, conversations, promptTemplates, providers)
+  - Create API client modules
+  - Create WebSocket client
+  - Create composables directory
+  - _Requirements: 1.2, 5.1, 3.2, 9.1_
+
+- [ ] 12. Implement frontend Pinia stores
+  - [ ] 12.1 Create LLM store
+    - State: queries, currentQuery, streamingResponse, loading, error
+    - Actions: submitQuery, fetchQueryHistory, cancelQuery
+    - WebSocket handlers: handleResponseChunk, handleResponseComplete, handleResponseError
+    - _Requirements: 1.1, 6.1, 4.7, 4.2, 4.3_
+  - [ ] 12.2 Create conversations store
+    - State: conversations, currentConversation, loading, error
+    - Actions: createConversation, fetchConversations, getConversation, deleteConversation, shareConversation, exportConversation
+    - _Requirements: 5.1, 5.4, 5.5, 16.1, 5.7_
+  - [ ] 12.3 Create prompt templates store
+    - State: templates, loading, error
+    - Actions: createTemplate, fetchTemplates, getTemplate, updateTemplate, deleteTemplate
+    - Getters: templatesByCategory
+    - _Requirements: 3.1, 3.2, 3.3, 3.4_
+  - [ ] 12.4 Create providers store
+    - State: providers, models, loading, error
+    - Actions: addProvider, fetchProviders, getProvider, updateProvider, deleteProvider, testProvider, fetchProviderModels
+    - Getters: activeProviders, availableModels
+    - _Requirements: 9.1, 9.3, 9.4, 9.5, 2.1_
+  - [ ]\* 12.5 Write unit tests for Pinia stores
+    - Test all actions with mocked API clients
+    - Test getters
+    - Test WebSocket handlers
+    - _Requirements: 1.1, 5.1, 3.1, 9.1_
+
+- [ ] 13. Implement frontend API clients
+  - [ ] 13.1 Create LLM API client
+    - submitQuery, getQueryHistory, getQuery, cancelQuery
+    - _Requirements: 1.1, 6.1, 4.7_
+  - [ ] 13.2 Create conversations API client
+    - create, list, get, delete, share, export
+    - _Requirements: 5.1, 5.4, 5.5, 16.1, 5.7_
+  - [ ] 13.3 Create prompt templates API client
+    - create, list, get, update, delete
+    - _Requirements: 3.1, 3.2, 3.3, 3.4_
+  - [ ] 13.4 Create providers API client
+    - add, list, get, update, delete, test, getModels
+    - _Requirements: 9.1, 9.3, 9.4, 9.5, 2.1_
+  - [ ] 13.5 Create analytics API client
+    - getTokenUsage, getCosts, getDashboard
+    - _Requirements: 7.2, 8.2, 19.1_
+  - [ ]\* 13.6 Write unit tests for API clients
+    - Test with mocked axios
+    - Test error handling
+    - _Requirements: 1.1, 5.1, 3.1, 9.1_
+
+- [ ] 14. Implement frontend WebSocket client
+  - [ ] 14.1 Create LLM WebSocket client class
+    - Connection management with reconnection logic
+    - Subscribe/unsubscribe methods
+    - Cancel query method
+    - Event listeners for chunks, complete, error, warnings
+    - _Requirements: 10.1, 10.4, 10.5, 4.7, 4.2_
+  - [ ]\* 14.2 Write property tests for WebSocket client
+    - **Property 19: WebSocket Connection Management**
+    - **Validates: Requirements 10.1, 10.4, 10.5, 10.6**
+
+- [ ] 15. Implement LLM query interface components
+  - [ ] 15.1 Create LLMQueryInterface.vue component
+    - Chat-style UI with message history
+    - Model selection dropdown
+    - Parameter configuration (temperature, max tokens, etc.)
+    - Query submission
+    - Real-time streaming display
+    - Markdown rendering with syntax highlighting
+    - Code block copy functionality
+    - _Requirements: 1.2, 2.2, 2.3, 1.1, 4.3, 12.1, 12.4_
+  - [ ] 15.2 Create QueryHistory.vue component
+    - List of past queries with pagination
+    - Filtering by date, model, provider
+    - Full-text search
+    - Export functionality
+    - _Requirements: 6.1, 6.3, 6.4, 6.7_
+  - [ ]\* 15.3 Write component tests for query interface
+    - Test query submission
+    - Test streaming display
+    - Test markdown rendering
+    - _Requirements: 1.1, 4.3, 12.1_
+
+- [ ] 16. Implement conversation management components
+  - [ ] 16.1 Create ConversationsList.vue component
+    - List of conversations with search
+    - Conversation preview
+    - Quick actions (delete, share, export)
+    - Create new conversation button
+    - _Requirements: 5.4, 16.1, 5.7_
+  - [ ] 16.2 Create ConversationDetail.vue component
+    - Full conversation view with messages
+    - Message branching support
+    - Context window indicator
+    - Export and share options
+    - _Requirements: 5.4, 5.6, 20.5, 5.7, 16.1_
+  - [ ]\* 16.3 Write component tests for conversation management
+    - Test conversation creation
+    - Test message display
+    - Test sharing
+    - _Requirements: 5.1, 5.4, 16.1_
+
+- [ ] 17. Implement prompt template components
+  - [ ] 17.1 Create PromptTemplateLibrary.vue component
+    - Categorized template list
+    - Template preview and selection
+    - Create/edit template dialog
+    - _Requirements: 3.2, 3.6, 3.1_
+  - [ ] 17.2 Create PromptTemplateEditor.vue component
+    - Rich text editor with syntax highlighting
+    - Variable insertion and validation
+    - Template testing with sample values
+    - Version history display
+    - _Requirements: 3.1, 3.5, 11.2, 11.4_
+  - [ ]\* 17.3 Write property tests for template variable handling
+    - **Property 8: Template Variable Handling**
+    - **Validates: Requirements 3.5, 11.1, 11.2, 11.3, 11.4, 11.5, 11.6**
+
+- [ ] 18. Implement provider configuration components
+  - [ ] 18.1 Create ProviderConfiguration.vue component
+    - Provider list with health status
+    - Add/edit provider forms
+    - Test connection functionality
+    - Model list for each provider
+    - _Requirements: 9.1, 9.6, 9.3, 2.1_
+  - [ ]\* 18.2 Write component tests for provider configuration
+    - Test provider addition
+    - Test provider testing
+    - Test model display
+    - _Requirements: 9.1, 9.3, 2.1_
+
+- [ ] 19. Implement analytics dashboard components
+  - [ ] 19.1 Create TokenUsageDashboard.vue component
+    - Token usage charts (daily, weekly, monthly)
+    - Usage breakdown by user, model, provider
+    - Quota display and warnings
+    - Export usage reports
+    - _Requirements: 7.2, 7.3, 7.4, 14.4, 7.7_
+  - [ ] 19.2 Create CostAnalyticsDashboard.vue component
+    - Cost charts and trends
+    - Spending breakdown by dimensions
+    - Cost alerts configuration
+    - Budget tracking and projections
+    - _Requirements: 8.2, 8.3, 8.4, 8.6_
+  - [ ] 19.3 Create LLMDashboard.vue component
+    - Query volume metrics
+    - Performance metrics (p50, p95, p99)
+    - Error rates and reasons
+    - Top templates
+    - Cache metrics
+    - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5, 15.6_
+  - [ ]\* 19.4 Write component tests for analytics dashboards
+    - Test chart rendering with various data
+    - Test filtering
+    - Test export
+    - _Requirements: 19.1, 19.7_
+
+- [ ] 20. Implement permission-based UI rendering
+  - [ ] 20.1 Create permission composable
+    - usePermissions composable for checking user permissions
+    - v-permission directive for conditional rendering
+    - _Requirements: 13.5_
+  - [ ] 20.2 Apply permission checks to all components
+    - Hide/disable elements based on permissions
+    - _Requirements: 13.5_
+  - [ ]\* 20.3 Write property tests for permission-based UI
+    - **Property 25: Permission-Based UI**
+    - **Validates: Requirements 13.5**
+
+- [ ] 21. Implement rate limiting UI feedback
+  - [ ] 21.1 Create rate limit indicator component
+    - Display remaining quota
+    - Display reset time
+    - Show warnings when approaching limit
+    - _Requirements: 14.4, 14.6_
+  - [ ] 21.2 Handle 429 responses in API client
+    - Display rate limit errors
+    - Show retry time
+    - _Requirements: 14.3_
+
+- [ ] 22. Implement response formatting and rendering
+  - [ ] 22.1 Create markdown renderer composable
+    - Render markdown with proper formatting
+    - Apply syntax highlighting to code blocks
+    - Render tables as HTML
+    - Make links clickable
+    - Preserve formatting during streaming
+    - _Requirements: 12.1, 12.2, 12.3, 12.6, 12.7_
+  - [ ] 22.2 Create code block copy component
+    - Copy button for code blocks
+    - _Requirements: 12.4_
+  - [ ] 22.3 Create response export functionality
+    - Export as markdown, HTML, plain text
+    - _Requirements: 12.5_
+  - [ ]\* 22.4 Write property tests for response formatting
+    - **Property 22: Response Formatting and Rendering**
+    - **Validates: Requirements 12.1, 12.2, 12.3, 12.4, 12.6, 12.7**
+
+- [ ] 23. Implement function calling support
+  - [ ] 23.1 Create function registry UI
+    - List available functions
+    - Display function schemas
+    - _Requirements: 17.3_
+  - [ ] 23.2 Display function calls in conversation view
+    - Show function call requests
+    - Show function results
+    - _Requirements: 17.6_
+  - [ ]\* 23.3 Write integration tests for function calling
+    - Test function execution
+    - Test error handling
+    - Test audit logging
+    - _Requirements: 17.2, 17.4, 17.5, 17.7_
+
+- [ ] 24. Implement multi-modal image support
+  - [ ] 24.1 Create image upload component
+    - File picker for images
+    - Format and size validation
+    - Image preview
+    - _Requirements: 18.1, 18.2_
+  - [ ] 24.2 Handle image encoding and transmission
+    - Encode images for LLM providers
+    - Display thumbnails in conversation view
+    - Track image tokens
+    - _Requirements: 18.3, 18.5, 18.6_
+  - [ ]\* 24.3 Write integration tests for image support
+    - Test image upload and validation
+    - Test image encoding
+    - Test token tracking
+    - _Requirements: 18.2, 18.3, 18.6_
+
+- [ ] 25. Implement database migrations and seeds
+  - [ ] 25.1 Create PostgreSQL migrations
+    - All tables from schema design
+    - _Requirements: 9.1, 2.1, 5.1, 3.1, 16.1, 17.3_
+  - [ ] 25.2 Create ClickHouse migrations
+    - All tables from schema design
+    - _Requirements: 6.1, 7.1, 8.1, 17.7, 15.1_
+  - [ ] 25.3 Create seed data
+    - Sample providers and models
+    - Sample prompt templates
+    - _Requirements: 9.1, 2.1, 3.1_
+
+- [ ] 26. Integration and wiring
+  - [ ] 26.1 Wire backend components together
+    - Register all modules in app.module.ts
+    - Configure WebSocket gateway
+    - Configure rate limiting middleware
+    - _Requirements: All_
+  - [ ] 26.2 Wire frontend components together
+    - Set up routing
+    - Initialize WebSocket connection
+    - Configure API clients
+    - _Requirements: All_
+  - [ ]\* 26.3 Write end-to-end tests
+    - Complete user workflows
+    - Multi-tab synchronization
+    - Permission-based access
+    - Real-time streaming
+    - _Requirements: All_
+
+- [ ] 27. Final checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties
+- Unit tests validate specific examples and edge cases
+- Integration tests validate component interactions
+- E2E tests validate complete user workflows

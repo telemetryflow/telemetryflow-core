@@ -1,0 +1,54 @@
+// Extracted from: audit/components/AuditCharts.vue
+.audit-charts-section {
+  // The AuditCharts.vue uses class "section" as root — wrapped for namespacing
+
+  .section {
+    border-radius: 12px;
+  }
+
+  .section-header {
+    padding: 16px 20px;
+
+    &--clickable {
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        background: var(--n-color-hover);
+      }
+    }
+  }
+
+  .chevron-icon {
+    font-size: 16px;
+    color: var(--n-text-color-3);
+  }
+
+  .section-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 4px;
+
+    &.badge-primary {
+      color: #fff;
+      background: var(--n-primary-color, #3b82f6);
+    }
+  }
+
+  .section-content {
+    padding: 16px;
+    border-top: 1px solid var(--k8s-border-color);
+  }
+
+  .charts-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@telemetryflow/tenancy-module",
+  "version": "1.0.0",
+  "description": "Multi-tenant management module with DDD architecture",
+  "private": true,
+  "scripts": {
+    "test": "jest"
+  }
+}

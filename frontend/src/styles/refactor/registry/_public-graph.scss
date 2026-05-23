@@ -1,0 +1,315 @@
+// ============================================================================
+// Public Graph View Styles
+// Source: views/public/graph.vue
+// ============================================================================
+
+// ─── Root ─────────────────────────────────────────────────────────────────────
+
+.pg-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--n-color, #0f1117);
+  color: var(--n-text-color, #e5e7eb);
+  font-family: var(--n-font-family, system-ui, sans-serif);
+}
+
+// ─── Topbar ───────────────────────────────────────────────────────────────────
+
+.pg-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.pg-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pg-brand-icon {
+  font-size: 20px;
+  color: #6366f1;
+}
+
+.pg-brand-name {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
+
+.pg-main {
+  flex: 1;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.pg-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 300px;
+  text-align: center;
+}
+
+.pg-loading-label {
+  font-size: 13px;
+  color: var(--n-text-color-3, #9ca3af);
+}
+
+// ─── Error State ──────────────────────────────────────────────────────────────
+
+.pg-error-state {
+  gap: 12px;
+}
+
+.pg-error-icon {
+  font-size: 48px;
+  color: var(--n-color-warning, #f59e0b);
+  opacity: 0.6;
+}
+
+.pg-error-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.pg-error-body {
+  font-size: 14px;
+  color: var(--n-text-color-3, #9ca3af);
+  margin: 0;
+}
+
+// ─── Graph Card ───────────────────────────────────────────────────────────────
+
+.pg-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.pg-card-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.pg-card-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pg-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.pg-title-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-top: 3px;
+}
+
+// ─── Note Banner ─────────────────────────────────────────────────────────────
+
+.pg-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(99, 102, 241, 0.08);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+  font-size: 12px;
+  color: var(--n-text-color-2, #d1d5db);
+  flex-wrap: wrap;
+}
+
+.pg-note-icon {
+  flex-shrink: 0;
+  color: #6366f1;
+}
+
+.pg-note-login {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+// ─── Section ─────────────────────────────────────────────────────────────────
+
+.pg-section {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.pg-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--n-text-color-3, #9ca3af);
+  margin-bottom: 12px;
+}
+
+// ─── Query Block ──────────────────────────────────────────────────────────────
+
+.pg-empty-queries {
+  font-size: 12px;
+  color: var(--n-text-color-3, #9ca3af);
+  font-style: italic;
+}
+
+.pg-query-block {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.pg-query-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pg-query-dialect {
+  font-size: 10px;
+  font-weight: 700;
+  color: #6366f1;
+  letter-spacing: 0.04em;
+}
+
+.pg-query-index {
+  font-size: 10px;
+  color: var(--n-text-color-3, #9ca3af);
+  margin-left: auto;
+}
+
+.pg-query-expr {
+  padding: 10px 12px;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--n-text-color, #e5e7eb);
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+// ─── URL Rows ─────────────────────────────────────────────────────────────────
+
+.pg-url-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.pg-url-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--n-text-color-3, #9ca3af);
+  min-width: 64px;
+  flex-shrink: 0;
+}
+
+.pg-url-value {
+  flex: 1;
+  min-width: 0;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 4px;
+  padding: 4px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &--full {
+    font-size: 11px;
+    color: var(--n-text-color-2, #d1d5db);
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.pg-copy-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--n-text-color-2, #d1d5db);
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.2);
+    color: #6366f1;
+    border-color: rgba(99, 102, 241, 0.4);
+  }
+}
+
+// ─── CTA ─────────────────────────────────────────────────────────────────────
+
+.pg-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+.pg-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 16px;
+  font-size: 12px;
+  color: var(--n-text-color-3, #9ca3af);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}

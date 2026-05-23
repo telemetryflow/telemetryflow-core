@@ -1,0 +1,43 @@
+// TFO Style Registry — Chart Type Toggle
+// Toggle group, toggle buttons, mini graph icon
+// Source: ChartTypeToggle.vue
+
+.chart-type-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--n-action-color);
+  border: 1px solid var(--n-border-color);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 22px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--n-text-color-3);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 2px;
+
+  &:hover {
+    color: var(--n-text-color);
+    background: var(--n-border-color);
+  }
+
+  &.active {
+    color: var(--n-primary-color);
+    background: rgba(59, 130, 246, 0.12);
+  }
+}
+
+.mini-graph {
+  width: 20px;
+  height: 14px;
+}

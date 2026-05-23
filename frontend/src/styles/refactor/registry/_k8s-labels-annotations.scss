@@ -1,0 +1,28 @@
+// TFO Style Registry — Kubernetes Labels & Annotations
+// Key-value grid display
+// Source: LabelsAnnotations.vue
+
+.kv-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kv-row {
+  display: flex;
+  gap: 8px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.kv-key {
+  color: var(--n-text-color-3);
+  font-family: monospace;
+  min-width: 180px;
+  word-break: break-all;
+}
+
+.kv-val {
+  color: var(--n-text-color);
+  word-break: break-all;
+}

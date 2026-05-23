@@ -1,0 +1,27 @@
+// TFO Style Registry — Dashboard Properties Panel
+// Drawer header, properties form, tags input
+// Source: DashboardPropertiesPanel.vue
+
+.dashboard-props-drawer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+
+  .header-icon {
+    font-size: 20px;
+    color: var(--n-primary-color);
+  }
+}
+
+.tags-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

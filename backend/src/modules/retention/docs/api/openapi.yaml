@@ -1,0 +1,390 @@
+openapi: 3.0.3
+info:
+  title: TelemetryFlow Retention API
+  description: Data Retention Policy Management API
+  version: 1.0.0
+
+servers:
+  - url: /api/v2
+
+tags:
+  - name: Retention Policies
+    description: Retention policy management
+  - name: Statistics
+    description: Retention statistics and reporting
+  - name: Enforcement
+    description: Retention enforcement operations
+
+paths:
+  /retention/policies:
+    post:
+      tags: [Retention Policies]
+      summary: Create retention policy
+      operationId: createRetentionPolicy
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRetentionPolicyRequest'
+      responses:
+        '201':
+          description: Retention policy created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  message:
+                    type: string
+        '400':
+          description: Invalid input
+        '409':
+          description: Policy with same name already exists
+
+    get:
+      tags: [Retention Policies]
+      summary: List retention policies
+      operationId: listRetentionPolicies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: dataType
+          in: query
+          schema:
+            $ref: '#/components/schemas/DataType'
+        - name: includeDefaults
+          in: query
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: List of retention policies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RetentionPolicy'
+
+  /retention/policies/statistics:
+    get:
+      tags: [Statistics]
+      summary: Get retention statistics
+      operationId: getRetentionStatistics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: dataType
+          in: query
+          schema:
+            $ref: '#/components/schemas/DataType'
+      responses:
+        '200':
+          description: Retention statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RetentionStatistics'
+
+  /retention/policies/enforce:
+    post:
+      tags: [Enforcement]
+      summary: Manually enforce retention policies
+      operationId: enforceRetention
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnforceRetentionRequest'
+      responses:
+        '200':
+          description: Enforcement results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnforceRetentionResult'
+
+  /retention/policies/{id}:
+    get:
+      tags: [Retention Policies]
+      summary: Get retention policy by ID
+      operationId: getRetentionPolicy
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Retention policy details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetentionPolicy'
+        '404':
+          description: Policy not found
+
+    put:
+      tags: [Retention Policies]
+      summary: Update retention policy
+      operationId: updateRetentionPolicy
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRetentionPolicyRequest'
+      responses:
+        '200':
+          description: Policy updated successfully
+        '400':
+          description: Invalid input
+        '403':
+          description: Cannot modify default policies
+        '404':
+          description: Policy not found
+
+    delete:
+      tags: [Retention Policies]
+      summary: Delete retention policy
+      operationId: deleteRetentionPolicy
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Policy deleted successfully
+        '403':
+          description: Cannot delete default policies
+        '404':
+          description: Policy not found
+
+  /retention/policies/{id}/activate:
+    post:
+      tags: [Retention Policies]
+      summary: Activate retention policy
+      operationId: activateRetentionPolicy
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Policy activated
+
+  /retention/policies/{id}/deactivate:
+    post:
+      tags: [Retention Policies]
+      summary: Deactivate retention policy
+      operationId: deactivateRetentionPolicy
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Policy deactivated
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    DataType:
+      type: string
+      enum: [logs, metrics, traces, alerts, exemplars]
+      description: Type of data the policy applies to
+
+    RetentionPolicy:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        retentionDays:
+          type: integer
+          minimum: 1
+          maximum: 3650
+        archiveEnabled:
+          type: boolean
+        archiveDestination:
+          type: string
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        isDefault:
+          type: boolean
+        isActive:
+          type: boolean
+        organizationId:
+          type: string
+          format: uuid
+        lastEnforcedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateRetentionPolicyRequest:
+      type: object
+      required:
+        - name
+        - dataType
+        - retentionDays
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        retentionDays:
+          type: integer
+          minimum: 1
+          maximum: 3650
+        archiveEnabled:
+          type: boolean
+          default: false
+        archiveDestination:
+          type: string
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+
+    UpdateRetentionPolicyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        retentionDays:
+          type: integer
+          minimum: 1
+          maximum: 3650
+        archiveEnabled:
+          type: boolean
+        archiveDestination:
+          type: string
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        isActive:
+          type: boolean
+
+    EnforceRetentionRequest:
+      type: object
+      properties:
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        dryRun:
+          type: boolean
+          default: false
+
+    EnforceRetentionResult:
+      type: object
+      properties:
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        recordsDeleted:
+          type: integer
+        spaceReclaimed:
+          type: string
+        duration:
+          type: integer
+          description: Duration in milliseconds
+        dryRun:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+
+    RetentionStatistics:
+      type: object
+      properties:
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        totalRecords:
+          type: integer
+        oldestRecord:
+          type: string
+          format: date-time
+        newestRecord:
+          type: string
+          format: date-time
+        estimatedSize:
+          type: string
+        retentionPolicy:
+          type: object
+          properties:
+            name:
+              type: string
+            retentionDays:
+              type: integer
+            cutoffDate:
+              type: string
+              format: date-time
+        recordsToDelete:
+          type: integer
+        estimatedSizeToDelete:
+          type: string

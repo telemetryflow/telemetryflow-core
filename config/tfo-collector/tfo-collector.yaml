@@ -1,0 +1,372 @@
+# =============================================================================
+# TelemetryFlow Collector Configuration (OCB Native v1.1.2)
+# =============================================================================
+# Community Enterprise Observability Platform (CEOP)
+# Copyright (c) 2026 TelemetryFlow. All rights reserved.
+#
+# This is the standard configuration for TFO Collector (100% OCB-native build).
+#
+#   Usage: ./tfo-collector --config configs/tfo-collector.yaml
+#
+# The unified build includes:
+# - All 85+ OpenTelemetry Collector community components
+# - TFO custom components (tfootlp, tfo, tfoauth, tfoidentity)
+#
+# =============================================================================
+# OTLP HTTP Endpoints - v1 vs v2 Architecture
+# =============================================================================
+#
+#   v1 Endpoints (Community / Open - NO AUTH REQUIRED):
+#     POST http://localhost:4318/v1/traces
+#     POST http://localhost:4318/v1/metrics
+#     POST http://localhost:4318/v1/logs
+#
+#   v2 Endpoints (TFO Platform / Authenticated):
+#     Headers: X-TelemetryFlow-Key-ID, X-TelemetryFlow-Key-Secret
+#     POST http://localhost:4318/v2/traces
+#     POST http://localhost:4318/v2/metrics
+#     POST http://localhost:4318/v2/logs
+#
+#   gRPC (Both versions via same port):
+#     localhost:4317
+#
+# =============================================================================
+# Environment Variables
+# =============================================================================
+#   TELEMETRYFLOW_API_KEY_ID      - API Key ID for authentication (tfk_xxx)
+#   TELEMETRYFLOW_API_KEY_SECRET  - API Key Secret for authentication (tfs_xxx)
+#   TELEMETRYFLOW_ENDPOINT        - TelemetryFlow backend endpoint
+#   TELEMETRYFLOW_COLLECTOR_ID    - Unique collector identifier (auto-generated if empty)
+#   TELEMETRYFLOW_COLLECTOR_NAME  - Human-readable collector name
+#   TELEMETRYFLOW_ENVIRONMENT     - Deployment environment
+#
+# =============================================================================
+
+# =============================================================================
+# EXTENSIONS - TFO Authentication and Identity
+# =============================================================================
+extensions:
+  # Health check extension
+  health_check:
+    endpoint: "0.0.0.0:13133"
+
+  # zPages extension for debugging
+  zpages:
+    endpoint: "0.0.0.0:55679"
+
+  # pprof extension for profiling
+  pprof:
+    endpoint: "0.0.0.0:1777"
+
+  # TFO Authentication Extension - API key management for TFO Platform
+  tfoauth:
+    api_key_id: "${env:TELEMETRYFLOW_API_KEY_ID}"
+    api_key_secret: "${env:TELEMETRYFLOW_API_KEY_SECRET}"
+
+  # TFO Identity Extension - Collector identity and resource enrichment
+  # Optional env vars: TELEMETRYFLOW_COLLECTOR_ID, TELEMETRYFLOW_COLLECTOR_NAME,
+  #                    TELEMETRYFLOW_ENVIRONMENT, TELEMETRYFLOW_DATACENTER
+  tfoidentity:
+    id: ""
+    name: "TelemetryFlow Collector"
+    description: "TelemetryFlow Collector - Community Enterprise Observability Platform"
+    tags:
+      environment: production
+      datacenter: default
+    enrich_resources: true
+
+# =============================================================================
+# RECEIVERS - How telemetry data enters the collector
+# =============================================================================
+receivers:
+  # TFO OTLP Receiver - supports both v1 (open) and v2 (authenticated) endpoints
+  tfootlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+        max_recv_msg_size_mib: 4
+        max_concurrent_streams: 100
+        read_buffer_size: 524288
+        write_buffer_size: 524288
+        keepalive:
+          server_parameters:
+            max_connection_idle: 15s
+            max_connection_age: 30s
+            max_connection_age_grace: 5s
+            time: 10s
+            timeout: 5s
+      http:
+        endpoint: "0.0.0.0:4318"
+        transport: tcp
+        cors:
+          allowed_origins:
+            - "*"
+          allowed_headers:
+            - "*"
+    # Enable v2 endpoints with authentication
+    enable_v2_endpoints: true
+    v2_auth:
+      required: true
+      validate_secret: false
+
+  # Standard OTLP receiver (alternative, for v1-only traffic)
+  # otlp:
+  #   protocols:
+  #     grpc:
+  #       endpoint: "0.0.0.0:4319"
+  #     http:
+  #       endpoint: "0.0.0.0:4320"
+
+# =============================================================================
+# PROCESSORS - How telemetry data is processed
+# =============================================================================
+processors:
+  # Batch processor for efficient data handling
+  batch:
+    timeout: 200ms
+    send_batch_size: 8192
+    send_batch_max_size: 0
+
+  # Memory limiter to prevent OOM
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 25
+
+  # Resource detection for automatic host/container enrichment
+  resourcedetection:
+    detectors: [env, system]
+    timeout: 5s
+    override: false
+
+  # Resource processor for adding attributes
+  # To customize environment: export TELEMETRYFLOW_ENVIRONMENT=staging
+  resource:
+    attributes:
+      - key: service.namespace
+        value: telemetryflow
+        action: upsert
+      - key: deployment.environment
+        value: "${env:TELEMETRYFLOW_ENVIRONMENT:-production}"
+        action: upsert
+
+  # TFO-Agent: Normalize cAdvisor Prometheus-style metric names (container_* → container.cadvisor.*)
+  transform/cadvisor:
+    error_mode: ignore
+    metric_statements:
+      - context: metric
+        statements:
+          # CPU
+          - replace_pattern(name, "^container_cpu_usage_seconds_total$", "container.cadvisor.cpu.usage_seconds_total")
+          - replace_pattern(name, "^container_cpu_system_seconds_total$", "container.cadvisor.cpu.system_seconds_total")
+          - replace_pattern(name, "^container_cpu_user_seconds_total$", "container.cadvisor.cpu.user_seconds_total")
+          - replace_pattern(name, "^container_cpu_cfs_throttled_seconds_total$", "container.cadvisor.cpu.cfs.throttled_seconds_total")
+          - replace_pattern(name, "^container_cpu_cfs_periods_total$", "container.cadvisor.cpu.cfs.periods_total")
+          - replace_pattern(name, "^container_cpu_cfs_throttled_periods_total$", "container.cadvisor.cpu.cfs.throttled_periods_total")
+          # Memory
+          - replace_pattern(name, "^container_memory_usage_bytes$", "container.cadvisor.memory.usage_bytes")
+          - replace_pattern(name, "^container_memory_working_set_bytes$", "container.cadvisor.memory.working_set_bytes")
+          - replace_pattern(name, "^container_memory_rss$", "container.cadvisor.memory.rss_bytes")
+          - replace_pattern(name, "^container_memory_cache$", "container.cadvisor.memory.cache_bytes")
+          - replace_pattern(name, "^container_memory_swap$", "container.cadvisor.memory.swap_bytes")
+          - replace_pattern(name, "^container_memory_failures_total$", "container.cadvisor.memory.failures_total")
+          # Network
+          - replace_pattern(name, "^container_network_receive_bytes_total$", "container.cadvisor.network.receive_bytes_total")
+          - replace_pattern(name, "^container_network_transmit_bytes_total$", "container.cadvisor.network.transmit_bytes_total")
+          - replace_pattern(name, "^container_network_receive_errors_total$", "container.cadvisor.network.receive_errors_total")
+          - replace_pattern(name, "^container_network_transmit_errors_total$", "container.cadvisor.network.transmit_errors_total")
+          - replace_pattern(name, "^container_network_receive_packets_dropped_total$", "container.cadvisor.network.receive_drops_total")
+          - replace_pattern(name, "^container_network_transmit_packets_dropped_total$", "container.cadvisor.network.transmit_drops_total")
+          # Filesystem
+          - replace_pattern(name, "^container_fs_usage_bytes$", "container.cadvisor.fs.usage_bytes")
+          - replace_pattern(name, "^container_fs_limit_bytes$", "container.cadvisor.fs.limit_bytes")
+          - replace_pattern(name, "^container_fs_reads_bytes_total$", "container.cadvisor.fs.read_bytes_total")
+          - replace_pattern(name, "^container_fs_writes_bytes_total$", "container.cadvisor.fs.write_bytes_total")
+          # Machine
+          - replace_pattern(name, "^machine_cpu_cores$", "machine.cpu.cores")
+          - replace_pattern(name, "^machine_memory_bytes$", "machine.memory.bytes")
+          - replace_pattern(name, "^machine_cpu_cache_capacity_kilobytes$", "machine.cpu.cache.capacity_kilobytes")
+
+  # TFO-Agent: Normalize Cilium Hubble Prometheus-style metric names (hubble_* → hubble.*)
+  transform/hubble:
+    error_mode: ignore
+    metric_statements:
+      - context: metric
+        statements:
+          - replace_pattern(name, "^hubble_flows_processed_total$", "hubble.flows.processed_total")
+          - replace_pattern(name, "^hubble_drop_total$", "hubble.drop_total")
+          - replace_pattern(name, "^hubble_tcp_flags_total$", "hubble.tcp.flags_total")
+          - replace_pattern(name, "^hubble_dns_queries_total$", "hubble.dns.queries_total")
+          - replace_pattern(name, "^hubble_dns_responses_total$", "hubble.dns.responses_total")
+          - replace_pattern(name, "^hubble_http_requests_total$", "hubble.http.requests_total")
+          - replace_pattern(name, "^hubble_http_responses_total$", "hubble.http.responses_total")
+          - replace_pattern(name, "^hubble_http_request_duration_seconds$", "hubble.http.request_duration_seconds")
+
+  # TFO-Agent: Tag all agent-sourced telemetry for platform-side identification
+  attributes/agent:
+    actions:
+      - key: tfo.source
+        value: "tfo-agent"
+        action: insert
+
+# =============================================================================
+# CONNECTORS - Pipeline bridging for Exemplars and derived metrics
+# =============================================================================
+connectors:
+  # Span metrics connector - derives metrics from traces with EXEMPLARS support
+  span_metrics:
+    histogram:
+      explicit:
+        buckets: [1ms, 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2.5s, 5s, 10s]
+    dimensions:
+      - name: http.method
+        default: GET
+      - name: http.status_code
+      - name: http.route
+      - name: rpc.method
+      - name: rpc.service
+    exemplars:
+      enabled: true
+    namespace: traces
+    metrics_flush_interval: 15s
+
+  # Service graph connector - builds service dependency graphs from traces
+  service_graph:
+    latency_histogram_buckets: [1ms, 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2.5s, 5s, 10s]
+    dimensions:
+      - http.method
+      - http.status_code
+    store:
+      ttl: 10s
+      max_items: 5000
+    cache_loop: 2s
+    store_expiration_loop: 5s
+    virtual_node_peer_attributes:
+      - db.system
+      - messaging.system
+      - rpc.service
+      - net.peer.name
+      - server.address
+    metrics_flush_interval: 15s
+
+# =============================================================================
+# EXPORTERS - Where telemetry data is sent
+# =============================================================================
+exporters:
+  # Debug exporter for development/troubleshooting
+  debug:
+    verbosity: detailed
+    sampling_initial: 5
+    sampling_thereafter: 200
+
+  # TFO Platform Exporter - forwards all telemetry + heartbeats to NestJS backend
+  # Uses tfoauth extension for authentication and tfoidentity for collector ID
+  # Endpoint resolved via env var: TELEMETRYFLOW_ENDPOINT (set in docker-compose)
+  #   - Docker "all" profile:         http://host.docker.internal:3000
+  #   - Docker "monitoring" profile:  http://host.docker.internal:3000
+  #   - Local development:            http://localhost:3000
+  tfo:
+    endpoint: "${env:TELEMETRYFLOW_ENDPOINT:-http://host.docker.internal:3000}"
+    use_v2_api: true
+    headers:
+      X-TelemetryFlow-Key-ID: "${env:TELEMETRYFLOW_API_KEY_ID}"
+      X-TelemetryFlow-Key-Secret: "${env:TELEMETRYFLOW_API_KEY_SECRET}"
+    collector_identity: tfoidentity
+    timeout: 30s
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+    compression: gzip
+
+  # OTLP/HTTP exporter for Jaeger (v2 natively accepts OTLP on port 4318)
+  # otlphttp/jaeger:
+  #   endpoint: "http://jaeger:4318"
+  #   tls:
+  #     insecure: true
+
+  # Standard OTLP exporter for other backends (uncomment to enable)
+  # otlp:
+  #   endpoint: "other-backend:4317"
+  #   tls:
+  #     insecure: true
+
+  # File exporter for local storage (uncomment to enable)
+  # file:
+  #   path: "/var/lib/tfo-collector/output.json"
+  #   format: json
+  #   compression: ""
+  #   flush_interval: 1s
+  #   rotation:
+  #     max_megabytes: 100
+  #     max_days: 7
+  #     max_backups: 3
+  #     localtime: true
+
+# =============================================================================
+# SERVICE - Defines active components and pipelines
+# =============================================================================
+service:
+  extensions: [health_check, zpages, pprof, tfoauth, tfoidentity]
+
+  pipelines:
+    # Traces pipeline
+    traces:
+      receivers: [tfootlp]
+      processors: [memory_limiter, resourcedetection, resource, attributes/agent, batch]
+      exporters: [debug, tfo, span_metrics, service_graph]
+
+    # Metrics pipeline - receives ALL TFO-Agent collector metrics.
+    # Covers all 16 collectors: k8s-nodes, k8s-pods, k8s-deployments, k8s-workloads,
+    # k8s-storage, k8s-network, k8s-hpa, k8s-pdb, k8s-events, k8s-resource-counts,
+    # system, node-exporter, docker, cadvisor, ebpf (metrics), and app metrics.
+    metrics:
+      receivers: [tfootlp]
+      processors:
+        - memory_limiter
+        - resourcedetection   # host context enrichment
+        - resource            # add service.namespace, deployment.environment
+        - transform/cadvisor  # normalize container_* / machine_* → container.cadvisor.* / machine.*
+        - transform/hubble    # normalize hubble_* → hubble.*
+        - attributes/agent    # tag with tfo.source=tfo-agent
+        - batch
+      exporters: [debug, tfo]
+
+    # Metrics from traces (exemplars)
+    metrics/span_metrics:
+      receivers: [span_metrics]
+      processors: [memory_limiter, resource, batch]
+      exporters: [tfo]
+
+    # Service dependency graph metrics
+    metrics/service_graph:
+      receivers: [service_graph]
+      processors: [memory_limiter, resource, batch]
+      exporters: [tfo]
+
+    # Logs pipeline - pod container logs (k8s-pod-logs) + eBPF Hubble events
+    logs:
+      receivers: [tfootlp]
+      processors:
+        - memory_limiter
+        - resourcedetection
+        - resource
+        - attributes/agent
+        - batch
+      exporters: [debug, tfo]
+
+  # Internal telemetry configuration
+  telemetry:
+    logs:
+      level: info
+      encoding: json
+
+    metrics:
+      level: detailed
+      readers:
+        - pull:
+            exporter:
+              prometheus:
+                host: "0.0.0.0"
+                port: 8888

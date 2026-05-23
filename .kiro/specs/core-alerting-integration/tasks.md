@@ -1,0 +1,471 @@
+# Implementation Plan: Frontend-Backend Alerting Integration
+
+## Overview
+
+This implementation plan breaks down the frontend-backend alerting integration into discrete, incremental tasks. The approach follows a layered implementation strategy: backend domain and infrastructure first, then backend API layer, followed by frontend state management, and finally frontend UI components. Each task builds on previous work, with testing integrated throughout.
+
+The implementation leverages existing backend DDD/CQRS architecture and frontend Vue 3 + Pinia patterns. WebSocket integration is implemented early to enable real-time features throughout development.
+
+## Tasks
+
+- [ ] 1. Backend: Enhance Domain Layer
+  - [ ] 1.1 Review and validate existing AlertRule and AlertInstance aggregates
+    - Verify domain logic for state transitions
+    - Ensure domain events are properly defined
+    - _Requirements: 1.1, 5.1, 5.2, 5.3_
+  - [ ]\* 1.2 Write property test for AlertRule aggregate
+    - **Property 1: Alert Rule CRUD Operations**
+    - **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5**
+  - [ ]\* 1.3 Write property test for AlertInstance status transitions
+    - **Property 10: Alert Status Transitions**
+    - **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5**
+
+- [ ] 2. Backend: Implement TFQL Validation Service
+  - [ ] 2.1 Enhance TfqlValidation.service.ts with comprehensive validation
+    - Add syntax validation with position tracking
+    - Add semantic validation for metric/log/trace queries
+    - Return detailed error messages with line/column info
+    - _Requirements: 1.7, 9.5, 11.6_
+  - [ ]\* 2.2 Write property test for TFQL validation
+    - **Property 3: TFQL Validation**
+    - **Validates: Requirements 1.7, 11.1, 11.2, 11.5, 11.6, 11.7**
+  - [ ]\* 2.3 Write unit tests for TFQL error messages
+    - Test invalid syntax returns position info
+    - Test semantic errors for each signal type
+    - _Requirements: 1.7_
+
+- [ ] 3. Backend: Implement Query Execution Service
+  - [ ] 3.1 Create QueryExecution.service.ts for TFQL execution
+    - Implement query routing to ClickHouse tables (metrics, logs, traces)
+    - Add error handling and logging
+    - Mark rules as degraded on query failures
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.7_
+  - [ ]\* 3.2 Write property test for multi-signal query execution
+    - **Property 20: TFQL Multi-Signal Support**
+    - **Validates: Requirements 9.1, 9.2, 9.3, 9.4**
+  - [ ]\* 3.3 Write property test for query error handling
+    - **Property 22: Query Execution Error Handling**
+    - **Validates: Requirements 9.7**
+
+- [ ] 4. Backend: Implement Alert Evaluation Service
+  - [ ] 4.1 Create AlertEvaluation.service.ts for condition evaluation
+    - Implement scheduled evaluation loop
+    - Check alert rule schedules and timezones
+    - Create alert instances when conditions are met
+    - Emit AlertTriggered domain events
+    - _Requirements: 3.1, 14.1, 14.4, 14.7_
+  - [ ]\* 4.2 Write property test for alert evaluation
+    - **Property 5: Alert Instance Creation and Notification**
+    - **Validates: Requirements 3.1, 3.3, 12.1**
+  - [ ]\* 4.3 Write property test for schedule-based evaluation
+    - **Property 31: Alert Rule Scheduling**
+    - **Validates: Requirements 14.1, 14.4, 14.7**
+
+- [ ] 5. Backend: Implement Notification Service
+  - [ ] 5.1 Enhance NotificationSender service with retry logic
+    - Implement exponential backoff retry (up to 3 attempts)
+    - Add rate limiting per channel type
+    - Implement notification batching where supported
+    - Include all required fields in notifications
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6_
+  - [ ]\* 5.2 Write property test for notification retry logic
+    - **Property 25: Notification Retry Logic**
+    - **Validates: Requirements 12.2, 12.3**
+  - [ ]\* 5.3 Write property test for notification rate limiting
+    - **Property 26: Notification Rate Limiting**
+    - **Validates: Requirements 12.4**
+  - [ ]\* 5.4 Write property test for notification content
+    - **Property 28: Notification Content**
+    - **Validates: Requirements 12.6**
+
+- [ ] 6. Backend: Implement Alert History Service
+  - [ ] 6.1 Create AlertHistory.service.ts for ClickHouse logging
+    - Record alert instance creation events
+    - Record status transition events with user and timestamp
+    - Record notification delivery events
+    - Implement filtering and export functionality
+    - _Requirements: 7.1, 7.2, 7.4, 7.5, 7.7, 12.7_
+  - [ ]\* 6.2 Write property test for history recording
+    - **Property 14: Alert History Recording**
+    - **Validates: Requirements 7.1, 7.2, 7.4, 12.7**
+  - [ ]\* 6.3 Write property test for history filtering and export
+    - **Property 15: Alert History Filtering and Export**
+    - **Validates: Requirements 7.5, 7.7**
+
+- [ ] 7. Backend: Implement Alert Metrics Service
+  - [ ] 7.1 Create AlertMetrics.service.ts for analytics tracking
+    - Track evaluation count, firing count, false positive rate
+    - Track notification delivery success rate per channel
+    - Calculate MTTA and MTTR
+    - Identify noisy rules (high firing, low acknowledgment)
+    - _Requirements: 15.1, 15.2, 15.3, 15.6_
+  - [ ]\* 7.2 Write property test for metrics tracking
+    - **Property 33: Alert Metrics Tracking**
+    - **Validates: Requirements 15.1, 15.2, 15.3**
+  - [ ]\* 7.3 Write property test for noisy rule identification
+    - **Property 34: Noisy Rule Identification**
+    - **Validates: Requirements 15.6**
+
+- [ ] 8. Backend: Implement WebSocket Gateway
+  - [ ] 8.1 Create or enhance AlertsGateway for real-time updates
+    - Implement room-based subscriptions for tenant isolation
+    - Emit events for alert triggered, acknowledged, resolved
+    - Emit events for alert rule updates
+    - Handle client subscribe/unsubscribe
+    - _Requirements: 3.3, 4.2, 4.6, 4.7, 5.5_
+  - [ ]\* 8.2 Write property test for WebSocket event emission
+    - **Property 7: Real-Time WebSocket Updates**
+    - **Validates: Requirements 4.2, 4.3, 4.7**
+  - [ ]\* 8.3 Write property test for tenant isolation
+    - **Property 9: Tenant Isolation in WebSocket**
+    - **Validates: Requirements 4.6**
+
+- [ ] 9. Backend: Implement Alert Statistics Query
+  - [ ] 9.1 Create GetAlertStats query handler
+    - Calculate total, firing, acknowledged, resolved, silenced counts
+    - Calculate counts by severity
+    - Generate trend data for time range
+    - Identify top firing rules
+    - _Requirements: 10.1, 10.2, 10.3, 10.6_
+  - [ ]\* 9.2 Write property test for alert statistics
+    - **Property 23: Dashboard Alert Statistics**
+    - **Validates: Requirements 10.1, 10.2, 10.3, 10.4, 10.5, 10.6**
+
+- [ ] 10. Backend: Enhance API Controllers
+  - [ ] 10.1 Review and enhance AlertRules.controller.ts
+    - Ensure all CRUD endpoints are implemented
+    - Add Swagger documentation
+    - Add permission guards
+    - Add validation decorators
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
+  - [ ] 10.2 Review and enhance AlertInstances.controller.ts
+    - Ensure all endpoints are implemented (list, get, acknowledge, resolve, silence, stats)
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 3.2, 5.1, 5.2, 5.3, 10.1_
+  - [ ] 10.3 Review and enhance NotificationChannels.controller.ts
+    - Ensure CRUD and test endpoints are implemented
+    - Add Swagger documentation
+    - Add permission guards
+    - _Requirements: 6.1, 6.3, 6.4, 6.5_
+  - [ ]\* 10.4 Write property test for permission enforcement
+    - **Property 29: Permission Enforcement**
+    - **Validates: Requirements 13.1, 13.2, 13.3, 13.4, 13.6, 13.7**
+
+- [ ] 11. Checkpoint - Backend Core Complete
+  - Ensure all backend tests pass
+  - Verify API endpoints are accessible
+  - Test WebSocket gateway with manual client
+  - Ask the user if questions arise
+
+- [ ] 12. Frontend: Create Alert Types
+  - [ ] 12.1 Create or enhance types/alert.ts with comprehensive types
+    - Define AlertRule, AlertInstance, AlertCondition interfaces
+    - Define AlertStats, NotificationChannel interfaces
+    - Define Schedule, AlertHistory interfaces
+    - Export all types
+    - _Requirements: All_
+
+- [ ] 13. Frontend: Create Alert API Client
+  - [ ] 13.1 Create api/alert-rules.ts for alert rule endpoints
+    - Implement list, get, create, update, delete, toggle methods
+    - Implement validateTfql method
+    - Add error handling
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.7_
+  - [ ] 13.2 Create api/alert-instances.ts for alert instance endpoints
+    - Implement list, get, acknowledge, resolve, silence methods
+    - Implement getStats method
+    - Add error handling
+    - _Requirements: 3.2, 5.1, 5.2, 5.3, 10.1_
+  - [ ] 13.3 Create api/notification-channels.ts for channel endpoints
+    - Implement list, get, create, update, delete, test methods
+    - Add error handling
+    - _Requirements: 6.1, 6.3, 6.4, 6.5_
+  - [ ] 13.4 Create api/alert-templates.ts for template endpoints
+    - Implement list method for templates
+    - Add error handling
+    - _Requirements: 2.1_
+
+- [ ] 14. Frontend: Create WebSocket Client
+  - [ ] 14.1 Create or enhance streaming/alerts-websocket.ts
+    - Implement connection management with reconnection logic
+    - Implement exponential backoff (max 5 attempts)
+    - Implement room-based subscription
+    - Add event listeners for alert events
+    - Add state sync on reconnection
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
+  - [ ]\* 14.2 Write property test for WebSocket reconnection
+    - **Property 8: WebSocket Reconnection**
+    - **Validates: Requirements 4.4, 4.5**
+
+- [ ] 15. Frontend: Create Alerts Pinia Store
+  - [ ] 15.1 Create or enhance store/alerts.ts with comprehensive state management
+    - Define state: alertRules, alertInstances, loading, error, stats
+    - Implement getters: activeAlerts, alertsByRule, criticalAlerts
+    - Implement actions: fetchAlertRules, fetchAlertInstances, createAlertRule, etc.
+    - Implement WebSocket event handlers
+    - Add error handling
+    - _Requirements: 1.1-1.6, 3.1-3.6, 5.1-5.6, 10.1-10.7_
+  - [ ]\* 15.2 Write property test for store synchronization
+    - **Property 2: Frontend Store Synchronization**
+    - **Validates: Requirements 1.6, 3.4**
+  - [ ]\* 15.3 Write unit tests for store actions
+    - Test CRUD operations with mocked API
+    - Test WebSocket event handlers
+    - Test error handling
+    - _Requirements: 1.1-1.6, 3.4_
+
+- [ ] 16. Frontend: Create Alert Rule Form Component
+  - [ ] 16.1 Create components/alerts/AlertRuleForm.vue
+    - Implement form with name, description, TFQL query fields
+    - Add TFQL editor with syntax highlighting
+    - Implement real-time TFQL validation with debouncing
+    - Add threshold configuration fields
+    - Add notification channel multi-select
+    - Add schedule configuration
+    - Add form validation
+    - Prevent submission when validation errors exist
+    - _Requirements: 1.1, 1.3, 1.7, 11.1, 11.2, 11.3, 11.4, 11.5, 14.2_
+  - [ ]\* 16.2 Write property test for form validation
+    - **Property 24: Form Validation**
+    - **Validates: Requirements 11.3, 11.4, 11.5**
+
+- [ ] 17. Frontend: Create Alert Rules List Component
+  - [ ] 17.1 Create views/alerts/rules.vue for alert rules list
+    - Display paginated list of alert rules
+    - Add filtering by name, severity, enabled status
+    - Add search functionality
+    - Show rule statistics (firing count, last triggered)
+    - Add quick actions (toggle, edit, delete)
+    - Add "Create Rule" button
+    - Implement permission-based UI element visibility
+    - _Requirements: 1.2, 1.5, 8.1, 8.5, 13.5_
+  - [ ]\* 17.2 Write property test for permission-based UI
+    - **Property 30: Permission-Based UI**
+    - **Validates: Requirements 13.5**
+
+- [ ] 18. Frontend: Create Alert Rule Detail Component
+  - [ ] 18.1 Create views/alerts/rule-detail.vue for rule details
+    - Display full rule configuration
+    - Show rule evaluation history
+    - Show related alert instances
+    - Add edit and delete buttons
+    - Add toggle button
+    - _Requirements: 1.2, 1.3, 1.4, 1.5_
+
+- [ ] 19. Frontend: Create Alert Template Selector
+  - [ ] 19.1 Create components/alerts/AlertTemplateSelector.vue
+    - Display categorized alert templates
+    - Allow template selection
+    - Populate form with template values on selection
+    - Allow customization of template parameters
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
+  - [ ]\* 19.2 Write property test for template population
+    - **Property 4: Alert Template Population**
+    - **Validates: Requirements 2.2, 2.3, 2.5**
+
+- [ ] 20. Frontend: Create Alert Instances List Component
+  - [ ] 20.1 Create views/alerts/instances.vue for alert instances
+    - Display list of alert instances with real-time updates
+    - Add filtering by severity, status, time range, rule name
+    - Add grouping by service, severity, or labels
+    - Show aggregate counts for groups
+    - Add search functionality
+    - Add quick actions (acknowledge, resolve, silence)
+    - Implement filtered WebSocket updates
+    - Persist filter preferences to local storage
+    - _Requirements: 3.2, 3.5, 5.6, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7_
+  - [ ]\* 20.2 Write property test for alert filtering
+    - **Property 6: Alert Instance Filtering and Pagination**
+    - **Validates: Requirements 3.2, 8.1**
+  - [ ]\* 20.3 Write property test for alert grouping
+    - **Property 16: Alert Grouping**
+    - **Validates: Requirements 8.2, 8.3**
+  - [ ]\* 20.4 Write property test for filter persistence
+    - **Property 17: Filter Persistence**
+    - **Validates: Requirements 8.4**
+  - [ ]\* 20.5 Write property test for filtered WebSocket updates
+    - **Property 19: Filtered WebSocket Updates**
+    - **Validates: Requirements 8.6**
+
+- [ ] 21. Frontend: Create Alert Instance Detail Component
+  - [ ] 21.1 Create views/alerts/instance-detail.vue for instance details
+    - Display full alert instance information
+    - Show timeline of status transitions
+    - Display related telemetry data (metrics, logs, traces)
+    - Add action buttons (acknowledge, resolve, silence) based on status
+    - Add confirmation dialogs for actions
+    - Show alert history
+    - _Requirements: 3.6, 5.1, 5.2, 5.3, 5.6, 7.3_
+
+- [ ] 22. Frontend: Create Alert Notification Component
+  - [ ] 22.1 Create components/alerts/AlertNotification.vue
+    - Display toast notification for new alerts
+    - Show severity, rule name, and summary
+    - Add click handler to navigate to alert detail
+    - Implement auto-dismiss or manual close
+    - _Requirements: 3.4_
+
+- [ ] 23. Frontend: Create Notification Channel Components
+  - [ ] 23.1 Create views/alerts/notification-channels.vue for channel list
+    - Display list of notification channels
+    - Add filtering by type and enabled status
+    - Add quick actions (test, edit, delete)
+    - Add "Create Channel" button
+    - _Requirements: 6.1, 6.3, 6.4, 6.5_
+  - [ ] 23.2 Create components/alerts/NotificationChannelForm.vue
+    - Implement channel-specific configuration forms
+    - Add validation for each channel type
+    - Add test button to send test notification
+    - _Requirements: 6.1, 6.3, 6.6_
+  - [ ]\* 23.3 Write property test for channel CRUD
+    - **Property 12: Notification Channel CRUD**
+    - **Validates: Requirements 6.1, 6.3, 6.4, 6.5**
+  - [ ]\* 23.4 Write property test for channel-specific configuration
+    - **Property 13: Channel-Specific Configuration**
+    - **Validates: Requirements 6.6**
+
+- [ ] 24. Frontend: Create Alert History Component
+  - [ ] 24.1 Create components/alerts/AlertHistory.vue
+    - Display timeline of alert history events
+    - Show who performed actions, when, and what changed
+    - Add filtering by date range, severity, status, rule
+    - Add export button (CSV/JSON)
+    - _Requirements: 7.3, 7.4, 7.5, 7.7_
+
+- [ ] 25. Frontend: Create Alert Statistics Dashboard
+  - [ ] 25.1 Enhance views/home/index.vue with alert statistics
+    - Display alert counts (total, firing, acknowledged, resolved)
+    - Display counts by severity
+    - Display trend chart for alert volume over time
+    - Display top firing rules
+    - Add click handlers to navigate to alerts page with filters
+    - Implement real-time updates via WebSocket or polling
+    - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7_
+
+- [ ] 26. Frontend: Create Alert Analytics Component
+  - [ ] 26.1 Create views/alerts/analytics.vue for alert analytics
+    - Display charts for key metrics (evaluation count, firing count, MTTA, MTTR)
+    - Add filtering by time range, severity, rule
+    - Display noisy rules section
+    - Add export button (CSV/JSON)
+    - _Requirements: 15.4, 15.5, 15.6, 15.7_
+  - [ ]\* 26.2 Write property test for analytics filtering and export
+    - **Property 35: Analytics Filtering and Export**
+    - **Validates: Requirements 15.4, 15.5, 15.7**
+
+- [ ] 27. Frontend: Create TFQL Query Builder Component
+  - [ ] 27.1 Create components/alerts/TfqlQueryBuilder.vue
+    - Implement autocomplete for metric names, log fields, trace attributes
+    - Add syntax highlighting
+    - Add real-time validation with error highlighting
+    - Add query templates/snippets
+    - _Requirements: 9.6, 11.1, 11.2_
+  - [ ]\* 27.2 Write property test for query builder autocomplete
+    - **Property 21: Query Builder Autocomplete**
+    - **Validates: Requirements 9.6**
+
+- [ ] 28. Frontend: Integrate WebSocket with Store
+  - [ ] 28.1 Connect WebSocket client to Pinia store
+    - Initialize WebSocket connection on app mount
+    - Subscribe to tenant room
+    - Wire event handlers to store actions
+    - Handle connection state in UI (connected/disconnected indicator)
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
+
+- [ ] 29. Frontend: Add Router Configuration
+  - [ ] 29.1 Add alert routes to router/routes.ts
+    - /alerts/rules - Alert rules list
+    - /alerts/rules/new - Create alert rule
+    - /alerts/rules/:id - Alert rule detail
+    - /alerts/rules/:id/edit - Edit alert rule
+    - /alerts/instances - Alert instances list
+    - /alerts/instances/:id - Alert instance detail
+    - /alerts/channels - Notification channels list
+    - /alerts/channels/new - Create notification channel
+    - /alerts/channels/:id/edit - Edit notification channel
+    - /alerts/analytics - Alert analytics
+    - Add route guards for permissions
+    - _Requirements: All_
+
+- [ ] 30. Checkpoint - Frontend Core Complete
+  - Ensure all frontend tests pass
+  - Verify all components render correctly
+  - Test WebSocket connection and real-time updates
+  - Test CRUD operations end-to-end
+  - Ask the user if questions arise
+
+- [ ] 31. Integration: End-to-End Testing
+  - [ ] 31.1 Write E2E test for complete alert lifecycle
+    - Create alert rule
+    - Trigger alert (simulate condition met)
+    - Verify alert instance appears in list
+    - Verify WebSocket notification received
+    - Acknowledge alert
+    - Resolve alert
+    - Verify history recorded
+    - _Requirements: 1.1, 3.1, 3.3, 3.4, 5.1, 5.2, 7.1, 7.2_
+  - [ ] 31.2 Write E2E test for multi-user real-time updates
+    - Open two browser tabs
+    - Create alert in tab 1
+    - Verify alert appears in tab 2 via WebSocket
+    - Acknowledge in tab 2
+    - Verify status updates in tab 1
+    - _Requirements: 4.7_
+  - [ ] 31.3 Write E2E test for permission-based access
+    - Test with user having alerts:read only
+    - Verify create/edit/delete buttons are hidden
+    - Verify API returns 403 for unauthorized operations
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6_
+
+- [ ] 32. Integration: Performance Testing
+  - [ ] 32.1 Test alert list performance with large datasets
+    - Create 10,000 alert instances
+    - Verify list loads within 2 seconds
+    - Verify filtering and pagination work smoothly
+    - _Requirements: 3.2, 8.1_
+  - [ ] 32.2 Test WebSocket performance with many concurrent connections
+    - Simulate 100 concurrent WebSocket connections
+    - Trigger alert updates
+    - Verify all clients receive updates within 1 second
+    - _Requirements: 4.7_
+
+- [ ] 33. Documentation: Update API Documentation
+  - [ ] 33.1 Update backend OpenAPI specification
+    - Document all alert endpoints
+    - Include request/response examples
+    - Document error responses
+    - _Requirements: All_
+  - [ ] 33.2 Create frontend component documentation
+    - Document all alert components
+    - Include usage examples
+    - Document props and events
+    - _Requirements: All_
+
+- [ ] 34. Documentation: Create User Guide
+  - [ ] 34.1 Write user guide for alert management
+    - How to create alert rules
+    - How to use templates
+    - How to configure notification channels
+    - How to manage alert instances
+    - How to view analytics
+    - _Requirements: All_
+
+- [ ] 35. Final Checkpoint - Integration Complete
+  - Ensure all tests pass (unit, property, integration, E2E)
+  - Verify test coverage meets requirements (≥90%)
+  - Verify all features work end-to-end
+  - Verify documentation is complete
+  - Ask the user if questions arise
+
+## Notes
+
+- Tasks marked with `*` are optional property-based and unit tests that can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation and provide opportunities for user feedback
+- Property tests validate universal correctness properties across all inputs
+- Unit tests validate specific examples and edge cases
+- Integration and E2E tests validate complete workflows
+- The implementation follows a backend-first approach to ensure API stability before frontend development
+- WebSocket integration is implemented early to enable real-time features throughout development
+- Permission enforcement is tested at both backend (API) and frontend (UI) layers

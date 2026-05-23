@@ -1,0 +1,220 @@
+// TFO Style Registry — Settings AI Assistant
+// Source: src/views/settings/ai-assistant/index.vue
+
+// ==================== RESPONSIVE BREAKPOINTS ====================
+// Mobile: max-width 768px, Tablet: max-width 1024px
+
+.ai-assistant-view {
+  padding: 24px;
+}
+
+.ai-assistant-view .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.ai-assistant-view .header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-assistant-view .page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.ai-assistant-view .title-icon {
+  font-size: 28px;
+  color: var(--primary-color);
+}
+
+.ai-assistant-view .page-subtitle {
+  color: var(--text-color-3);
+  font-size: 14px;
+}
+
+.ai-assistant-view .mb-4 {
+  margin-bottom: 16px;
+}
+
+.ai-assistant-view .empty-card {
+  padding: 48px;
+}
+
+.ai-assistant-view .table-card {
+  margin-bottom: 24px;
+}
+
+.ai-assistant-view .w-full {
+  width: 100%;
+}
+
+.ai-assistant-view .slider-container {
+  width: 100%;
+}
+
+.ai-assistant-view .slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--n-text-color-3);
+  margin-top: 4px;
+}
+
+/* ==================== TABLET STYLES (max-width: 1024px) ==================== */
+@media (max-width: 1024px) {
+  .ai-assistant-view {
+    padding: 20px 16px;
+  }
+
+  .ai-assistant-view .page-title {
+    font-size: 22px;
+  }
+
+  .ai-assistant-view .title-icon {
+    font-size: 24px;
+  }
+}
+
+/* ==================== MOBILE STYLES (max-width: 768px) ==================== */
+@media (max-width: 768px) {
+  .ai-assistant-view {
+    padding: 16px 12px;
+  }
+
+  .ai-assistant-view .page-header {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .ai-assistant-view .header-left {
+    width: 100%;
+  }
+
+  .ai-assistant-view .header-right {
+    width: 100%;
+  }
+
+  .ai-assistant-view .header-right .n-button {
+    width: 100%;
+  }
+
+  .ai-assistant-view .page-title {
+    font-size: 20px;
+    gap: 8px;
+  }
+
+  .ai-assistant-view .title-icon {
+    font-size: 22px;
+  }
+
+  .ai-assistant-view .page-subtitle {
+    font-size: 13px;
+  }
+
+  .ai-assistant-view .mb-4 {
+    margin-bottom: 12px;
+  }
+
+  .ai-assistant-view .empty-card {
+    padding: 32px 16px;
+  }
+
+  /* Alert responsive */
+  .ai-assistant-view .n-alert {
+    font-size: 13px;
+  }
+
+  .ai-assistant-view .n-alert .n-alert-header {
+    font-size: 14px;
+  }
+
+  /* Table card adjustments */
+  .ai-assistant-view .table-card .n-data-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ai-assistant-view .table-card .n-data-table-base-table {
+    min-width: 900px;
+  }
+}
+
+/* ==================== SMALL MOBILE (max-width: 480px) ==================== */
+@media (max-width: 480px) {
+  .ai-assistant-view {
+    padding: 12px 8px;
+  }
+
+  .ai-assistant-view .page-title {
+    font-size: 18px;
+  }
+
+  .ai-assistant-view .title-icon {
+    font-size: 20px;
+  }
+
+  .ai-assistant-view .empty-card {
+    padding: 24px 12px;
+  }
+}
+
+/* ==================== MODAL RESPONSIVE STYLES ==================== */
+.ai-assistant-view .n-modal {
+  max-width: 95vw !important;
+  margin: 16px auto;
+}
+
+@media (max-width: 768px) {
+  .ai-assistant-view .n-modal[style*="width: 650px"] {
+    width: 95vw !important;
+    max-width: 95vw !important;
+  }
+
+  .ai-assistant-view .n-modal .n-form {
+    max-width: 100%;
+  }
+
+  .ai-assistant-view .n-modal .n-form-item {
+    flex-direction: column !important;
+  }
+
+  .ai-assistant-view .n-modal .n-form-item-label {
+    width: 100% !important;
+    text-align: left !important;
+    padding-bottom: 4px !important;
+  }
+
+  .ai-assistant-view .n-modal .n-form-item-blank {
+    width: 100% !important;
+  }
+
+  .ai-assistant-view .n-modal .n-space {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* Slider controls responsive */
+  .ai-assistant-view .n-modal .n-slider {
+    width: 100% !important;
+  }
+
+  /* Input number responsive */
+  .ai-assistant-view .n-modal .n-input-number {
+    width: 100% !important;
+  }
+
+  /* Temperature slider helper text */
+  .ai-assistant-view .n-modal .flex.justify-between {
+    font-size: 11px;
+  }
+}

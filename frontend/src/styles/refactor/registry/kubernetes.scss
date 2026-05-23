@@ -1,0 +1,14 @@
+// TFO Style Registry — Kubernetes Category
+@use "k8s-page-layout" as *;
+@use "k8s-describe-drawer" as *;
+@use "k8s-log-stream" as *;
+@use "k8s-api-server" as *;
+@use "k8s-clusters" as *;
+@use "k8s-coredns" as *;
+@use "k8s-deployment" as *;
+@use "k8s-network-resources" as *;
+@use "k8s-namespace" as *;
+@use "k8s-nodes" as *;
+@use "k8s-overview" as *;
+@use "k8s-pods" as *;
+@use "k8s-pv" as *;

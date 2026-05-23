@@ -1,0 +1,36 @@
+// TFO Style Registry — Master Aggregator
+// Single entry point for all component category styles.
+// Import this file in main.ts via: import "@/styles/registry/_index.scss"
+
+@use "datatable" as *;
+@use "stat-panel" as *;
+@use "chart" as *;
+@use "modal" as *;
+@use "section" as *;
+@use "button" as *;
+@use "node-graph" as *;
+@use "kubernetes" as *;
+@use "llm" as *;
+@use "monitoring" as *;
+@use "telemetry" as *;
+@use "form" as *;
+@use "badge" as *;
+@use "auth" as *;
+@use "line-number" as *;
+@use "events" as *;
+@use "settings" as *;
+@use "iam" as *;
+@use "tenancy" as *;
+@use "account" as *;
+@use "alerts" as *;
+@use "reports" as *;
+@use "dashboards" as *;
+@use "ai" as *;
+@use "db-monitoring" as *;
+@use "layouts" as *;
+@use "common" as *;
+@use "audit" as *;
+@use "home" as *;
+@use "public" as *;
+@use "app-root" as *;
+@use "global-utilities" as *;

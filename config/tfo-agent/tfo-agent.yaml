@@ -1,0 +1,441 @@
+# =============================================================================
+# TelemetryFlow Agent Configuration — Docker Compose (Default Deployment)
+# =============================================================================
+# Community Enterprise Observability Platform (CEOP)
+# Copyright (c) 2026 TelemetryFlow. All rights reserved.
+#
+# This file is the operational config used when running TFO-Agent in the
+# platform's Docker Compose stack. It contains only the settings relevant
+# to a Docker Compose deployment with sensible, working defaults.
+#
+# For the full reference configuration with all options and integrations, see:
+#   telemetryflow-agent/configs/tfo-agent.yaml
+#
+# =============================================================================
+# Environment Variables
+# =============================================================================
+#   TELEMETRYFLOW_API_KEY_ID      - API Key ID for authentication (format: tfk_xxx)
+#   TELEMETRYFLOW_API_KEY_SECRET  - API Key Secret for authentication (format: tfs_xxx)
+#   TELEMETRYFLOW_ENDPOINT        - TFO backend base URL
+#                                     HTTP: http://host.docker.internal:3000/api/v2
+#   TELEMETRYFLOW_AGENT_ID        - Unique agent ID (optional, auto-generated if unset)
+#   TELEMETRYFLOW_AGENT_NAME      - Human-readable agent name (optional)
+#   TELEMETRYFLOW_ENVIRONMENT     - Deployment environment tag, e.g. production (optional)
+#   TELEMETRYFLOW_K8S_CLUSTER_ID  - K8s cluster UUID from TFO Platform (required for K8s sync)
+#
+# These MUST match the values in .env (TELEMETRYFLOW_API_KEY_ID /
+# TELEMETRYFLOW_API_KEY_SECRET) and the seeded api_keys row in PostgreSQL.
+# =============================================================================
+
+# =============================================================================
+# TelemetryFlow Backend Connection
+# =============================================================================
+# endpoint is the TFO backend base URL used for:
+#   1. Heartbeat & agent registration — agent appends /monitoring/agents/{id}/heartbeat
+#   2. OTLP base URL — OTLP paths derived from endpoint_version are appended here
+#      unless a full per-signal endpoint override is set in exporter.otlp.*.endpoint
+#
+# Docker Compose:  http://host.docker.internal:3000/api/v2
+#   host.docker.internal reaches the backend whether it runs on the host or in
+#   Docker (port 3000 is mapped in both profiles).
+# Local dev:       http://localhost:3000/api/v2
+# Kubernetes:      http://tfo-backend.telemetryflow.svc.cluster.local:3000/api/v2
+telemetryflow:
+  api_key_id: "${TELEMETRYFLOW_API_KEY_ID}"
+  api_key_secret: "${TELEMETRYFLOW_API_KEY_SECRET}"
+  endpoint: "http://host.docker.internal:3000/api/v2"
+  # Protocol: grpc (OTLP native, port 4317) or http (REST + OTLP/HTTP, port 4318)
+  protocol: http
+  tls:
+    enabled: false
+    insecure_skip_verify: true # Set to false in production with valid certificates
+    # cert_file: /etc/tfo-agent/client.crt
+    # key_file:  /etc/tfo-agent/client.key
+    # ca_file:   /etc/tfo-agent/ca.crt
+  retry:
+    enabled: true
+    max_attempts: 3
+    initial_interval: 1s
+    max_interval: 30s
+
+# =============================================================================
+# Agent Identification
+# =============================================================================
+agent:
+  id: ""
+  # hostname is auto-detected but returns the container name inside Docker.
+  # Override with the actual host FQDN if needed for correct identification.
+  hostname: ""
+  name: "${TELEMETRYFLOW_AGENT_NAME:-tfo-agent}"
+  description: "TelemetryFlow Agent - Community Enterprise Observability Platform"
+  version: ""
+  # Tags are sent with every heartbeat and used for grouping / filtering in the UI.
+  tags:
+    environment: "${TELEMETRYFLOW_ENVIRONMENT:-production}"
+    provider: "${TELEMETRYFLOW_PROVIDER:-docker}"
+    region: "${TELEMETRYFLOW_REGION:-ap-southeast-3}"
+    cluster: "${TELEMETRYFLOW_CLUSTER:-telemetryflow}"
+    datacenter: "${TELEMETRYFLOW_DATACENTER:-dc01}"
+    instance_type: "${TELEMETRYFLOW_INSTANCE_TYPE:-container}"
+    team: "${TELEMETRYFLOW_TEAM:-platform}"
+
+  labels: {}
+
+# =============================================================================
+# Heartbeat Settings
+# =============================================================================
+# Heartbeat is always active — there is no enabled toggle.
+# The agent registers itself and sends system info on every heartbeat.
+heartbeat:
+  interval: 60s
+  timeout: 10s
+  include_system_info: true
+
+# =============================================================================
+# Collectors
+# =============================================================================
+collectors:
+  # ---------------------------------------------------------------------------
+  # System Metrics (basic host: CPU, memory, disk, network)
+  # ---------------------------------------------------------------------------
+  system:
+    enabled: true
+    interval: 15s
+    cpu: true
+    memory: true
+    disk: true
+    network: true
+    disk_paths: [] # Empty = monitor all mount points
+
+  # ---------------------------------------------------------------------------
+  # Log File Collection
+  # ---------------------------------------------------------------------------
+  logs:
+    enabled: true
+    paths:
+      - /var/log/pods/*/*/*.log
+      - /var/log/containers/*.log
+    include_patterns: []
+    exclude_patterns: []
+
+  # ---------------------------------------------------------------------------
+  # Fluent Bit Log Collector (production-grade, replaces native logs collector)
+  # ---------------------------------------------------------------------------
+  fluent_bit:
+    enabled: false
+    config_dir: /tmp/tfo-agent-fluentbit
+    flush_interval: 5
+    log_level: info
+    storage_enabled: true
+    health_check: true
+    restart_on_crash: true
+    tail:
+      enabled: true
+      paths:
+        - /var/log/pods/*/*/*.log
+        - /var/log/containers/*.log
+      multiline_parser: "docker,cri"
+    systemd:
+      enabled: true
+      units: [kubelet, docker, containerd]
+    kubernetes:
+      enabled: false # auto-detected
+      log_path: /var/log/containers/*.log
+      merge_log: true
+
+  # ---------------------------------------------------------------------------
+  # Process Monitoring
+  # ---------------------------------------------------------------------------
+  process:
+    enabled: false
+    interval: 30s
+    processes: []
+    # - nginx
+    # - postgres
+
+  # ---------------------------------------------------------------------------
+  # Node Exporter — detailed Linux system metrics (Prometheus node_exporter
+  # replacement). Enable this to replace a standalone node_exporter instance.
+  # All metrics use the "node.*" prefix (→ tfo_node_* in Prometheus format).
+  # ---------------------------------------------------------------------------
+  node_exporter:
+    enabled: false
+    interval: 15s
+    cpu: true # Per-CPU-mode time (user, system, idle, iowait, etc.)
+    memory: true # Detailed memory (cached, buffers, slab, swap)
+    diskio: true # Per-device disk I/O counters
+    filesystem: true # Per-mountpoint usage + inodes
+    network: true # Per-interface stats + TCP states + ARP table
+    loadavg: true # Load averages (1m, 5m, 15m)
+    thermal: true # CPU/hardware temperatures
+    textfile: false # Custom *.prom file collector
+    # Linux-only sub-collectors (gracefully no-op on macOS/Windows)
+    conntrack: true # nf_conntrack count/max
+    psi: true # Pressure Stall Information
+    vmstat: true # /proc/vmstat page I/O
+    sockstat: true # Socket statistics by protocol
+    entropy: true # Available kernel entropy
+    filedesc: true # File descriptor usage
+    stat: true # Context switches, interrupts, forks
+    # Regex exclusion patterns
+    filesystem_mount_exclude: "^/(dev|proc|sys|run)($|/)"
+    filesystem_type_exclude: "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|tmpfs)$"
+    network_device_exclude: "^(veth|docker|br-|lo).*$"
+    disk_device_exclude: '^(ram|loop|fd|sr)\d+$'
+    textfile_path: "" # Path for custom .prom files (textfile collector only)
+
+  # ---------------------------------------------------------------------------
+  # cAdvisor — container metrics via Prometheus scrape.
+  # Kubernetes: scrapes the kubelet's /metrics/cadvisor endpoint on each node.
+  # Docker Compose: scrape a separately running cAdvisor container.
+  # ---------------------------------------------------------------------------
+  cadvisor:
+    enabled: false
+    interval: 15s
+    endpoint: "https://${NODE_IP}:10250"
+    metrics_path: /metrics/cadvisor
+    timeout: 10s
+    metric_names: [] # Empty = all container_* / machine_* metrics
+
+  # ---------------------------------------------------------------------------
+  # Docker — container metrics via Docker Engine API (cAdvisor replacement).
+  # Requires access to the Docker socket (/var/run/docker.sock).
+  # ---------------------------------------------------------------------------
+  docker:
+    enabled: false
+    interval: 15s
+    socket_path: /var/run/docker.sock
+    cpu: true # CPU usage %, user/kernel time, throttling
+    memory: true # Usage, limit, working set, RSS, cache
+    network: true # Per-interface rx/tx bytes, packets, errors, drops
+    diskio: true # Read/write bytes and IOPS
+    pids: true # PID count per container
+    include_stopped: true
+    include_containers: []
+    exclude_containers: []
+    # - "^k8s_POD_.*"  # Exclude Kubernetes pause containers
+
+  # ---------------------------------------------------------------------------
+  # Kubernetes — resource state metrics via k8s.io/client-go.
+  # Replaces kube-state-metrics + Prometheus Agent.
+  # Requires RBAC (ClusterRole with read-only access). See deploy/kubernetes/.
+  # Enable when running in or monitoring a Kubernetes cluster.
+  # ---------------------------------------------------------------------------
+  kubernetes:
+    enabled: true
+    interval: 30s
+    kubeconfig: "" # Empty = in-cluster ServiceAccount auto-detection
+    context: "" # Empty = current-context from kubeconfig
+    namespaces: [] # Empty = all namespaces
+    exclude_namespaces:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+    label_selector: "" # Kubernetes label selector (empty = all resources)
+    # Resource collectors (individually toggleable)
+    nodes: true
+    pods: true
+    deployments: true
+    namespaces_collect: true
+    storage: true # PersistentVolume + PersistentVolumeClaim
+    services: true # Service + Endpoints
+    workloads: true # StatefulSet, DaemonSet, ReplicaSet, Job, CronJob
+    events: true # Kubernetes Events (Normal / Warning)
+    resource_counts: true # Secrets, ConfigMaps, Ingresses count
+    network: true # Network bytes per namespace (Kubelet Summary API)
+    metrics_api: true # Fetch actual CPU/memory usage from metrics-server
+    hpa: true # HorizontalPodAutoscaler (current/desired replicas + conditions)
+    pdb: true # PodDisruptionBudget (healthy/desired/disruptions allowed)
+    # KSM gaps — fills coverage gaps left by kube-state-metrics
+    resource_quotas: true # ResourceQuota hard/used per namespace
+    limit_ranges: true # LimitRange default/max constraints per namespace
+    pod_conditions: true # Per-pod condition status (Ready, PodScheduled, ContainersReady, etc.)
+    node_taints: true # Node taint inventory (key, effect, value)
+    workload_generations: true # Deployment/StatefulSet observed vs desired generation drift
+    pod_logs: true # Collect recent log lines from each running container
+    pod_logs_tail_lines: 100 # Log lines per container per collection cycle
+    pod_logs_namespaces: [] # Restrict pod log collection to these namespaces (empty = same as namespace filter)
+    node_logs: true # Collect kubelet/kube-proxy/containerd logs from nodes
+    node_logs_tail_lines: 200
+    node_log_sources: [kubelet, kube-proxy, containerd]
+    # API Server metrics — scrape from kube-apiserver /metrics endpoint
+    apiserver_metrics: true
+    # CoreDNS metrics — scrape from CoreDNS /metrics endpoint (via Service DNS)
+    coredns_metrics: true
+    coredns_service: "coredns.kube-system.svc.cluster.local:9153"
+    # Container-level extended metrics (requires cAdvisor or Kubelet /stats/summary access)
+    container_extended_metrics: true  # cpu_throttled, memory_working_set, oom detection
+    # PV I/O stats — from Kubelet volume stats API
+    pv_io_stats: true
+    # Sync resource state to TFO backend (populates PostgreSQL K8s entities)
+    sync_to_backend: true
+    sync_interval: 60s
+    cluster_name: "" # Auto-detected if empty
+    cluster_provider: "" # eks | gke | aks | k3s | self-managed | etc.
+    # UUID of the cluster registered in TFO Platform (required for sync_to_backend).
+    # Obtain by calling: POST /api/v2/monitoring/kubernetes/clusters
+    cluster_id: "${TELEMETRYFLOW_K8S_CLUSTER_ID}"
+
+  # ---------------------------------------------------------------------------
+  # eBPF — kernel-level observability (Linux 4.15+, 5.2+ recommended for CO-RE).
+  # Requires CAP_BPF + CAP_PERFMON (or CAP_SYS_ADMIN on older kernels).
+  # Gracefully returns empty metrics on non-Linux platforms.
+  # ---------------------------------------------------------------------------
+  ebpf:
+    enabled: false
+    interval: 15s
+    collect_syscalls: true # Syscall invocation counts + latency
+    collect_network: true # TCP/UDP connection monitoring
+    collect_file_io: true # VFS read/write/open tracking
+    collect_scheduler: false # Context switches, runqueue latency
+    collect_memory: false # Page faults (major/minor)
+    collect_tcp_events: true # TCP state transitions (inet_sock_set_state)
+    process_filter: [] # Include only these processes (empty = all)
+    exclude_processes:
+      - tfo-agent
+      - systemd
+      - kworker
+      - rcu_sched
+    sample_rate: 100 # Sampling percentage (1–100)
+    ring_buffer_size: 262144 # Ring buffer size in bytes (256 KB)
+    perf_buffer_size: 64 # Perf buffer pages
+    btf_path: "" # Empty = auto-detect from /sys/kernel/btf/vmlinux
+    pin_path: /sys/fs/bpf/tfo-agent
+    labels: {}
+    # Cilium Hubble integration (optional — requires Cilium CNI)
+    cilium:
+      enabled: false
+      hubble_address: "localhost:4245"
+      hubble_tls_enabled: false
+      hubble_tls_cert: ""
+      hubble_tls_key: ""
+      hubble_tls_ca: ""
+      collect_flows: true # L3/L4 network flows
+      collect_l7_flows: false # HTTP/gRPC/DNS flows
+      collect_drops: true # Dropped packets
+      collect_policies: true # Network policy verdicts
+
+  # ---------------------------------------------------------------------------
+  # Remote Write Receiver — accept Prometheus Remote Write on a local port.
+  # Allows external tools (Prometheus, Grafana Agent, etc.) to push metrics
+  # directly to TFO-Agent for forwarding through the OTLP export pipeline.
+  # ---------------------------------------------------------------------------
+  remote_write_receiver:
+    enabled: false
+    port: 9091
+
+# =============================================================================
+# OTLP Exporter — send telemetry to TFO-Collector
+# =============================================================================
+# endpoint_version controls path suffix auto-generation:
+#   v1: /v1/metrics, /v1/traces, /v1/logs  (OTEL community standard)
+#   v2: /v2/metrics, /v2/traces, /v2/logs  (TFO Platform enhanced)
+# Paths are appended to telemetryflow.endpoint as the base URL.
+#
+# To override for a specific signal, set a full URL in metrics.endpoint /
+# traces.endpoint / logs.endpoint (bypasses telemetryflow.endpoint entirely).
+#
+# Docker Compose collector endpoint examples:
+#   HTTP/protobuf (recommended): http://tfo-collector:4318/v2/metrics
+#   gRPC:                        tfo-collector:4317
+exporter:
+  otlp:
+    enabled: true
+    batch_size: 100
+    flush_interval: 10s
+    compression: gzip
+    endpoint_version: v2
+
+    # Override individual path suffixes (defaults derived from endpoint_version).
+    # Uncomment to customise — appended to telemetryflow.endpoint.
+    # metrics_endpoint: /v2/metrics
+    # traces_endpoint: /v2/traces
+    # logs_endpoint: /v2/logs
+
+    # Per-signal endpoint overrides — set a full URL to bypass telemetryflow.endpoint.
+    metrics:
+      enabled: true
+      endpoint: "http://tfo-collector:4318/v2/metrics"
+
+    traces:
+      enabled: true
+      endpoint: "http://tfo-collector:4318/v2/traces" # e.g., http://tfo-collector:4318/v2/traces
+
+    logs:
+      enabled: true
+      endpoint: "http://tfo-collector:4318/v2/logs" # e.g., http://tfo-collector:4318/v2/logs
+
+# =============================================================================
+# Offline Buffer
+# =============================================================================
+# Buffers unsent telemetry to disk during collector outages or network issues.
+buffer:
+  enabled: true
+  max_size_mb: 100
+  path: "/var/lib/tfo-agent/buffer"
+  max_age: 24h
+  flush_interval: 5s
+
+# =============================================================================
+# Logging
+# =============================================================================
+logging:
+  # Log level: debug, info, warn, error
+  level: info
+  # Log format: json, text
+  format: json
+  # Log file path (empty = stdout)
+  file: ""
+  # Log rotation settings
+  max_size_mb: 100
+  max_backups: 3
+  max_age_days: 7
+  # Include stack traces in error logs
+  include_stack_trace: false
+  # Log sampling (reduce log volume in high-throughput scenarios)
+  sampling_initial: 100
+  sampling_thereafter: 100
+
+# =============================================================================
+# Integration Notes
+# =============================================================================
+#
+# 1. TFO-Agent → TFO-Collector (OTLP)
+#    - HTTP/protobuf (port 4318): exporter.otlp.metrics.endpoint = http://tfo-collector:4318/v2/metrics
+#    - gRPC          (port 4317): set protocol: grpc and telemetryflow.endpoint = tfo-collector:4317
+#    - TFO-Collector accepts both v1 (/v1/*) and v2 (/v2/*) paths simultaneously.
+#
+# 2. Node Exporter Metrics
+#    - 100+ system metrics: CPU, memory, disk, network, load averages, etc.
+#    - Exported via OTLP to TFO-Collector → ClickHouse metrics tables.
+#    - Viewable in TFO Platform → Infrastructure dashboards.
+#
+# 3. Kubernetes Metrics
+#    - Pod, Node, Deployment, Service, StatefulSet, DaemonSet, Job, CronJob metrics.
+#    - Requires RBAC: ClusterRole + ServiceAccount (see deploy/kubernetes/).
+#    - Auto-detects in-cluster config when running inside a K8s Pod.
+#    - sync_to_backend writes resource state to PostgreSQL (K8s module entities).
+#
+# 4. eBPF Metrics (Linux only)
+#    - Kernel-level: syscalls, TCP/UDP, VFS I/O, TCP state transitions.
+#    - Requires CAP_BPF + CAP_PERFMON capabilities (or CAP_SYS_ADMIN on older kernels).
+#    - Optional Cilium Hubble integration for network policy observability.
+#
+# 5. Agent Registration & Heartbeat
+#    - Agent registers on startup: POST {telemetryflow.endpoint}/agents
+#    - Heartbeat every 60s:        POST {telemetryflow.endpoint}/agents/{id}/heartbeat
+#    - API key (api_key_id + api_key_secret) must match a seeded row in PostgreSQL api_keys.
+#
+# =============================================================================
+# Quick Start (Docker Compose)
+# =============================================================================
+#
+#   # Start the full platform stack including TFO-Agent
+#   docker compose -f docker-compose.telemetryflow.yml up -d
+#
+#   # View agent logs
+#   docker compose logs -f tfo-agent
+#
+#   # Validate configuration
+#   docker compose exec tfo-agent tfo-agent config validate
+#

@@ -1,0 +1,56 @@
+// TFO Style Registry — K8S CoreDNS
+// Source: views/monitoring/kubernetes/coredns.vue + coredns-components/*.vue
+
+// CoreDNS page styles are identical to api-server page layout
+// Sub-components use the same .section / .graphs-grid patterns
+
+.k8s-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--n-text-color);
+  margin: 0 0 4px 0;
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+}
+
+.section-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-cards-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// CoreDNS sub-components: CacheSection, RequestsSection, ResourcesSection
+// All use the same .section-header-right + .graphs-grid pattern already in _k8s-api-server.scss

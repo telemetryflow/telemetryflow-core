@@ -1,0 +1,60 @@
+// ============================================================================
+// SSO Callback View Styles
+// Source: views/auth/sso-callback.vue
+// ============================================================================
+
+.sso-callback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--n-body-color, #f5f5f5);
+}
+
+.callback-card {
+  text-align: center;
+  padding: 48px;
+  background: var(--n-card-color, #fff);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  max-width: 400px;
+
+  h2 {
+    margin: 16px 0 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  p {
+    color: var(--n-text-color-3, #999);
+    font-size: 0.875rem;
+    margin: 0;
+  }
+}
+
+.callback-icon {
+  color: var(--n-primary-color, #3b82f6);
+
+  &.error {
+    color: #ef4444;
+  }
+}
+
+.error-message {
+  color: #ef4444 !important;
+  margin-bottom: 8px !important;
+}
+
+.redirect-text {
+  font-size: 0.75rem !important;
+  margin-top: 12px !important;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

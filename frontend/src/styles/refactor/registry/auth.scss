@@ -1,0 +1,9 @@
+// TFO Style Registry — Auth Category
+// Aggregator: loads variables first, then layout, form elements, Naive UI
+// overrides, and per-page styles.
+
+@use "auth-variables" as *;
+@use "auth-core" as *;
+@use "auth-form-elements" as *;
+@use "auth-naive-overrides" as *;
+@use "auth-pages" as *;

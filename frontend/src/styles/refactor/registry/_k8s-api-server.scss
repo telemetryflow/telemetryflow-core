@@ -1,0 +1,73 @@
+// TFO Style Registry — K8S API Server
+// Source: views/monitoring/kubernetes/api-server.vue + api-server-components/*.vue
+
+.k8s-page {
+  .k8s-page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--n-text-color);
+    margin: 0 0 4px 0;
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: var(--n-text-color-3);
+    margin: 0;
+  }
+
+  .section-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .stat-cards-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+// Sub-component shared styles (ErrorsSection, LatencySection, RequestsSection, ResourcesSection)
+.section {
+  .section-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .graphs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}

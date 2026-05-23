@@ -1,0 +1,340 @@
+// Extracted from: alerts/index.vue
+.alerts-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .page-header {
+    margin-bottom: 8px;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--n-text-color);
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: var(--n-text-color-3);
+    margin: 0;
+  }
+
+  .stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    padding: 0 5px;
+
+    @media (max-width: 768px) {
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      gap: 8px;
+    }
+  }
+
+  .tab-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  // Section styles (matching agent monitoring)
+  // overflow: clip clips visual overflow for border-radius but does NOT
+  // create a new scroll container, so the datatable scrollbar stays visible
+  .section {
+    border-radius: 8px;
+    overflow: clip;
+    background: var(--n-card-color);
+    border: 1px solid var(--k8s-border-color);
+  }
+
+  :global(html.dark) .section {
+    background: rgba(30, 41, 59, 0.3);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    background: var(--n-card-color);
+    border-bottom: 1px solid var(--k8s-border-color);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  :global(html.dark) .section-header {
+    background: rgba(30, 41, 59, 0.4);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .section-icon {
+    font-size: 18px;
+    color: var(--n-text-color-3);
+  }
+
+  .table-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    width: 220px;
+  }
+
+  .section-content {
+    padding: 16px;
+    border-top: 1px solid var(--k8s-border-color);
+  }
+
+  // Note: Pagination styling is now global in tfo-table-styles.scss
+
+  .n-tabs {
+    .n-tabs-nav {
+      padding-bottom: 0;
+      border-bottom: 1px solid var(--n-border-color);
+    }
+
+    .n-tabs-tab {
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      margin-right: 4px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(99, 102, 241, 0.05);
+      }
+
+      &.n-tabs-tab--active {
+        border-color: var(--n-border-color);
+        background: var(--n-card-color);
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -1px;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: var(--n-card-color);
+        }
+      }
+    }
+
+    .n-tabs-bar {
+      height: 2px;
+    }
+
+    .n-tabs-nav__suffix {
+      padding-left: 16px;
+      border-bottom: 1px solid var(--n-tab-border-color);
+    }
+  }
+
+  // Detail Content
+  .detail-content {
+    margin-top: 4px;
+  }
+
+  .drawer-stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+
+    .stat-panel {
+      width: 100%;
+      min-height: auto;
+      height: auto;
+    }
+  }
+
+  .status-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+    border: 1px solid;
+
+    svg {
+      font-size: 18px;
+    }
+
+    &.firing {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    &.resolved {
+      background: rgba(34, 197, 94, 0.1);
+      color: #22c55e;
+      border-color: rgba(34, 197, 94, 0.2);
+    }
+
+    &.pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+      border-color: rgba(245, 158, 11, 0.2);
+    }
+  }
+
+  .info-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--k8s-border-color);
+    border-radius: 6px;
+    overflow: hidden;
+
+    :root.dark & {
+      border-color: var(--k8s-border-color);
+    }
+
+    tr:not(:last-child) td {
+      border-bottom: 1px solid var(--k8s-border-color);
+
+      :root.dark & {
+        border-color: var(--k8s-border-color);
+      }
+    }
+
+    td {
+      padding: 10px 12px;
+    }
+
+    .info-label {
+      font-weight: 500;
+      color: var(--n-text-color-3);
+      font-size: 0.8125rem;
+      width: 180px;
+      min-width: 160px;
+      background: rgba(100, 116, 139, 0.1);
+
+      :root.dark & {
+        background: rgba(51, 65, 85, 0.4);
+      }
+    }
+
+    .info-value {
+      color: var(--n-text-color);
+      font-size: 0.8125rem;
+
+      &.mono {
+        font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+          "Courier New", monospace;
+      }
+    }
+  }
+
+  .detail-section {
+    margin-top: 24px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--n-text-color-3);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    svg {
+      font-size: 16px;
+    }
+  }
+
+  .summary-box {
+    padding: 14px 16px;
+    background: rgba(100, 116, 139, 0.1);
+    border: 1px solid var(--k8s-border-color);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--n-text-color);
+    font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+      "Courier New", monospace;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+
+    :root.dark & {
+      background: rgba(51, 65, 85, 0.4);
+      border-color: var(--k8s-border-color);
+    }
+  }
+
+  .drawer-actions {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--k8s-border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
+  // Drawer Header & Footer
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .drawer-header-icon {
+    font-size: 20px;
+    color: var(--n-primary-color);
+  }
+
+  .drawer-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding-top: 5px;
+    border-top: 1px solid var(--n-border-color);
+
+    .n-button {
+      width: 120px;
+      min-width: 100px;
+      height: 36px !important;
+      line-height: 34px;
+      padding: 0 !important;
+      box-sizing: border-box;
+    }
+  }
+}

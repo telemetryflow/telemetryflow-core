@@ -1,0 +1,49 @@
+{
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  },
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@/logger": ["src/shared/logger"],
+      "@/logger/*": ["src/shared/logger/*"],
+      "@/database/*": ["src/database/*"],
+      "@/core/*": ["src/core/*"],
+      "@/modules/*": ["src/modules/*"],
+      "@/shared/*": ["src/shared/*"],
+      "@/common/*": ["src/common/*"],
+      "@/config/*": ["src/config/*"],
+      "@/constants/*": ["src/constants/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "**/*.spec.ts",
+    "**/__tests__/**",
+    "**/tests/templates/**",
+    "src/modules/_temp_for_deletion/**",
+    "src/database/_temp_migrated_entities/**",
+    "src/_temp_old_infrastructure/**"
+  ]
+}

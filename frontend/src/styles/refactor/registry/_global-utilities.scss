@@ -1,0 +1,383 @@
+// TFO Style Registry — Global Utilities
+// Missing utility classes from legacy global.scss that are used in templates
+// but not in responsive-global.scss or any other registry file
+
+// ─── Typography ──────────────────────────────────────────────────────────────
+
+.text-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--n-text-color);
+}
+
+.text-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+}
+
+// ─── Status Indicators ───────────────────────────────────────────────────────
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+
+  &.success { background-color: #22c55e; }
+  &.warning { background-color: #f59e0b; }
+  &.error   { background-color: #ef4444; }
+  &.info    { background-color: #3b82f6; }
+}
+
+// ─── Log Level Badges ────────────────────────────────────────────────────────
+
+.log-level {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+
+  &.trace { background-color: rgba(107, 114, 128, 0.1); color: #6b7280; }
+  &.debug { background-color: rgba(59, 130, 246, 0.1);  color: #3b82f6; }
+  &.info  { background-color: rgba(34, 197, 94, 0.1);   color: #22c55e; }
+  &.warn  { background-color: rgba(245, 158, 11, 0.1);  color: #f59e0b; }
+  &.error { background-color: rgba(239, 68, 68, 0.1);   color: #ef4444; }
+  &.fatal { background-color: rgba(124, 58, 237, 0.1);  color: #7c3aed; }
+}
+
+// ─── Signal Type Badges ──────────────────────────────────────────────────────
+
+.signal-badge {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &.metric   { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+  &.log      { background-color: rgba(34, 197, 94, 0.1);  color: #22c55e; }
+  &.trace    { background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+  &.exemplar { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+}
+
+// ─── Severity Badges ─────────────────────────────────────────────────────────
+
+.severity-badge {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.critical { background-color: rgba(239, 68, 68, 0.1);  color: #ef4444; }
+  &.warning  { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+  &.info     { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+}
+
+// ─── Monospace & Duration ────────────────────────────────────────────────────
+
+.mono {
+  font-family: 'JetBrains Mono', 'Menlo', 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 0.875em;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.duration {
+  font-family: 'JetBrains Mono', 'Menlo', 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 0.875rem;
+
+  &.fast      { color: #22c55e; }
+  &.normal    { color: #6b7280; }
+  &.slow      { color: #f59e0b; }
+  &.very-slow { color: #ef4444; }
+}
+
+// ─── Empty State ─────────────────────────────────────────────────────────────
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 3rem;
+  color: var(--n-text-color-3);
+
+  .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    font-size: 0.875rem;
+    text-align: center;
+  }
+}
+
+// ─── Loading Overlay ─────────────────────────────────────────────────────────
+
+.loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 1030;
+
+  :root.dark & {
+    background-color: rgba(26, 26, 30, 0.85);
+  }
+}
+
+// ─── Settings Row ────────────────────────────────────────────────────────────
+
+.settings-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  align-items: stretch;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.settings-row-equal {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  align-items: stretch;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ─── Collapse Button ─────────────────────────────────────────────────────────
+
+.collapse-btn {
+  padding: 0;
+  margin-right: 0;
+}
+
+// ─── Query Legend ─────────────────────────────────────────────────────────────
+
+.query-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+}
+
+.query-legend-label {
+  color: var(--n-text-color-3);
+}
+
+.query-legend-value {
+  color: var(--n-text-color-2);
+  font-weight: 500;
+}
+
+// ─── Series Legend Tag ───────────────────────────────────────────────────────
+
+.series-legend-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+// ─── NTag Defaults ───────────────────────────────────────────────────────────
+
+.n-tag.n-tag--small,
+.n-tag[data-n-size="small"] {
+  font-weight: 700 !important;
+}
+
+.badge-count {
+  font-weight: 700 !important;
+}
+
+// ─── NCard Standards ─────────────────────────────────────────────────────────
+
+.n-card {
+  .n-card-header {
+    padding-bottom: 8px !important;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+
+    :root.dark & {
+      border-color: #3f3f46;
+    }
+  }
+
+  .n-card-header__main {
+    font-weight: 700 !important;
+  }
+}
+
+.n-card.card-centered {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+
+  .n-card__content {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+}
+
+.n-card.card-with-footer {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+
+  .n-card__content {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .card-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
+    display: flex;
+    gap: 12px;
+
+    :root.dark & {
+      border-color: #3f3f46;
+    }
+  }
+}
+
+// ─── Data Table Tree View ────────────────────────────────────────────────────
+
+.n-data-table {
+  .n-data-table-indent__guide {
+    border-left: 2px dashed rgba(99, 102, 241, 0.4) !important;
+    background: none !important;
+  }
+}
+
+html.dark {
+  .n-data-table-indent__guide {
+    border-left-color: rgba(99, 102, 241, 0.5) !important;
+  }
+}
+
+// ─── Button Styles ───────────────────────────────────────────────────────────
+
+.n-button--quaternary-type {
+  border: 1px solid rgba(100, 116, 139, 0.3) !important;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: rgba(99, 102, 241, 0.5) !important;
+  }
+
+  &.n-button--icon-button {
+    min-width: unset;
+    border: none !important;
+  }
+}
+
+html.dark {
+  .n-button--default-type {
+    color: #e2e8f0 !important;
+    border-color: #475569 !important;
+
+    .n-button__content {
+      color: #e2e8f0 !important;
+    }
+
+    &:hover:not(:disabled) {
+      border-color: #6366f1 !important;
+      color: #c7d2fe !important;
+      background: rgba(99, 102, 241, 0.1) !important;
+
+      .n-button__content {
+        color: #c7d2fe !important;
+      }
+    }
+  }
+
+  .n-button--primary-type {
+    color: #ffffff !important;
+
+    .n-button__content {
+      color: #ffffff !important;
+    }
+  }
+
+  .n-button--quaternary-type {
+    color: #94a3b8 !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+
+    .n-button__content {
+      color: #94a3b8 !important;
+    }
+
+    &:hover:not(:disabled) {
+      color: #e2e8f0 !important;
+      background: rgba(99, 102, 241, 0.1) !important;
+      border-color: rgba(99, 102, 241, 0.5) !important;
+
+      .n-button__content {
+        color: #e2e8f0 !important;
+      }
+    }
+
+    &.n-button--icon-button {
+      min-width: unset;
+      border: none !important;
+    }
+  }
+}
+
+// ─── Dropdown Delete Action ──────────────────────────────────────────────────
+
+.n-dropdown-option.delete-action {
+  .n-dropdown-option-body {
+    color: #ef4444 !important;
+  }
+
+  .n-dropdown-option-body__label {
+    color: #ef4444 !important;
+  }
+
+  .n-dropdown-option-body__prefix {
+    color: #ef4444 !important;
+  }
+
+  &:hover {
+    .n-dropdown-option-body {
+      background: rgba(239, 68, 68, 0.1) !important;
+    }
+  }
+}
+
+html.dark {
+  .n-dropdown-option.delete-action {
+    .n-dropdown-option-body,
+    .n-dropdown-option-body__label,
+    .n-dropdown-option-body__prefix {
+      color: #f87171 !important;
+    }
+  }
+}

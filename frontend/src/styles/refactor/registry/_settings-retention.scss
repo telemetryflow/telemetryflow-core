@@ -1,0 +1,328 @@
+// TFO Style Registry — Settings Retention
+// Source: src/views/settings/retention/ (index.vue, components/RetentionPolicies.vue, components/StatisticPolicies.vue)
+
+// ─── retention/index.vue ──────────────────────────────────────────────────────────
+.retention-policy-view {
+  padding: 0;
+}
+
+.retention-policy-view .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.retention-policy-view .header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.retention-policy-view .page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.retention-policy-view .title-icon {
+  font-size: 28px;
+  color: var(--primary-color);
+}
+
+.retention-policy-view .page-subtitle {
+  color: var(--text-color-3);
+  font-size: 14px;
+}
+
+.retention-policy-view .stat-cards-container {
+  margin-bottom: 24px;
+}
+
+// Main tabs styles
+.retention-policy-view .main-tabs {
+  .tab-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .tab-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .retention-policy-view { padding: 20px 16px; }
+  .retention-policy-view .page-title { font-size: 22px; }
+  .retention-policy-view .title-icon { font-size: 24px; }
+  .retention-policy-view .stat-cards-container .n-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .retention-policy-view { padding: 16px 12px; }
+  .retention-policy-view .page-header { flex-direction: column; gap: 12px; margin-bottom: 16px; }
+  .retention-policy-view .header-left { width: 100%; }
+  .retention-policy-view .header-right { width: 100%; }
+  .retention-policy-view .header-right .n-button { width: 100%; }
+  .retention-policy-view .page-title { font-size: 20px; gap: 8px; }
+  .retention-policy-view .title-icon { font-size: 22px; }
+  .retention-policy-view .page-subtitle { font-size: 13px; }
+  .retention-policy-view .stat-cards-container { margin-bottom: 16px; }
+}
+
+@media (max-width: 480px) {
+  .retention-policy-view { padding: 12px 8px; }
+  .retention-policy-view .page-title { font-size: 18px; }
+  .retention-policy-view .title-icon { font-size: 20px; }
+  .retention-policy-view .stat-cards-container .n-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+// ─── retention/components/RetentionPolicies.vue (scoped) ──────────────────────────
+.retention-policies {
+  padding: 0;
+}
+
+.retention-policies .policy-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+// Header controls
+.retention-policies .filter-select-control {
+  width: 150px;
+}
+
+@media (max-width: 768px) {
+  .retention-policies .filter-select-control { width: 100%; }
+  .retention-policies .table-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    .n-space { justify-content: space-between; }
+    .n-button { flex: 1; justify-content: center; }
+  }
+}
+
+// Vertical tab form layout
+.retention-policies .retention-form-content {
+  display: flex;
+  gap: 16px;
+  max-height: calc(60vh - 80px);
+  overflow: hidden;
+}
+
+.retention-policies .form-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  max-width: 180px;
+  border-right: 1px solid var(--n-border-color);
+  padding-right: 16px;
+}
+
+.retention-policies .form-tab-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color-3);
+
+  &:hover { background: rgba(99, 102, 241, 0.08); color: var(--text-color); }
+  &.active {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary-color);
+    .tab-icon { color: var(--primary-color); }
+  }
+  .tab-icon { font-size: 18px; transition: color 0.2s ease; }
+  .tab-label { white-space: nowrap; }
+}
+
+.retention-policies .tab-description {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--n-border-color);
+  p { margin: 0; font-size: 0.75rem; color: var(--text-color-3); line-height: 1.5; }
+}
+
+.retention-policies .form-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  .form-box {
+    min-width: 300px;
+    background: var(--n-action-color);
+    border: 1px solid var(--n-border-color);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .n-form-item { margin-bottom: 12px; &:last-child { margin-bottom: 0; } }
+  .n-form-item-label { font-weight: 500; font-size: 13px; margin-bottom: 4px; }
+}
+
+.retention-policies .section-hint { margin: 0 0 16px 0; font-size: 12px; color: var(--text-color-3); }
+.retention-policies .form-hint { font-size: 11px; color: var(--text-color-3); margin-top: 4px; }
+
+.retention-policies .archive-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: var(--n-color);
+  border: 1px solid var(--n-border-color);
+}
+
+.retention-policies .archive-toggle-text { flex: 1; }
+
+// Modal header & footer
+.retention-policies .modal-header { display: flex; align-items: center; gap: 12px; }
+.retention-policies .modal-header-icon { font-size: 22px; color: var(--primary-color); flex-shrink: 0; }
+.retention-policies .modal-header-text { display: flex; flex-direction: column; gap: 2px; }
+.retention-policies .modal-header-title { font-size: 16px; font-weight: 600; }
+.retention-policies .modal-header-subtitle { font-size: 12px; color: var(--text-color-3); font-weight: 400; }
+
+.retention-policies .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-top: 15px;
+  border-top: 1px solid var(--n-border-color);
+  .n-button { width: 160px; height: 36px !important; line-height: 34px; padding: 0 !important; box-sizing: border-box; }
+}
+
+.retention-policies .n-modal { max-width: 95vw !important; margin: 16px auto; }
+
+@media (max-width: 768px) {
+  .retention-policies .retention-form-content { flex-direction: column; max-height: calc(70vh - 80px); }
+  .retention-policies .form-tabs {
+    flex-direction: row; flex-wrap: wrap; max-width: 100%; min-width: 100%;
+    border-right: none; border-bottom: 1px solid var(--n-border-color);
+    padding-right: 0; padding-bottom: 12px; gap: 8px;
+  }
+  .retention-policies .form-tab-item {
+    padding: 8px 12px; flex: 1; justify-content: center;
+    .tab-label { font-size: 12px; }
+    .tab-icon { font-size: 16px; }
+  }
+  .retention-policies .tab-description { display: none; }
+  .retention-policies .form-content .form-box { padding: 12px; }
+  .retention-policies .modal-footer {
+    flex-direction: column-reverse;
+    .n-button { width: 100%; }
+  }
+  .retention-policies .n-modal .n-form { max-width: 100%; }
+  .retention-policies .n-modal .n-input-number { width: 100% !important; }
+}
+
+// ─── retention/components/StatisticPolicies.vue (scoped) ──────────────────────────
+.statistic-policies {
+  padding: 0;
+}
+
+// Statistics cards
+.statistic-policies .stats-card {
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.statistic-policies .stats-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--k8s-border-color);
+  background: #f1f5f9;
+  :root.dark & { background: #2a2a3a; }
+}
+
+.statistic-policies .stats-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.statistic-policies .stats-card-icon {
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+.statistic-policies .stats-info-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  td {
+    padding: 10px 14px;
+    font-size: 0.8125rem;
+    border-bottom: 1px solid var(--k8s-border-color);
+    border-right: 1px solid var(--k8s-border-color);
+    vertical-align: middle;
+    &:last-child { border-right: none; }
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  .stats-label {
+    font-weight: 500; color: var(--n-text-color-3); width: 25%;
+    word-break: break-word; overflow-wrap: break-word;
+    background: rgba(100, 116, 139, 0.06);
+    :root.dark & { background: rgba(255, 255, 255, 0.03); }
+  }
+
+  .stats-value {
+    font-weight: 700; color: var(--n-text-color); width: 25%;
+    overflow: hidden; word-break: break-word; overflow-wrap: break-word;
+    .n-tag { white-space: normal; word-break: break-word; max-width: 100%; height: auto; line-height: 1.4; }
+  }
+
+  .stats-none { color: var(--n-text-color-3); font-weight: 400; }
+}
+
+// Mobile
+@media (max-width: 768px) {
+  .statistic-policies .n-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .statistic-policies .stats-info-table {
+    tr { display: flex; flex-wrap: wrap; }
+    td { width: 50% !important; box-sizing: border-box; }
+    .stats-label { min-width: unset; }
+  }
+}
+
+// ─── retention/components/RetentionPolicies.vue (unscoped) ────────────────────────
+.n-modal.n-card {
+  .n-card__footer {
+    padding-top: 0 !important;
+  }
+}

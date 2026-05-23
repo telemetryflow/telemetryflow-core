@@ -1,0 +1,118 @@
+# =============================================================================
+# TelemetryFlow Core - Frontend Dockerfile
+# Multi-stage build for optimized production image
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Stage 1: Build
+# -----------------------------------------------------------------------------
+FROM node:23-alpine AS builder
+
+WORKDIR /app
+
+# Install system dependencies (native modules: argon2, bcrypt)
+RUN apk add --no-cache python3 g++ make
+
+# Install pnpm
+RUN npm install -g pnpm@10.24.0
+
+# Copy workspace configuration files (required for pnpm workspace)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+
+# Copy frontend source code and nest-cli config
+COPY frontend/ ./frontend/
+
+# Install all dependencies (workspace-aware)
+RUN pnpm install --frozen-lockfile
+
+# Build arguments for environment configuration
+ARG TELEMETRYFLOW_APP_TITLE="TelemetryFlow Viz"
+ARG TELEMETRYFLOW_APP_CODE="TFO-Viz"
+ARG TELEMETRYFLOW_BASE_URL="/"
+ARG TELEMETRYFLOW_API_URL=""
+ARG TELEMETRYFLOW_IAM_API_URL=""
+ARG TELEMETRYFLOW_GRPC_URL=""
+ARG TELEMETRYFLOW_WS_URL=""
+ARG TELEMETRYFLOW_USE_MOCK="false"
+ARG TELEMETRYFLOW_REFRESH_INTERVAL="5000"
+
+# Set environment variables for build
+ENV NODE_ENV=production
+ENV TELEMETRYFLOW_APP_TITLE=$TELEMETRYFLOW_APP_TITLE
+ENV TELEMETRYFLOW_APP_CODE=$TELEMETRYFLOW_APP_CODE
+ENV TELEMETRYFLOW_BASE_URL=$TELEMETRYFLOW_BASE_URL
+ENV TELEMETRYFLOW_API_URL=$TELEMETRYFLOW_API_URL
+ENV TELEMETRYFLOW_IAM_API_URL=$TELEMETRYFLOW_IAM_API_URL
+ENV TELEMETRYFLOW_GRPC_URL=$TELEMETRYFLOW_GRPC_URL
+ENV TELEMETRYFLOW_WS_URL=$TELEMETRYFLOW_WS_URL
+ENV TELEMETRYFLOW_USE_MOCK=$TELEMETRYFLOW_USE_MOCK
+ENV TELEMETRYFLOW_REFRESH_INTERVAL=$TELEMETRYFLOW_REFRESH_INTERVAL
+
+# Increase Node.js memory limit for build
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
+# Build the application (skip vue-tsc type-check in Docker — CI handles that)
+RUN pnpm build:frontend
+
+# -----------------------------------------------------------------------------
+# Stage 2: Production
+# -----------------------------------------------------------------------------
+FROM nginx:1.27-alpine AS production
+
+# Update packages to get security patches (CVE fixes)
+RUN apk upgrade --no-cache
+
+# Labels
+LABEL org.opencontainers.image.title="TelemetryFlow Core Viz"
+LABEL org.opencontainers.image.description="TelemetryFlow Core - Vue 3 Frontend SPA"
+LABEL org.opencontainers.image.version="1.4.0"
+LABEL org.opencontainers.image.vendor="TelemetryFlow"
+LABEL org.opencontainers.image.authors="TelemetryFlow <support@telemetryflow.id>"
+LABEL org.opencontainers.image.url="https://telemetryflow.id"
+LABEL org.opencontainers.image.documentation="https://docs.telemetryflow.id"
+LABEL org.opencontainers.image.source="https://github.com/telemetryflow/telemetryflow-core"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.base.name="nginx:1.27-alpine"
+LABEL io.telemetryflow.product="TelemetryFlow Core"
+LABEL io.telemetryflow.component="telemetryflow-core-viz"
+LABEL io.telemetryflow.maintainer="TelemetryFlow"
+
+# Copy nginx configuration
+COPY config/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY config/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+
+# Create non-root user for security (must be done before COPY --chown)
+RUN addgroup -g 1001 -S telemetryflow && \
+    adduser -u 1001 -S telemetryflow -G telemetryflow
+
+# Copy runtime env injection entrypoint
+COPY config/docker-entrypoint-viz.sh /docker-entrypoint-viz.sh
+
+# Copy built assets from builder stage with correct ownership
+COPY --from=builder --chown=telemetryflow:telemetryflow /app/frontend/dist /usr/share/nginx/html
+
+# Ensure runtime-config.js stub exists, fix permissions for nginx runtime dirs
+USER root
+
+RUN chmod +x /docker-entrypoint-viz.sh && \
+    rm -f /usr/share/nginx/html/runtime-config.js && \
+    echo "window.__TELEMETRYFLOW_RUNTIME__ = {};" > /tmp/runtime-config.js && \
+    ln -sf /tmp/runtime-config.js /usr/share/nginx/html/runtime-config.js && \
+    chown -R telemetryflow:telemetryflow /usr/share/nginx/html && \
+    chown -R telemetryflow:telemetryflow /var/cache/nginx && \
+    chown -R telemetryflow:telemetryflow /var/log/nginx && \
+    touch /var/run/nginx.pid && \
+    chown -R telemetryflow:telemetryflow /var/run/nginx.pid
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
+
+# Expose port
+EXPOSE 80
+
+# Switch to non-root user
+USER telemetryflow
+
+# Start nginx via entrypoint (generates runtime-config.js from env vars)
+ENTRYPOINT ["/docker-entrypoint-viz.sh"]

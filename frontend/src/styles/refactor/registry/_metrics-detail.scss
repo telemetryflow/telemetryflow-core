@@ -1,0 +1,223 @@
+// Metric Detail Page — metrics/detail.vue (scoped)
+.metric-detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// Data table styling - matching Kubernetes tables
+.metric-detail-page .n-data-table {
+  border: 1px solid var(--k8s-border-color, #c1c5cc);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.metric-detail-page .n-data-table-thead {
+  background: var(--k8s-table-header-bg, #f8fafc) !important;
+}
+
+.metric-detail-page .n-data-table-th {
+  font-weight: 700 !important;
+  background: var(--k8s-table-header-bg, #f8fafc) !important;
+  color: var(--k8s-table-header-text, #374151) !important;
+  border-bottom: 1px solid var(--k8s-border-color, #c1c5cc) !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.metric-detail-page .n-data-table-tr td {
+  border-bottom: 1px solid var(--k8s-border-color, #c1c5cc) !important;
+}
+
+.metric-detail-page .n-data-table-tr:last-child td {
+  border-bottom: none !important;
+}
+
+.metric-detail-page .n-data-table-pagination {
+  padding: 20px 16px;
+  border-top: 1px solid var(--k8s-border-color, #c1c5cc);
+  margin-top: 12px;
+  background: var(--k8s-table-header-bg, #f8fafc);
+}
+
+.metric-detail-page .n-card-header__main {
+  font-weight: 700 !important;
+}
+
+.metric-detail-page .page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.metric-detail-page .metric-info {
+  flex: 1;
+}
+
+.metric-detail-page .metric-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: monospace;
+  margin: 0 0 4px 0;
+  color: var(--n-text-color);
+}
+
+.metric-detail-page .metric-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.metric-detail-page .metric-unit {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+}
+
+.metric-detail-page .metric-description {
+  margin: 0;
+  color: var(--n-text-color-2);
+}
+
+.metric-detail-page .labels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.metric-detail-page .label-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metric-detail-page .label-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+}
+
+// Responsive — Tablet
+@media (max-width: 1024px) {
+  .metric-detail-page {
+    gap: 14px;
+  }
+
+  .metric-detail-page .labels-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+}
+
+// Responsive — Mobile
+@media (max-width: 768px) {
+  .metric-detail-page {
+    gap: 12px;
+  }
+
+  .metric-detail-page .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .metric-detail-page .metric-info {
+    width: 100%;
+  }
+
+  .metric-detail-page .metric-name {
+    font-size: 1rem;
+    word-break: break-all;
+  }
+
+  .metric-detail-page .metric-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .metric-detail-page .metric-unit {
+    font-size: 0.8125rem;
+  }
+
+  .metric-detail-page .metric-description {
+    font-size: 0.875rem;
+  }
+
+  .metric-detail-page .labels-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .metric-detail-page .label-item {
+    gap: 6px;
+  }
+
+  .metric-detail-page .label-name {
+    font-size: 0.6875rem;
+  }
+
+  .metric-detail-page .n-card__content {
+    padding: 12px;
+  }
+}
+
+// Responsive — Small Mobile
+@media (max-width: 480px) {
+  .metric-detail-page {
+    gap: 10px;
+  }
+
+  .metric-detail-page .page-header {
+    gap: 8px;
+
+    .n-button {
+      padding: 0 10px;
+      font-size: 0.8125rem;
+    }
+  }
+
+  .metric-detail-page .metric-name {
+    font-size: 0.9375rem;
+  }
+
+  .metric-detail-page .metric-meta {
+    gap: 6px;
+
+    .n-tag {
+      font-size: 0.6875rem;
+    }
+  }
+
+  .metric-detail-page .metric-unit {
+    font-size: 0.75rem;
+  }
+
+  .metric-detail-page .metric-description {
+    font-size: 0.8125rem;
+  }
+
+  .metric-detail-page .labels-grid {
+    gap: 8px;
+  }
+
+  .metric-detail-page .label-item {
+    gap: 4px;
+  }
+
+  .metric-detail-page .label-name {
+    font-size: 0.625rem;
+  }
+
+  .metric-detail-page .n-card-header {
+    padding: 10px 12px;
+  }
+
+  .metric-detail-page .n-card__content {
+    padding: 10px;
+  }
+
+  .metric-detail-page .n-select {
+    font-size: 0.8125rem;
+  }
+}

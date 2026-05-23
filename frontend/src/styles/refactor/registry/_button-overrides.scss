@@ -1,0 +1,153 @@
+// TFO Style Registry — Button Overrides
+// Dark mode fixes, quaternary variant, text-type hover, tree view guide lines
+
+// ─── Naive UI Button Dark Mode Fixes ──────────────────────────────────────────
+
+html.dark {
+
+  // Default button - ensure visible text color
+  .n-button--default-type {
+    color: #e2e8f0 !important;
+    border-color: #475569 !important;
+
+    .n-button__content {
+      color: #e2e8f0 !important;
+    }
+
+    &:hover:not(:disabled) {
+      border-color: #6366f1 !important;
+      color: #c7d2fe !important;
+      background: rgba(99, 102, 241, 0.1) !important;
+
+      .n-button__content {
+        color: #c7d2fe !important;
+      }
+    }
+  }
+
+  // Primary button - white text
+  .n-button--primary-type {
+    color: #ffffff !important;
+
+    .n-button__content {
+      color: #ffffff !important;
+    }
+  }
+
+  // Secondary/tertiary button
+  .n-button--secondary-type,
+  .n-button--tertiary-type {
+    color: #c7d2fe !important;
+    border-color: #6366f1 !important;
+
+    .n-button__content {
+      color: #c7d2fe !important;
+    }
+
+    &:hover:not(:disabled) {
+      background: rgba(99, 102, 241, 0.15) !important;
+    }
+  }
+
+  // Quaternary button (ghost) - with border
+  .n-button--quaternary-type {
+    color: #94a3b8 !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+    min-width: 80px;
+
+    .n-button__content {
+      color: #94a3b8 !important;
+    }
+
+    &:hover:not(:disabled) {
+      color: #e2e8f0 !important;
+      background: rgba(99, 102, 241, 0.1) !important;
+      border-color: rgba(99, 102, 241, 0.5) !important;
+
+      .n-button__content {
+        color: #e2e8f0 !important;
+      }
+    }
+
+    // Icon-only buttons - smaller min-width
+    &.n-button--icon-button {
+      min-width: unset;
+      border: none !important;
+    }
+  }
+
+  // Error type button
+  .n-button--error-type {
+    &.n-button--quaternary-type {
+      color: #f87171 !important;
+
+      .n-button__content {
+        color: #f87171 !important;
+      }
+
+      &:hover:not(:disabled) {
+        background: rgba(239, 68, 68, 0.15) !important;
+      }
+    }
+  }
+}
+
+// ─── Data Table Tree View - Dashed Lines Style ────────────────────────────────
+
+.n-data-table {
+
+  // Tree indent lines - dashed style
+  .n-data-table-indent__guide {
+    border-left: 2px dashed rgba(99, 102, 241, 0.4) !important;
+    background: none !important;
+  }
+
+  // Light mode
+  &:not(.dark) {
+    .n-data-table-indent__guide {
+      border-left-color: rgba(99, 102, 241, 0.3) !important;
+    }
+  }
+}
+
+// Dark mode tree lines
+html.dark {
+  .n-data-table-indent__guide {
+    border-left-color: rgba(99, 102, 241, 0.5) !important;
+  }
+}
+
+// ─── Global Button Border & Min-Width Styles ──────────────────────────────────
+
+// Light mode quaternary buttons with borders
+.n-button--quaternary-type {
+  border: 1px solid rgba(100, 116, 139, 0.3) !important;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: rgba(99, 102, 241, 0.5) !important;
+  }
+
+  // Icon-only buttons - no border, no min-width
+  &.n-button--icon-button {
+    min-width: unset;
+    border: none !important;
+  }
+}
+
+// Default button min-width
+.n-button--default-type {
+
+  &.n-button--icon-button {
+    min-width: unset;
+  }
+}
+
+// Text type buttons with subtle underline on hover
+.n-button--text-type {
+  min-width: unset;
+
+  &:hover:not(:disabled) {
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,117 @@
+// TFO Style Registry — Dashboard Draggable Grid
+// Grid layout, widget containers, drag/drop states, resize handle
+// Source: DraggableGrid.vue
+
+.draggable-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  grid-auto-rows: minmax(100px, auto);
+  min-height: 400px;
+}
+
+.widget-container {
+  background: var(--n-card-color);
+  border: 2px solid var(--k8s-border-color, var(--n-border-color));
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  cursor: default;
+  position: relative;
+
+  &.edit-mode {
+    cursor: grab;
+
+    &:hover {
+      border-color: var(--n-primary-color);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+      :global(html.dark) & {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &.is-dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+  }
+
+  &.drag-over {
+    border-color: var(--n-primary-color);
+    background: var(--n-primary-color-suppl);
+    transform: scale(0.98);
+  }
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--k8s-border-color, var(--n-border-color));
+  background: var(--n-action-color);
+}
+
+.widget-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--n-text-color);
+
+  .drag-handle {
+    cursor: grab;
+    color: var(--n-text-color-3);
+    font-size: 16px;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+.widget-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.widget-content {
+  padding: 12px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+
+  > * {
+    width: 100%;
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.widget-resize-handle {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--n-text-color-3);
+  cursor: nwse-resize;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 12px;
+
+  .widget-container:hover & {
+    opacity: 1;
+  }
+}

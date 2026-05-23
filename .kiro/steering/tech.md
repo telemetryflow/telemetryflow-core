@@ -1,156 +1,99 @@
-# Technology Stack & Build System
+# Tech Stack
 
-## Core Technologies
+## Monorepo
 
-- **Framework**: NestJS 11.x (Node.js framework with decorators and dependency injection)
-- **Language**: TypeScript 5.9 with strict configuration
-- **Package Manager**: pnpm 10.24.0 (preferred over npm/yarn)
-- **Runtime**: Node.js 22+ (Alpine Linux in Docker)
+- **Build orchestration**: Turborepo (`turbo.json`) with pnpm workspaces
+- **Package manager**: pnpm (root uses pnpm@10, frontend uses pnpm@9)
+- **Workspaces**: `@telemetryflow/backend`, `@telemetryflow/viz`
 
-## Database Stack
+## Backend (`backend/`)
 
-- **Primary Database**: PostgreSQL 16 (IAM data, user management)
-- **Analytics Database**: ClickHouse (audit logs, metrics, traces)
-- **ORM**: TypeORM 0.3 with migrations (no synchronize in production)
-- **Connection**: Environment-based configuration with health checks
+- **Runtime**: Node.js 18+
+- **Framework**: NestJS 11.x
+- **Language**: TypeScript 5.9
+- **ORM**: TypeORM 0.3 (PostgreSQL via `pg`)
+- **Databases**: PostgreSQL 16 (IAM/relational data), ClickHouse (audit logs, telemetry)
+- **Auth**: Passport.js + JWT (`@nestjs/passport`, `@nestjs/jwt`), Argon2 password hashing
+- **Architecture**: DDD + CQRS (`@nestjs/cqrs`) — Domain / Application / Infrastructure / Presentation layers
+- **Queue**: BullMQ + Redis
+- **Observability**: OpenTelemetry SDK (traces, metrics, logs), Winston logger
+- **Validation**: `class-validator` + `class-transformer`
+- **API Docs**: Swagger/OpenAPI (`@nestjs/swagger`)
+- **Testing**: Jest + `ts-jest`, `fast-check` (property-based), Supertest (e2e)
 
-## Architecture Patterns
+## Frontend (`frontend/`)
 
-- **Domain-Driven Design (DDD)**: Clean architecture with domain/application/infrastructure/presentation layers
-- **CQRS**: Command Query Responsibility Segregation with @nestjs/cqrs
-- **Event-Driven**: Domain events with event processors
-- **Dependency Injection**: NestJS IoC container with interface-based repositories
-
-## Security & Authentication
-
-- **Authentication**: JWT with Passport.js
-- **Password Hashing**: Argon2 (preferred over bcrypt)
-- **Authorization**: Role-based access control with guards and decorators
-- **Secrets**: Cryptographically secure generation via scripts/generate-secrets.js
-
-## Observability Stack
-
-- **Logging**: Winston with multiple transports (Console, File, OTEL, ClickHouse)
-- **Tracing**: OpenTelemetry with OTLP export
-- **Metrics**: Prometheus with custom metrics
-- **API Docs**: Swagger/OpenAPI at `/api` endpoint
-- **Health Checks**: Built-in `/health` endpoint
-
-## Testing Framework
-
-- **Test Runner**: Jest with ts-jest transformer
-- **Coverage**: 90% threshold for branches, functions, lines, statements
-- **API Testing**: Newman (Postman CLI) for BDD scenarios
-- **Test Types**: Unit tests (*.spec.ts), E2E tests (*.e2e.spec.ts)
+- **Framework**: Vue 3.5+ (Composition API, `<script setup>`)
+- **Language**: TypeScript 5.7
+- **Build tool**: Vite 6
+- **State management**: Pinia
+- **UI library**: Naive UI
+- **Charts**: ECharts + vue-echarts
+- **HTTP client**: Axios (with JWT interceptor)
+- **Router**: Vue Router 4
+- **CSS**: SCSS + UnoCSS (utility-first)
+- **Icons**: Iconify + @vicons/ionicons5
+- **Testing**: Vitest + `@vue/test-utils` + `fast-check` (property-based), happy-dom environment
+- **Auto-imports**: `unplugin-auto-import` (vue, vue-router, pinia, naive-ui composables), `unplugin-vue-components`
 
 ## Common Commands
 
-### Development
 ```bash
-# Start development server with hot reload
+# Install all dependencies
+pnpm install
+
+# Development (both backend + frontend via Turborepo)
 pnpm dev
+pnpm dev:backend
+pnpm dev:frontend
 
-# Start with debugger
-pnpm start:debug
-
-# Build for production
+# Build
 pnpm build
+pnpm build:backend
+pnpm build:frontend
 
-# Start production server
-pnpm start
-```
+# Tests
+pnpm test                        # Jest (backend unit tests)
+pnpm test:cov                    # Jest with coverage
+pnpm test:bdd                    # BDD API tests via Newman/Postman
+cd frontend && pnpm test         # Vitest (frontend, single run)
+cd frontend && pnpm test:watch   # Vitest watch mode
 
-### Database Operations
-```bash
-# Full database setup (migrations + seeds)
-pnpm db:migrate:seed
+# Linting
+pnpm lint
+pnpm lint:fix
 
-# Run migrations only
-pnpm db:migrate
-pnpm db:migrate:postgres    # PostgreSQL only
-pnpm db:migrate:clickhouse  # ClickHouse only
+# Database
+pnpm db:migrate                  # Run all migrations (Postgres + ClickHouse)
+pnpm db:seed                     # Seed all data
+pnpm db:fresh                    # Full reset (drop + migrate + seed)
+pnpm db:migrate:postgres
+pnpm db:migrate:clickhouse
 
-# Seed data
-pnpm db:seed
-pnpm db:seed:iam            # IAM data only
-pnpm db:seed:clickhouse     # ClickHouse only
-
-# Clean databases
-pnpm db:cleanup
-
-# Generate sample data (50 records)
-pnpm db:generate-sample
-```
-
-### Testing
-```bash
-# Unit tests
-pnpm test
-pnpm test:watch
-pnpm test:cov
-
-# BDD API tests (Newman)
-pnpm test:bdd
-pnpm test:bdd:verbose
-pnpm test:bdd:users         # Users module only
-pnpm test:bdd:roles         # Roles module only
-```
-
-### Docker Operations
-```bash
-# Start all services
-pnpm docker:up
-docker-compose --profile all up -d
-
-# Core services only
-docker-compose --profile core up -d
-
-# With monitoring
-docker-compose --profile core --profile monitoring up -d
-
-# Stop services
+# Docker
+pnpm docker:up                   # docker-compose up -d
 pnpm docker:down
+docker-compose --profile all up -d   # All services including frontend
 
-# View logs
-pnpm docker:logs
-```
-
-### Security & Secrets
-```bash
-# Generate JWT and session secrets
+# Secrets
 pnpm generate:secrets
 
-# Bootstrap entire environment
-pnpm bootstrap
-bash scripts/bootstrap.sh --dev
+# Makefile shortcuts (recommended for CI)
+make dev
+make test
+make build
+make ci-pipeline
 ```
 
-### Code Quality
-```bash
-# Lint and fix
-pnpm lint
+## Environment Variables
 
-# Clean build artifacts
-pnpm clean
-```
+All frontend env vars are prefixed `TELEMETRYFLOW_`. Key ones:
 
-## Environment Configuration
+| Variable                    | Purpose                                                    |
+| --------------------------- | ---------------------------------------------------------- |
+| `TELEMETRYFLOW_IAM_API_URL` | NestJS backend URL (default: `http://localhost:3000`)      |
+| `TELEMETRYFLOW_API_URL`     | OTEL Collector HTTP URL (default: `http://localhost:4318`) |
+| `TELEMETRYFLOW_USE_MOCK`    | Enable mock API server in dev                              |
+| `TELEMETRYFLOW_WS_URL`      | WebSocket URL                                              |
 
-- **Development**: `.env` file with defaults from `.env.example`
-- **Production**: Environment variables or secrets management
-- **Docker**: Environment variables passed through docker-compose.yml
-- **Required Secrets**: JWT_SECRET, SESSION_SECRET (32+ characters)
-
-## Build Configuration
-
-- **TypeScript**: ES2021 target, CommonJS modules, decorators enabled
-- **NestJS CLI**: Automatic compilation with hot reload
-- **Docker**: Multi-stage build (builder + production)
-- **Exclusions**: Tests, scripts, and development files excluded from production build
-
-## Performance Considerations
-
-- **Database**: Connection pooling, query optimization, proper indexing
-- **Logging**: Structured JSON logging with sampling for high-volume environments
-- **Caching**: Built-in cache service for frequently accessed data
-- **Monitoring**: OpenTelemetry instrumentation for performance tracking
+Backend env vars follow standard NestJS conventions (see `.env.example`).

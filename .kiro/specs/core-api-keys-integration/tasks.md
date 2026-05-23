@@ -1,0 +1,564 @@
+# Implementation Plan: Frontend-Backend API Keys Integration
+
+## Overview
+
+This implementation plan breaks down the API Keys integration into discrete, incremental tasks that build upon each other. The approach follows DDD/CQRS patterns on the backend and Vue 3 Composition API with Pinia on the frontend. Each task includes specific requirements references and testing sub-tasks to ensure correctness throughout development.
+
+## Tasks
+
+- [ ] 1. Set up backend module structure and domain layer
+  - Create api-keys module directory structure following DDD layers
+  - Define domain aggregates (ApiKey), value objects (ApiKeyId, Scope, RateLimit), and enums (ApiKeyStatus)
+  - Create repository interfaces (IApiKeyRepository)
+  - Set up module exports and barrel files
+  - _Requirements: 1.1, 1.2, 1.3_
+
+- [ ] 2. Implement API key token generation and security
+  - [ ] 2.1 Implement cryptographically secure token generation service
+    - Create TokenGenerator service with crypto.randomBytes for 256-bit entropy
+    - Implement token hashing using SHA-256
+    - Add token uniqueness validation
+    - _Requirements: 1.1, 1.2, 15.1, 15.2_
+  - [ ]\* 2.2 Write property test for token generation
+    - **Property 1: Cryptographically Secure Token Generation**
+    - **Validates: Requirements 1.1, 1.2, 15.1**
+  - [ ]\* 2.3 Write property test for token hashing
+    - **Property 3: Token Hashing Before Storage**
+    - **Validates: Requirements 15.2**
+
+- [ ] 3. Implement domain layer business logic
+  - [ ] 3.1 Implement ApiKey aggregate root
+    - Create ApiKey class with create, update, suspend, reactivate, revoke, rotate methods
+    - Implement domain validation logic
+    - Add domain event emission (ApiKeyCreated, ApiKeyRevoked, etc.)
+    - _Requirements: 1.1, 3.1, 4.1, 5.1, 5.2, 6.1_
+  - [ ]\* 3.2 Write unit tests for ApiKey aggregate
+    - Test all business methods
+    - Test validation logic
+    - Test state transitions
+    - _Requirements: 1.1, 3.1, 4.1, 5.1, 5.2, 6.1_
+  - [ ]\* 3.3 Write property test for state transitions
+    - **Property 11: Revoked Key Immutability**
+    - **Property 12: Suspension Round-Trip**
+    - **Property 13: Invalid State Transition Rejection**
+    - **Validates: Requirements 3.6, 4.1, 4.3, 5.1, 5.2, 5.5**
+
+- [ ] 4. Set up database infrastructure
+  - [ ] 4.1 Create PostgreSQL migration for api_keys table
+    - Define table schema with all columns (id, user_id, name, token_hash, scopes, rate_limit, etc.)
+    - Add indexes for user_id, token_hash, status, expires_at
+    - Add foreign key constraint to users table
+    - _Requirements: 1.3, 2.1_
+  - [ ] 4.2 Create ClickHouse migrations for usage and audit tables
+    - Create api_key_usage table with MergeTree engine
+    - Create api_key_audit_trail table with MergeTree engine
+    - Add partitioning by month
+    - _Requirements: 10.1, 11.1_
+  - [ ] 4.3 Create TypeORM entity for ApiKey
+    - Define entity with decorators matching database schema
+    - Add relationships to User entity
+    - _Requirements: 1.3_
+
+- [ ] 5. Implement infrastructure layer repositories
+  - [ ] 5.1 Implement ApiKeyRepository
+    - Implement save, findById, findByUserId, findByTokenHash, update, delete methods
+    - Add domain-to-entity mapping
+    - Implement soft delete support
+    - _Requirements: 1.3, 2.1, 3.1, 4.1_
+  - [ ]\* 5.2 Write integration tests for ApiKeyRepository
+    - Test all repository methods with test database
+    - Test transaction handling
+    - Test soft delete behavior
+    - _Requirements: 1.3, 2.1, 3.1, 4.1_
+  - [ ]\* 5.3 Write property test for persistence
+    - **Property 4: API Key Creation Persistence**
+    - **Validates: Requirements 1.3**
+
+- [ ] 6. Checkpoint - Ensure domain and infrastructure tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 7. Implement CQRS commands and handlers
+  - [ ] 7.1 Implement CreateApiKeyCommand and handler
+    - Create command DTO with validation
+    - Implement handler with token generation and persistence
+    - Emit domain events
+    - _Requirements: 1.1, 1.2, 1.3, 1.5, 1.6, 1.7_
+  - [ ] 7.2 Implement UpdateApiKeyCommand and handler
+    - Create command DTO with optional fields
+    - Implement handler with validation and persistence
+    - _Requirements: 3.1, 3.2, 3.3, 3.4_
+  - [ ] 7.3 Implement RevokeApiKeyCommand and handler
+    - Create command DTO with optional reason
+    - Implement handler with status update
+    - _Requirements: 4.1, 4.2_
+  - [ ] 7.4 Implement SuspendApiKeyCommand and handler
+    - Create command DTO with reason
+    - Implement handler with status validation
+    - _Requirements: 5.1, 5.3_
+  - [ ] 7.5 Implement ReactivateApiKeyCommand and handler
+    - Create command DTO
+    - Implement handler with status validation
+    - _Requirements: 5.2, 5.3_
+  - [ ] 7.6 Implement RotateApiKeyCommand and handler
+    - Create command DTO with optional grace period
+    - Implement handler with new token generation and old key revocation
+    - _Requirements: 6.1, 6.2, 6.4_
+  - [ ]\* 7.7 Write property tests for command handlers
+    - **Property 5: Future Expiration Date Validation**
+    - **Property 6: Scope Existence Validation**
+    - **Property 7: Rate Limit Range Validation**
+    - **Property 10: API Key Update Validation and Persistence**
+    - **Property 14: API Key Rotation Metadata Preservation**
+    - **Validates: Requirements 1.5, 1.6, 1.7, 3.1, 3.2, 3.3, 3.4, 6.1, 6.2**
+
+- [ ] 8. Implement CQRS queries and handlers
+  - [ ] 8.1 Implement GetApiKeyQuery and handler
+    - Create query DTO
+    - Implement handler with repository lookup
+    - _Requirements: 2.3_
+  - [ ] 8.2 Implement GetUserApiKeysQuery and handler
+    - Create query DTO with filters
+    - Implement handler with filtering and sorting
+    - _Requirements: 2.1, 2.4, 2.5_
+  - [ ] 8.3 Implement GetApiKeyUsageQuery and handler
+    - Create query DTO with date range
+    - Implement handler with ClickHouse aggregation
+    - _Requirements: 10.2, 10.5_
+  - [ ] 8.4 Implement GetApiKeyAuditTrailQuery and handler
+    - Create query DTO with limit
+    - Implement handler with ClickHouse query
+    - _Requirements: 11.3_
+  - [ ]\* 8.5 Write property tests for query handlers
+    - **Property 8: Complete API Key List Retrieval**
+    - **Property 9: API Key Filtering and Sorting**
+    - **Property 20: Usage Analytics Aggregation**
+    - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 10.2, 10.5**
+
+- [ ] 9. Implement audit logging infrastructure
+  - [ ] 9.1 Create AuditLogger service
+    - Implement methods for logging all API key operations
+    - Add ClickHouse insertion logic
+    - Include context capture (IP, user agent, etc.)
+    - _Requirements: 11.1, 11.2, 11.4_
+  - [ ] 9.2 Integrate audit logging into command handlers
+    - Add audit logging calls to all command handlers
+    - Ensure immutability of audit logs
+    - _Requirements: 3.5, 4.2, 5.3, 6.4, 11.1_
+  - [ ]\* 9.3 Write property test for audit logging
+    - **Property 15: Comprehensive Audit Logging**
+    - **Validates: Requirements 3.5, 4.2, 5.3, 6.4, 11.1, 11.2, 11.4, 11.5**
+
+- [ ] 10. Implement authentication and authorization
+  - [ ] 10.1 Create ApiKeyAuthGuard
+    - Implement guard to extract and validate API key from request headers
+    - Check token hash against database
+    - Verify key status (not revoked, not suspended, not expired)
+    - _Requirements: 4.3, 5.4, 9.1, 9.2_
+  - [ ] 10.2 Create ScopeAuthorizationGuard
+    - Implement guard to check request operation against API key scopes
+    - Log unauthorized attempts
+    - _Requirements: 7.2, 7.5_
+  - [ ] 10.3 Integrate with existing IAM permission system
+    - Combine user permissions with API key scopes
+    - Handle permission propagation
+    - Handle user account suspension
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5_
+  - [ ]\* 10.4 Write property tests for authorization
+    - **Property 16: Scope-Based Authorization**
+    - **Property 18: Expiration Enforcement**
+    - **Property 24: User-API Key Association**
+    - **Property 25: Permission Propagation**
+    - **Validates: Requirements 7.2, 7.5, 9.1, 9.2, 16.1, 16.2, 16.3, 16.4, 16.5**
+
+- [ ] 11. Implement rate limiting
+  - [ ] 11.1 Create RateLimiterService
+    - Implement Redis-based rate limiting with sliding window
+    - Support per-minute, per-hour, and per-day limits
+    - Include retry-after calculation
+    - _Requirements: 8.2, 8.3_
+  - [ ] 11.2 Create RateLimitGuard
+    - Implement guard to check rate limits before processing requests
+    - Log rate limit violations
+    - _Requirements: 8.2, 8.3, 8.5_
+  - [ ]\* 11.3 Write property test for rate limiting
+    - **Property 17: Rate Limit Enforcement**
+    - **Validates: Requirements 8.2, 8.3, 8.5**
+
+- [ ] 12. Implement usage tracking
+  - [ ] 12.1 Create UsageTracker service
+    - Implement middleware to capture request details
+    - Insert usage records into ClickHouse
+    - _Requirements: 10.1_
+  - [ ] 12.2 Integrate usage tracking into request pipeline
+    - Add middleware to capture all API key authenticated requests
+    - Ensure non-blocking async insertion
+    - _Requirements: 10.1_
+  - [ ]\* 12.3 Write property test for usage tracking
+    - **Property 19: Usage Tracking Completeness**
+    - **Validates: Requirements 10.1**
+
+- [ ] 13. Checkpoint - Ensure backend core functionality tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 14. Implement REST API controllers
+  - [ ] 14.1 Create ApiKeysController with all endpoints
+    - Implement POST /api-keys (create)
+    - Implement GET /api-keys (list)
+    - Implement GET /api-keys/:id (get details)
+    - Implement PATCH /api-keys/:id (update)
+    - Implement DELETE /api-keys/:id (revoke)
+    - Implement POST /api-keys/:id/suspend
+    - Implement POST /api-keys/:id/reactivate
+    - Implement POST /api-keys/:id/rotate
+    - Implement GET /api-keys/:id/usage
+    - Implement GET /api-keys/:id/audit-trail
+    - _Requirements: 1.1, 2.1, 2.3, 3.1, 4.1, 5.1, 5.2, 6.1, 10.2, 11.3_
+  - [ ] 14.2 Add Swagger/OpenAPI decorators
+    - Add @ApiOperation, @ApiResponse, @ApiTags decorators
+    - Document all request/response DTOs
+    - _Requirements: All_
+  - [ ] 14.3 Add authentication and authorization guards
+    - Apply JwtAuthGuard and PermissionsGuard to all endpoints
+    - Add @RequirePermissions decorators
+    - _Requirements: 16.1, 16.2_
+  - [ ]\* 14.4 Write e2e tests for all endpoints
+    - Test successful operations
+    - Test error conditions
+    - Test authentication and authorization
+    - _Requirements: All_
+
+- [ ] 15. Implement error handling
+  - [ ] 15.1 Create custom exception filters
+    - Implement ApiKeyNotFoundException
+    - Implement ApiKeyExpiredException
+    - Implement ApiKeyRevokedException
+    - Implement RateLimitExceededException
+    - Implement ScopeViolationException
+    - _Requirements: 14.1, 14.2_
+  - [ ] 15.2 Add global exception filter
+    - Format all errors with structured response
+    - Include error codes and suggested actions
+    - _Requirements: 14.1, 14.2_
+  - [ ]\* 15.3 Write property test for error responses
+    - **Property 22: Error State Management**
+    - **Validates: Requirements 14.1, 14.2**
+
+- [ ] 16. Implement WebSocket real-time updates
+  - [ ] 16.1 Create WebSocket gateway for API key events
+    - Implement connection handling
+    - Implement room-based subscriptions per API key
+    - _Requirements: 20.1, 20.2_
+  - [ ] 16.2 Emit usage events on API key usage
+    - Integrate with usage tracker
+    - Broadcast to subscribed clients
+    - _Requirements: 20.1, 20.3, 20.4_
+  - [ ]\* 16.3 Write integration tests for WebSocket
+    - Test connection and subscription
+    - Test event emission and broadcasting
+    - _Requirements: 20.1, 20.2, 20.3, 20.4_
+
+- [ ] 17. Implement bulk operations
+  - [ ] 17.1 Add bulk endpoints to controller
+    - Implement POST /api-keys/bulk/revoke
+    - Implement POST /api-keys/bulk/suspend
+    - Implement DELETE /api-keys/bulk
+    - _Requirements: 17.1, 17.2, 17.3_
+  - [ ] 17.2 Implement bulk operation handlers
+    - Process each key individually
+    - Return detailed results
+    - Log each operation separately
+    - _Requirements: 17.3, 17.4, 17.5_
+  - [ ]\* 17.3 Write property test for bulk operations
+    - **Property 26: Bulk Operation Atomicity**
+    - **Validates: Requirements 17.3, 17.4, 17.5**
+
+- [ ] 18. Implement template system
+  - [ ] 18.1 Create ApiKeyTemplate entity and repository
+    - Define template schema
+    - Implement CRUD operations
+    - _Requirements: 18.1, 18.3_
+  - [ ] 18.2 Add template endpoints to controller
+    - Implement template CRUD endpoints
+    - Implement create-from-template endpoint
+    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5_
+  - [ ]\* 18.3 Write property test for template independence
+    - **Property 27: Template Independence**
+    - **Validates: Requirements 18.2, 18.4**
+
+- [ ] 19. Implement export and reporting
+  - [ ] 19.1 Create ExportService
+    - Implement CSV export
+    - Implement JSON export
+    - Implement PDF export (using library like pdfkit)
+    - _Requirements: 19.1, 19.2, 19.3_
+  - [ ] 19.2 Add export endpoints
+    - Implement GET /api-keys/export
+    - Implement GET /api-keys/:id/usage/export
+    - Support async processing for large exports
+    - _Requirements: 19.1, 19.2, 19.5_
+  - [ ]\* 19.3 Write property test for export security
+    - **Property 28: Export Security**
+    - **Validates: Requirements 19.1, 19.4**
+
+- [ ] 20. Checkpoint - Ensure all backend tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 21. Set up frontend module structure
+  - Create directory structure (store, api, components, views, types)
+  - Set up TypeScript types for API key domain
+  - Create barrel exports
+  - _Requirements: 12.1_
+
+- [ ] 22. Implement API client
+  - [ ] 22.1 Create apiKeys API client
+    - Implement all API methods (list, getById, create, update, revoke, suspend, reactivate, rotate, getUsage, getAuditTrail)
+    - Add request/response type definitions
+    - Configure axios instance with base URL and timeout
+    - _Requirements: 1.1, 2.1, 2.3, 3.1, 4.1, 5.1, 5.2, 6.1, 10.2, 11.3_
+  - [ ]\* 22.2 Write unit tests for API client
+    - Test request formatting
+    - Test response handling
+    - Test error handling
+    - _Requirements: All_
+
+- [ ] 23. Implement Pinia store
+  - [ ] 23.1 Create apiKeys Pinia store
+    - Define state (apiKeys, selectedKey, loading, error, filters, usageData, auditTrail)
+    - Implement getters (activeKeys, expiredKeys, keyCount)
+    - Implement actions (fetchApiKeys, createApiKey, updateApiKey, revokeApiKey, suspendApiKey, reactivateApiKey, rotateApiKey, fetchUsageData, fetchAuditTrail)
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
+  - [ ]\* 23.2 Write unit tests for Pinia store
+    - Test all actions
+    - Test all getters
+    - Test state mutations
+    - Test error handling
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
+  - [ ]\* 23.3 Write property test for state synchronization
+    - **Property 21: Pinia Store State Synchronization**
+    - **Validates: Requirements 12.1, 12.2, 12.3**
+
+- [ ] 24. Implement Vue components - List view
+  - [ ] 24.1 Create ApiKeyList.vue component
+    - Implement data table with columns (name, status, created, expires, last used, actions)
+    - Add filtering controls
+    - Add sorting controls
+    - Add action buttons (view, edit, revoke, suspend)
+    - _Requirements: 2.1, 2.2, 2.4, 2.5_
+  - [ ]\* 24.2 Write component tests for ApiKeyList
+    - Test rendering with data
+    - Test filtering
+    - Test sorting
+    - Test action button clicks
+    - _Requirements: 2.1, 2.2, 2.4, 2.5_
+
+- [ ] 25. Implement Vue components - Create/Edit form
+  - [ ] 25.1 Create ApiKeyForm.vue component
+    - Implement form with fields (name, scopes, rate limits, expiration)
+    - Add validation with inline error messages
+    - Add scope selector with grouping
+    - Add rate limit inputs
+    - Add expiration date picker
+    - _Requirements: 1.1, 1.5, 1.6, 1.7, 3.1, 7.3, 7.4, 8.4_
+  - [ ] 25.2 Implement one-time token display
+    - Show token in modal after creation/rotation
+    - Add copy-to-clipboard button
+    - Display warning about one-time display
+    - Add security guidance
+    - _Requirements: 1.4, 6.3, 15.3, 15.4_
+  - [ ]\* 25.3 Write component tests for ApiKeyForm
+    - Test form validation
+    - Test submission
+    - Test token display
+    - _Requirements: 1.1, 1.4, 1.5, 1.6, 1.7_
+  - [ ]\* 25.4 Write property test for validation feedback
+    - **Property 23: Validation Feedback**
+    - **Validates: Requirements 14.3**
+
+- [ ] 26. Implement Vue components - Detail view
+  - [ ] 26.1 Create ApiKeyDetail.vue component
+    - Display all API key metadata
+    - Show masked token
+    - Display scopes with descriptions
+    - Display rate limits
+    - Show status with visual indicators
+    - Add action buttons (edit, suspend/reactivate, rotate, revoke)
+    - _Requirements: 2.2, 2.3, 7.3, 8.4_
+  - [ ]\* 26.2 Write component tests for ApiKeyDetail
+    - Test rendering with data
+    - Test action buttons
+    - Test status indicators
+    - _Requirements: 2.2, 2.3_
+
+- [ ] 27. Implement Vue components - Analytics view
+  - [ ] 27.1 Create ApiKeyAnalytics.vue component
+    - Implement time-series chart for request volume using ECharts
+    - Implement breakdown chart for requests by endpoint
+    - Implement success vs error rate visualization
+    - Add date range selector
+    - Add aggregation selector (hour, day, month)
+    - Support zoom and pan on charts
+    - _Requirements: 10.3, 10.4, 10.5, 13.1, 13.2, 13.3, 13.5_
+  - [ ] 27.2 Create ApiKeyComparison.vue component
+    - Implement comparison charts for multiple keys
+    - _Requirements: 13.4_
+  - [ ]\* 27.3 Write component tests for analytics
+    - Test chart rendering
+    - Test date range filtering
+    - Test aggregation
+    - _Requirements: 10.3, 10.4, 10.5, 13.1, 13.2, 13.3, 13.4, 13.5_
+
+- [ ] 28. Implement Vue components - Audit trail view
+  - [ ] 28.1 Create ApiKeyAuditTrail.vue component
+    - Display audit events in chronological order
+    - Add filtering by action, date range
+    - Show event details (timestamp, user, action, context)
+    - _Requirements: 11.3_
+  - [ ]\* 28.2 Write component tests for audit trail
+    - Test rendering with data
+    - Test filtering
+    - _Requirements: 11.3_
+
+- [ ] 29. Implement WebSocket integration
+  - [ ] 29.1 Create WebSocket client composable
+    - Implement useApiKeyWebSocket composable
+    - Handle connection, subscription, and event reception
+    - Implement fallback to polling on connection failure
+    - Implement reconnection logic
+    - _Requirements: 20.1, 20.2, 20.3, 20.5_
+  - [ ] 29.2 Integrate WebSocket into analytics component
+    - Subscribe to usage events when viewing API key
+    - Update metrics in real-time
+    - _Requirements: 20.2, 20.3_
+  - [ ]\* 29.3 Write integration tests for WebSocket
+    - Test connection and subscription
+    - Test event reception and UI update
+    - Test fallback and reconnection
+    - _Requirements: 20.1, 20.2, 20.3, 20.5_
+  - [ ]\* 29.4 Write property test for real-time updates
+    - **Property 29: Real-Time Usage Updates**
+    - **Property 30: WebSocket Resilience**
+    - **Validates: Requirements 20.1, 20.2, 20.3, 20.4, 20.5**
+
+- [ ] 30. Implement error handling and user feedback
+  - [ ] 30.1 Create error handling composable
+    - Implement useErrorHandler composable
+    - Format backend errors for display
+    - Show toast notifications for errors and success
+    - _Requirements: 14.1, 14.2, 14.4_
+  - [ ] 30.2 Integrate error handling into all components
+    - Add error display to all forms
+    - Add retry mechanisms for network errors
+    - Maintain form state on errors
+    - _Requirements: 14.2, 14.3, 14.4, 14.5_
+  - [ ]\* 30.3 Write tests for error handling
+    - Test error display
+    - Test retry mechanisms
+    - Test form state preservation
+    - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5_
+
+- [ ] 31. Implement bulk operations UI
+  - [ ] 31.1 Add bulk selection to ApiKeyList
+    - Add checkboxes for multi-select
+    - Enable bulk action buttons when keys selected
+    - Show confirmation dialog with count
+    - Display results summary
+    - _Requirements: 17.1, 17.2, 17.4_
+  - [ ]\* 31.2 Write component tests for bulk operations
+    - Test selection
+    - Test confirmation dialog
+    - Test results display
+    - _Requirements: 17.1, 17.2, 17.4_
+
+- [ ] 32. Implement template UI
+  - [ ] 32.1 Create ApiKeyTemplates.vue component
+    - List templates with details
+    - Add create/edit template form
+    - Add create-from-template button
+    - _Requirements: 18.1, 18.2, 18.3_
+  - [ ] 32.2 Integrate template selection into ApiKeyForm
+    - Add template selector
+    - Pre-fill form from template
+    - _Requirements: 18.2_
+  - [ ]\* 32.3 Write component tests for templates
+    - Test template list
+    - Test template creation
+    - Test create-from-template
+    - _Requirements: 18.1, 18.2, 18.3_
+
+- [ ] 33. Implement export UI
+  - [ ] 33.1 Add export buttons to list and detail views
+    - Add export dropdown with format options (CSV, JSON, PDF)
+    - Show export progress for large exports
+    - Download file when ready
+    - _Requirements: 19.1, 19.2, 19.3, 19.5_
+  - [ ]\* 33.2 Write component tests for export
+    - Test export button
+    - Test format selection
+    - Test download
+    - _Requirements: 19.1, 19.2, 19.3_
+
+- [ ] 34. Implement routing and navigation
+  - [ ] 34.1 Add routes for API keys module
+    - Add /api-keys (list)
+    - Add /api-keys/create (create form)
+    - Add /api-keys/:id (detail view)
+    - Add /api-keys/:id/edit (edit form)
+    - Add /api-keys/:id/analytics (analytics view)
+    - Add /api-keys/templates (templates view)
+    - _Requirements: All_
+  - [ ] 34.2 Add navigation menu items
+    - Add API Keys menu item to main navigation
+    - Add breadcrumbs
+    - _Requirements: All_
+
+- [ ] 35. Implement responsive design and accessibility
+  - [ ] 35.1 Add responsive styles
+    - Ensure mobile-friendly layouts
+    - Add responsive data tables
+    - Optimize charts for mobile
+    - _Requirements: All_
+  - [ ] 35.2 Add accessibility features
+    - Add ARIA labels
+    - Ensure keyboard navigation
+    - Add screen reader support
+    - _Requirements: All_
+
+- [ ] 36. Final checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 37. Integration testing and end-to-end testing
+  - [ ]\* 37.1 Write end-to-end tests for complete workflows
+    - Test complete API key lifecycle (create → use → update → revoke)
+    - Test rate limiting enforcement
+    - Test real-time updates
+    - Test bulk operations
+    - Test template-based creation
+    - Test export workflows
+    - _Requirements: All_
+
+- [ ] 38. Documentation and deployment preparation
+  - [ ] 38.1 Create module README.md
+    - Document architecture
+    - Document API endpoints
+    - Document frontend components
+    - Add usage examples
+    - _Requirements: All_
+  - [ ] 38.2 Create database seed data
+    - Create seed for sample API keys
+    - Create seed for sample templates
+    - Create seed for sample usage data
+    - _Requirements: All_
+  - [ ] 38.3 Update OpenAPI specification
+    - Ensure all endpoints documented
+    - Add examples
+    - _Requirements: All_
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties with 100+ iterations
+- Unit tests validate specific examples and edge cases
+- Integration tests validate component interactions
+- E2E tests validate complete user workflows

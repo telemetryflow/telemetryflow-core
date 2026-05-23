@@ -1,0 +1,323 @@
+// Exemplars Index Page — exemplars/index.vue (scoped)
+.exemplars-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.exemplars-page .page-header {
+  margin-bottom: 8px;
+}
+
+.exemplars-page .page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--n-text-color);
+}
+
+.exemplars-page .page-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+}
+
+.exemplars-page .stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 0 5px;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
+}
+
+.exemplars-page .filters-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.exemplars-page .filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.exemplars-page .metric-tag {
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-weight: 500;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.exemplars-page .metric-tag-dim {
+  opacity: 0.45;
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+.exemplars-page .truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Data table styling - matching Kubernetes tables
+.exemplars-page .n-data-table {
+  border: 1px solid var(--k8s-border-color, #c1c5cc);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.exemplars-page .n-data-table-thead {
+  background: var(--k8s-table-header-bg, #f8fafc) !important;
+}
+
+.exemplars-page .n-data-table-th {
+  font-weight: 700 !important;
+  background: var(--k8s-table-header-bg, #f8fafc) !important;
+  color: var(--k8s-table-header-text, #374151) !important;
+  border-bottom: 1px solid var(--k8s-border-color, #c1c5cc) !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.exemplars-page .n-data-table-tr td {
+  border-bottom: 1px solid var(--k8s-border-color, #c1c5cc) !important;
+}
+
+.exemplars-page .n-data-table-tr:last-child td {
+  border-bottom: none !important;
+}
+
+.exemplars-page .n-data-table-pagination {
+  padding: 20px 16px;
+  border-top: 1px solid var(--k8s-border-color, #c1c5cc);
+  margin-top: 12px;
+  background: var(--k8s-table-header-bg, #f8fafc);
+}
+
+.exemplars-page .n-card-header__main {
+  font-weight: 700 !important;
+}
+
+// Drawer styles
+.exemplars-page .drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+
+.exemplars-page .drawer-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.exemplars-page .exemplar-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Status banner
+.exemplars-page .status-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+
+  &.info {
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 4px solid #3b82f6;
+  }
+
+  &.warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 4px solid #f59e0b;
+  }
+
+  &.error {
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 4px solid #ef4444;
+  }
+}
+
+.exemplars-page .status-icon {
+  font-size: 24px;
+  color: #3b82f6;
+}
+
+.exemplars-page .status-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.exemplars-page .status-metric {
+  font-family: monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--n-text-color);
+}
+
+.exemplars-page .status-value {
+  font-size: 0.75rem;
+  color: var(--n-text-color-3);
+}
+
+// Section styles
+.exemplars-page .section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exemplars-page .section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--n-text-color);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--n-border-color);
+}
+
+// Info table styles - Compact
+.exemplars-page .info-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+
+  :root.dark & {
+    border-color: #334155;
+  }
+
+  tr {
+    &:not(:last-child) {
+      td {
+        border-bottom: 1px solid #e5e7eb;
+
+        :root.dark & {
+          border-color: #334155;
+        }
+      }
+    }
+  }
+
+  td {
+    padding: 6px 10px;
+    font-size: 0.8125rem;
+    vertical-align: middle;
+  }
+}
+
+.exemplars-page .info-label {
+  width: 140px;
+  min-width: 140px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f3f4f6;
+  border-right: 1px solid #e5e7eb;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  :root.dark & {
+    color: #9ca3af;
+    background: rgba(51, 65, 85, 0.5);
+    border-right-color: #334155;
+  }
+}
+
+.exemplars-page .info-value {
+  font-size: 0.8125rem;
+  color: #1f2937;
+  word-break: break-all;
+  font-weight: 600;
+
+  :root.dark & {
+    color: #e5e7eb;
+  }
+
+  code {
+    font-family: "SF Mono", Monaco, "Courier New", monospace;
+    font-size: 0.75rem;
+    background: #e5e7eb;
+    color: #1f2937;
+    padding: 1px 6px;
+    border-radius: 3px;
+
+    :root.dark & {
+      background: rgba(51, 65, 85, 0.8);
+      color: #e5e7eb;
+    }
+  }
+
+  &.mono {
+    font-family: "SF Mono", Monaco, "Courier New", monospace;
+    font-size: 0.75rem;
+  }
+
+  .error-count {
+    color: #ef4444;
+  }
+}
+
+.exemplars-page .value-with-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exemplars-page .truncate-code {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.exemplars-page .trace-link {
+  color: var(--n-primary-color);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  code {
+    color: inherit;
+  }
+}
+
+// Actions
+.exemplars-page .actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--n-border-color);
+}

@@ -1,0 +1,647 @@
+// Shared table styles for Kubernetes monitoring pages
+// This file provides responsive table styling with horizontal scrolling
+
+@import './tfo-variables.scss';
+
+// Section wrapper - standard datatable container with header + table
+// overflow: clip preserves border-radius visual clipping without creating
+// a new scroll container, so horizontal scroll on NDataTable stays visible
+.section {
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 6px;
+  overflow: clip;
+}
+
+.table-content {
+  padding: 0;
+  overflow: hidden;
+
+  // Add padding when inside a section wrapper
+  .section>& {
+    padding: 12px;
+  }
+
+  // Add horizontal scrolling wrapper
+  :deep(.n-data-table) {
+    // Enable horizontal scrolling on mobile
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--k8s-border-color);
+    border-radius: 6px;
+
+    // Table wrapper
+    .n-data-table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    // Override Naive UI default border styles
+    .n-data-table-base-table-header {
+      border-bottom: 1px solid var(--k8s-border-color);
+    }
+
+    // Base table
+    .n-data-table-base-table {
+      min-width: 100%;
+
+      // On mobile, allow table to be wider than container
+      @media (max-width: $breakpoint-mobile) {
+        min-width: 800px; // Minimum width to show all columns
+      }
+    }
+
+    // Table header row
+    .n-data-table-thead {
+      background: var(--k8s-table-header-bg) !important;
+    }
+
+    // Table header cells
+    .n-data-table-th {
+      white-space: nowrap;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 12px;
+      background: var(--k8s-table-header-bg) !important;
+      color: var(--k8s-table-header-text) !important;
+      border-bottom: 1px solid var(--k8s-border-color) !important;
+      border-right: 1px solid var(--k8s-border-color);
+
+      &:last-child {
+        border-right: none;
+      }
+
+      @media (max-width: $breakpoint-mobile) {
+        padding: 8px 10px;
+        font-size: 0.7rem;
+      }
+    }
+
+    // Table cells
+    .n-data-table-td {
+      white-space: nowrap;
+      overflow: hidden;
+      padding: 10px 12px;
+      font-size: 0.8125rem;
+      vertical-align: middle !important;
+      border-right: 1px solid var(--k8s-border-color);
+
+      // Inner flex containers must be able to shrink
+      > div, > span {
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      &:last-child {
+        border-right: none;
+      }
+
+      @media (max-width: $breakpoint-mobile) {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+      }
+    }
+
+    // First column (leftmost) — word wrap + min-width
+    // !important overrides inline styles set in render() functions
+    .n-data-table-th:first-child,
+    .n-data-table-td:first-child {
+      min-width: 240px !important;
+      white-space: normal !important;
+      word-break: break-word !important;
+      overflow: visible !important;
+
+      // Recursively cascade into all inner containers
+      * {
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+      }
+    }
+
+    // Fixed columns - solid background (not transparent)
+    .n-data-table-th--fixed-right,
+    .n-data-table-th--fixed-left {
+      background: var(--k8s-table-header-bg) !important;
+    }
+
+    .n-data-table-td--fixed-right,
+    .n-data-table-td--fixed-left {
+      background: var(--n-td-color, #fff) !important;
+    }
+
+    // Left border separator for fixed-right columns (ACTION column)
+    .n-data-table-th--fixed-right,
+    .n-data-table-td--fixed-right {
+      border-left: 1px solid var(--k8s-border-color) !important;
+      border-right: none !important;
+    }
+
+    // Striped rows fixed column background
+    .n-data-table-tr:nth-child(even) {
+
+      .n-data-table-td--fixed-right,
+      .n-data-table-td--fixed-left {
+        background: var(--n-td-color-striped, #fafafa) !important;
+      }
+    }
+
+    // Hover state for fixed columns
+    .n-data-table-tr:hover {
+
+      .n-data-table-td--fixed-right,
+      .n-data-table-td--fixed-left {
+        background: var(--n-td-color-hover, #f5f5f5) !important;
+      }
+    }
+
+    // ========== Tree Table Styling (Global for all monitoring & alerts) ==========
+
+    // Tree indent spacing
+    .n-data-table-indent {
+      width: 28px !important;
+      min-width: 28px !important;
+      position: relative;
+    }
+
+    // Hide tree indent guide lines (no dashed vertical/horizontal lines)
+    .n-data-table-indent__guide {
+      display: none !important;
+    }
+
+    // Expand/collapse trigger - replace chevron with up/down arrows
+    .n-data-table-expand-trigger {
+      cursor: pointer;
+      color: var(--primary-color);
+      margin-right: 8px;
+      font-size: 16px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+    }
+
+    // Hide default chevron icon
+    .n-data-table-expand-trigger .n-base-icon {
+      display: none;
+    }
+
+    // Show down arrow (▼) when collapsed
+    .n-data-table-expand-trigger::before {
+      content: "▼";
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+      line-height: 1;
+    }
+
+    // Rotate to up arrow (▲) when expanded
+    .n-data-table-expand-trigger--expanded::before {
+      transform: rotate(180deg);
+    }
+
+    // Parent row (group header) - distinct background color
+    .n-data-table-tr--expanded>.n-data-table-td {
+      background: rgba(99, 102, 241, 0.12) !important; // Purple-blue tint for group headers
+      font-weight: 600 !important;
+    }
+
+    // Parent row collapsed - also use group header background
+    .n-data-table-tr:has(.n-data-table-expand-trigger)>.n-data-table-td {
+      background: rgba(99, 102, 241, 0.12) !important;
+      font-weight: 600 !important;
+    }
+
+    // Child rows - lighter background (default or subtle)
+    .n-data-table-tr:not(:has(.n-data-table-expand-trigger))>.n-data-table-td {
+      background: transparent;
+    }
+
+    // Row hover effect - different for parent vs child
+    .n-data-table-tr:has(.n-data-table-expand-trigger):hover>.n-data-table-td {
+      background: rgba(99, 102, 241, 0.18) !important; // Darker purple for parent hover
+    }
+
+    .n-data-table-tr:not(:has(.n-data-table-expand-trigger)):hover>.n-data-table-td {
+      background: rgba(99, 102, 241, 0.06) !important; // Light purple for child hover
+    }
+
+    // Add borders to all table rows
+    .n-data-table-tr {
+      td {
+        border-bottom: 1px solid var(--k8s-border-color) !important;
+      }
+
+      // Remove bottom border from last row (wrapper border or load-more border handles it)
+      &:last-child td {
+        border-bottom: none !important;
+      }
+    }
+
+    // Add padding after the table body before pagination
+    .n-data-table-base-table-body {
+      padding-bottom: 5px;
+    }
+
+    // Pagination wrapper - add proper spacing from table bottom border
+    .n-data-table-pagination {
+      padding: 32px 20px 20px 16px;
+      border-top: 1px solid var(--k8s-border-color);
+      margin-top: 0;
+      background: var(--k8s-table-header-bg);
+
+      @media (max-width: $breakpoint-mobile) {
+        padding: 28px 12px 16px;
+        margin-top: 0;
+      }
+
+      // Pagination component styling (inside pagination wrapper)
+      .n-pagination {
+        justify-content: flex-end;
+        padding-right: 5px !important;
+
+        @media (max-width: $breakpoint-mobile) {
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-right: 0;
+        }
+
+        // Pagination items
+        .n-pagination-item {
+          @media (max-width: $breakpoint-mobile) {
+            min-width: 32px;
+            height: 32px;
+            font-size: 0.75rem;
+          }
+        }
+
+        // Page size selector
+        .n-pagination-size-picker {
+          @media (max-width: $breakpoint-mobile) {
+            order: -1;
+            width: 100%;
+            margin-bottom: 8px;
+          }
+        }
+      }
+    }
+  }
+
+  // Scrollbar styling for better UX
+  :deep(.n-data-table-wrapper) {
+
+    // Custom scrollbar for webkit browsers
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--k8s-scrollbar-track);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--k8s-scrollbar-thumb);
+      border-radius: 4px;
+
+      &:hover {
+        background: var(--k8s-scrollbar-thumb-hover);
+      }
+    }
+  }
+
+  // Mobile optimization: show scroll hint
+  @media (max-width: $breakpoint-mobile) {
+    position: relative;
+
+    // Add scroll indicator on mobile
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 40px;
+      background: var(--k8s-scroll-indicator);
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    // Hide scroll indicator when scrolled to end
+    &.scrolled-to-end::after {
+      opacity: 0;
+    }
+  }
+}
+
+// Action cell styling
+.action-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  @media (max-width: $breakpoint-mobile) {
+    gap: 4px;
+  }
+}
+
+// Responsive table actions (search and export buttons)
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .search-input {
+    width: 220px;
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+      order: -1;
+    }
+  }
+
+  .export-buttons {
+    display: flex;
+    gap: 8px;
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+
+      button {
+        flex: 1;
+      }
+    }
+  }
+}
+
+// Section header responsive adjustments
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  background: var(--k8s-section-header-bg);
+  border-bottom: 1px solid var(--k8s-border-color);
+  flex-wrap: wrap;
+  gap: 12px;
+
+  @media (max-width: $breakpoint-mobile) {
+    padding: 10px 12px;
+    font-size: 0.8125rem;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+  }
+
+  .section-icon {
+    font-size: 18px;
+    color: var(--primary-color);
+  }
+
+  .table-actions {
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+    }
+  }
+}
+
+// Section content - padding for content inside sections
+.section-content {
+  padding: 12px;
+}
+
+// Empty state styling
+.n-data-table-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--n-text-color-3);
+  font-size: 0.875rem;
+
+  @media (max-width: $breakpoint-mobile) {
+    padding: 30px 15px;
+    font-size: 0.8125rem;
+  }
+}
+
+// Filter section styles
+.filters-content {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  padding: 12px 16px;
+  align-items: flex-end;
+  overflow-x: auto;
+
+  @media (max-width: $breakpoint-mobile) {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px 12px;
+  }
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 140px;
+  flex: 1 1 auto;
+  max-width: 200px;
+
+  @media (max-width: $breakpoint-mobile) {
+    min-width: 140px;
+    max-width: none;
+  }
+
+  &.filter-item-wide {
+    min-width: 180px;
+    max-width: 280px;
+
+    @media (max-width: $breakpoint-mobile) {
+      min-width: 100%;
+      max-width: none;
+    }
+  }
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-select {
+  width: 100%;
+}
+
+.filter-action {
+  min-width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  .n-button {
+    min-width: 100px;
+  }
+}
+
+.current-filter-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+}
+
+.filter-status-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--n-text-color-3);
+}
+
+.filter-separator {
+  font-size: 12px;
+  color: var(--n-text-color-3);
+}
+
+// =============================================================================
+// Additional Pagination Spacing (Global)
+// =============================================================================
+// These styles ensure proper spacing between table content and pagination
+// Works with Vue scoped styles when components import this file
+
+.table-content {
+
+  // Direct pagination styling (for components using :deep)
+  :deep(.n-pagination) {
+    margin-top: 1px;
+    padding: 0 16px 12px;
+    justify-content: flex-end;
+  }
+
+  :deep(.n-data-table-base-table-body) {
+    border-bottom: 1px solid var(--k8s-border-color);
+    padding-bottom: 0 !important;
+  }
+
+  :deep(.n-data-table-tbody) {
+    padding-bottom: 0 !important;
+  }
+
+  // Ensure pagination has proper top spacing
+  :deep(.n-data-table-pagination) {
+    padding: 16px 16px 12px;
+    border-top: 1px solid var(--k8s-border-color);
+    margin-top: 0;
+  }
+}
+
+// Dark mode adjustments for tree tables
+html.dark {
+  .table-content {
+    :deep(.n-data-table) {
+
+      // Enhanced expanded row background in dark mode
+      .n-data-table-tr--expanded>.n-data-table-td {
+        background: rgba(34, 197, 94, 0.1) !important;
+      }
+
+      // Fixed columns in dark mode - use dark background
+      .n-data-table-th--fixed-right,
+      .n-data-table-th--fixed-left {
+        background: var(--k8s-table-header-bg, #1e293b) !important;
+      }
+
+      .n-data-table-td--fixed-right,
+      .n-data-table-td--fixed-left {
+        background: var(--card-color, #1e293b) !important;
+      }
+
+      .n-data-table-tr:nth-child(even) {
+
+        .n-data-table-td--fixed-right,
+        .n-data-table-td--fixed-left {
+          background: rgba(255, 255, 255, 0.02) !important;
+        }
+      }
+
+      .n-data-table-tr:hover {
+
+        .n-data-table-td--fixed-right,
+        .n-data-table-td--fixed-left {
+          background: rgba(255, 255, 255, 0.05) !important;
+        }
+      }
+    }
+  }
+}
+
+// Light mode fixed column backgrounds
+html:not(.dark) {
+  .table-content {
+    :deep(.n-data-table) {
+
+      .n-data-table-td--fixed-right,
+      .n-data-table-td--fixed-left {
+        background: #fff !important;
+      }
+
+      .n-data-table-tr:nth-child(even) {
+
+        .n-data-table-td--fixed-right,
+        .n-data-table-td--fixed-left {
+          background: #fafafa !important;
+        }
+      }
+
+      .n-data-table-tr:hover {
+
+        .n-data-table-td--fixed-right,
+        .n-data-table-td--fixed-left {
+          background: #f5f5f5 !important;
+        }
+      }
+    }
+  }
+}

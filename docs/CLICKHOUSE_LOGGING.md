@@ -5,6 +5,7 @@ Complete guide for storing logs, metrics, traces, and audit logs in ClickHouse.
 ## Overview
 
 TelemetryFlow Core uses ClickHouse as a high-performance storage backend for:
+
 - **Audit Logs** - IAM audit trail (user actions, entity changes)
 - **Application Logs** - All application and infrastructure logs
 - **Metrics** - Performance and business metrics
@@ -24,12 +25,12 @@ OTEL Collector → ClickHouse Exporter → ClickHouse
 
 Located in `src/database/clickhouse/migrations/`:
 
-| Migration | Description | Tables/Views |
-|-----------|-------------|--------------|
-| `1704240000001-CreateAuditLogsTable.ts` | Audit logs with materialized views | audit_logs, audit_logs_stats, audit_logs_user_activity |
-| `1704240000002-CreateLogsTable.ts` | Application logs with error tracking | logs, logs_stats, logs_errors |
-| `1704240000003-CreateMetricsTable.ts` | Metrics with 1m/1h aggregations | metrics, metrics_1m, metrics_1h |
-| `1704240000004-CreateTracesTable.ts` | Distributed traces with statistics | traces, traces_stats, traces_errors |
+| Migration                               | Description                          | Tables/Views                                           |
+| --------------------------------------- | ------------------------------------ | ------------------------------------------------------ |
+| `1704240000001-CreateAuditLogsTable.ts` | Audit logs with materialized views   | audit_logs, audit_logs_stats, audit_logs_user_activity |
+| `1704240000002-CreateLogsTable.ts`      | Application logs with error tracking | logs, logs_stats, logs_errors                          |
+| `1704240000003-CreateMetricsTable.ts`   | Metrics with 1m/1h aggregations      | metrics, metrics_1m, metrics_1h                        |
+| `1704240000004-CreateTracesTable.ts`    | Distributed traces with statistics   | traces, traces_stats, traces_errors                    |
 
 ### 1. Audit Logs Table
 
@@ -39,6 +40,7 @@ Stores IAM audit trail for user actions and entity changes.
 **Partition**: Monthly (YYYYMM)
 
 **Key Columns**:
+
 - `id` - UUID (auto-generated)
 - `timestamp` - Event timestamp (DateTime64)
 - `user_id`, `user_email`, `user_first_name`, `user_last_name` - User info
@@ -53,6 +55,7 @@ Stores IAM audit trail for user actions and entity changes.
 - `duration_ms` - Operation duration
 
 **Materialized Views**:
+
 - `audit_logs_stats` - Statistics by event type and result
 - `audit_logs_user_activity` - User activity summary
 
@@ -64,6 +67,7 @@ Stores application and infrastructure logs.
 **Partition**: Daily (YYYYMMDD)
 
 **Columns**:
+
 - `timestamp` - Log timestamp
 - `observed_timestamp` - Ingestion timestamp
 - `trace_id` - Trace correlation ID
@@ -77,6 +81,7 @@ Stores application and infrastructure logs.
 - `log_attributes` - Additional attributes
 
 **Materialized Views**:
+
 - `logs_stats` - Log statistics by service and severity
 - `logs_errors` - Error logs only (severity >= 17)
 
@@ -88,6 +93,7 @@ Stores performance and business metrics.
 **Partition**: Daily (YYYYMMDD)
 
 **Columns**:
+
 - `timestamp` - Metric timestamp
 - `metric_name` - Metric identifier
 - `metric_type` - gauge, counter, histogram, summary
@@ -99,6 +105,7 @@ Stores performance and business metrics.
 - `unit` - Measurement unit
 
 **Materialized Views**:
+
 - `metrics_1m` - 1-minute aggregations
 - `metrics_1h` - 1-hour aggregations
 
@@ -110,6 +117,7 @@ Stores distributed tracing spans.
 **Partition**: Daily (YYYYMMDD)
 
 **Columns**:
+
 - `timestamp` - Span timestamp
 - `trace_id` - Trace identifier
 - `span_id` - Span identifier
@@ -124,6 +132,7 @@ Stores distributed tracing spans.
 - `span_attributes` - Span metadata
 
 **Materialized Views**:
+
 - `traces_stats` - Trace statistics by service
 - `traces_errors` - Error traces only
 
@@ -152,6 +161,7 @@ pnpm db:migrate:seed
 ```
 
 Migrations are TypeScript files that use `@clickhouse/client` and are located in:
+
 - `src/database/clickhouse/migrations/`
 
 Each migration exports `up()` and `down()` functions for schema changes.
@@ -167,9 +177,11 @@ pnpm db:seed
 ```
 
 Seeds are located in:
+
 - `src/database/clickhouse/seeds/`
 
 Sample data includes:
+
 - 5 audit log entries
 - 240 metrics (last 1 hour)
 - 30 trace spans (10 traces, last 30 minutes)
@@ -215,7 +227,7 @@ docker exec telemetryflow_core_clickhouse clickhouse-client \
 ### Direct ClickHouse Client
 
 ```typescript
-import { createClient } from '@clickhouse/client';
+import { createClient } from "@clickhouse/client";
 
 const client = createClient({
   url: `http://${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`,
@@ -225,19 +237,21 @@ const client = createClient({
 
 // Insert audit log
 await client.insert({
-  table: 'telemetryflow_db.audit_logs',
-  values: [{
-    timestamp: new Date().toISOString(),
-    user_id: 'user-123',
-    user_email: 'user@example.com',
-    event_type: 'DATA',
-    action: 'CREATE',
-    resource: 'users',
-    result: 'SUCCESS',
-    tenant_id: 'tenant-123',
-    organization_id: 'org-123',
-  }],
-  format: 'JSONEachRow',
+  table: "telemetryflow_db.audit_logs",
+  values: [
+    {
+      timestamp: new Date().toISOString(),
+      user_id: "user-123",
+      user_email: "user@example.com",
+      event_type: "DATA",
+      action: "CREATE",
+      resource: "users",
+      result: "SUCCESS",
+      tenant_id: "tenant-123",
+      organization_id: "org-123",
+    },
+  ],
+  format: "JSONEachRow",
 });
 
 // Query logs
@@ -249,7 +263,7 @@ const result = await client.query({
     ORDER BY timestamp DESC
     LIMIT 100
   `,
-  format: 'JSONEachRow',
+  format: "JSONEachRow",
 });
 
 const logs = await result.json();
@@ -420,7 +434,7 @@ ORDER BY span_count DESC;
 Always use batch inserts for better performance:
 
 ```typescript
-import { createClient } from '@clickhouse/client';
+import { createClient } from "@clickhouse/client";
 
 const client = createClient({
   url: `http://${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`,
@@ -430,23 +444,23 @@ const client = createClient({
 
 // Good - Batch insert
 const logs = [
-  { timestamp: new Date(), severity_text: 'INFO', body: 'Log 1' },
-  { timestamp: new Date(), severity_text: 'INFO', body: 'Log 2' },
+  { timestamp: new Date(), severity_text: "INFO", body: "Log 1" },
+  { timestamp: new Date(), severity_text: "INFO", body: "Log 2" },
   // ... 100 logs
 ];
 
 await client.insert({
-  table: 'telemetryflow_db.logs',
+  table: "telemetryflow_db.logs",
   values: logs,
-  format: 'JSONEachRow',
+  format: "JSONEachRow",
 });
 
 // Bad - Individual inserts (slow!)
 for (const log of logs) {
   await client.insert({
-    table: 'telemetryflow_db.logs',
+    table: "telemetryflow_db.logs",
     values: [log],
-    format: 'JSONEachRow',
+    format: "JSONEachRow",
   });
 }
 ```
@@ -469,16 +483,16 @@ GROUP BY toStartOfMinute(timestamp);
 
 ### Available Materialized Views
 
-| Table | Materialized View | Purpose |
-|-------|-------------------|---------|
-| audit_logs | audit_logs_stats | Event statistics by type and result |
-| audit_logs | audit_logs_user_activity | User activity summary |
-| logs | logs_stats | Log statistics by service and severity |
-| logs | logs_errors | Error logs only (severity >= 17) |
-| metrics | metrics_1m | 1-minute aggregations |
-| metrics | metrics_1h | 1-hour aggregations |
-| traces | traces_stats | Trace statistics by service |
-| traces | traces_errors | Error traces only |
+| Table      | Materialized View        | Purpose                                |
+| ---------- | ------------------------ | -------------------------------------- |
+| audit_logs | audit_logs_stats         | Event statistics by type and result    |
+| audit_logs | audit_logs_user_activity | User activity summary                  |
+| logs       | logs_stats               | Log statistics by service and severity |
+| logs       | logs_errors              | Error logs only (severity >= 17)       |
+| metrics    | metrics_1m               | 1-minute aggregations                  |
+| metrics    | metrics_1h               | 1-hour aggregations                    |
+| traces     | traces_stats             | Trace statistics by service            |
+| traces     | traces_errors            | Error traces only                      |
 
 ## Monitoring
 
@@ -535,6 +549,7 @@ ORDER BY table, oldest_data;
 **Cause**: Old incompatible data from ClickHouse version < 20.7
 
 **Solution**:
+
 ```bash
 # Stop container
 docker stop telemetryflow_core_clickhouse
@@ -560,16 +575,19 @@ pnpm db:migrate:clickhouse
 ### Migrations Not Running
 
 1. Check ClickHouse is running:
+
    ```bash
    docker ps | grep clickhouse
    ```
 
 2. Check connection:
+
    ```bash
    docker exec telemetryflow_core_clickhouse clickhouse-client --query "SELECT 1"
    ```
 
 3. Verify environment variables:
+
    ```bash
    grep CLICKHOUSE_ .env
    ```
@@ -582,6 +600,7 @@ pnpm db:migrate:clickhouse
 ### Tables Not Appearing
 
 1. Check migrations ran successfully:
+
    ```bash
    docker exec telemetryflow_core_clickhouse clickhouse-client \
      --query "SHOW TABLES FROM telemetryflow_db"
@@ -603,6 +622,7 @@ pnpm db:migrate:clickhouse
 **Error**: `mkdir: cannot create directory '/var/lib/clickhouse/': Permission denied`
 
 **Solution**:
+
 ```bash
 # Fix directory permissions
 sudo chown -R 101:101 /opt/data/docker/telemetryflow-core/clickhouse

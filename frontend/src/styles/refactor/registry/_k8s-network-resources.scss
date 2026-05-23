@@ -1,0 +1,178 @@
+// TFO Style Registry — K8S Endpoints, Ingress, Services
+// Source: views/monitoring/kubernetes/endpoints.vue, ingress.vue, services.vue
+// These three pages share nearly identical filter/section/table/cell styles.
+
+.table-content .n-data-table .n-data-table-pagination {
+  padding-right: 25px !important;
+}
+
+.k8s-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--n-text-color);
+  margin: 0 0 4px 0;
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.section {
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--n-card-color);
+  border: 1px solid var(--k8s-border-color);
+}
+
+:global(html.dark) .section {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  background: var(--n-card-color);
+  border-bottom: 1px solid var(--k8s-border-color);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+:global(html.dark) .section-header {
+  background: rgba(30, 41, 59, 0.4);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-icon {
+  font-size: 18px;
+  color: var(--n-text-color-3);
+}
+
+.section-content {
+  padding: 0;
+}
+
+.filters-header {
+  padding: 10px 16px;
+}
+
+.filters-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--k8s-border-color);
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 160px;
+  flex: 1;
+}
+
+.filter-action {
+  min-width: auto;
+  flex: 0;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--n-text-color-3);
+  letter-spacing: 0.02em;
+}
+
+.filter-select {
+  min-width: 160px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.current-filter-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+}
+
+.filter-status-label {
+  color: var(--n-text-color-3);
+  font-size: 0.8125rem;
+}
+
+.filter-separator {
+  color: var(--n-text-color-3);
+  font-size: 12px;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ns-select {
+  width: 180px;
+}
+
+.search-input {
+  width: 200px;
+}
+
+.cell-name {
+  font-weight: 500;
+  color: var(--n-text-color);
+}
+
+.cell-namespace {
+  color: var(--n-primary-color);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.cell-wrap {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
+}

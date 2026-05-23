@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # TelemetryFlow Core Bootstrap Script
-# Comprehensive script to initialize and run the IAM-only backend
+# Comprehensive script to initialize and run the full-stack monorepo
 # Includes migration, seeding, and all required setup steps
 
 set -e  # Exit on error
@@ -38,7 +38,7 @@ PORT="${PORT:-3000}"
 POSTGRES_HOST="${POSTGRES_HOST:-localhost}"
 POSTGRES_PORT="${POSTGRES_PORT:-5432}"
 POSTGRES_DB="${POSTGRES_DB:-telemetryflow_db}"
-CLICKHOUSE_HOST="${CLICKHOUSE_HOST:-172.151.151.40}"
+CLICKHOUSE_HOST="${CLICKHOUSE_HOST:-localhost}"
 
 # Banner
 echo ""
@@ -46,7 +46,7 @@ echo -e "${CYAN}╔════════════════════�
 echo -e "${CYAN}║                                                                ║${NC}"
 echo -e "${CYAN}║          🚀 TelemetryFlow Core Bootstrap Script 🚀             ║${NC}"
 echo -e "${CYAN}║                                                                ║${NC}"
-echo -e "${CYAN}║              IAM-Only Backend with 5-Tier RBAC                 ║${NC}"
+echo -e "${CYAN}║         Full-Stack Monorepo: Backend + Frontend                ║${NC}"
 echo -e "${CYAN}║                                                                ║${NC}"
 echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
@@ -135,8 +135,7 @@ while [[ $# -gt 0 ]]; do
       echo "  --help             Show this help message"
       echo ""
       echo "Docker Profiles:"
-      echo "  core               Backend, PostgreSQL, ClickHouse"
-      echo "  monitoring         OTEL, Jaeger, Prometheus, Grafana"
+      echo "  core               Backend, Frontend, PostgreSQL, ClickHouse, Redis, NATS"
       echo "  tools              Portainer"
       echo "  all                Everything (default)"
       echo ""
@@ -266,7 +265,7 @@ fi
 # Summary
 echo -e "\n${CYAN}╔════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║                                                                ║${NC}"
-echo -e "${CYAN}║                   ✅ Bootstrap Complete! ✅                     ║${NC}"
+echo -e "${CYAN}║                   ✅ Bootstrap Complete! ✅                    ║${NC}"
 echo -e "${CYAN}║                                                                ║${NC}"
 echo -e "${CYAN}╚════════════════════════════════════════════════════════════════╝${NC}"
 
@@ -287,6 +286,13 @@ echo -e ""
 echo -e "  ${YELLOW}ClickHouse:${NC}"
 echo -e "    • Audit logs with 90-day TTL"
 echo -e "    • High-performance time-series storage"
+echo -e ""
+echo -e "  ${YELLOW}Redis:${NC}"
+echo -e "    • L1/L2 Cache (session, permission caching)"
+echo -e "    • BullMQ job queues (alerts, notifications)"
+echo -e ""
+echo -e "  ${YELLOW}NATS:${NC}"
+echo -e "    • JetStream event streaming"
 
 echo -e "\n${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${GREEN}👥 Default Users (Password: TelemetryFlow@2024)${NC}"
@@ -317,13 +323,11 @@ fi
 echo -e "\n${YELLOW}Access the application:${NC}"
 echo -e "  ${CYAN}API Documentation:${NC} http://localhost:${PORT}/api"
 echo -e "  ${CYAN}Health Check:${NC}      http://localhost:${PORT}/health"
-echo -e "  ${CYAN}Metrics:${NC}           http://localhost:${PORT}/metrics"
+echo -e "  ${CYAN}Frontend:${NC}          http://localhost:8080"
 
 if [[ "$DOCKER_PROFILE" == "all" || "$DOCKER_PROFILE" == "monitoring" ]]; then
   echo -e "\n${YELLOW}Monitoring & Observability:${NC}"
-  echo -e "  ${CYAN}Grafana (SPM):${NC}     http://localhost:3001 (admin/admin)"
   echo -e "  ${CYAN}Jaeger (Traces):${NC}   http://localhost:16686"
-  echo -e "  ${CYAN}Prometheus:${NC}        http://localhost:9090"
 fi
 
 if [[ "$DOCKER_PROFILE" == "all" || "$DOCKER_PROFILE" == "tools" ]]; then
@@ -331,7 +335,8 @@ if [[ "$DOCKER_PROFILE" == "all" || "$DOCKER_PROFILE" == "tools" ]]; then
   echo -e "  ${CYAN}Portainer:${NC}         http://localhost:9100"
 fi
 
-echo -e "\n${YELLOW}IAM Endpoints:${NC}"
+echo -e "\n${YELLOW}API Endpoints:${NC}"
+echo -e "  ${CYAN}Auth:${NC}              http://localhost:${PORT}/api/v2/auth"
 echo -e "  ${CYAN}Users:${NC}             http://localhost:${PORT}/api/v2/users"
 echo -e "  ${CYAN}Roles:${NC}             http://localhost:${PORT}/api/v2/roles"
 echo -e "  ${CYAN}Permissions:${NC}       http://localhost:${PORT}/api/v2/permissions"
@@ -340,6 +345,13 @@ echo -e "  ${CYAN}Workspaces:${NC}        http://localhost:${PORT}/api/v2/iam/wo
 echo -e "  ${CYAN}Tenants:${NC}           http://localhost:${PORT}/api/v2/iam/tenants"
 echo -e "  ${CYAN}Groups:${NC}            http://localhost:${PORT}/api/v2/iam/groups"
 echo -e "  ${CYAN}Regions:${NC}           http://localhost:${PORT}/api/v2/iam/regions"
+echo -e "  ${CYAN}API Keys:${NC}          http://localhost:${PORT}/api/v2/api-keys"
+echo -e "  ${CYAN}SSO:${NC}               http://localhost:${PORT}/api/v2/sso"
+echo -e "  ${CYAN}Audit:${NC}             http://localhost:${PORT}/api/v2/audit"
+echo -e "  ${CYAN}Alerts:${NC}            http://localhost:${PORT}/api/v2/alerting/alerts"
+echo -e "  ${CYAN}Alert Rules:${NC}       http://localhost:${PORT}/api/v2/alerting/alert-rules"
+echo -e "  ${CYAN}LLM:${NC}               http://localhost:${PORT}/api/v2/llm"
+echo -e "  ${CYAN}Data Masking:${NC}      http://localhost:${PORT}/api/v2/data-masking"
 
 echo -e "\n${YELLOW}Useful commands:${NC}"
 echo -e "  ${CYAN}View logs:${NC}         docker-compose logs -f"

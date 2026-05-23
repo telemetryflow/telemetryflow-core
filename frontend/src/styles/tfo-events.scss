@@ -1,0 +1,139 @@
+/**
+ * Global styles for Events section
+ * Light background that follows theme (light/dark mode)
+ * Used in Kubernetes monitoring and other event displays
+ */
+
+// Events Container - LIGHT BACKGROUND
+.tfo-events-container {
+  padding: 12px 16px;
+  background: #f8fafc; // Light gray in light mode
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+
+  html.dark & {
+    background: #0f172a; // Very dark blue in dark mode
+    border-color: var(--k8s-border-color);
+  }
+}
+
+.tfo-event-content {
+  margin-top: 4px;
+}
+
+// Event Message Box
+.tfo-event-message-box {
+  background: #f1f5f9; // Light gray
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+
+  html.dark & {
+    background: #1e293b; // Dark blue-gray
+    border-color: var(--k8s-border-color);
+  }
+
+  code {
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: #334155; // Dark text in light mode
+    word-break: break-word;
+    white-space: pre-wrap;
+    display: block;
+
+    html.dark & {
+      color: #e2e8f0; // Light text in dark mode
+    }
+  }
+
+  // Warning variant
+  &.warning {
+    background: #fef2f2; // Light red
+    border-color: #fecaca;
+
+    html.dark & {
+      background: rgba(220, 38, 38, 0.15);
+      border-color: rgba(220, 38, 38, 0.3);
+    }
+
+    code {
+      color: #dc2626; // Red text
+
+      html.dark & {
+        color: #fca5a5; // Light red text
+      }
+    }
+  }
+}
+
+// Event Details Table
+.tfo-event-details-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff; // White in light mode
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--k8s-border-color);
+
+  html.dark & {
+    background: #0f172a; // Very dark in dark mode
+    border-color: var(--k8s-border-color);
+  }
+
+  tr {
+    &:not(:last-child) td {
+      border-bottom: 1px solid var(--k8s-border-color);
+
+      html.dark & {
+        border-color: var(--k8s-border-color);
+      }
+    }
+  }
+
+  td {
+    padding: 8px 12px;
+    font-size: 0.8125rem;
+    vertical-align: middle;
+  }
+
+  .tfo-event-detail-label {
+    width: 90px;
+    min-width: 90px;
+    color: #6b7280;
+    font-weight: 600;
+    font-size: 0.75rem;
+    background: #f3f4f6; // Light gray
+    border-right: 1px solid var(--k8s-border-color);
+
+    html.dark & {
+      color: #94a3b8;
+      background: #1e293b; // Dark blue-gray
+      border-right-color: var(--k8s-border-color);
+    }
+  }
+
+  .tfo-event-detail-value {
+    color: #1f2937; // Dark text
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 0.75rem;
+    background: #ffffff; // White
+
+    html.dark & {
+      color: #e2e8f0; // Light text
+      background: #0f172a; // Very dark
+    }
+  }
+}
+
+// No Events State
+.tfo-no-events {
+  text-align: center;
+  padding: 24px;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}

@@ -1,0 +1,256 @@
+// TFO Style Registry — Chart Panel
+// Full panel layout, query editor area, chart area, controls
+
+.graph-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--n-card-color);
+  border: 1px solid var(--k8s-border-color, var(--n-border-color));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 100%;
+
+  :global(html.dark) & {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  // Mobile optimization
+  @media (max-width: 768px) {
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+
+  &.editable {
+    border-color: var(--n-primary-color, #3b82f6);
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--k8s-border-color, var(--n-border-color));
+  min-height: 56px;
+  background: var(--n-color);
+
+  // Mobile optimization
+  @media (max-width: 768px) {
+    padding: 12px 16px;
+    min-height: 48px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+.panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--n-text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  // Mobile optimization
+  @media (max-width: 768px) {
+    font-size: 14px;
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+
+  // Mobile optimization
+  @media (max-width: 768px) {
+    gap: 2px;
+  }
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+
+  &:hover {
+    opacity: 1;
+    background: var(--n-color-hover);
+  }
+
+  // Mobile optimization
+  @media (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.chart-area {
+  position: relative;
+  flex: 1;
+  min-height: 200px;
+  padding: 20px;
+  overflow: hidden;
+  background: var(--n-card-color);
+
+  & > * {
+    width: 100%;
+    height: 100%;
+  }
+
+  // Mobile optimization
+  @media (max-width: 768px) {
+    padding: 16px;
+    min-height: 180px;
+  }
+
+  // Stat Card Widget (Overview style - vertical layout with left border)
+  .stat-card-widget {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: 16px 20px;
+    border: 1px solid var(--k8s-border-color, var(--n-border-color));
+    border-left-width: 4px;
+    border-left-color: var(--n-primary-color);
+    border-radius: 8px;
+    background: var(--n-card-color);
+
+    // Dark mode: darker background for better contrast
+    :global(html.dark) & {
+      background: #1e293b;
+    }
+
+    .stat-value-large {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+      // Color is set via inline style to use widget.options.valueColor or fallback to primary
+    }
+
+    .stat-value-colorful {
+      color: #3b82f6 !important;
+    }
+  }
+
+  .stat-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+
+    .stat-icon-small {
+      font-size: 14px;
+      color: var(--n-text-color-3);
+    }
+
+    .stat-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--n-text-color-3);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  .stat-trend {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--n-text-color-2);
+  }
+
+  // Adjust StatPanel styling when inside GraphPanel
+  .stat-panel {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    min-height: auto !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+
+    // Mobile optimization for StatPanel
+    @media (max-width: 768px) {
+      padding: 0 !important;
+    }
+  }
+
+  // Adjust GaugeChart wrapper when inside GraphPanel
+  .gauge-chart-wrapper.with-border {
+    border: 2px solid var(--k8s-border-color, var(--n-border-color));
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--n-color);
+
+    @media (max-width: 768px) {
+      border-width: 1.5px;
+      border-radius: 6px;
+      padding: 12px;
+    }
+  }
+}
+
+.chart-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--n-modal-color);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.text-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  color: var(--n-text-color-2);
+
+  // Mobile optimization
+  @media (max-width: 768px) {
+    padding: 12px;
+    font-size: 13px;
+  }
+}
+
+.fallback-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--n-text-color-3);
+
+  // Mobile optimization
+  @media (max-width: 768px) {
+    gap: 6px;
+
+    svg {
+      font-size: 24px !important;
+    }
+  }
+}
+
+.fallback-label {
+  font-size: 12px;
+  text-transform: capitalize;
+
+  // Mobile optimization
+  @media (max-width: 768px) {
+    font-size: 11px;
+  }
+}

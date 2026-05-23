@@ -1,0 +1,284 @@
+// TFO Style Registry — Monitor Card
+// Card layout for uptime monitors with status badges, stats, and footer
+// Extracted from: MonitorCard.vue
+
+// ─── Monitor Card ─────────────────────────────────────────────────────────────
+
+.monitor-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.02);
+  }
+
+  &:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  &.status-paused {
+    opacity: 0.7;
+  }
+}
+
+// ─── Monitor Header ────────────────────────────────────────────────────────────
+
+.monitor-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.monitor-type-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.monitor-name {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ─── Status Badge ──────────────────────────────────────────────────────────────
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+
+  &.status-up {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+  }
+
+  &.status-down {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
+
+  &.status-degraded {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+  }
+
+  &.status-paused {
+    background: rgba(156, 163, 175, 0.1);
+    color: #9ca3af;
+  }
+
+  &.status-pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+  }
+
+  &.status-unknown {
+    background: rgba(156, 163, 175, 0.1);
+    color: #9ca3af;
+  }
+}
+
+.status-icon {
+  font-size: 14px;
+}
+
+.status-label {
+  font-weight: 600;
+}
+
+// ─── Monitor URL ───────────────────────────────────────────────────────────────
+
+.monitor-url {
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ─── Monitor Stats ─────────────────────────────────────────────────────────────
+
+.monitor-stats {
+  display: flex;
+  gap: 16px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+// ─── Monitor Footer ────────────────────────────────────────────────────────────
+
+.monitor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.last-check {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+}
+
+.footer-icon {
+  font-size: 14px;
+}
+
+// ─── Responsive - Tablet ──────────────────────────────────────────────────────
+
+@media (max-width: 768px) {
+  .monitor-card {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .monitor-header {
+    gap: 10px;
+  }
+
+  .monitor-type-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+
+  .monitor-name {
+    font-size: 0.9rem;
+  }
+
+  .status-badge {
+    padding: 3px 8px;
+    font-size: 0.7rem;
+  }
+
+  .monitor-url {
+    font-size: 0.8rem;
+  }
+
+  .monitor-stats {
+    gap: 12px;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+  }
+
+  .stat-value {
+    font-size: 0.8rem;
+  }
+
+  .last-check {
+    font-size: 0.7rem;
+  }
+}
+
+// ─── Responsive - Mobile ──────────────────────────────────────────────────────
+
+@media (max-width: 480px) {
+  .monitor-card {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .monitor-header {
+    gap: 8px;
+  }
+
+  .monitor-type-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+
+  .monitor-name {
+    font-size: 0.85rem;
+  }
+
+  .status-badge {
+    padding: 2px 6px;
+    font-size: 0.65rem;
+  }
+
+  .status-icon {
+    font-size: 12px;
+  }
+
+  .monitor-url {
+    font-size: 0.75rem;
+  }
+
+  .monitor-stats {
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .stat-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+  }
+
+  .stat-value {
+    font-size: 0.75rem;
+  }
+
+  .last-check {
+    font-size: 0.65rem;
+  }
+
+  .footer-icon {
+    font-size: 12px;
+  }
+}

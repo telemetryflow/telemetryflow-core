@@ -1,0 +1,463 @@
+# Implementation Plan: Frontend-Backend Tenancy Integration
+
+## Overview
+
+This implementation plan covers the integration of the Vue 3 frontend with the NestJS backend for the tenancy module. The implementation follows a bottom-up approach, starting with backend CQRS infrastructure, then building frontend components and state management, and finally wiring everything together with comprehensive testing.
+
+The plan emphasizes incremental progress with validation at each step through property-based tests and unit tests.
+
+## Tasks
+
+- [ ] 1. Backend CQRS Commands and Queries
+  - [ ] 1.1 Implement tenant commands (Create, Update, Delete, Activate, Deactivate)
+    - Create command classes in `application/commands/`
+    - Include validation in command constructors
+    - _Requirements: 1.1, 1.3, 1.4_
+  - [ ] 1.2 Implement organization commands (Create, Update, Delete, Activate, Deactivate)
+    - Create command classes in `application/commands/`
+    - Include region and tenant context validation
+    - _Requirements: 2.1, 2.3, 2.4_
+  - [ ] 1.3 Implement workspace commands (Create, Update, Delete, Archive)
+    - Create command classes in `application/commands/`
+    - Include organization and tenant context validation
+    - _Requirements: 3.1, 3.3, 3.4_
+  - [ ] 1.4 Implement tenant queries (GetTenant, GetTenants, GetTenantsByWorkspace)
+    - Create query classes in `application/queries/`
+    - Include filter and pagination parameters
+    - _Requirements: 1.2, 2.2, 4.2_
+  - [ ] 1.5 Implement organization queries (GetOrganization, GetOrganizations, GetOrganizationsByRegion)
+    - Create query classes in `application/queries/`
+    - Include tenant context filtering
+    - _Requirements: 2.2, 2.6_
+  - [ ] 1.6 Implement workspace queries (GetWorkspace, GetWorkspaces, GetWorkspacesByOrganization)
+    - Create query classes in `application/queries/`
+    - Include organization and tenant context filtering
+    - _Requirements: 3.2, 3.6_
+
+- [ ] 2. Backend CQRS Handlers
+  - [ ] 2.1 Implement CreateTenantHandler
+    - Verify workspace exists
+    - Create tenant aggregate using domain factory
+    - Save to repository and publish domain events
+    - _Requirements: 1.1, 1.6_
+  - [ ]\* 2.2 Write property test for CreateTenantHandler
+    - **Property 1: Tenant CRUD Operations Completeness**
+    - **Validates: Requirements 1.1, 1.2**
+  - [ ] 2.3 Implement UpdateTenantHandler
+    - Fetch tenant by ID
+    - Update tenant details using aggregate methods
+    - Save changes and publish events
+    - _Requirements: 1.3_
+  - [ ]\* 2.4 Write property test for UpdateTenantHandler
+    - **Property 2: Tenant Update Persistence**
+    - **Validates: Requirements 1.3**
+  - [ ] 2.5 Implement DeactivateTenantHandler
+    - Fetch tenant by ID
+    - Call deactivate method on aggregate
+    - Save changes and publish events
+    - _Requirements: 1.4_
+  - [ ]\* 2.6 Write property test for DeactivateTenantHandler
+    - **Property 3: Tenant Deactivation State**
+    - **Validates: Requirements 1.4**
+  - [ ] 2.7 Implement GetTenantsHandler with filtering and pagination
+    - Apply tenant context filters
+    - Support search, workspace filter, and active status filter
+    - Return paginated results
+    - _Requirements: 1.2, 2.2, 4.2_
+  - [ ]\* 2.8 Write property test for tenant isolation in queries
+    - **Property 6: Tenant Isolation in Queries**
+    - **Validates: Requirements 2.2, 2.6, 3.2, 3.6, 4.1, 4.2, 4.3**
+  - [ ] 2.9 Implement CreateOrganizationHandler
+    - Verify region exists
+    - Create organization aggregate with tenant context
+    - Save to repository and publish events
+    - _Requirements: 2.1_
+  - [ ]\* 2.10 Write property test for CreateOrganizationHandler
+    - **Property 5: Organization Creation with Tenant Context**
+    - **Validates: Requirements 2.1**
+  - [ ] 2.11 Implement DeleteOrganizationHandler with cascade validation
+    - Check for active workspaces
+    - Reject deletion if workspaces exist
+    - Soft delete organization if validation passes
+    - _Requirements: 2.4_
+  - [ ]\* 2.12 Write property test for cascading delete validation
+    - **Property 7: Cascading Delete Validation**
+    - **Validates: Requirements 2.4**
+  - [ ] 2.13 Implement CreateWorkspaceHandler
+    - Verify organization exists
+    - Create workspace aggregate with organization and tenant context
+    - Save to repository and publish events
+    - _Requirements: 3.1_
+  - [ ]\* 2.14 Write property test for CreateWorkspaceHandler
+    - **Property 8: Workspace Creation with Context**
+    - **Validates: Requirements 3.1**
+  - [ ] 2.15 Implement ArchiveWorkspaceHandler
+    - Fetch workspace by ID
+    - Call delete method (soft delete)
+    - Verify deleted_at is set and data is preserved
+    - _Requirements: 3.4_
+  - [ ]\* 2.16 Write property test for soft delete preservation
+    - **Property 9: Soft Delete Preservation**
+    - **Validates: Requirements 3.4**
+
+- [ ] 3. Backend Tenant Context Management
+  - [ ] 3.1 Implement TenantContextExtractor middleware
+    - Extract tenant_id from JWT claims or request headers
+    - Store in request-scoped context
+    - Throw TenantContextMissingException if missing
+    - _Requirements: 4.1, 4.4, 7.1, 7.2_
+  - [ ]\* 3.2 Write property test for context extraction
+    - **Property 10: Tenant Context Extraction and Application**
+    - **Validates: Requirements 4.1, 4.2, 7.1, 7.2, 7.3**
+  - [ ] 3.3 Implement TenantContextGuard for route protection
+    - Verify tenant context exists
+    - Verify user has access to the tenant
+    - Reject cross-tenant access with 403 Forbidden
+    - _Requirements: 4.3, 12.1_
+  - [ ]\* 3.4 Write property test for cross-tenant access rejection
+    - **Property 11: Cross-Tenant Access Rejection**
+    - **Validates: Requirements 4.3**
+  - [ ] 3.5 Implement automatic tenant_id filtering in repositories
+    - Modify repository query builders to inject tenant_id filters
+    - Apply to all findAll and findBy methods
+    - _Requirements: 4.2, 7.3_
+  - [ ] 3.6 Implement tenant context in domain events
+    - Add tenant_id to event metadata
+    - Ensure all event publishers include context
+    - _Requirements: 7.4_
+  - [ ]\* 3.7 Write property test for event metadata tenant context
+    - **Property 19: Event Metadata Tenant Context**
+    - **Validates: Requirements 7.4**
+
+- [ ] 4. Backend Audit Logging and Analytics
+  - [ ] 4.1 Implement audit log interceptor
+    - Capture all tenant operations
+    - Include tenant_id, user_id, action, timestamp
+    - Write to ClickHouse audit_logs table
+    - _Requirements: 4.5, 14.1, 14.2_
+  - [ ]\* 4.2 Write property test for audit log tenant context
+    - **Property 12: Audit Log Tenant Context**
+    - **Validates: Requirements 4.5, 14.1, 14.2**
+  - [ ] 4.3 Implement GetAuditLogsHandler with filtering
+    - Support filtering by tenant, user, action type, date range
+    - Query ClickHouse with proper indexes
+    - Return paginated results
+    - _Requirements: 14.3_
+  - [ ]\* 4.4 Write property test for audit log filtering
+    - **Property 43: Audit Log Filtering**
+    - **Validates: Requirements 14.3**
+  - [ ] 4.5 Implement audit snapshots for sensitive operations
+    - Capture before and after state for delete, deactivate, permission changes
+    - Store as JSON in audit log details field
+    - _Requirements: 14.5_
+  - [ ]\* 4.6 Write property test for sensitive operation audit snapshots
+    - **Property 44: Sensitive Operation Audit Snapshots**
+    - **Validates: Requirements 14.5**
+  - [ ] 4.7 Implement GetTenantUsageMetricsHandler
+    - Query ClickHouse for aggregated metrics
+    - Support time range filtering
+    - Return API calls, storage, active users
+    - _Requirements: 8.2_
+  - [ ]\* 4.8 Write property test for usage metrics aggregation
+    - **Property 21: Usage Metrics Aggregation**
+    - **Validates: Requirements 8.2**
+
+- [ ] 5. Backend Configuration and Permissions
+  - [ ] 5.1 Implement UpdateTenantConfigHandler
+    - Validate configuration against JSON schema
+    - Store as structured JSON in tenant entity
+    - Return validation errors with field-level details
+    - _Requirements: 5.1, 5.6_
+  - [ ]\* 5.2 Write property test for configuration validation
+    - **Property 13: Configuration Validation and Storage**
+    - **Validates: Requirements 5.1, 5.6**
+  - [ ] 5.3 Implement GetTenantConfigHandler with defaults
+    - Fetch tenant configuration
+    - Apply default values for missing keys
+    - Return complete configuration object
+    - _Requirements: 5.2_
+  - [ ]\* 5.4 Write property test for configuration defaults
+    - **Property 14: Configuration Defaults**
+    - **Validates: Requirements 5.2**
+  - [ ] 5.5 Implement resource quota enforcement middleware
+    - Check tenant limits for storage, users, API calls
+    - Reject operations exceeding limits with 429 or 403
+    - _Requirements: 5.5_
+  - [ ]\* 5.6 Write property test for resource quota enforcement
+    - **Property 16: Resource Quota Enforcement**
+    - **Validates: Requirements 5.5**
+  - [ ] 5.7 Implement TenantPermissionGuard
+    - Verify user has required permission for tenant
+    - Consider role-based and tenant-specific grants
+    - Return 403 with permission details on failure
+    - _Requirements: 12.1, 12.2, 12.5_
+  - [ ]\* 5.8 Write property test for permission verification
+    - **Property 34: Permission Verification**
+    - **Validates: Requirements 12.1, 12.2**
+
+- [ ] 6. Backend Health Monitoring
+  - [ ] 6.1 Implement TenantHealthCheckService
+    - Verify database connectivity
+    - Check API responsiveness
+    - Verify resource availability
+    - Return health status with individual check results
+    - _Requirements: 15.1_
+  - [ ]\* 6.2 Write property test for health check completeness
+    - **Property 46: Health Check Completeness**
+    - **Validates: Requirements 15.1**
+  - [ ] 6.3 Implement health status update on issues
+    - Update tenant health status in database
+    - Emit health change events
+    - _Requirements: 15.2_
+  - [ ]\* 6.4 Write property test for health status updates
+    - **Property 47: Health Status Update on Issues**
+    - **Validates: Requirements 15.2**
+  - [ ] 6.5 Implement health alert notifications
+    - Send notifications when thresholds exceeded
+    - Support email, webhook, Slack channels
+    - _Requirements: 15.5_
+  - [ ]\* 6.6 Write property test for health alert notifications
+    - **Property 48: Health Alert Notification**
+    - **Validates: Requirements 15.5**
+
+- [ ] 7. Checkpoint - Backend Implementation Complete
+  - Ensure all backend tests pass
+  - Verify API endpoints are accessible
+  - Check that domain events are being emitted
+  - Ask the user if questions arise
+
+- [ ] 8. Frontend API Client
+  - [ ] 8.1 Create TenancyApiClient class
+    - Configure with base URL and axios instance
+    - Implement all CRUD methods for tenants, organizations, workspaces, regions
+    - Include error handling and response transformation
+    - _Requirements: 9.1, 9.3, 9.4_
+  - [ ] 8.2 Implement automatic tenant context header injection
+    - Add axios request interceptor
+    - Include X-Tenant-Id header from current store state
+    - _Requirements: 9.2_
+  - [ ]\* 8.3 Write property test for API client header injection
+    - **Property 25: API Client Header Injection**
+    - **Validates: Requirements 9.2**
+  - [ ] 8.4 Implement DTO transformation in API client
+    - Transform backend DTOs to frontend types
+    - Handle date string to Date object conversion
+    - Ensure consistent type mapping
+    - _Requirements: 9.3_
+  - [ ]\* 8.5 Write property test for DTO transformation consistency
+    - **Property 26: DTO Transformation Consistency**
+    - **Validates: Requirements 9.3**
+  - [ ] 8.6 Implement error handling in API client
+    - Create TenancyApiError class
+    - Add axios response interceptor
+    - Extract and format error messages
+    - _Requirements: 9.4_
+  - [ ]\* 8.7 Write property test for API error handling consistency
+    - **Property 27: API Error Handling Consistency**
+    - **Validates: Requirements 9.4**
+  - [ ] 8.8 Implement pagination support in API client
+    - Serialize page, limit, cursor parameters
+    - Handle paginated response format
+    - _Requirements: 9.5_
+  - [ ]\* 8.9 Write property test for pagination parameter serialization
+    - **Property 28: Pagination Parameter Serialization**
+    - **Validates: Requirements 9.5**
+  - [ ] 8.10 Implement filter serialization in API client
+    - Convert filter objects to query parameters
+    - Handle nested filters and arrays
+    - _Requirements: 9.6_
+  - [ ]\* 8.11 Write property test for filter serialization
+    - **Property 29: Filter Serialization**
+    - **Validates: Requirements 9.6**
+
+- [ ] 9. Frontend Pinia Store
+  - [ ] 9.1 Create tenancy store with state, getters, and actions
+    - Define TenancyState interface
+    - Implement computed properties for derived state
+    - Create action methods for all operations
+    - _Requirements: 10.1, 10.2, 10.3_
+  - [ ] 9.2 Implement store initialization
+    - Load default tenant from local storage or API
+    - Initialize with user's accessible tenants
+    - _Requirements: 10.1_
+  - [ ] 9.3 Implement tenant switching in store
+    - Update current tenant context
+    - Clear cached data from previous tenant
+    - Reload data for new tenant
+    - _Requirements: 6.3, 6.5_
+  - [ ]\* 9.4 Write property test for tenant switching state update
+    - **Property 17: Tenant Switching State Update**
+    - **Validates: Requirements 6.3, 6.5**
+  - [ ] 9.5 Implement reactive state updates in store
+    - Ensure computed properties update on state changes
+    - Notify subscribed components
+    - _Requirements: 10.2_
+  - [ ]\* 9.6 Write property test for store reactive state updates
+    - **Property 30: Store Reactive State Updates**
+    - **Validates: Requirements 10.2**
+  - [ ] 9.7 Implement caching in store
+    - Cache fetched tenant data in memory
+    - Return cached results for duplicate requests
+    - Implement cache invalidation on updates
+    - _Requirements: 10.3_
+  - [ ]\* 9.8 Write property test for store caching behavior
+    - **Property 31: Store Caching Behavior**
+    - **Validates: Requirements 10.3**
+  - [ ] 9.9 Implement optimistic updates and rollback
+    - Update local state before API call
+    - Rollback on failure and restore previous state
+    - Show error messages on rollback
+    - _Requirements: 10.4, 10.5_
+  - [ ]\* 9.10 Write property test for optimistic update and rollback
+    - **Property 32: Optimistic Update and Rollback**
+    - **Validates: Requirements 10.4, 10.5**
+  - [ ] 9.11 Implement store cleanup on logout
+    - Clear all tenant data
+    - Reset to initial state
+    - _Requirements: 10.6_
+
+- [ ] 10. Frontend UI Components - Tenant Switcher
+  - [ ] 10.1 Create TenantSwitcher component
+    - Display dropdown with accessible tenants
+    - Show tenant names and icons
+    - Handle tenant selection
+    - _Requirements: 6.1, 6.2_
+  - [ ] 10.2 Implement conditional rendering for tenant switcher
+    - Show component only when user has multiple tenants
+    - Hide when user has single tenant
+    - _Requirements: 6.1, 6.6_
+  - [ ] 10.3 Implement tenant context propagation on switch
+    - Update store on tenant selection
+    - Trigger API request header updates
+    - _Requirements: 6.4_
+  - [ ]\* 10.4 Write property test for tenant context propagation in requests
+    - **Property 18: Tenant Context Propagation in Requests**
+    - **Validates: Requirements 6.4**
+  - [ ]\* 10.5 Write unit tests for TenantSwitcher component
+    - Test conditional rendering with multiple tenants
+    - Test hiding with single tenant
+    - Test dropdown interaction
+
+- [ ] 11. Frontend UI Components - Tenant Management
+  - [ ] 11.1 Create TenantTable component
+    - Render paginated table with Naive UI DataTable
+    - Support sorting, filtering, and search
+    - Include action buttons (edit, delete, activate/deactivate)
+    - _Requirements: 1.5_
+  - [ ]\* 11.2 Write unit tests for TenantTable component
+    - Test table rendering with data
+    - Test pagination controls
+    - Test action button clicks
+  - [ ] 11.3 Create TenantForm component
+    - Implement form with validation using Naive UI Form
+    - Support create and edit modes
+    - Validate required fields and format constraints
+    - _Requirements: 11.2_
+  - [ ]\* 11.4 Write property test for form validation enforcement
+    - **Property 33: Form Validation Enforcement**
+    - **Validates: Requirements 11.2**
+  - [ ] 11.5 Create TenantCard component
+    - Display tenant information with status indicators
+    - Show action buttons based on permissions
+    - Use Naive UI Card and Badge components
+    - _Requirements: 11.3_
+  - [ ]\* 11.6 Write unit tests for TenantCard component
+    - Test information display
+    - Test status badge rendering
+    - Test action button visibility
+  - [ ] 11.7 Create TenantHierarchyTree component
+    - Render organization and workspace tree structure
+    - Use Naive UI Tree component
+    - Support expand/collapse and node selection
+    - _Requirements: 11.4_
+  - [ ] 11.8 Create TenantAnalyticsDashboard component
+    - Display usage metrics with ECharts
+    - Render time-series charts for API calls, storage, users
+    - Support time range selection
+    - _Requirements: 11.5_
+
+- [ ] 12. Frontend UI Components - Organization and Workspace Management
+  - [ ] 12.1 Create OrganizationTable component
+    - Render paginated table with filtering by region
+    - Include action buttons for CRUD operations
+    - _Requirements: 2.2_
+  - [ ] 12.2 Create OrganizationForm component
+    - Implement form with region selection
+    - Validate organization data
+    - _Requirements: 2.1, 2.3_
+  - [ ] 12.3 Create WorkspaceTable component
+    - Render paginated table with filtering by organization
+    - Include action buttons for CRUD operations
+    - _Requirements: 3.2_
+  - [ ] 12.4 Create WorkspaceForm component
+    - Implement form with organization selection
+    - Validate workspace data
+    - _Requirements: 3.1, 3.3_
+
+- [ ] 13. Frontend Views - Tenancy Management Pages
+  - [ ] 13.1 Create Tenants list view
+    - Use TenantTable component
+    - Add create button and search bar
+    - Implement pagination controls
+    - _Requirements: 1.5_
+  - [ ] 13.2 Create Tenant detail view
+    - Use TenantCard component
+    - Display tenant analytics
+    - Show audit logs
+    - _Requirements: 1.2, 8.1_
+  - [ ] 13.3 Create Organizations list view
+    - Use OrganizationTable component
+    - Add filtering by region
+    - _Requirements: 2.2_
+  - [ ] 13.4 Create Workspaces list view
+    - Use WorkspaceTable component
+    - Add filtering by organization
+    - _Requirements: 3.2_
+  - [ ] 13.5 Create Tenant hierarchy view
+    - Use TenantHierarchyTree component
+    - Display full region → organization → workspace → tenant hierarchy
+    - _Requirements: 2.5, 11.4_
+
+- [ ] 14. Integration and Wiring
+  - [ ] 14.1 Wire backend controllers to handlers
+    - Inject command and query handlers into controllers
+    - Ensure proper dependency injection
+    - _Requirements: All backend requirements_
+  - [ ] 14.2 Wire frontend components to store
+    - Connect all components to tenancy store
+    - Ensure reactive updates work correctly
+    - _Requirements: All frontend requirements_
+  - [ ] 14.3 Configure Vue Router with tenant context guards
+    - Add route guards to verify tenant context
+    - Redirect to tenant selection if context missing
+    - _Requirements: 7.1, 7.2_
+  - [ ] 14.4 Configure axios interceptors for tenant context
+    - Ensure all API requests include tenant headers
+    - Handle 401/403 errors globally
+    - _Requirements: 9.2, 4.3, 4.4_
+  - [ ]\* 14.5 Write integration tests for full tenant CRUD flow
+    - Test create → read → update → delete flow
+    - Verify frontend and backend integration
+    - _Requirements: 1.1, 1.2, 1.3, 1.4_
+  - [ ]\* 14.6 Write integration tests for tenant isolation
+    - Test cross-tenant access rejection
+    - Verify data segregation
+    - _Requirements: 4.1, 4.2, 4.3_
+
+- [ ] 15. Final Checkpoint - Complete Integration
+  - Ensure all tests pass (unit, property, integration)
+  - Verify tenant switching works end-to-end
+  - Check that audit logs are being created
+  - Verify health monitoring is functional
+  - Test permission enforcement
+  - Ask the user if questions arise
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties with minimum 100 iterations
+- Unit tests validate specific examples and edge cases
+- Integration tests validate end-to-end flows
+- The implementation follows a bottom-up approach: backend → API client → store → components → views → integration

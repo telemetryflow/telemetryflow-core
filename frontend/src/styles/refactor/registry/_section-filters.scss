@@ -1,0 +1,167 @@
+// TFO Style Registry — Section Filters
+// Filter rows, items, labels, actions, buttons, search, export, status
+@use '@/styles/responsive-utilities.scss' as *;
+@use '@/styles/tfo-variables' as *;
+
+// ─── Filters content ─────────────────────────────────────────────────────────
+
+.filters-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px 16px;
+  align-items: flex-end;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+    padding: 10px 12px;
+  }
+}
+
+// ─── Filter items ────────────────────────────────────────────────────────────
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 140px;
+  flex: 1 1 auto;
+  max-width: 200px;
+
+  @include xs-down {
+    min-width: 100%;
+    max-width: none;
+  }
+
+  &.filter-item-wide {
+    min-width: 280px;
+    max-width: 400px;
+
+    @include xs-down {
+      min-width: 100%;
+      max-width: none;
+    }
+  }
+}
+
+// ─── Filter label ────────────────────────────────────────────────────────────
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  @include xs-down {
+    font-size: 0.7rem;
+  }
+}
+
+// ─── Filter select ───────────────────────────────────────────────────────────
+
+.filter-select {
+  width: 100%;
+}
+
+// ─── Filter action ───────────────────────────────────────────────────────────
+
+.filter-action {
+  min-width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto;
+}
+
+// ─── Filter buttons ──────────────────────────────────────────────────────────
+
+.filter-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  .n-button {
+    min-width: 100px;
+  }
+}
+
+// ─── Current filter status ───────────────────────────────────────────────────
+
+.current-filter-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-wrap: wrap;
+
+  @include xs-down {
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+}
+
+// ─── Filter status label ─────────────────────────────────────────────────────
+
+.filter-status-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--n-text-color-3);
+
+  @include xs-down {
+    font-size: 0.7rem;
+  }
+}
+
+// ─── Filter separator ────────────────────────────────────────────────────────
+
+.filter-separator {
+  font-size: 12px;
+  color: var(--n-text-color-3);
+
+  @include xs-down {
+    display: none;
+  }
+}
+
+// ─── Table actions ───────────────────────────────────────────────────────────
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  @include xs-down {
+    width: 100%;
+    gap: 8px;
+  }
+}
+
+// ─── Search input ────────────────────────────────────────────────────────────
+
+.search-input {
+  width: 220px;
+
+  @include xs-down {
+    width: 100%;
+    order: -1;
+  }
+}
+
+// ─── Export buttons ──────────────────────────────────────────────────────────
+
+.export-buttons {
+  display: flex;
+  gap: 8px;
+
+  @include xs-down {
+    width: 100%;
+
+    button {
+      flex: 1;
+    }
+  }
+}

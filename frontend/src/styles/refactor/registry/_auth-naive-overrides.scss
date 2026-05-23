@@ -1,0 +1,243 @@
+// TFO Style Registry — Auth Naive UI Overrides
+// Scoped Naive UI component overrides for auth pages:
+// Input (52px dark theme), Primary button (purple gradient + white/light),
+// Default/Ghost button, Checkbox, Spin.
+
+@use "auth-variables" as *;
+
+// ─── 13. Naive UI — Input 52px dark theme ─────────────────────────────────────
+// Replaces .n-input in each view's scoped CSS.
+// Scoped-equivalent: prefix with page-class targets the same element globally.
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page,
+.profile-complete-page {
+  .n-input {
+    --n-height: 52px;
+    --n-font-size: 0.9375rem;
+    --n-color: rgba(255, 255, 255, 0.08);
+    --n-color-focus: rgba(255, 255, 255, 0.12);
+    --n-border: 2px solid rgba(255, 255, 255, 0.5);
+    --n-border-hover: 2px solid rgba(255, 255, 255, 0.7);
+    --n-border-focus: 2px solid rgba(255, 255, 255, 0.9);
+    --n-box-shadow-focus: 0 0 0 3px rgba(255, 255, 255, 0.15);
+    --n-text-color: #ffffff;
+    --n-placeholder-color: rgba(255, 255, 255, 0.5);
+    --n-caret-color: #ffffff;
+    --n-padding-left: 16px;
+    --n-padding-right: 16px;
+    border-radius: 6px !important;
+    height: 52px !important;
+  }
+
+  .n-input-wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .n-input__input {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .n-input__prefix {
+    margin-left: 12px !important;
+  }
+
+  .n-input__suffix {
+    margin-right: 12px !important;
+  }
+
+  .n-input .n-input__input-el {
+    background: transparent !important;
+    border-radius: 6px !important;
+    height: 52px !important;
+    line-height: 52px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    font-size: 0.9375rem !important;
+    color: #ffffff !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px #374151 inset !important;
+      -webkit-text-fill-color: #ffffff !important;
+      background-color: #374151 !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+  }
+
+  .n-input .n-input__placeholder {
+    font-size: 0.9375rem !important;
+    height: 100% !important;
+    padding-left: 16px !important;
+    line-height: 52px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    text-align: left !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+}
+
+// ─── 14a. Naive UI — Primary button (purple gradient) ─────────────────────────
+// Pages: login, register, forgot-password, reset-password, change-password,
+//        mfa-setup, verify-pending
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.verify-pending-page {
+  .n-button--primary-type {
+    background: $auth-primary-gradient !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 600;
+    border-radius: 8px !important;
+    height: 48px !important;
+    box-shadow: 0 4px 12px $auth-primary-shadow !important;
+    transition: all 0.3s ease !important;
+
+    &:hover:not(:disabled) {
+      background: $auth-primary-hover !important;
+      color: #ffffff !important;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5) !important;
+    }
+
+    &:active:not(:disabled) {
+      background: $auth-primary-active !important;
+      color: #ffffff !important;
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+    }
+
+    &:disabled {
+      opacity: 0.5 !important;
+      background: #9ca3af !important;
+      border: none !important;
+      color: #e5e7eb !important;
+      cursor: not-allowed !important;
+      box-shadow: none !important;
+    }
+
+    &.n-button--loading {
+      background: $auth-primary-gradient !important;
+      opacity: 0.8 !important;
+    }
+  }
+}
+
+// ─── 14b. Naive UI — Primary button (white / light) ───────────────────────────
+// Pages: verify-email, mfa-verify, profile-complete
+
+.verify-email-page,
+.mfa-verify-page,
+.profile-complete-page {
+  .n-button--primary-type {
+    background: #ffffff !important;
+    color: #1f2937 !important;
+    border: 2px solid #e5e7eb !important;
+    font-weight: 600;
+    border-radius: 6px !important;
+    height: 44px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+
+    &:hover:not(:disabled) {
+      background: #f9fafb !important;
+      border-color: #d1d5db !important;
+      color: #1f2937 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    &:active:not(:disabled) {
+      background: #f3f4f6 !important;
+      border-color: #d1d5db !important;
+      color: #1f2937 !important;
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    &:disabled {
+      opacity: 0.5 !important;
+      background: #f3f4f6 !important;
+      border-color: #e5e7eb !important;
+      color: #6b7280 !important;
+    }
+  }
+}
+
+// ─── 14c. Naive UI — Default / Ghost button ───────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page,
+.profile-complete-page {
+  .n-button--default-type {
+    background: transparent !important;
+    color: $auth-white !important;
+    border: 2px solid rgba(255, 255, 255, 0.5) !important;
+    font-weight: 500;
+    border-radius: 6px !important;
+    height: 44px !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-color: rgba(255, 255, 255, 0.7) !important;
+      color: $auth-white !important;
+    }
+
+    &:active {
+      background: rgba(255, 255, 255, 0.15) !important;
+      border-color: rgba(255, 255, 255, 0.7) !important;
+      color: $auth-white !important;
+    }
+  }
+}
+
+// ─── 14d. Naive UI — Checkbox (login + register) ──────────────────────────────
+
+.login-page,
+.register-page {
+  .n-checkbox {
+    --n-color-checked: white !important;
+    --n-border: 2px solid rgba(255, 255, 255, 0.7) !important;
+    --n-border-checked: 2px solid white !important;
+    --n-border-focus: 2px solid rgba(255, 255, 255, 0.9) !important;
+    --n-check-mark-color: #6366f1 !important;
+    --n-text-color: rgba(255, 255, 255, 0.9) !important;
+    --n-font-size: 0.875rem !important;
+
+    .n-checkbox__label {
+      color: white !important;
+    }
+  }
+}
+
+// ─── 14e. Naive UI — Spin (verify-email) ──────────────────────────────────────
+
+.verify-email-page {
+  .n-spin {
+    --n-color: #60a5fa;
+  }
+}

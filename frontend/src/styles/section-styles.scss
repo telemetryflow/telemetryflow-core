@@ -1,0 +1,225 @@
+// Shared section styles for all feature components
+// Uses mixins from responsive-utilities for consistent breakpoints
+@use '@/styles/responsive-utilities.scss' as *;
+@import '@/styles/tfo-variables.scss';
+
+// ─── Section wrapper ─────────────────────────────────────────────────────────
+
+.section {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--k8s-border-color);
+  background: var(--k8s-section-bg);
+
+  @include xs-down {
+    border-radius: 6px;
+  }
+}
+
+// ─── Section header ──────────────────────────────────────────────────────────
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  user-select: none;
+  cursor: pointer;
+  background: var(--k8s-section-header-bg);
+  border-bottom: 1px solid var(--k8s-border-color);
+  transition: background-color 0.2s ease;
+  gap: 8px;
+
+  @include md-up {
+    padding: 14px 16px;
+  }
+
+  @include xs-down {
+    flex-wrap: wrap;
+    font-size: 0.8125rem;
+  }
+
+  &:hover {
+    background: var(--n-color-hover);
+  }
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @include md-up {
+    gap: 10px;
+  }
+}
+
+.section-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  color: var(--n-text-color-3);
+
+  @include md-up {
+    font-size: 18px;
+  }
+}
+
+.chevron-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  color: var(--n-text-color-3);
+
+  @include md-up {
+    font-size: 16px;
+  }
+}
+
+// ─── Section badge ───────────────────────────────────────────────────────────
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  @include md-up {
+    font-size: 0.75rem;
+    padding: 5px 14px;
+  }
+
+  .badge-number {
+    font-weight: 700;
+  }
+
+  &.badge-primary { color: #fff; background: var(--n-primary-color, #3b82f6); }
+  &.badge-success { color: #fff; background: var(--n-success-color, #22c55e); }
+  &.badge-warning { color: #fff; background: var(--n-warning-color, #f59e0b); }
+  &.badge-error   { color: #fff; background: var(--n-error-color, #ef4444);   }
+  &.badge-info    { color: #fff; background: var(--n-info-color, #06b6d4);    }
+}
+
+// ─── Section content ─────────────────────────────────────────────────────────
+
+.section-content {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--k8s-border-color);
+
+  @include sm-up {
+    padding: 14px;
+    gap: 14px;
+  }
+
+  @include md-up {
+    padding: 16px;
+    gap: 16px;
+  }
+}
+
+// ─── Chart grids ─────────────────────────────────────────────────────────────
+
+// 2-column — stacks to 1 on mobile
+.charts-grid-2 {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  align-items: start;
+
+  @include sm-up {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  @include md-up {
+    gap: 16px;
+  }
+}
+
+// 3-column — 1 → 2 → 3
+.charts-grid-3 {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  align-items: start;
+
+  @include sm-up {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  @include lg-up {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+// 4-column stat panels — 2 → 4
+.charts-grid-4 {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+
+  @include md-up {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @include lg-up {
+    gap: 16px;
+  }
+}
+
+// Auto-fit — fills columns automatically (minimum 280px each)
+.charts-auto-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  align-items: start;
+
+  @include md-up {
+    gap: 16px;
+  }
+}
+
+// ─── Stats panel grid (alias kept for back-compat) ───────────────────────────
+
+.stats-panel-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+
+  @include md-up {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @include lg-up {
+    gap: 16px;
+  }
+}
+
+// ─── Mobile chart height floor ───────────────────────────────────────────────
+
+@include xs-down {
+  :deep(.time-series-chart),
+  :deep(.bar-chart) {
+    min-height: 180px;
+  }
+}

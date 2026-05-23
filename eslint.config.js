@@ -3,23 +3,19 @@ const tseslint = require('@typescript-eslint/eslint-plugin');
 const tsparser = require('@typescript-eslint/parser');
 
 module.exports = [
-  // Base JavaScript recommended rules
   js.configs.recommended,
-  
-  // TypeScript configuration for source files
   {
-    files: ['src/**/*.ts'],
-    ignores: ['src/**/*.spec.ts', 'src/**/*.test.ts', 'src/**/__tests__/**/*.ts'],
+    files: ['backend/src/**/*.ts'],
+    ignores: ['backend/src/**/*.spec.ts', 'backend/src/**/*.test.ts', 'backend/src/**/__tests__/**/*.ts'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
-        project: './tsconfig.json',
+        project: './backend/tsconfig.json',
         tsconfigRootDir: __dirname,
         sourceType: 'module',
         ecmaVersion: 2021,
       },
       globals: {
-        // Node.js globals
         Buffer: 'readonly',
         console: 'readonly',
         global: 'readonly',
@@ -29,14 +25,12 @@ module.exports = [
         module: 'readonly',
         require: 'readonly',
         exports: 'readonly',
-        // Node.js timer functions
         setImmediate: 'readonly',
         clearImmediate: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
-        // Node.js types
         NodeJS: 'readonly',
       },
     },
@@ -44,7 +38,6 @@ module.exports = [
       '@typescript-eslint': tseslint,
     },
     rules: {
-      // Base TypeScript rules
       '@typescript-eslint/no-unused-vars': ['warn', { 
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
@@ -56,28 +49,22 @@ module.exports = [
       '@typescript-eslint/interface-name-prefix': 'off',
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
-      
-      // General rules
       'no-console': 'off',
-      'no-unused-vars': 'off', // Use TypeScript version instead
+      'no-unused-vars': 'off',
       'prefer-const': 'error',
       'no-var': 'error',
-      'no-undef': 'off', // TypeScript handles this
+      'no-undef': 'off',
     },
   },
-  
-  // Test files configuration (more relaxed rules)
   {
-    files: ['**/*.spec.ts', '**/*.test.ts', '**/__tests__/**/*.ts', '**/test/**/*.ts', '**/tests/**/*.ts'],
+    files: ['**/*.spec.ts', '**/*.test.ts', '**/__tests__/**/*.ts'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
         sourceType: 'module',
         ecmaVersion: 2021,
-        // Don't require project for test files to avoid parsing errors
       },
       globals: {
-        // Node.js globals
         Buffer: 'readonly',
         console: 'readonly',
         global: 'readonly',
@@ -87,7 +74,6 @@ module.exports = [
         module: 'readonly',
         require: 'readonly',
         exports: 'readonly',
-        // Jest globals
         jest: 'readonly',
         describe: 'readonly',
         it: 'readonly',
@@ -112,8 +98,6 @@ module.exports = [
       'no-unused-vars': 'off',
     },
   },
-  
-  // JavaScript files configuration
   {
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
@@ -137,18 +121,20 @@ module.exports = [
       'no-var': 'error',
     },
   },
-  
-  // Ignore patterns
   {
     ignores: [
       'dist/**',
       'node_modules/**',
+      'backend/dist/**',
+      'backend/node_modules/**',
+      'frontend/dist/**',
+      'frontend/node_modules/**',
       'coverage/**',
       'logs/**',
       '.eslintrc.js',
       'eslint.config.js',
       '**/*.d.ts',
-      'scripts/generate-sample-iam-data.ts',
+      'frontend/**',
     ],
   },
 ];

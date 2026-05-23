@@ -1,0 +1,38 @@
+// TFO Style Registry — Button Dropdown
+// Delete action red text/hover styling for dropdown menus
+
+// ─── Dropdown Delete Action Styling ───────────────────────────────────────────
+// Global styles for delete actions in dropdown menus
+// Usage: Add props: { class: 'delete-action' } to dropdown options
+
+.n-dropdown-option.delete-action {
+  .n-dropdown-option-body {
+    color: #ef4444 !important;
+  }
+
+  .n-dropdown-option-body__label {
+    color: #ef4444 !important;
+  }
+
+  .n-dropdown-option-body__prefix {
+    color: #ef4444 !important;
+  }
+
+  &:hover {
+    .n-dropdown-option-body {
+      background: rgba(239, 68, 68, 0.1) !important;
+    }
+  }
+}
+
+// Dark mode - slightly lighter red for better visibility
+html.dark {
+  .n-dropdown-option.delete-action {
+
+    .n-dropdown-option-body,
+    .n-dropdown-option-body__label,
+    .n-dropdown-option-body__prefix {
+      color: #f87171 !important;
+    }
+  }
+}

@@ -1,0 +1,77 @@
+// Extracted from: reports/components/ReportDetail.vue
+.report-detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 16px;
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--n-text-color-3);
+    }
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--n-text-color);
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: var(--n-text-color-3);
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 14px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .execution-time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.875rem;
+    color: var(--n-text-color-3);
+  }
+
+  .report-section {
+    margin-bottom: 0;
+  }
+}

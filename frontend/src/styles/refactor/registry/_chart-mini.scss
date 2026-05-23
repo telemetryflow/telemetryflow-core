@@ -1,0 +1,152 @@
+// TFO Style Registry — Chart Mini
+// Compact card layout, mini chart area, icon variants, value badges
+
+.mini-chart-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--n-card-color);
+
+  :global(html.dark) & {
+    border-color: #475569;
+    background: #1e293b;
+  }
+}
+
+.mini-chart-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  background: transparent;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+// Row 1: icon + title + controls
+.mini-chart-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.mini-chart-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+
+  &.cpu {
+    color: #3b82f6;
+  }
+
+  &.memory {
+    color: #8b5cf6;
+  }
+
+  &.disk {
+    color: #f59e0b;
+  }
+
+  &.network {
+    color: #10b981;
+  }
+
+  &.ephemeral {
+    color: #14b8a6;
+  }
+
+  &.capacity {
+    color: #3b82f6;
+  }
+
+  &.iops {
+    color: #f59e0b;
+  }
+
+  &.throughput {
+    color: #8b5cf6;
+  }
+}
+
+.mini-chart-title {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--n-text-color);
+  letter-spacing: 0.01em;
+}
+
+// Row 2: colorful value badges
+.mini-chart-subtitle-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-left: calc(18px + 8px); // icon width + gap -> aligns with title
+}
+
+.mini-chart-value-badge {
+  display: inline-block;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 1px 7px;
+  border-radius: 4px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+.mini-badge-sep {
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.mini-chart-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.mini-chart-body {
+  padding: 8px 8px 12px 8px;
+}
+
+.no-data-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  color: var(--n-text-color-3);
+
+  p {
+    margin: 8px 0 0 0;
+    font-size: 0.875rem;
+  }
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .mini-chart-header { padding: 8px 10px; gap: 2px; }
+  .mini-chart-title-row { gap: 6px; }
+  .mini-chart-title { font-size: 0.8125rem; }
+  .mini-chart-value-badge { font-size: 0.625rem; padding: 1px 5px; }
+  .mini-chart-subtitle-row { padding-left: calc(16px + 6px); }
+  .mini-chart-icon { font-size: 16px; }
+  .mini-chart-body { padding: 4px 4px 8px 4px; }
+}
+
+@media (max-width: 480px) {
+  .mini-chart-header { padding: 6px 8px; }
+  .mini-chart-title { font-size: 0.75rem; }
+  .mini-chart-value-badge { font-size: 0.5625rem; }
+  .mini-chart-controls {
+    .n-button-group { display: none; }
+  }
+  .no-data-message { height: 120px; }
+}

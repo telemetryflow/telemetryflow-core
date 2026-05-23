@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "test",
+    "dist",
+    "**/*spec.ts",
+    "src/modules/_temp_for_deletion/**",
+    "src/database/_temp_migrated_entities/**",
+    "src/_temp_old_infrastructure/**"
+  ]
+}

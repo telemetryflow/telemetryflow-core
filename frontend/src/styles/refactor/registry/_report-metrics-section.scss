@@ -1,0 +1,18 @@
+// TFO Style Registry — Report Metrics Section
+// Responsive 4-column grid for metric cards
+// Source: ReportMetricsSection.vue
+
+.report-metrics-section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 760px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

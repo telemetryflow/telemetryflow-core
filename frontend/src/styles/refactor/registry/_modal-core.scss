@@ -1,0 +1,99 @@
+// TFO Style Registry — Modal Core
+// Header/footer dividers, footer layout, and base modal class
+
+// ─── Universal: all preset="card" modals get header/footer dividers ────────────
+//
+// NaiveUI injects component styles at runtime (after static CSS), so we must
+// use !important to guarantee our border overrides take precedence.
+// The n-modal with preset="card" renders: <div class="n-card n-modal-card">
+//
+// NOTE: --n-border-color on NaiveUI card resolves to transparent for non-bordered
+// cards. Use --n-divider-color instead (NaiveUI divider token) which is always visible.
+
+.n-modal-card,
+.n-card.n-modal-card {
+  // Header bottom divider
+  > .n-card__header {
+    border-bottom: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18)) !important;
+  }
+
+  // Footer top divider — the core design requirement
+  > .n-card__footer {
+    border-top: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18)) !important;
+    padding-top: 16px !important;
+  }
+
+  // Ensure content area scrolls independently without clipping header/footer
+  > .n-card__content {
+    overflow-y: auto;
+  }
+}
+
+
+// ─── .tfo-modal — explicit class for semantic clarity + overrides ──────────────
+
+.tfo-modal {
+  > .n-card__header {
+    border-bottom: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18)) !important;
+  }
+
+  > .n-card__footer {
+    border-top: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18)) !important;
+    padding-top: 16px !important;
+  }
+}
+
+
+// ─── .tfo-modal-footer — standard footer button row ───────────────────────────
+//
+// Use inside <template #footer>:
+//   <div class="tfo-modal-footer">
+//     <n-button @click="close">Cancel</n-button>
+//     <n-button type="primary" @click="save">Save</n-button>
+//   </div>
+//
+// The negative left/right margins extend the divider line to the full modal
+// width, compensating for NaiveUI card's 24px horizontal padding.
+
+.tfo-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+
+  // Full-width separator line — belt-and-suspenders alongside .n-card__footer rule
+  border-top: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18));
+  padding-top: 16px;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+// Variant: left-aligned info + right-aligned actions
+.tfo-modal-footer--spread {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid var(--n-divider-color, rgba(128, 128, 128, 0.18));
+  padding-top: 16px;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  .tfo-modal-footer__info {
+    font-size: 12px;
+    opacity: 0.55;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tfo-modal-footer__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,21 @@
+// TFO Style Registry — Auth Variables
+// Shared $auth-* variables for all auth partials.
+// Every auth partial must `@use "auth-variables" as *;` to access these.
+
+// ─── Color & layout tokens ────────────────────────────────────────────────────
+
+$auth-bg-light: #f3f4f6;
+$auth-bg-dark: #1f2937;
+$auth-white: #ffffff;
+$auth-text-muted: rgba(255, 255, 255, 0.7);
+$auth-border-subtle: rgba(255, 255, 255, 0.3);
+$auth-panel-width: 45%;
+$auth-form-max-width: 380px;
+$auth-breakpoint: 900px;
+
+// ─── Primary gradient tokens ──────────────────────────────────────────────────
+
+$auth-primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$auth-primary-hover: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+$auth-primary-active: linear-gradient(135deg, #4a5bc4 0%, #5d3680 100%);
+$auth-primary-shadow: rgba(102, 126, 234, 0.4);

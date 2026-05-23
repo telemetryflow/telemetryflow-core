@@ -1,0 +1,597 @@
+// TFO Style Registry — AI Anomaly Detection
+// Extracted from: ai-intelligence/anomaly-detection/
+
+// === anomaly-detection/index.vue ===
+.anomaly-detection-view {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .page-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--n-text-color-3, #888);
+    margin: 0;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .section-icon {
+    font-size: 16px;
+    color: var(--n-color-primary, #f59e0b);
+  }
+
+  .table-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    width: 220px;
+  }
+
+  .section-content.table-content {
+    min-height: 200px;
+  }
+
+  .timeline-wrapper {
+    min-height: 300px;
+    padding: 8px 0;
+  }
+
+  .tab-suffix-actions {
+    display: flex;
+    gap: 8px;
+    padding-right: 4px;
+  }
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .drawer-icon {
+    font-size: 18px;
+    color: #f59e0b;
+  }
+}
+
+// === anomaly-detection/rules.vue ===
+.detection-rules-view {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .page-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--n-text-color-3, #888);
+    margin: 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .section-icon {
+    font-size: 16px;
+    color: var(--n-color-primary, #3b82f6);
+  }
+
+  .table-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    width: 200px;
+  }
+
+  .section-content {
+    min-height: 200px;
+  }
+
+  .category-filters {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+}
+
+// === anomaly-detection/components/AnomalyCorrelationPanel.vue ===
+.correlation-panel {
+  background: var(--n-card-color, #fff);
+  border-radius: 8px;
+  border: 1px solid var(--n-border-color, #eee);
+  padding: 16px;
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .header-icon {
+    font-size: 18px;
+    color: #8b5cf6;
+  }
+
+  .correlated-count {
+    background: #8b5cf6;
+    color: #fff;
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 12px;
+    margin-left: auto;
+  }
+
+  .correlated-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .correlated-item {
+    padding: 10px 12px;
+    background: var(--n-hover-color, #f9f9f9);
+    border-radius: 6px;
+    border-left: 3px solid #8b5cf6;
+  }
+
+  .correlated-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .correlated-metric {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .correlated-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--n-text-color-3, #888);
+  }
+}
+
+// === anomaly-detection/components/AnomalyEventDrawer.vue ===
+.anomaly-event-drawer {
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .drawer-icon {
+    font-size: 20px;
+    color: #f59e0b;
+  }
+
+  .drawer-body {
+    padding: 16px 0;
+  }
+
+  .section {
+    margin-bottom: 4px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--n-text-color-3, #888);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+  }
+
+  .metric-name {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .meta-chip {
+    background: var(--n-border-color, #f0f0f0);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--n-text-color-2, #555);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat-item {
+    background: var(--n-hover-color, #f9f9f9);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--n-text-color-3, #888);
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .values-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .value-box {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+
+    &.observed {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    &.expected {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+  }
+
+  .value-label {
+    font-size: 11px;
+    color: var(--n-text-color-3, #888);
+    margin-bottom: 4px;
+  }
+
+  .value-number {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  .value-arrow {
+    font-size: 18px;
+    color: var(--n-text-color-3, #aaa);
+  }
+
+  .timestamp {
+    font-size: 14px;
+    color: var(--n-text-color-2, #555);
+  }
+
+  .analysis-summary {
+    font-size: 14px;
+    color: var(--n-text-color-1, #333);
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+
+  .analysis-block {
+    margin-bottom: 12px;
+  }
+
+  .block-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--n-text-color-2, #555);
+    margin-bottom: 4px;
+  }
+
+  .block-list {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--n-text-color-1, #333);
+    line-height: 1.8;
+  }
+
+  .block-text {
+    font-size: 13px;
+    color: var(--n-text-color-1, #333);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .confidence-row {
+    font-size: 12px;
+    color: var(--n-text-color-3, #888);
+  }
+
+  .analyze-section {
+    margin-top: 20px;
+  }
+
+  .analyze-hint {
+    font-size: 11px;
+    color: var(--n-text-color-3, #aaa);
+    text-align: center;
+    margin-top: 6px;
+  }
+}
+
+// === anomaly-detection/components/AnomalyTimeline.vue ===
+.anomaly-timeline {
+  min-height: 260px;
+
+  .timeline-chart {
+    background: var(--n-card-color, #fff);
+    border-radius: 8px;
+    border: 1px solid var(--n-border-color, #eee);
+    padding: 16px;
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .chart-title {
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
+
+  .legend {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--n-text-color-3, #888);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .bars-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 140px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 24px;
+    flex: 1;
+    cursor: pointer;
+  }
+
+  .bar-stack {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
+    height: 110px;
+    position: relative;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+
+  .bar-segment {
+    transition: height 0.3s ease;
+
+    &.critical {
+      background: #ef4444;
+      border-radius: 2px 2px 0 0;
+    }
+
+    &.warning {
+      background: #f59e0b;
+    }
+
+    &.empty {
+      background: var(--n-border-color, #eee);
+      border-radius: 2px;
+    }
+  }
+
+  .bar-label {
+    font-size: 10px;
+    color: var(--n-text-color-3, #aaa);
+    margin-top: 4px;
+    white-space: nowrap;
+    transform: rotate(-45deg);
+    transform-origin: top left;
+    width: 32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .timeline-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid var(--n-border-color, #eee);
+  }
+
+  .tstat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tstat-label {
+    font-size: 11px;
+    color: var(--n-text-color-3, #888);
+  }
+
+  .tstat-value {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .critical-text {
+    color: #ef4444;
+  }
+
+  .warning-text {
+    color: #f59e0b;
+  }
+}
+
+// === anomaly-detection/components/BaselineChart.vue ===
+.baseline-chart {
+  background: var(--n-card-color, #fff);
+  border-radius: 8px;
+  border: 1px solid var(--n-border-color, #eee);
+  padding: 16px;
+
+  .baseline-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .header-icon {
+    font-size: 18px;
+    color: #3b82f6;
+  }
+
+  .baseline-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    background: var(--n-hover-color, #f9f9f9);
+    border-radius: 6px;
+  }
+
+  .baseline-config {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .config-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--n-border-color, #f5f5f5);
+  }
+
+  .config-label {
+    color: var(--n-text-color-3, #888);
+  }
+
+  .config-value {
+    font-weight: 500;
+  }
+
+  .last-evaluated {
+    font-size: 11px;
+    color: var(--n-text-color-3, #aaa);
+    margin-top: 12px;
+  }
+}

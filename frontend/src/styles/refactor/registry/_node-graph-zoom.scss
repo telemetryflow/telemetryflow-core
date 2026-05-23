@@ -1,0 +1,41 @@
+// TFO Style Registry — Node Graph Zoom Controls
+// Zoom button panel with light/dark theme support
+
+.zoom-controls,
+.graph-zoom-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  .n-button {
+    color: #e5e7eb !important;
+
+    &:hover {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+
+  &.light-theme,
+  html.dark & {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    .n-button {
+      color: #374151 !important;
+
+      &:hover {
+        color: #1f2937 !important;
+        background: rgba(0, 0, 0, 0.05) !important;
+      }
+    }
+  }
+}

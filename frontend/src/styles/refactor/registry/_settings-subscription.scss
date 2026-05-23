@@ -1,0 +1,265 @@
+// TFO Style Registry — Settings Subscription
+// Source: src/views/settings/subscription/ (index.vue, InvoiceDetailDrawer.vue, InvoicePreviewModal.vue)
+
+// ─── subscription/index.vue ─────────────────────────────────────────────────────
+.subscription-view {
+  padding: 0;
+}
+
+.subscription-view .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.subscription-view .page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.subscription-view .title-icon {
+  font-size: 28px;
+  color: var(--primary-color);
+}
+
+.subscription-view .page-subtitle {
+  color: var(--text-color-3);
+  font-size: 14px;
+}
+
+.subscription-view .stat-cards-container {
+  margin-bottom: 24px;
+}
+
+.subscription-view .main-tabs {
+}
+
+.subscription-view .tab-label { display: flex; align-items: center; gap: 8px; }
+.subscription-view .tab-icon { font-size: 16px; }
+
+.features-list { display: flex; flex-direction: column; gap: 12px; }
+.feature-item { display: flex; align-items: center; gap: 8px; }
+.feature-icon { color: var(--success-color); font-size: 16px; }
+.feature-name { flex: 1; }
+.feature-limit { font-weight: 500; }
+.feature-unit { color: var(--text-color-3); font-weight: normal; }
+
+.plan-card { height: 100%; transition: border-color 0.2s; }
+.plan-card--current { border-color: var(--primary-color); }
+.plan-price { margin-bottom: 12px; }
+.price-amount { font-size: 32px; font-weight: 600; }
+.price-period { color: var(--text-color-3); }
+.plan-features { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.plan-feature { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.feature-check { color: var(--success-color); }
+
+@media (max-width: 1024px) {
+  .subscription-view { padding: 20px 16px; }
+  .subscription-view .page-title { font-size: 22px; }
+  .subscription-view .title-icon { font-size: 24px; }
+}
+
+@media (max-width: 768px) {
+  .subscription-view { padding: 16px 12px; }
+  .subscription-view .price-amount { font-size: 28px; }
+  .subscription-view .plan-feature { font-size: 12px; }
+}
+
+@media (max-width: 480px) {
+  .subscription-view { padding: 12px 8px; }
+  .subscription-view .page-title { font-size: 18px; }
+  .subscription-view .title-icon { font-size: 20px; }
+  .subscription-view .price-amount { font-size: 24px; }
+}
+
+// ─── InvoiceDetailDrawer.vue ────────────────────────────────────────────────────
+.invoice-detail-drawer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.invoice-detail-drawer-header-icon {
+  font-size: 20px;
+  color: var(--primary-color);
+}
+
+.invoice-detail-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 6px;
+  overflow: hidden;
+
+  tr:not(:last-child) td, tr:not(:last-child) th {
+    border-bottom: 1px solid var(--k8s-border-color);
+  }
+
+  td, th { padding: 10px 12px; }
+
+  .info-label, th {
+    font-weight: 500;
+    color: var(--n-text-color-3);
+    font-size: 0.8125rem;
+    width: 140px;
+    min-width: 120px;
+    background: rgba(100, 116, 139, 0.1);
+    :root.dark & { background: rgba(51, 65, 85, 0.4); }
+  }
+
+  .info-value {
+    color: var(--n-text-color);
+    font-size: 0.8125rem;
+    code {
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace;
+      font-size: 0.8125rem;
+      background: transparent;
+      padding: 0;
+      border: none;
+    }
+  }
+
+  &.line-items-table { th { width: auto; min-width: auto; } }
+  .total-row { td { border-top: 2px solid var(--k8s-border-color); } }
+}
+
+.raw-json-collapse {
+  .n-collapse-item {
+    .n-collapse-item__header {
+      padding: 10px 14px;
+      background: rgba(128, 128, 128, 0.1);
+      border: 1px solid rgba(128, 128, 128, 0.3);
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      &:hover { background: rgba(128, 128, 128, 0.15); }
+    }
+    &.n-collapse-item--active {
+      .n-collapse-item__header { border-radius: 8px 8px 0 0; border-bottom: none; }
+    }
+    .n-collapse-item__content-wrapper .n-collapse-item__content-inner { padding: 0; }
+  }
+}
+
+.collapse-header-with-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// ─── InvoicePreviewModal.vue ────────────────────────────────────────────────────
+.invoice-preview {
+  background: var(--n-color);
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 8px;
+  padding: 32px;
+}
+
+.invoice-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.invoice-brand { display: flex; align-items: center; gap: 10px; }
+.invoice-brand-logo { width: 48px; height: 48px; object-fit: contain; }
+
+.light-only {
+  display: block;
+  :root.dark & { display: none; }
+}
+
+.dark-only {
+  display: none;
+  :root.dark & { display: block; }
+}
+
+.invoice-brand-name { font-size: 22px; font-weight: 700; color: var(--primary-color); }
+.invoice-meta { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.invoice-number-display { font-size: 18px; font-weight: 600; font-family: 'SF Mono', Monaco, Consolas, monospace; }
+.invoice-billing-row { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.invoice-billing-col { flex: 1; }
+.invoice-billing-label { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--n-text-color-3); font-weight: 600; margin-bottom: 4px; }
+.invoice-billing-value { font-size: 0.875rem; font-weight: 500; }
+.invoice-billing-sub { font-size: 0.75rem; color: var(--n-text-color-3); font-family: 'SF Mono', Monaco, Consolas, monospace; margin-top: 2px; }
+
+.invoice-period {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--n-text-color-3);
+  padding: 8px 12px;
+  background: rgba(100, 116, 139, 0.08);
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.invoice-items-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 16px;
+
+  th {
+    padding: 10px 14px;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: var(--n-text-color-3);
+    background: rgba(100, 116, 139, 0.1);
+    border-bottom: 1px solid var(--k8s-border-color);
+    :root.dark & { background: rgba(51, 65, 85, 0.4); }
+  }
+
+  td { padding: 10px 14px; font-size: 0.8125rem; border-bottom: 1px solid var(--k8s-border-color); }
+  tr:last-child td { border-bottom: none; }
+}
+
+.invoice-totals { margin-left: auto; width: 280px; }
+
+.invoice-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  border-bottom: 1px solid var(--k8s-border-color);
+
+  &:last-child { border-bottom: none; }
+  &.discount { color: #22c55e; }
+
+  &.grand-total {
+    font-weight: 700;
+    font-size: 1rem;
+    background: rgba(100, 116, 139, 0.08);
+    border-radius: 6px;
+    border: 1px solid var(--k8s-border-color);
+    margin-top: 4px;
+    :root.dark & { background: rgba(51, 65, 85, 0.3); }
+  }
+
+  &.amount-due { color: #ef4444; font-weight: 600; margin-top: 4px; }
+}
+
+@media (max-width: 768px) {
+  .invoice-preview { padding: 20px 16px; }
+  .invoice-preview-header { flex-direction: column; gap: 12px; }
+  .invoice-meta { align-items: flex-start; }
+  .invoice-billing-row { flex-direction: column; gap: 16px; .invoice-billing-col { text-align: left !important; } }
+  .invoice-totals { width: 100%; }
+}

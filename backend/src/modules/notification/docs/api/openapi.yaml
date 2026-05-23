@@ -1,0 +1,393 @@
+openapi: 3.0.3
+info:
+  title: TelemetryFlow Notification API
+  description: Email notification and communication API
+  version: 1.0.0
+
+servers:
+  - url: /api/v2
+
+tags:
+  - name: Email
+    description: Email sending operations
+  - name: Templates
+    description: Email template management
+  - name: Health
+    description: Service health checks
+
+paths:
+  /notifications/email/send:
+    post:
+      tags: [Email]
+      summary: Send raw email
+      operationId: sendRawEmail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendRawEmailRequest'
+      responses:
+        '200':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResult'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Email send failed
+
+  /notifications/email/send-template:
+    post:
+      tags: [Email]
+      summary: Send templated email
+      operationId: sendTemplatedEmail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendTemplatedEmailRequest'
+      responses:
+        '200':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResult'
+        '400':
+          description: Invalid template or variables
+        '401':
+          description: Unauthorized
+        '404':
+          description: Template not found
+
+  /notifications/email/verification:
+    post:
+      tags: [Email]
+      summary: Send verification email
+      operationId: sendVerificationEmail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationEmailRequest'
+      responses:
+        '200':
+          description: Verification email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResult'
+
+  /notifications/email/password-reset:
+    post:
+      tags: [Email]
+      summary: Send password reset email
+      operationId: sendPasswordResetEmail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetEmailRequest'
+      responses:
+        '200':
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResult'
+
+  /notifications/email/security-alert:
+    post:
+      tags: [Email]
+      summary: Send security alert email
+      operationId: sendSecurityAlertEmail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecurityAlertEmailRequest'
+      responses:
+        '200':
+          description: Security alert sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResult'
+
+  /notifications/email/otp:
+    post:
+      tags: [Email]
+      summary: Send OTP verification email
+      operationId: sendOTPEmail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPEmailRequest'
+      responses:
+        '200':
+          description: OTP email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResult'
+
+  /notifications/templates:
+    get:
+      tags: [Templates]
+      summary: List available templates
+      operationId: listTemplates
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmailTemplate'
+
+  /notifications/templates/{name}/preview:
+    post:
+      tags: [Templates]
+      summary: Preview rendered template
+      operationId: previewTemplate
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/EmailTemplateType'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              description: Template variables
+      responses:
+        '200':
+          description: Rendered template preview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplatePreview'
+        '404':
+          description: Template not found
+
+  /notifications/health:
+    get:
+      tags: [Health]
+      summary: Check email provider health
+      operationId: checkHealth
+      responses:
+        '200':
+          description: Provider is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: Provider is unhealthy
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    EmailTemplateType:
+      type: string
+      enum:
+        - registration-verification
+        - welcome
+        - password-reset
+        - password-changed
+        - new-login-location
+        - security-alert
+        - email-otp
+
+    SendRawEmailRequest:
+      type: object
+      required: [to, subject, html]
+      properties:
+        to:
+          oneOf:
+            - type: string
+              format: email
+            - type: array
+              items:
+                type: string
+                format: email
+        subject:
+          type: string
+        html:
+          type: string
+        text:
+          type: string
+        from:
+          type: string
+          format: email
+        replyTo:
+          type: string
+          format: email
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAttachment'
+
+    SendTemplatedEmailRequest:
+      type: object
+      required: [to, templateType, variables]
+      properties:
+        to:
+          type: string
+          format: email
+        templateType:
+          $ref: '#/components/schemas/EmailTemplateType'
+        variables:
+          type: object
+          additionalProperties: true
+
+    VerificationEmailRequest:
+      type: object
+      required: [to, firstName, verificationToken]
+      properties:
+        to:
+          type: string
+          format: email
+        firstName:
+          type: string
+        verificationToken:
+          type: string
+
+    PasswordResetEmailRequest:
+      type: object
+      required: [to, firstName, resetToken]
+      properties:
+        to:
+          type: string
+          format: email
+        firstName:
+          type: string
+        resetToken:
+          type: string
+
+    SecurityAlertEmailRequest:
+      type: object
+      required: [to, firstName, reason, actionRequired]
+      properties:
+        to:
+          type: string
+          format: email
+        firstName:
+          type: string
+        reason:
+          type: string
+        actionRequired:
+          type: string
+
+    OTPEmailRequest:
+      type: object
+      required: [to, firstName, otpCode]
+      properties:
+        to:
+          type: string
+          format: email
+        firstName:
+          type: string
+        otpCode:
+          type: string
+          pattern: '^\d{6}$'
+
+    EmailAttachment:
+      type: object
+      required: [filename]
+      properties:
+        filename:
+          type: string
+        content:
+          type: string
+          description: Base64 encoded content
+        path:
+          type: string
+          description: File path (server-side)
+        contentType:
+          type: string
+
+    EmailResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        messageId:
+          type: string
+        error:
+          type: string
+
+    EmailTemplate:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/EmailTemplateType'
+        subject:
+          type: string
+        requiredVariables:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+
+    TemplatePreview:
+      type: object
+      properties:
+        subject:
+          type: string
+        html:
+          type: string
+        text:
+          type: string
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+        provider:
+          type: string
+        lastChecked:
+          type: string
+          format: date-time
+        error:
+          type: string

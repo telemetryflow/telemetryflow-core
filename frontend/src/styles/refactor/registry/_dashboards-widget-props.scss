@@ -1,0 +1,96 @@
+// TFO Style Registry — Widget Properties Panel
+// Drawer header, properties form, query items, badges
+// Source: WidgetPropertiesPanel.vue
+
+.widget-props-drawer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+
+  .header-icon {
+    font-size: 20px;
+    color: var(--n-primary-color);
+  }
+}
+
+.properties-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.queries-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.query-item {
+  padding: 12px;
+  background: var(--n-action-color);
+  border-radius: 6px;
+  border: 1.5px solid;
+}
+
+.query-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.query-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.query-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.query-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--n-text-color-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.query-dialect {
+  font-size: 10px;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+}
+
+.query-item.readonly {
+  cursor: default;
+}
+
+.query-preview {
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  font-size: 11px;
+  color: var(--n-text-color-3);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 6px;
+}
+
+.no-queries {
+  font-size: 12px;
+  color: var(--n-text-color-3);
+  text-align: center;
+  padding: 12px;
+}

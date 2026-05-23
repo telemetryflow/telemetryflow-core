@@ -1,0 +1,204 @@
+// TFO Style Registry — Auth Form Elements
+// Form groups, labels, field errors, password elements, back link,
+// success/error state containers, and button group.
+
+@use "auth-variables" as *;
+
+// ─── 8. Form elements ─────────────────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page,
+.profile-complete-page {
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: $auth-white;
+  }
+
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #f87171;
+  }
+
+  .field-error-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+}
+
+// ─── 9. Password elements ─────────────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.reset-password-page,
+.change-password-page {
+  .password-toggle {
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-size: 20px;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $auth-white;
+    }
+  }
+
+  .password-strength {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .strength-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .strength-fill {
+    height: 100%;
+    transition: width 0.3s, background-color 0.3s;
+  }
+
+  .strength-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .password-requirements {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .requirement {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #f87171;
+  }
+
+  .requirement-icon {
+    font-size: 14px;
+  }
+}
+
+// ─── 10. Back link ────────────────────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page {
+  .back-link-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.875rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $auth-white;
+    }
+  }
+}
+
+// ─── 11. Success / Error state containers ─────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page {
+
+  .success-container,
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .success-icon {
+    color: #22c55e;
+    margin-bottom: 8px;
+  }
+
+  .error-icon {
+    color: #ef4444;
+    margin-bottom: 8px;
+  }
+
+  .success-title,
+  .error-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $auth-white;
+    margin: 0;
+  }
+
+  .success-message,
+  .error-message {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+// ─── 12. Button group ─────────────────────────────────────────────────────────
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.change-password-page,
+.mfa-setup-page,
+.mfa-verify-page,
+.verify-email-page,
+.verify-pending-page,
+.profile-complete-page {
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+  }
+}

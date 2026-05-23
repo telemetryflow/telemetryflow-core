@@ -1,0 +1,510 @@
+# Implementation Plan: Frontend-Backend Notification Integration
+
+## Overview
+
+This implementation plan breaks down the notification integration feature into discrete, incremental coding tasks. The plan follows a bottom-up approach, starting with domain models and building up to the presentation layer, ensuring each component is tested and integrated before moving to the next.
+
+The implementation covers both backend (NestJS with DDD/CQRS) and frontend (Vue 3 with Pinia), with real-time WebSocket communication and multi-channel delivery support.
+
+## Tasks
+
+- [ ] 1. Set up backend notification module structure
+  - Create directory structure following DDD/CQRS architecture
+  - Set up module configuration and exports
+  - Configure TypeORM for notification entities
+  - _Requirements: 10.1, 10.2, 10.3, 10.4_
+
+- [ ] 2. Implement backend domain layer
+  - [ ] 2.1 Create value objects (NotificationId, NotificationChannel, NotificationType, DeliveryStatus, NotificationContent)
+    - Implement immutable value objects with validation
+    - Add equality comparison methods
+    - _Requirements: 10.1_
+  - [ ] 2.2 Create Notification aggregate
+    - Implement Notification aggregate with create, markAsRead, markAsUnread, delete methods
+    - Add delivery tracking methods
+    - Emit domain events for lifecycle changes
+    - _Requirements: 10.1, 10.5_
+  - [ ]\* 2.3 Write property test for Notification aggregate
+    - **Property 18: Read Status Toggle**
+    - **Validates: Requirements 6.3, 6.4**
+  - [ ] 2.4 Create NotificationPreference aggregate
+    - Implement preference management with DND and quiet hours
+    - Add shouldSendNotification filtering logic
+    - _Requirements: 10.1_
+  - [ ]\* 2.5 Write property test for NotificationPreference
+    - **Property 8: Preference-Based Notification Filtering**
+    - **Validates: Requirements 3.4, 3.5, 3.6, 3.7**
+  - [ ] 2.6 Create NotificationTemplate aggregate
+    - Implement template with variable substitution
+    - Add validation and versioning
+    - _Requirements: 10.1_
+  - [ ]\* 2.7 Write property test for NotificationTemplate
+    - **Property 14: Template Variable Substitution**
+    - **Validates: Requirements 5.2, 5.5**
+  - [ ] 2.8 Define repository interfaces
+    - Create INotificationRepository, INotificationPreferenceRepository, INotificationTemplateRepository
+    - _Requirements: 10.1_
+  - [ ] 2.9 Create domain events
+    - Implement NotificationCreatedEvent, NotificationSentEvent, NotificationReadEvent, NotificationFailedEvent, NotificationDeletedEvent
+    - _Requirements: 10.5_
+
+- [ ] 3. Implement backend infrastructure layer - persistence
+  - [ ] 3.1 Create TypeORM entities
+    - Implement NotificationEntity, NotificationDeliveryEntity, NotificationPreferenceEntity, PreferenceChannelEntity, NotificationTemplateEntity
+    - Add proper indexes and relationships
+    - _Requirements: 10.3, 10.8_
+  - [ ] 3.2 Create database migrations
+    - Write PostgreSQL migration for notification tables
+    - Include indexes for performance
+    - _Requirements: 10.8, 15.5_
+  - [ ] 3.3 Create seed data
+    - Write seed for default notification templates
+    - _Requirements: 10.8_
+  - [ ] 3.4 Implement domain-to-entity mappers
+    - Create NotificationMapper, NotificationPreferenceMapper
+    - Handle bidirectional mapping
+    - _Requirements: 10.3_
+  - [ ] 3.5 Implement repository implementations
+    - Create NotificationRepository, NotificationPreferenceRepository, NotificationTemplateRepository
+    - Implement all interface methods with proper error handling
+    - _Requirements: 10.3_
+  - [ ]\* 3.6 Write integration tests for repositories
+    - Test all CRUD operations
+    - Test pagination and filtering
+    - _Requirements: 18.3_
+
+- [ ] 4. Checkpoint - Ensure domain and persistence layers work
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 5. Implement backend infrastructure layer - channels
+  - [ ] 5.1 Create channel adapter interface and base classes
+    - Define IChannelAdapter interface
+    - Implement CircuitBreaker and RetryPolicy classes
+    - _Requirements: 10.3, 14.5, 14.6_
+  - [ ] 5.2 Implement EmailChannelAdapter
+    - Integrate with email service
+    - Add template rendering
+    - _Requirements: 4.2_
+  - [ ] 5.3 Implement SlackChannelAdapter
+    - Integrate with Slack API
+    - Format messages with blocks
+    - _Requirements: 4.3_
+  - [ ] 5.4 Implement WebhookChannelAdapter
+    - Send HTTP POST requests
+    - Handle webhook responses
+    - _Requirements: 4.4_
+  - [ ] 5.5 Implement SmsChannelAdapter
+    - Integrate with SMS provider
+    - _Requirements: 4.5_
+  - [ ]\* 5.6 Write property test for multi-channel delivery
+    - **Property 11: Multi-Channel Delivery Completeness**
+    - **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5, 4.7**
+  - [ ]\* 5.7 Write property test for channel retry logic
+    - **Property 12: Channel Delivery Retry**
+    - **Validates: Requirements 4.6**
+  - [ ]\* 5.8 Write integration tests for channel adapters
+    - Test each adapter with mocked external services
+    - Test circuit breaker behavior
+    - _Requirements: 18.3_
+
+- [ ] 6. Implement backend application layer - commands
+  - [ ] 6.1 Create command DTOs
+    - Implement CreateNotificationCommand, MarkNotificationReadCommand, MarkAllNotificationsReadCommand, DeleteNotificationCommand, UpdateNotificationPreferencesCommand, CreateNotificationTemplateCommand, SendNotificationBatchCommand
+    - _Requirements: 10.2_
+  - [ ] 6.2 Implement CreateNotificationHandler
+    - Check user preferences
+    - Create notification aggregate
+    - Save to repository
+    - Emit domain event
+    - _Requirements: 10.2, 10.6_
+  - [ ] 6.3 Implement MarkNotificationReadHandler
+    - Load notification
+    - Mark as read
+    - Save changes
+    - _Requirements: 10.2, 10.6_
+  - [ ] 6.4 Implement MarkAllNotificationsReadHandler
+    - Load all unread notifications for user
+    - Mark each as read
+    - _Requirements: 10.2, 10.6_
+  - [ ] 6.5 Implement DeleteNotificationHandler
+    - Load notification
+    - Soft delete
+    - _Requirements: 10.2, 10.6_
+  - [ ] 6.6 Implement UpdateNotificationPreferencesHandler
+    - Load or create preferences
+    - Update settings
+    - Save changes
+    - _Requirements: 10.2, 10.6_
+  - [ ]\* 6.7 Write unit tests for command handlers
+    - Test each handler with mocked dependencies
+    - Test error cases
+    - _Requirements: 18.2_
+
+- [ ] 7. Implement backend application layer - queries
+  - [ ] 7.1 Create query DTOs
+    - Implement GetNotificationsQuery, GetNotificationByIdQuery, GetUnreadCountQuery, GetNotificationPreferencesQuery, GetNotificationTemplatesQuery, GetDeliveryStatusQuery
+    - _Requirements: 10.2_
+  - [ ] 7.2 Implement GetNotificationsHandler
+    - Query repository with pagination and filters
+    - Map to response DTOs
+    - _Requirements: 10.2, 10.6_
+  - [ ] 7.3 Implement GetNotificationByIdHandler
+    - Query repository by ID
+    - Check authorization
+    - _Requirements: 10.2, 10.6_
+  - [ ] 7.4 Implement GetUnreadCountHandler
+    - Query repository for count
+    - _Requirements: 10.2, 10.6_
+  - [ ] 7.5 Implement GetNotificationPreferencesHandler
+    - Query repository for user preferences
+    - Return default if not found
+    - _Requirements: 10.2, 10.6_
+  - [ ] 7.6 Implement GetDeliveryStatusHandler
+    - Query notification with deliveries
+    - Map to delivery status response
+    - _Requirements: 10.2, 10.6_
+  - [ ]\* 7.7 Write unit tests for query handlers
+    - Test each handler with mocked dependencies
+    - Test pagination and filtering
+    - _Requirements: 18.2_
+
+- [ ] 8. Implement backend infrastructure layer - jobs and events
+  - [ ] 8.1 Create NotificationDeliveryJob
+    - Process notification delivery through channels
+    - Handle retries and failures
+    - Update delivery status
+    - _Requirements: 15.8_
+  - [ ] 8.2 Create NotificationBatchJob
+    - Process batched notifications
+    - Group by type and time window
+    - _Requirements: 15.8_
+  - [ ] 8.3 Create NotificationEventProcessor
+    - Listen for domain events
+    - Trigger delivery jobs
+    - Emit WebSocket events
+    - _Requirements: 10.5_
+  - [ ]\* 8.4 Write property test for delivery status state machine
+    - **Property 25: Delivery Status State Machine**
+    - **Validates: Requirements 8.1, 8.2, 8.3, 8.4**
+  - [ ]\* 8.5 Write property test for batching logic
+    - **Property 22: Notification Batching**
+    - **Validates: Requirements 7.1, 7.4, 7.6**
+
+- [ ] 9. Checkpoint - Ensure application layer works
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 10. Implement backend presentation layer - REST controllers
+  - [ ] 10.1 Create request/response DTOs
+    - Implement CreateNotificationRequestDto, UpdatePreferencesRequestDto, NotificationResponseDto, NotificationPreferenceResponseDto, DeliveryStatusResponseDto
+    - Add validation decorators
+    - Add Swagger decorators
+    - _Requirements: 11.9, 11.10_
+  - [ ] 10.2 Implement NotificationController
+    - Create endpoints: GET /api/notifications, GET /api/notifications/unread-count, GET /api/notifications/:id, PATCH /api/notifications/:id/read, PATCH /api/notifications/mark-all-read, DELETE /api/notifications/:id, GET /api/notifications/:id/delivery-status
+    - Add authentication and authorization guards
+    - Add Swagger documentation
+    - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.8, 11.9_
+  - [ ] 10.3 Implement NotificationPreferenceController
+    - Create endpoints: GET /api/notifications/preferences, PUT /api/notifications/preferences
+    - Add authentication guards
+    - Add Swagger documentation
+    - _Requirements: 11.6, 11.7, 11.9_
+  - [ ] 10.4 Implement NotificationOwnershipGuard
+    - Verify user owns the notification
+    - _Requirements: 16.2, 16.3_
+  - [ ] 10.5 Implement global exception filter
+    - Handle domain errors
+    - Return appropriate HTTP status codes
+    - _Requirements: 14.1, 14.7_
+  - [ ]\* 10.6 Write e2e tests for REST endpoints
+    - Test all endpoints with authentication
+    - Test authorization
+    - Test validation
+    - _Requirements: 18.4_
+
+- [ ] 11. Implement backend presentation layer - WebSocket gateway
+  - [ ] 11.1 Create NotificationGateway
+    - Set up WebSocket namespace /notifications
+    - Implement connection/disconnection handlers
+    - Implement JWT authentication
+    - Track user connections
+    - _Requirements: 12.1, 12.2_
+  - [ ] 11.2 Implement WebSocket event handlers
+    - Handle notification:mark-read event from client
+    - _Requirements: 12.7_
+  - [ ] 11.3 Implement WebSocket event emitters
+    - Emit notification:new, notification:updated, notification:deleted events
+    - Emit to user-specific rooms
+    - _Requirements: 12.3, 12.4, 12.5_
+  - [ ] 11.4 Implement WebSocket error handling
+    - Handle connection errors
+    - Emit error events to clients
+    - _Requirements: 12.8_
+  - [ ]\* 11.5 Write property test for WebSocket event emission
+    - **Property 33: WebSocket Event Emission for Lifecycle Changes**
+    - **Validates: Requirements 12.3, 12.4, 12.5**
+  - [ ]\* 11.6 Write e2e tests for WebSocket gateway
+    - Test connection with valid/invalid tokens
+    - Test event emission and reception
+    - Test multi-device support
+    - _Requirements: 18.4_
+
+- [ ] 12. Implement observability and monitoring
+  - [ ] 12.1 Add OpenTelemetry tracing
+    - Instrument notification operations
+    - Add spans for delivery attempts
+    - _Requirements: 17.1_
+  - [ ] 12.2 Add Prometheus metrics
+    - Expose notification count metrics
+    - Expose delivery rate and latency metrics
+    - Expose WebSocket connection metrics
+    - _Requirements: 17.2, 17.8_
+  - [ ] 12.3 Add Winston logging
+    - Log all notification events
+    - Use structured JSON format
+    - _Requirements: 17.3_
+  - [ ] 12.4 Add ClickHouse analytics logging
+    - Log delivery attempts to ClickHouse
+    - Create ClickHouse migration for analytics tables
+    - _Requirements: 17.4_
+  - [ ] 12.5 Add health check endpoints
+    - Implement health checks for channels
+    - Expose health status
+    - _Requirements: 17.6_
+  - [ ]\* 12.6 Write property tests for observability
+    - **Property 46: OpenTelemetry Tracing**
+    - **Property 47: Prometheus Metrics**
+    - **Property 48: Structured Logging**
+    - **Validates: Requirements 17.1, 17.2, 17.3, 17.8**
+
+- [ ] 13. Implement security features
+  - [ ] 13.1 Add authentication middleware
+    - Verify JWT tokens on all requests
+    - _Requirements: 16.1, 16.4_
+  - [ ] 13.2 Add authorization checks
+    - Verify notification ownership
+    - _Requirements: 16.2, 16.3_
+  - [ ] 13.3 Add content sanitization
+    - Sanitize notification content for XSS prevention
+    - _Requirements: 16.5_
+  - [ ] 13.4 Add rate limiting
+    - Implement rate limiter for notification creation
+    - _Requirements: 16.6_
+  - [ ] 13.5 Add audit logging
+    - Log all notification operations to audit log
+    - _Requirements: 16.8_
+  - [ ]\* 13.6 Write property tests for security
+    - **Property 41: Authentication Enforcement**
+    - **Property 42: Authorization Enforcement**
+    - **Property 43: Content Sanitization**
+    - **Validates: Requirements 16.1, 16.2, 16.3, 16.4, 16.5**
+
+- [ ] 14. Checkpoint - Ensure backend is complete
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 15. Set up frontend notification module structure
+  - Create directory structure for components, store, composables, API client
+  - Set up TypeScript types
+  - _Requirements: 9.1_
+
+- [ ] 16. Implement frontend TypeScript types
+  - [ ] 16.1 Create notification types
+    - Define Notification, NotificationContent, NotificationDelivery, DeliveryStatus interfaces
+    - Define NotificationPreference, NotificationTemplate interfaces
+    - Define PaginationOptions, NotificationFilters, PaginatedResponse interfaces
+    - _Requirements: 9.1_
+
+- [ ] 17. Implement frontend API client
+  - [ ] 17.1 Create notifications API client
+    - Implement getNotifications, getUnreadCount, markAsRead, markAllAsRead, deleteNotification, getPreferences, updatePreferences, getDeliveryStatus methods
+    - Add axios interceptors for auth and error handling
+    - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8_
+  - [ ]\* 17.2 Write unit tests for API client
+    - Test all methods with mocked axios
+    - Test error handling
+    - _Requirements: 18.5_
+
+- [ ] 18. Implement frontend WebSocket composable
+  - [ ] 18.1 Create useNotificationWebSocket composable
+    - Implement connection management with Socket.IO
+    - Handle authentication with JWT
+    - Implement event listeners (notification:new, notification:updated, notification:deleted)
+    - Implement reconnection with exponential backoff
+    - _Requirements: 2.1, 2.5, 2.6, 2.7_
+  - [ ]\* 18.2 Write property test for WebSocket reconnection
+    - **Property 5: WebSocket Reconnection and Sync**
+    - **Validates: Requirements 2.5, 2.6**
+  - [ ]\* 18.3 Write unit tests for WebSocket composable
+    - Test connection lifecycle
+    - Test event handling
+    - Test reconnection logic
+    - _Requirements: 18.5_
+
+- [ ] 19. Implement frontend Pinia store
+  - [ ] 19.1 Create notifications store
+    - Define state (notifications, unreadCount, loading, error, preferences, wsConnected)
+    - Implement getters (unreadNotifications, readNotifications, notificationsByType, groupedNotifications)
+    - Implement actions (fetchNotifications, fetchUnreadCount, markAsRead, markAllAsRead, deleteNotification, fetchPreferences, updatePreferences, connectWebSocket, disconnectWebSocket)
+    - Integrate WebSocket composable
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8_
+  - [ ]\* 19.2 Write property test for store synchronization
+    - **Property 28: Store State Synchronization**
+    - **Validates: Requirements 9.2, 9.3, 9.4**
+  - [ ]\* 19.3 Write unit tests for notifications store
+    - Test all actions
+    - Test computed properties
+    - Test WebSocket integration
+    - _Requirements: 18.5_
+
+- [ ] 20. Implement frontend Vue components
+  - [ ] 20.1 Create NotificationBadge component
+    - Display unread count badge
+    - _Requirements: 13.3_
+  - [ ] 20.2 Create NotificationItem component
+    - Render individual notification with title, message, timestamp, read status
+    - Handle click to mark as read and navigate
+    - _Requirements: 13.2_
+  - [ ]\* 20.3 Write property test for NotificationItem
+    - **Property 1: Notification Center Display Completeness**
+    - **Validates: Requirements 1.3**
+  - [ ] 20.4 Create NotificationCenter component
+    - Implement dropdown panel with n-dropdown
+    - Display recent notifications
+    - Add "Mark all as read" button
+    - Add "View all" button
+    - Show empty state when no notifications
+    - _Requirements: 13.1_
+  - [ ] 20.5 Create NotificationToast component
+    - Display toast notifications for real-time updates
+    - _Requirements: 13.6_
+  - [ ] 20.6 Create NotificationList component
+    - Display paginated list of notifications
+    - Support virtual scrolling for large lists
+    - _Requirements: 13.1_
+  - [ ] 20.7 Create NotificationFilters component
+    - Implement filters for type, channel, date range, read status
+    - _Requirements: 13.1_
+  - [ ] 20.8 Create NotificationGroupItem component
+    - Display grouped/batched notifications
+    - Show summary with count
+    - Expand to show individual items
+    - _Requirements: 13.1_
+  - [ ]\* 20.9 Write component tests for all notification components
+    - Test rendering
+    - Test user interactions
+    - Test props and events
+    - _Requirements: 18.6_
+
+- [ ] 21. Implement frontend notification pages
+  - [ ] 21.1 Create notification history page (views/notifications/index.vue)
+    - Display full notification list with pagination
+    - Add filters and search
+    - Show grouped notifications
+    - _Requirements: 13.4_
+  - [ ] 21.2 Create notification preferences page (views/notifications/preferences.vue)
+    - Display all notification types and channels
+    - Add toggles for enabling/disabling types
+    - Add channel selection
+    - Add Do Not Disturb toggle
+    - Add quiet hours configuration
+    - _Requirements: 13.5_
+  - [ ]\* 21.3 Write component tests for notification pages
+    - Test page rendering
+    - Test user interactions
+    - _Requirements: 18.6_
+
+- [ ] 22. Integrate notification center into main layout
+  - [ ] 22.1 Add NotificationCenter to app header/navbar
+    - Position notification icon with badge
+    - Connect to notifications store
+    - Initialize WebSocket connection on app mount
+    - _Requirements: 1.1, 1.7_
+  - [ ] 22.2 Add notification routes
+    - Add /notifications route for history page
+    - Add /notifications/preferences route for settings page
+    - _Requirements: 13.4, 13.5_
+
+- [ ] 23. Implement frontend error handling
+  - [ ] 23.1 Add error boundaries to components
+    - Handle component errors gracefully
+    - Display error states
+    - _Requirements: 14.7_
+  - [ ] 23.2 Add retry logic for failed API calls
+    - Implement exponential backoff
+    - _Requirements: 14.1_
+  - [ ]\* 23.3 Write property test for API retry logic
+    - **Property 36: API Retry with Exponential Backoff**
+    - **Validates: Requirements 14.1, 14.7**
+
+- [ ] 24. Checkpoint - Ensure frontend is complete
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 25. Create Postman/Newman BDD tests
+  - [ ] 25.1 Create notification workflow tests
+    - Test create notification → receive via WebSocket → mark as read workflow
+    - Test preference update → notification filtering workflow
+    - Test multi-channel delivery workflow
+    - Test batching workflow
+    - _Requirements: 18.7_
+  - [ ] 25.2 Run BDD tests and verify all scenarios pass
+    - Execute Newman tests
+    - Verify all assertions pass
+    - _Requirements: 18.7_
+
+- [ ] 26. Write comprehensive documentation
+  - [ ] 26.1 Create module README.md
+    - Document architecture
+    - Document API endpoints
+    - Document WebSocket protocol
+    - Document configuration
+    - _Requirements: 10.7_
+  - [ ] 26.2 Create ERD diagram
+    - Document database schema with Mermaid
+    - _Requirements: 10.7_
+  - [ ] 26.3 Create testing documentation
+    - Document test structure
+    - Document how to run tests
+    - Document coverage requirements
+    - _Requirements: 10.7_
+  - [ ] 26.4 Create OpenAPI specification
+    - Generate Swagger docs
+    - Verify all endpoints documented
+    - _Requirements: 11.9_
+
+- [ ] 27. Final integration and testing
+  - [ ] 27.1 Run all backend tests
+    - Unit tests
+    - Integration tests
+    - E2E tests
+    - Property-based tests
+    - _Requirements: 18.1, 18.2, 18.3, 18.4_
+  - [ ] 27.2 Run all frontend tests
+    - Unit tests
+    - Component tests
+    - _Requirements: 18.5, 18.6_
+  - [ ] 27.3 Verify test coverage meets requirements
+    - Check overall coverage ≥90%
+    - Check domain layer ≥95%
+    - Check application layer ≥90%
+    - _Requirements: 18.1_
+  - [ ] 27.4 Manual testing of complete workflow
+    - Test notification creation and delivery
+    - Test real-time WebSocket updates
+    - Test multi-channel delivery
+    - Test preferences and filtering
+    - Test batching and grouping
+    - Test error handling and resilience
+
+- [ ] 28. Final checkpoint - Ensure everything works end-to-end
+  - Ensure all tests pass, ask the user if questions arise.
+
+## Notes
+
+- Tasks marked with `*` are optional property-based and integration tests that can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation at key milestones
+- Property tests validate universal correctness properties with minimum 100 iterations
+- Unit tests validate specific examples and edge cases
+- The implementation follows a bottom-up approach: domain → infrastructure → application → presentation
+- Backend and frontend can be developed in parallel after task 14
+- All WebSocket functionality requires both backend gateway and frontend composable to be complete

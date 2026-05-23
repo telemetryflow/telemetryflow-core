@@ -1,0 +1,350 @@
+// ═══════════════════════════════════════════════════════════════════
+// IAM Roles Styles
+// Extracted from: views/iam/roles/index.vue, roles/PermissionsModal.vue
+// ═══════════════════════════════════════════════════════════════════
+@use "@/styles/tfo-variables" as *;
+
+.rbac-roles-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// Stats Row
+.rbac-roles-page .stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.rbac-roles-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--n-text-color);
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: var(--n-text-color-3);
+    margin: 0;
+  }
+}
+
+.rbac-roles-page .section {
+  @include k8s-theme-vars;
+  background: var(--card-color);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--k8s-border-color);
+}
+
+.rbac-roles-page .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--k8s-border-color);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.rbac-roles-page .section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+
+  .section-icon {
+    font-size: 20px;
+    color: var(--primary-color);
+  }
+}
+
+.rbac-roles-page .table-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  .search-input {
+    width: 200px;
+  }
+}
+
+// Grid view styles
+.rbac-roles-page .grid-content {
+  padding: 20px;
+  background: var(--card-color);
+  border-radius: 12px;
+}
+
+.rbac-roles-page .cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  @media (min-width: 641px) and (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1441px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.rbac-roles-page .dashboard-card {
+  padding: 20px;
+  background: var(--n-card-color);
+  border: 2px solid rgba(128, 128, 128, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    border-color: var(--n-primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 640px) {
+    padding: 16px;
+    border-radius: 10px;
+  }
+}
+
+.rbac-roles-page .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.rbac-roles-page .card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.rbac-roles-page .card-content {
+  min-height: 72px;
+  margin-bottom: 12px;
+}
+
+.rbac-roles-page .card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--n-text-color);
+  line-height: 1.4;
+}
+
+.rbac-roles-page .card-description {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.625rem;
+  line-height: 1.5;
+}
+
+.rbac-roles-page .card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--n-text-color-3);
+}
+
+.rbac-roles-page .updated-at {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rbac-roles-page .card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  min-height: 28px;
+}
+
+.rbac-roles-page .new-card {
+  border-style: dashed;
+  border-width: 2px;
+  border-color: rgba(128, 128, 128, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  box-shadow: none;
+
+  &:hover {
+    border-color: var(--n-primary-color);
+    background: rgba(59, 130, 246, 0.05);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+  }
+}
+
+.rbac-roles-page .new-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--n-text-color-3);
+}
+
+.rbac-roles-page .add-icon {
+  font-size: 32px;
+}
+
+.rbac-roles-page .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--n-text-color-3);
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.rbac-roles-page .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.rbac-roles-page .table-content {
+  padding: 0;
+
+  .n-data-table {
+    --n-th-color: var(--card-color);
+    --n-td-color: var(--card-color);
+    --n-th-text-color: var(--text-color-3);
+    --n-border-color: var(--border-color);
+
+    :root:not(.dark) & {
+      --n-th-color: #ffffff;
+      --n-td-color: #ffffff;
+    }
+
+    :root.dark & {
+      --n-th-color: rgba(255, 255, 255, 0.08);
+      --n-td-color: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .n-data-table-th {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+  }
+
+  .n-data-table-td {
+    padding: 12px 16px;
+  }
+
+  .name-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .cell-icon {
+    color: var(--text-color-2);
+    flex-shrink: 0;
+  }
+
+  .role-tier-indicator {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .cell-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+
+    > * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .rbac-roles-page .header-actions {
+    width: 100%;
+    flex-direction: column;
+
+    .search-input {
+      width: 100%;
+    }
+  }
+}
+
+// ─── Roles Permissions Modal (roles/PermissionsModal.vue) ─────────
+// Note: Same .permissions-modal namespace shared with overview & users.
+// The modal styles are already in _iam-overview.scss — roles/PermissionsModal.vue
+// uses identical classes. No additional rules needed beyond what is declared
+// in the .permissions-modal block in _iam-overview.scss.

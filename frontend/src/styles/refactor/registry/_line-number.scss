@@ -1,0 +1,560 @@
+// TFO Style Registry — Line Number Editor & JSON Viewer
+// Editable code inputs with line numbers, read-only JSON views, syntax highlighting.
+// Extracted from: tfo-line-number.scss
+
+// ============================================
+// 1. LINE-NUMBERED EDITOR (Editable)
+// ============================================
+
+.line-numbered-editor-wrapper {
+  display: flex;
+  border: 1px solid var(--n-border-color);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f8fafc;
+  transition: border-color 0.3s ease, background 0.3s ease;
+
+  &:focus-within {
+    border-color: var(--n-primary-color);
+  }
+
+  &.readonly {
+    &:focus-within {
+      border-color: var(--n-border-color);
+    }
+  }
+}
+
+.line-numbered-editor-numbers {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  background: rgba(0, 0, 0, 0.05);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  user-select: none;
+  flex-shrink: 0;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+
+  .line-number {
+    padding: 0 12px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 20px;
+    height: 20px;
+    color: #64748b;
+    text-align: right;
+    min-width: 48px;
+    white-space: nowrap;
+    display: block;
+  }
+}
+
+.line-numbered-editor-textarea {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--n-text-color);
+  resize: none;
+  min-height: 200px;
+  width: 100%;
+
+  &::placeholder {
+    color: var(--n-text-color-3);
+    opacity: 0.6;
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.3);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(100, 116, 139, 0.5);
+    }
+  }
+}
+
+.line-numbered-editor-content {
+  flex: 1;
+  padding: 10px 12px;
+  margin: 0;
+  background: transparent;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--n-text-color);
+  white-space: pre;
+  overflow: auto;
+  min-height: 200px;
+  max-height: 300px;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.3);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(100, 116, 139, 0.5);
+    }
+  }
+
+  code {
+    background: transparent;
+    color: var(--n-text-color);
+  }
+
+  .json-line {
+    display: block;
+    height: 20px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+// Size variants
+.line-numbered-editor-wrapper {
+
+  &.size-small {
+    .line-numbered-editor-numbers .line-number {
+      font-size: 12px;
+      line-height: 18px;
+      height: 18px;
+      padding: 0 10px;
+      min-width: 40px;
+    }
+
+    .line-numbered-editor-textarea,
+    .line-numbered-editor-content {
+      font-size: 12px;
+      line-height: 18px;
+      padding: 8px 10px;
+      min-height: 120px;
+    }
+  }
+
+  &.size-medium {
+    .line-numbered-editor-textarea,
+    .line-numbered-editor-content {
+      min-height: 200px;
+    }
+  }
+
+  &.size-large {
+    .line-numbered-editor-numbers .line-number {
+      font-size: 14px;
+      line-height: 22px;
+      height: 22px;
+    }
+
+    .line-numbered-editor-textarea,
+    .line-numbered-editor-content {
+      font-size: 14px;
+      line-height: 22px;
+      padding: 12px 14px;
+      min-height: 200px;
+    }
+  }
+}
+
+// Light mode styling
+html:not(.dark) {
+  .line-numbered-editor-wrapper {
+    background: #f8fafc;
+  }
+
+  .line-numbered-editor-numbers {
+    background: rgba(0, 0, 0, 0.05);
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+
+    .line-number {
+      color: #64748b;
+    }
+  }
+
+  .line-numbered-editor-content {
+    .json-line {
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    .json-key {
+      color: #0369a1 !important;
+    }
+
+    .json-string {
+      color: #15803d !important;
+    }
+
+    .json-number {
+      color: #c2410c !important;
+    }
+
+    .json-boolean {
+      color: #7c3aed !important;
+    }
+
+    .json-null {
+      color: #64748b !important;
+    }
+
+    .json-bracket {
+      color: #1e293b !important;
+    }
+  }
+}
+
+// Dark mode styling
+html.dark {
+  .line-numbered-editor-wrapper {
+    background: #1e293b;
+  }
+
+  .line-numbered-editor-numbers {
+    background: rgba(0, 0, 0, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+
+    .line-number {
+      color: #64748b;
+    }
+  }
+
+  .line-numbered-editor-content {
+    .json-line {
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    .json-key {
+      color: #7dd3fc !important;
+    }
+
+    .json-string {
+      color: #86efac !important;
+    }
+
+    .json-number {
+      color: #fbbf24 !important;
+    }
+
+    .json-boolean {
+      color: #c4b5fd !important;
+    }
+
+    .json-null {
+      color: #94a3b8 !important;
+    }
+
+    .json-bracket {
+      color: #f8fafc !important;
+    }
+  }
+}
+
+// ============================================
+// 2. JSON CODE WRAPPER (Read-only JSON Viewer)
+// ============================================
+
+.json-code-wrapper {
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 0 0 8px 8px;
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #f1f5f9;
+
+  :root.dark & {
+    background: #182032;
+    border-color: var(--k8s-border-color);
+  }
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.3);
+    border-radius: 5px;
+
+    &:hover {
+      background: rgba(100, 116, 139, 0.5);
+    }
+  }
+
+  :root.dark & {
+    &::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.3);
+
+      &:hover {
+        background: rgba(148, 163, 184, 0.5);
+      }
+    }
+  }
+}
+
+.json-with-lines {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: visible;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 20px;
+
+  &::-webkit-scrollbar {
+    height: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.3);
+    border-radius: 5px;
+
+    &:hover {
+      background: rgba(100, 116, 139, 0.5);
+    }
+  }
+
+  :root.dark & {
+    &::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.3);
+
+      &:hover {
+        background: rgba(148, 163, 184, 0.5);
+      }
+    }
+  }
+}
+
+.json-with-lines .line-numbers {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  background: #f1f5f9;
+  border-right: 1px solid #e2e8f0;
+  user-select: none;
+  flex-shrink: 0;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+
+  :root.dark & {
+    background: #182032;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .line-number {
+    padding: 0 12px;
+    font-size: 13px;
+    line-height: 20px;
+    height: 20px;
+    color: #64748b;
+    text-align: right;
+    min-width: 48px;
+    white-space: nowrap;
+    display: block;
+
+    :root.dark & {
+      color: #64748b;
+    }
+  }
+}
+
+.json-highlight {
+  flex: 1;
+  padding: 10px 12px;
+  margin: 0;
+  background: #f8fafc;
+  white-space: pre;
+  overflow: visible;
+  min-width: 0;
+
+  :root.dark & {
+    background: #1e293b;
+  }
+
+  code {
+    background: transparent;
+    color: var(--n-text-color);
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  .json-line {
+    display: block;
+    height: 20px;
+    line-height: 20px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+
+      :root.dark & {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+}
+
+// JSON Syntax Highlighting - Global classes
+.json-key {
+  color: #0369a1 !important;
+  font-weight: 500;
+}
+
+.json-string {
+  color: #15803d !important;
+}
+
+.json-number {
+  color: #c2410c !important;
+}
+
+.json-boolean {
+  color: #7c3aed !important;
+  font-weight: 600;
+}
+
+.json-null {
+  color: #64748b !important;
+  font-style: italic;
+}
+
+.json-bracket {
+  color: #1e293b !important;
+  font-weight: 600;
+}
+
+// Dark mode JSON syntax highlighting
+:root.dark {
+  .json-key {
+    color: #7dd3fc !important;
+  }
+
+  .json-string {
+    color: #86efac !important;
+  }
+
+  .json-number {
+    color: #fbbf24 !important;
+  }
+
+  .json-boolean {
+    color: #c4b5fd !important;
+  }
+
+  .json-null {
+    color: #94a3b8 !important;
+  }
+
+  .json-bracket {
+    color: #f8fafc !important;
+  }
+}
+
+// Compact variant
+.json-code-wrapper.compact {
+  .json-with-lines {
+    max-height: 300px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .line-numbers {
+    padding: 8px 0;
+
+    .line-number {
+      padding: 0 10px;
+      font-size: 12px;
+      line-height: 18px;
+      height: 18px;
+      min-width: 40px;
+    }
+  }
+
+  .json-highlight {
+    padding: 8px 10px;
+
+    .json-line {
+      height: 18px;
+      line-height: 18px;
+    }
+  }
+}
+
+// Large variant
+.json-code-wrapper.large {
+  .json-with-lines {
+    max-height: 700px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .line-numbers {
+    padding: 12px 0;
+
+    .line-number {
+      padding: 0 14px;
+      font-size: 14px;
+      line-height: 22px;
+      height: 22px;
+      min-width: 52px;
+    }
+  }
+
+  .json-highlight {
+    padding: 12px 14px;
+
+    .json-line {
+      height: 22px;
+      line-height: 22px;
+    }
+  }
+}
+
+// No wrap variant
+.json-code-wrapper.no-wrap {
+  .json-highlight {
+    white-space: nowrap;
+  }
+}
+
+// Wrap variant
+.json-code-wrapper.wrap {
+  .json-highlight {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}

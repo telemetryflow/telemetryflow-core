@@ -1,0 +1,961 @@
+// TFO Style Registry — Chart Registry Panel
+// Panel variants (default/mini/panel), alert modal, share modal, graph area
+// Source: RegistryGraphPanel.vue
+
+// ─── Alert Modal ─────────────────────────────────────────────────────────────
+
+.alert-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.alert-modal-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-modal-label {
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 38px;
+}
+
+.alert-modal-divider {
+  border-top: 1px solid var(--n-border-color);
+}
+
+// Query preview block
+.alert-query-preview {
+  background: var(--n-color-modal, rgba(0,0,0,0.03));
+  border: 1px solid var(--n-border-color);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.alert-query-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.alert-query-dialect {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  color: #6366f1;
+  background: rgba(99,102,241,0.1);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.alert-query-expr {
+  display: block;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
+  font-size: 11px;
+  color: var(--n-text-color);
+  background: transparent;
+  word-break: break-all;
+  white-space: pre-wrap;
+  padding: 0;
+}
+
+.alert-modal-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--n-text-color-2);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.alert-modal-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--n-text-color-3);
+  font-size: 13px;
+}
+
+.alert-modal-empty {
+  font-size: 13px;
+  color: var(--n-text-color-3);
+  padding: 8px 0;
+}
+
+.channel-option-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.alert-modal-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.alert-modal-footer-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.alert-modal-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--n-error-color, #ef4444);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+// ─── Share Modal ─────────────────────────────────────────────────────────────
+
+.share-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.share-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.share-label {
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 90px;
+}
+
+.share-url-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.share-url-label {
+  font-size: 12px;
+  color: var(--n-text-color-2);
+  margin: 0;
+}
+
+.share-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.share-error {
+  font-size: 12px;
+  color: var(--n-color-error);
+  margin: 0;
+}
+
+// Top-level error banner (replaces inline share-error for visibility)
+.share-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--n-error-color, #ef4444);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.share-off-hint {
+  font-size: 13px;
+  color: var(--n-text-color-3);
+  padding: 4px 0;
+}
+
+// ─── Shared Styles ──────────────────────────────────────────────────────────
+
+.registry-chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.registry-chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--n-text-color-3);
+  font-size: 13px;
+}
+
+.registry-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 200px;
+  color: var(--n-text-color-3);
+
+  .registry-fallback-label {
+    font-size: 12px;
+    text-transform: capitalize;
+  }
+}
+
+.registry-progress-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 120px;
+  padding: 20px;
+
+  .progress-label {
+    font-size: 0.85rem;
+    color: var(--n-text-color-3);
+  }
+}
+
+.text-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  color: var(--n-text-color-2);
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    font-size: 13px;
+  }
+}
+
+.registry-specialized-slot {
+  min-height: 200px;
+}
+
+// ─── Stat Card Widget (shared between default + panel variants) ─────────────
+
+.stat-card-widget {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 16px 20px;
+  border: 1px solid var(--k8s-border-color, var(--n-border-color));
+  border-left-width: 4px;
+  border-left-color: var(--n-primary-color);
+  border-radius: 8px;
+  background: var(--n-card-color);
+
+  :global(html.dark) & {
+    background: #1e293b;
+  }
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+
+  .stat-icon-small {
+    font-size: 14px;
+    color: var(--n-text-color-3);
+  }
+
+  .stat-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--n-text-color-3);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+}
+
+.stat-value-large {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-trend {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--n-text-color-2);
+}
+
+// ─── Mini Variant ───────────────────────────────────────────────────────────
+
+.mini-chart-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--n-card-color);
+
+  :global(html.dark) & {
+    border-color: #475569;
+    background: #1e293b;
+  }
+}
+
+.mini-chart-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px 8px;
+  background: transparent;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+// Row 1 — icon + title + controls (buttons right-aligned on same row)
+.mini-hdr-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+}
+
+// Controls inside row 1 — pushed to the right
+.mini-hdr-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+// Row 2 — colorful value badges, left-aligned below title
+.mini-hdr-value-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-left: calc(18px + 8px); // icon width + gap -> aligns with title text
+}
+
+.mini-chart-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+
+  &.cpu {
+    color: #3b82f6;
+  }
+  &.memory {
+    color: #8b5cf6;
+  }
+  &.disk {
+    color: #f59e0b;
+  }
+  &.network {
+    color: #10b981;
+  }
+  &.ephemeral {
+    color: #14b8a6;
+  }
+  &.capacity {
+    color: #3b82f6;
+  }
+  &.iops {
+    color: #f59e0b;
+  }
+  &.throughput {
+    color: #8b5cf6;
+  }
+}
+
+.mini-chart-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--n-text-color);
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-chart-value-badge {
+  display: inline-block;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 1px 7px;
+  border-radius: 4px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+.mini-badge-sep {
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.mini-chart-body {
+  padding: 8px 8px 12px 8px;
+}
+
+// ─── Panel Variant (from GraphPanel) ────────────────────────────────────────
+
+.graph-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--n-card-color);
+  border: 1px solid var(--k8s-border-color, var(--n-border-color));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+
+  :global(html.dark) & {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+
+  &.editable {
+    border-color: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--k8s-border-color, var(--n-border-color));
+  min-height: 56px;
+  background: var(--n-card-color);
+
+  @media (max-width: 768px) {
+    padding: 12px 16px;
+    min-height: 48px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--n-text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    min-width: 0;
+  }
+}
+
+.panel-time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+// ── Button group pill ─────────────────────────────────────────────────────────
+.action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  background: var(--n-color-modal, rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--n-border-color);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+// Thin separator inside a group
+.action-sep {
+  width: 1px;
+  height: 14px;
+  background: var(--n-border-color);
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+// Base icon button inside a group
+.panel-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--n-text-color-3);
+  transition:
+    background 0.15s,
+    color 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+  outline: none;
+
+  &:hover:not(:disabled) {
+    background: var(--n-close-color-hover, rgba(99, 102, 241, 0.08));
+    color: var(--n-text-color);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  // Alert active state
+  &.is-active-alert {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+  }
+
+  // Share active state
+  &.is-active-share {
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.08);
+  }
+
+  // Generic tool active state (settings, query editor)
+  &.is-active-tool {
+    color: var(--n-color-primary, #6366f1);
+    background: rgba(99, 102, 241, 0.08);
+  }
+}
+
+// Dot badge — top-right of an icon button
+.btn-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--n-card-color, #fff);
+
+  &--alert {
+    background: #ef4444;
+  }
+  &--share {
+    background: #3b82f6;
+  }
+}
+
+// Legacy flat action-btn (still used in older template spots if any)
+.action-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+}
+
+.chart-area {
+  position: relative;
+  flex: 1;
+  min-height: 200px;
+  padding: 20px;
+  overflow: hidden;
+  background: var(--n-card-color);
+
+  & > * {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    min-height: 180px;
+  }
+
+  // Adjust GaugeChart wrapper inside panel
+  .gauge-chart-wrapper.with-border {
+    border: 2px solid var(--k8s-border-color, var(--n-border-color));
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--n-color);
+
+    @media (max-width: 768px) {
+      border-width: 1.5px;
+      border-radius: 6px;
+      padding: 12px;
+    }
+  }
+}
+
+.chart-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--n-modal-color);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.chart-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 200px;
+  color: var(--n-text-color-3);
+
+  .chart-error-icon {
+    font-size: 28px;
+    color: #f59e0b;
+  }
+
+  .chart-error-text {
+    font-size: 12px;
+    max-width: 280px;
+    text-align: center;
+    line-height: 1.4;
+  }
+}
+
+.fallback-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--n-text-color-3);
+
+  @media (max-width: 768px) {
+    gap: 6px;
+
+    svg {
+      font-size: 24px !important;
+    }
+  }
+}
+
+.fallback-label {
+  font-size: 12px;
+  text-transform: capitalize;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+  }
+}
+
+// ─── Widget Properties Panel (TFO section standard) ─────────────────────────
+// Single border-top separates from chart; everything inside uses spacing only.
+
+.widget-properties {
+  border-top: 1px solid var(--k8s-border-color, var(--n-border-color));
+  background: var(--n-action-color);
+}
+
+.wp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  cursor: pointer;
+  user-select: none;
+  height: 34px;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: rgba(128, 128, 128, 0.06);
+  }
+}
+
+.wp-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wp-header-icon {
+  color: var(--n-text-color-3);
+}
+
+.wp-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--n-text-color-2);
+  letter-spacing: 0.02em;
+}
+
+.wp-chevron {
+  color: var(--n-text-color-3);
+}
+
+// ── Series Queries ──
+.series-queries {
+  border-top: 1px solid var(--n-divider-color);
+}
+
+.sq-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: rgba(128, 128, 128, 0.04);
+  border-bottom: 1px solid rgba(128, 128, 128, 0.06);
+  color: var(--n-text-color-3);
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background: rgba(128, 128, 128, 0.07);
+  }
+}
+
+.sq-chevron {
+  color: var(--n-text-color-3);
+  flex-shrink: 0;
+}
+
+.sq-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--n-text-color-2);
+  letter-spacing: 0.3px;
+}
+
+.sq-key-tag {
+  font-size: 10px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: rgba(59, 130, 246, 0.08);
+  color: #3b82f6;
+  font-family: "SF Mono", Monaco, monospace;
+  margin-left: auto;
+}
+
+.sq-list {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.sq-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.04);
+  transition:
+    background 0.15s,
+    opacity 0.15s;
+
+  &:hover {
+    background: rgba(128, 128, 128, 0.05);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.sq-hidden {
+    opacity: 0.35;
+  }
+}
+
+.sq-color-chip {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    opacity 0.15s,
+    transform 0.1s;
+
+  &:hover {
+    transform: scale(1.15);
+    opacity: 0.85;
+  }
+}
+
+.sq-series-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--n-text-color);
+  white-space: nowrap;
+  min-width: 50px;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.sq-expr {
+  font-size: 10px;
+  font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+  color: var(--n-text-color-3);
+  background: rgba(128, 128, 128, 0.06);
+  padding: 2px 6px;
+  border-radius: 3px;
+  word-break: break-all;
+  flex: 1;
+  min-width: 0;
+}
+
+// ── Metadata Badges ──
+.wp-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+}
+
+.wp-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--k8s-border-color-subtle, rgba(128, 128, 128, 0.2));
+  line-height: 1;
+}
+
+.wp-badge-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 4px 7px;
+  background: rgba(128, 128, 128, 0.08);
+  white-space: nowrap;
+}
+
+.wp-badge-value {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+// Badge color variants
+.badge-id .wp-badge-value {
+  color: #3b82f6;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
+  letter-spacing: -0.02em;
+}
+
+.badge-signal .wp-badge-value {
+  color: #22c55e;
+}
+
+.badge-type .wp-badge-value {
+  color: #a855f7;
+}
+
+.badge-unit .wp-badge-value {
+  color: #f59e0b;
+}
+
+// ── Description ──
+.wp-desc {
+  padding: 6px 12px;
+  font-size: 11px;
+  color: var(--n-text-color-3);
+  line-height: 1.4;
+}
+
+// ── Series Color Chips (inline horizontal) ──
+.wp-colors {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 8px;
+}
+
+.wp-color-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 2px;
+  border-radius: 4px;
+  background: rgba(128, 128, 128, 0.06);
+  transition: background-color 0.15s ease;
+  cursor: default;
+
+  &:hover {
+    background: rgba(128, 128, 128, 0.12);
+  }
+
+  .n-color-picker {
+    width: 28px !important;
+    flex-shrink: 0;
+  }
+
+  .n-color-picker-trigger {
+    width: 25px !important;
+    height: 25px !important;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .n-color-picker-trigger__value {
+    display: none;
+  }
+}
+
+.wp-chip-name {
+  font-size: 11px;
+  color: var(--n-text-color);
+  white-space: nowrap;
+  line-height: 1;
+}

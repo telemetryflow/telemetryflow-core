@@ -1,0 +1,522 @@
+// TFO Style Registry — Incident Timeline
+// Status dots, timestamps, events, affected checks from uptime monitoring
+// Extracted from: IncidentTimeline.vue
+
+// ─── Container ────────────────────────────────────────────────────────────────
+
+.incident-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+// ─── Header ────────────────────────────────────────────────────────────────────
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.timeline-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.title-icon {
+  font-size: 24px;
+  color: #f59e0b;
+}
+
+.incident-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+// ─── Loading State ─────────────────────────────────────────────────────────────
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-incident {
+  height: 200px;
+  background: linear-gradient(
+    90deg,
+    rgba(148, 163, 184, 0.1) 25%,
+    rgba(148, 163, 184, 0.2) 50%,
+    rgba(148, 163, 184, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// ─── Incidents List ────────────────────────────────────────────────────────────
+
+.incidents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.incident-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-left: 4px solid #ef4444;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &.ongoing {
+    background: rgba(245, 158, 11, 0.05);
+    border-color: rgba(245, 158, 11, 0.2);
+    border-left-color: #f59e0b;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+// ─── Incident Header ───────────────────────────────────────────────────────────
+
+.incident-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.incident-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.875rem;
+
+  .status-ongoing {
+    color: #f59e0b;
+    font-size: 18px;
+  }
+
+  .status-resolved {
+    color: #22c55e;
+    font-size: 18px;
+  }
+}
+
+.status-label {
+  color: #1f2937;
+}
+
+.incident-duration {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(148, 163, 184, 0.1);
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.duration-icon {
+  font-size: 16px;
+}
+
+// ─── Timeline Bar ──────────────────────────────────────────────────────────────
+
+.incident-timeline-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.timeline-point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.point-dot {
+  width: 12px;
+  height: 12px;
+  background: #ef4444;
+  border: 3px solid rgba(239, 68, 68, 0.2);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.timeline-point.end .point-dot {
+  background: #22c55e;
+  border-color: rgba(34, 197, 94, 0.2);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+.point-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.label-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.label-time {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.label-relative {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.timeline-line {
+  flex: 1;
+  height: 3px;
+  background: linear-gradient(to right, #ef4444, #22c55e);
+  border-radius: 2px;
+  position: relative;
+
+  &.ongoing {
+    background: linear-gradient(to right, #ef4444, #f59e0b);
+    animation: lineGlow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes lineGlow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+// ─── Incident Details ──────────────────────────────────────────────────────────
+
+.incident-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(148, 163, 184, 0.05);
+  border-radius: 6px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.detail-icon {
+  font-size: 16px;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  color: #1f2937;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ─── Affected Checks ──────────────────────────────────────────────────────────
+
+.affected-checks {
+  margin-top: 8px;
+
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(148, 163, 184, 0.05);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+    transition: all 0.2s ease;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:hover {
+      background: rgba(148, 163, 184, 0.1);
+    }
+  }
+
+  &[open] summary {
+    margin-bottom: 12px;
+
+    .chevron-icon {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.chevron-icon {
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.checks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.check-item {
+  display: grid;
+  grid-template-columns: 180px 100px 1fr;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(148, 163, 184, 0.03);
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  align-items: center;
+}
+
+.check-time {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.check-status {
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-align: center;
+
+  &.status-failure {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
+
+  &.status-timeout {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+  }
+
+  &.status-error {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+  }
+}
+
+.check-message {
+  color: #1f2937;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ─── Empty State ───────────────────────────────────────────────────────────────
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 64px;
+  color: #22c55e;
+  opacity: 0.5;
+}
+
+.empty-subtext {
+  font-size: 0.875rem;
+  margin-top: -8px;
+}
+
+// ─── Responsive - Tablet ──────────────────────────────────────────────────────
+
+@media (max-width: 768px) {
+  .incident-timeline {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .timeline-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .timeline-title {
+    font-size: 1rem;
+  }
+
+  .title-icon {
+    font-size: 20px;
+  }
+
+  .incident-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .incident-timeline-bar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .timeline-line {
+    width: 3px;
+    height: 40px;
+    background: linear-gradient(to bottom, #ef4444, #22c55e);
+
+    &.ongoing {
+      background: linear-gradient(to bottom, #ef4444, #f59e0b);
+    }
+  }
+
+  .check-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .check-time {
+    font-size: 0.75rem;
+  }
+
+  .check-status {
+    width: fit-content;
+  }
+}
+
+// ─── Responsive - Mobile ──────────────────────────────────────────────────────
+
+@media (max-width: 480px) {
+  .incident-timeline {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .timeline-title {
+    font-size: 0.9rem;
+  }
+
+  .title-icon {
+    font-size: 18px;
+  }
+
+  .incident-card {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .incident-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .label-time {
+    font-size: 0.75rem;
+  }
+
+  .label-relative {
+    font-size: 0.7rem;
+  }
+
+  .detail-row {
+    font-size: 0.8rem;
+  }
+
+  .empty-state {
+    padding: 32px 16px;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+  }
+}

@@ -1,0 +1,37 @@
+// TFO Style Registry — Modal Responsive
+// Mobile stacking for layout, tabs, footer wrap
+
+// ─── Responsive overrides ─────────────────────────────────────────────────────
+
+@media (max-width: 640px) {
+  // On small screens, stack vertical tabs horizontally at top
+  .tfo-modal-layout {
+    flex-direction: column;
+  }
+
+  .tfo-modal-tabs {
+    flex-direction: row;
+    min-width: unset;
+    max-width: unset;
+    border-right: none;
+    border-bottom: 1px solid var(--n-divider-color, var(--n-border-color));
+    padding-right: 0;
+    padding-bottom: 12px;
+    margin-right: 0;
+    margin-bottom: 16px;
+    overflow-x: auto;
+
+    .tfo-modal-tab-desc {
+      display: none; // hide description in compact horizontal mode
+    }
+  }
+
+  .tfo-modal-tab-item {
+    flex-shrink: 0;
+  }
+
+  .tfo-modal-footer,
+  .tfo-modal-footer--spread {
+    flex-wrap: wrap;
+  }
+}

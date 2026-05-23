@@ -1,0 +1,122 @@
+// TFO Style Registry — DataTable Core
+// Table borders, headers, cells, rows, empty state, action cells
+
+@use "@/styles/tfo-variables" as *;
+
+// Section wrapper — standard datatable container with header + table
+.section {
+  border: 1px solid var(--k8s-border-color);
+  border-radius: 6px;
+  overflow: clip;
+}
+
+.table-content {
+  padding: 0;
+  overflow: hidden;
+
+  .section>& {
+    padding: 12px;
+  }
+
+  .n-data-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--k8s-border-color);
+    border-radius: 6px;
+
+    .n-data-table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .n-data-table-base-table-header {
+      border-bottom: 1px solid var(--k8s-border-color);
+    }
+
+    .n-data-table-base-table {
+      min-width: 100%;
+      @media (max-width: $breakpoint-mobile) {
+        min-width: 800px;
+      }
+    }
+
+    .n-data-table-thead {
+      background: var(--k8s-table-header-bg) !important;
+    }
+
+    .n-data-table-th {
+      white-space: nowrap;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 12px;
+      background: var(--k8s-table-header-bg) !important;
+      color: var(--k8s-table-header-text) !important;
+      border-bottom: 1px solid var(--k8s-border-color) !important;
+      border-right: 1px solid var(--k8s-border-color);
+      &:last-child { border-right: none; }
+      @media (max-width: $breakpoint-mobile) {
+        padding: 8px 10px;
+        font-size: 0.7rem;
+      }
+    }
+
+    .n-data-table-td {
+      white-space: nowrap;
+      overflow: hidden;
+      padding: 10px 12px;
+      font-size: 0.8125rem;
+      vertical-align: middle !important;
+      border-right: 1px solid var(--k8s-border-color);
+      > div, > span { min-width: 0; max-width: 100%; }
+      &:last-child { border-right: none; }
+      @media (max-width: $breakpoint-mobile) {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+      }
+    }
+
+    .n-data-table-th:first-child,
+    .n-data-table-td:first-child {
+      min-width: 240px !important;
+      white-space: normal !important;
+      word-break: break-word !important;
+      overflow: visible !important;
+      * {
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+      }
+    }
+
+    .n-data-table-tr {
+      td { border-bottom: 1px solid var(--k8s-border-color) !important; }
+      &:last-child td { border-bottom: none !important; }
+    }
+
+    .n-data-table-base-table-body {
+      padding-bottom: 5px;
+    }
+  }
+}
+
+.action-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  @media (max-width: $breakpoint-mobile) { gap: 4px; }
+}
+
+.n-data-table-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--n-text-color-3);
+  font-size: 0.875rem;
+  @media (max-width: $breakpoint-mobile) {
+    padding: 30px 15px;
+    font-size: 0.8125rem;
+  }
+}

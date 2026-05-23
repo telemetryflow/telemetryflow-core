@@ -1,0 +1,462 @@
+// Metrics Index Page — metrics/index.vue (scoped)
+.metrics-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.metrics-page .page-header {
+  margin-bottom: 8px;
+}
+
+.metrics-page .page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--n-text-color);
+}
+
+.metrics-page .page-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-3);
+  margin: 0;
+}
+
+.metrics-page .query-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.metrics-page .query-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--n-color);
+  border: 1px solid var(--k8s-border-color, #e5e7eb);
+  border-radius: 6px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  margin-left: 5px;
+
+  &:focus-within {
+    border-color: var(--n-primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.metrics-page .query-prefix {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  color: var(--n-text-color-3);
+  border-right: 1px solid var(--k8s-border-color, #e5e7eb);
+
+  .tfql-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--n-primary-color);
+  }
+}
+
+.metrics-page .query-input {
+  flex: 1;
+  height: 44px;
+  padding: 0 17px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  font-family:
+    "JetBrains Mono", "SF Mono", "Monaco", "Cascadia Code", "Fira Code",
+    monospace;
+  color: var(--n-text-color);
+
+  &::placeholder {
+    color: var(--n-text-color-3);
+  }
+}
+
+.metrics-page .query-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 8px;
+
+  .btn-text {
+    margin-left: 4px;
+  }
+
+  // Ensure both buttons have same size
+  .n-button {
+    min-width: 90px;
+    justify-content: center;
+  }
+}
+
+// Suggestions dropdown
+.metrics-page .suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid var(--k8s-border-color, #e5e7eb);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+
+  :root.dark & {
+    background: #1e293b;
+  }
+}
+
+.metrics-page .suggestions-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--n-text-color-3);
+  text-transform: uppercase;
+  background: var(--n-color-popover);
+  border-bottom: 1px solid var(--k8s-border-color, #e5e7eb);
+
+  .hint {
+    margin-left: auto;
+    font-weight: 400;
+    text-transform: none;
+  }
+}
+
+.metrics-page .suggestions-list {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.metrics-page .suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover,
+  &.selected {
+    background: var(--n-color-hover);
+  }
+
+  &.selected {
+    background: rgba(59, 130, 246, 0.1);
+  }
+}
+
+.metrics-page .suggestion-label {
+  flex: 1;
+  font-size: 0.8125rem;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.metrics-page .suggestions-footer {
+  padding: 6px 12px;
+  font-size: 0.6875rem;
+  color: var(--n-text-color-3);
+  background: var(--n-color-popover);
+  border-top: 1px solid var(--k8s-border-color, #e5e7eb);
+
+  kbd {
+    display: inline-block;
+    padding: 1px 4px;
+    font-size: 0.625rem;
+    font-family: inherit;
+    background: var(--n-color);
+    border: 1px solid var(--k8s-border-color, #e5e7eb);
+    border-radius: 3px;
+  }
+}
+
+// Dropdown animation
+.metrics-page .dropdown-enter-active,
+.metrics-page .dropdown-leave-active {
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+
+.metrics-page .dropdown-enter-from,
+.metrics-page .dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+// Syntax help
+.metrics-page .syntax-help {
+  flex-shrink: 0;
+  margin-right: 5px;
+}
+
+.metrics-page .syntax-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 45px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--n-text-color-2);
+  background: var(--n-color);
+  border: 1px solid var(--k8s-border-color, #e5e7eb);
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+
+  &:hover {
+    border-color: var(--n-primary-color);
+    background: var(--n-color-hover);
+  }
+}
+
+.metrics-page .syntax-tooltip {
+  .syntax-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .syntax-examples {
+    font-family: monospace;
+    font-size: 0.75rem;
+    line-height: 1.6;
+
+    code {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+  }
+}
+
+.metrics-page .stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 0 5px;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
+}
+
+// Data table styling - matching Kubernetes tables
+.metrics-page .n-data-table {
+  border: 1px solid var(--k8s-border-color, #c1c5cc);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.metrics-page .n-data-table-thead {
+  background: var(--k8s-table-header-bg, #f8fafc) !important;
+}
+
+.metrics-page .n-data-table-th {
+  font-weight: 700 !important;
+  background: var(--k8s-table-header-bg, #f8fafc) !important;
+  color: var(--k8s-table-header-text, #374151) !important;
+  border-bottom: 1px solid var(--k8s-border-color, #c1c5cc) !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.metrics-page .n-data-table-tr td {
+  border-bottom: 1px solid var(--k8s-border-color, #c1c5cc) !important;
+}
+
+.metrics-page .n-data-table-tr:last-child td {
+  border-bottom: none !important;
+}
+
+.metrics-page .n-data-table-pagination {
+  padding: 20px 16px;
+  border-top: 1px solid var(--k8s-border-color, #c1c5cc);
+  margin-top: 12px;
+  background: var(--k8s-table-header-bg, #f8fafc);
+}
+
+.metrics-page .n-card-header__main {
+  font-weight: 700 !important;
+}
+
+.metrics-page .card-header-with-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.metrics-page .query-section {
+  margin-bottom: 16px;
+}
+
+.metrics-page .chart-container {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Responsive — Tablet
+@media (max-width: 1024px) {
+  .metrics-page {
+    gap: 14px;
+  }
+
+  .metrics-page .query-bar {
+    gap: 10px;
+  }
+
+  .metrics-page .query-input {
+    height: 40px;
+    font-size: 0.8125rem;
+  }
+
+  .metrics-page .syntax-button {
+    height: 40px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+  }
+
+  .metrics-page .chart-container {
+    min-height: 280px;
+  }
+}
+
+// Responsive — Mobile
+@media (max-width: 768px) {
+  .metrics-page {
+    gap: 12px;
+  }
+
+  .metrics-page .page-header {
+    margin-bottom: 4px;
+  }
+
+  .metrics-page .page-title {
+    font-size: 1.25rem;
+  }
+
+  .metrics-page .page-subtitle {
+    font-size: 0.8125rem;
+  }
+
+  .metrics-page .query-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .metrics-page .query-input-wrapper {
+    width: 100%;
+    order: 1;
+  }
+
+  .metrics-page .query-prefix {
+    padding: 0 8px;
+
+    .tfql-label {
+      font-size: 0.625rem;
+    }
+  }
+
+  .metrics-page .query-input {
+    height: 38px;
+    padding: 0 8px;
+    font-size: 0.75rem;
+  }
+
+  .metrics-page .query-actions {
+    gap: 4px;
+    padding-right: 4px;
+
+    .btn-text {
+      display: none;
+    }
+
+    .n-button {
+      min-width: auto;
+      padding: 0 8px;
+    }
+  }
+
+  .metrics-page .syntax-button {
+    order: 3;
+    width: 100%;
+    height: 36px;
+    justify-content: center;
+  }
+
+  .metrics-page .query-section {
+    margin-bottom: 12px;
+  }
+
+  .metrics-page .chart-container {
+    min-height: 250px;
+  }
+}
+
+// Responsive — Small Mobile
+@media (max-width: 480px) {
+  .metrics-page {
+    gap: 10px;
+  }
+
+  .metrics-page .page-title {
+    font-size: 1.125rem;
+  }
+
+  .metrics-page .page-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .metrics-page .query-prefix {
+    display: none;
+  }
+
+  .metrics-page .query-input {
+    height: 36px;
+    font-size: 0.6875rem;
+  }
+
+  .metrics-page .syntax-button {
+    height: 34px;
+    font-size: 0.6875rem;
+
+    // Hide text on very small screens
+    span:not(.iconify) {
+      display: none;
+    }
+  }
+
+  .metrics-page .query-section {
+    margin-bottom: 10px;
+  }
+
+  .metrics-page .chart-container {
+    min-height: 220px;
+  }
+}
