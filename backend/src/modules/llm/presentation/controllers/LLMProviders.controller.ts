@@ -215,13 +215,40 @@ export class LLMProvidersController {
       );
     }
 
+    let validatedBaseUrl = dto.baseUrl;
+
     if (dto.baseUrl) {
       await UrlValidator.validatePublicUrl(dto.baseUrl);
+
+      if (dto.providerType === "ollama") {
+        let parsed: URL;
+        try {
+          parsed = new URL(dto.baseUrl);
+        } catch {
+          throw new BadRequestException("Invalid Ollama base URL");
+        }
+
+        const host = parsed.hostname.toLowerCase();
+        const isLocalHost =
+          host === "localhost" || host === "127.0.0.1" || host === "::1";
+
+        if (parsed.protocol !== "http:" || !isLocalHost) {
+          throw new BadRequestException(
+            "Invalid Ollama base URL: only local http://localhost/127.0.0.1/[::1] endpoints are allowed",
+          );
+        }
+
+        const normalizedPath = parsed.pathname.replace(/\/+$/, "");
+        if (!normalizedPath.endsWith("/v1")) {
+          parsed.pathname = `${normalizedPath || ""}/v1`;
+        }
+        validatedBaseUrl = parsed.toString().replace(/\/+$/, "");
+      }
     }
 
     const adapter = this.adapterFactory.getAdapter(
       dto.providerType,
-      dto.baseUrl,
+      validatedBaseUrl,
     );
 
     try {
