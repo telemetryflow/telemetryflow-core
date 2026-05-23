@@ -4,6 +4,7 @@
  */
 
 import { ClickHouseClient } from "@clickhouse/client";
+import { randomInt } from "crypto";
 import { BaseClickHouseSeed } from "../../../../../../database/shared/BaseClickHouseSeed";
 
 export class SeedLLMUsageAnalytics1721000000010 extends BaseClickHouseSeed {
@@ -96,23 +97,20 @@ export class SeedLLMUsageAnalytics1721000000010 extends BaseClickHouseSeed {
       const date = new Date(now.getTime() - day * 24 * 60 * 60 * 1000);
 
       // 20-80 messages per day
-      const messagesPerDay = 20 + Math.floor(Math.random() * 60);
+      const messagesPerDay = 20 + randomInt(60);
 
       for (let msg = 0; msg < messagesPerDay; msg++) {
-        const providerType =
-          providerTypes[Math.floor(Math.random() * providerTypes.length)];
+        const providerType = providerTypes[randomInt(providerTypes.length)];
         const modelList = models[providerType];
-        const modelId = modelList[Math.floor(Math.random() * modelList.length)];
-        const userId = userIds[Math.floor(Math.random() * userIds.length)];
-        const contextType =
-          contextTypes[Math.floor(Math.random() * contextTypes.length)];
-        const status = statuses[Math.floor(Math.random() * statuses.length)];
-        const role = roles[Math.floor(Math.random() * roles.length)];
-        const isStreaming = Math.random() > 0.3 ? 1 : 0;
+        const modelId = modelList[randomInt(modelList.length)];
+        const userId = userIds[randomInt(userIds.length)];
+        const contextType = contextTypes[randomInt(contextTypes.length)];
+        const status = statuses[randomInt(statuses.length)];
+        const role = roles[randomInt(roles.length)];
+        const isStreaming = randomInt(10) > 2 ? 1 : 0;
 
-        const promptTokens = 50 + Math.floor(Math.random() * 2000);
-        const completionTokens =
-          status === "error" ? 0 : 100 + Math.floor(Math.random() * 4000);
+        const promptTokens = 50 + randomInt(2000);
+        const completionTokens = status === "error" ? 0 : 100 + randomInt(4000);
         const totalTokens = promptTokens + completionTokens;
 
         const costs = costPer1KTokens[modelId] || {
@@ -125,14 +123,12 @@ export class SeedLLMUsageAnalytics1721000000010 extends BaseClickHouseSeed {
         );
 
         const latency =
-          status === "error"
-            ? 100 + Math.floor(Math.random() * 500)
-            : 200 + Math.floor(Math.random() * 5000);
-        const ttft = Math.floor(latency * (0.1 + Math.random() * 0.3));
+          status === "error" ? 100 + randomInt(500) : 200 + randomInt(5000);
+        const ttft = Math.floor(latency * (0.1 + randomInt(3000) / 10000));
 
         // Randomize time within the day
         const timestamp = new Date(
-          date.getTime() + Math.floor(Math.random() * 24 * 60 * 60 * 1000),
+          date.getTime() + randomInt(24 * 60 * 60 * 1000),
         );
 
         records.push({
