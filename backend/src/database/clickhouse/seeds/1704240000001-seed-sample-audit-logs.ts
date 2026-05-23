@@ -1,5 +1,6 @@
 import { ClickHouseClient } from "@clickhouse/client";
 import { DataSource } from "typeorm";
+import { randomInt } from "crypto";
 
 export async function seed(
   client: ClickHouseClient,
@@ -76,8 +77,8 @@ export async function seed(
   const systemActions = ["config_change", "migration_run", "cache_clear", "backup_start"];
 
   // ── Helpers ────────────────────────────────────────────────────────────────
-  const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
-  const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const pick = <T>(arr: T[]): T => arr[randomInt(arr.length)];
+  const rand = (min: number, max: number) => randomInt(min, max + 1);
   const fmt = (d: Date) => d.toISOString().replace("T", " ").replace(/\.\d+Z$/, "");
 
   // ── Generate events ────────────────────────────────────────────────────────
@@ -97,7 +98,7 @@ export async function seed(
       const region = pick(regions);
 
       // Distribute event types: AUTH 45%, DATA 25%, AUTHZ 20%, SYSTEM 10%
-      const roll = Math.random();
+      const roll = randomInt(0, 1_000_000) / 1_000_000;
 
       if (roll < 0.12) {
         // AUTH - register (new user registration, spread across regions)
