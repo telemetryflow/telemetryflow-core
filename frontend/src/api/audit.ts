@@ -95,8 +95,8 @@ function generateMockAuditLogs(count: number): AuditLog[] {
       organizationId: "org-devopscorner",
       organizationName: "DevOpsCorner",
       regionId: "ap-southeast-1",
-      sessionId: `session-${user.id}-${Math.floor(timestamp / 3600000)}`,
-      correlationId: `corr-${Date.now()}-${i}`,
+      sessionId: `session-${crypto.randomUUID()}`,
+      correlationId: `corr-${crypto.randomUUID()}`,
     });
   }
 
