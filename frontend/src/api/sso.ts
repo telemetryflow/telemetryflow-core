@@ -482,8 +482,8 @@ export const ssoApi = {
       await new Promise((resolve) => setTimeout(resolve, 300));
       const providers = generateMockProviders();
       const provider = providers.find((p) => p.id === data.providerId);
-      const state = `state_${Date.now()}_${Math.random().toString(36).substring(2)}`;
-      const nonce = `nonce_${Date.now()}_${Math.random().toString(36).substring(2)}`;
+      const state = `state_${crypto.randomUUID()}`;
+      const nonce = `nonce_${crypto.randomUUID()}`;
 
       let authUrl = "https://accounts.google.com/o/oauth2/v2/auth";
       if (provider?.vendor === "microsoft") {

@@ -37,7 +37,7 @@ export class ApiKeyEntity {
   @Column({ name: 'key_prefix', length: 10 })
   keyPrefix: string;
 
-  @Column({ name: 'api_key_secret', length: 128 })
+  @Column({ name: 'api_key_secret', length: 256 })
   apiKeySecret: string;
 
   @Column({ name: 'key_hint', length: 20 })

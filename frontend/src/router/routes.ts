@@ -23,7 +23,7 @@ export const routes: RouteRecordRaw[] = [
       {
         path: "home",
         name: "Home",
-        component: () => import("@/views/home/index.vue"),
+        component: () => import("@/views/iam/overview/index.vue"),
         meta: { title: "Overview", icon: "simple-icons:opentelemetry" },
       },
       ...alertsRoutes,

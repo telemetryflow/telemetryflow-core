@@ -19,7 +19,10 @@ RUN npm install -g pnpm@10.24.0
 # Copy workspace configuration files (required for pnpm workspace)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 
-# Copy frontend source code and nest-cli config
+# Copy backend/package.json for pnpm workspace resolution
+COPY backend/package.json ./backend/package.json
+
+# Copy frontend source code
 COPY frontend/ ./frontend/
 
 # Install all dependencies (workspace-aware)
@@ -57,7 +60,7 @@ RUN pnpm build:frontend
 # -----------------------------------------------------------------------------
 # Stage 2: Production
 # -----------------------------------------------------------------------------
-FROM nginx:1.27-alpine AS production
+FROM nginx:1.31-alpine AS production
 
 # Update packages to get security patches (CVE fixes)
 RUN apk upgrade --no-cache

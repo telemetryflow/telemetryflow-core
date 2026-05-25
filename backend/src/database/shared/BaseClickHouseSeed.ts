@@ -9,6 +9,7 @@
 
 import { ClickHouseClient } from "@clickhouse/client";
 import { DataSource } from "typeorm";
+import { randomUUID } from "crypto";
 import type { ClickHouseSeed } from "./interfaces";
 
 export interface ResolvedTenantIds {
@@ -176,14 +177,7 @@ export abstract class BaseClickHouseSeed implements ClickHouseSeed {
    * Generate a UUID v4
    */
   protected generateUUID(): string {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-      /[xy]/g,
-      function (c) {
-        const r = (Math.random() * 16) | 0;
-        const v = c === "x" ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      },
-    );
+    return randomUUID();
   }
 
   /**

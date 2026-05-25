@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, MoreThan } from "typeorm";
 import { ConfigService } from "@nestjs/config";
 import * as crypto from "crypto";
+import { randomInt } from "crypto";
 import { UserEntity } from "../../iam/infrastructure/persistence/entities/User.entity";
 import { EmailVerificationStatusDto } from "../dto/email-verification.dto";
 import { EmailService } from "../../notification/domain/services/EmailService";
@@ -187,6 +188,6 @@ export class EmailVerificationService {
   }
 
   private generateVerificationCode(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    return randomInt(100000, 1000000).toString();
   }
 }

@@ -154,7 +154,8 @@ export class MaskingRule {
       case MatchType.REGEX:
         if (!this.customPattern) return null;
         try {
-          return new RegExp(this.customPattern, "g");
+          const safe = this.sanitizeRegex(this.customPattern);
+          return new RegExp(safe, "g");
         } catch {
           return null;
         }
@@ -196,6 +197,11 @@ export class MaskingRule {
       default:
         return this.replacement;
     }
+  }
+
+  private sanitizeRegex(pattern: string): string {
+    const limited = pattern.length > 500 ? pattern.substring(0, 500) : pattern;
+    return limited.replace(/\(\?<[!=][^)]*\)/g, "");
   }
 
   toJSON(): MaskingRuleProps {

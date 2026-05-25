@@ -261,28 +261,43 @@ export class RetentionEnforcementService {
         };
       }
 
-      // Build WHERE clause
-      const whereClauses: string[] = [`timestamp < '${cutoffTimestamp}'`];
+      const ALLOWED_FILTER_KEYS = new Set([
+        "data_type",
+        "severity",
+        "status",
+        "service_name",
+        "host_name",
+        "environment",
+        "trace_id",
+        "span_id",
+      ]);
+
+      const whereClauses: string[] = ["timestamp < {cutoff:String}"];
+      const queryParams: Record<string, string> = { cutoff: cutoffTimestamp };
+
       if (organizationId) {
-        whereClauses.push(`organization_id = '${organizationId}'`);
+        whereClauses.push("organization_id = {orgId:String}");
+        queryParams.orgId = organizationId;
       }
 
-      // Add custom filters if provided
       if (filters) {
         for (const [key, value] of Object.entries(filters)) {
-          whereClauses.push(`${key} = '${value}'`);
+          if (ALLOWED_FILTER_KEYS.has(key)) {
+            const paramKey = `filter_${key}`;
+            whereClauses.push(`${key} = {${paramKey}:String}`);
+            queryParams[paramKey] = value;
+          }
         }
       }
 
       const whereClause = whereClauses.join(" AND ");
 
-      // Execute ClickHouse deletion (async mutation)
       const query = `
         ALTER TABLE ${this.clickhouseService.getDatabase()}.${tableName} DELETE
         WHERE ${whereClause}
       `;
 
-      await client.command({ query });
+      await client.command({ query, query_params: queryParams });
 
       this.logger.log(
         `[deleteOldData] Initiated deletion for ${tableName} WHERE ${whereClause}`,
@@ -786,9 +801,9 @@ export class RetentionEnforcementService {
     destination: string,
     scheduleType: string,
   ): Promise<void> {
-    const { exec } = require("child_process");
+    const { execFile } = require("child_process");
     const { promisify } = require("util");
-    const execAsync = promisify(exec);
+    const execFileAsync = promisify(execFile);
     const fs = require("fs").promises;
     const path = require("path");
     const os = require("os");
@@ -816,12 +831,28 @@ export class RetentionEnforcementService {
         `[backup] Starting PostgreSQL backup for org=${organizationId}`,
       );
 
-      // Use pg_dump with organization filter (if we have org-specific tables)
-      // For multi-tenant, we might need to dump specific tables or use WHERE clauses
-      const pgDumpCmd = `PGPASSWORD="${pgPassword}" pg_dump -h ${pgHost} -p ${pgPort} -U ${pgUser} -d ${pgDb} -F c -f ${pgBackupFile}`;
-
       try {
-        await execAsync(pgDumpCmd, { maxBuffer: 1024 * 1024 * 100 }); // 100MB buffer
+        await execFileAsync(
+          "pg_dump",
+          [
+            "-h",
+            pgHost,
+            "-p",
+            pgPort,
+            "-U",
+            pgUser,
+            "-d",
+            pgDb,
+            "-F",
+            "c",
+            "-f",
+            pgBackupFile,
+          ],
+          {
+            env: { ...process.env, PGPASSWORD: pgPassword },
+            maxBuffer: 1024 * 1024 * 100,
+          },
+        );
         this.logger.log(
           `[backup] PostgreSQL backup completed: ${pgBackupFile}`,
         );
@@ -845,12 +876,39 @@ export class RetentionEnforcementService {
       for (const table of CLICKHOUSE_TABLES) {
         const chBackupFile = path.join(backupDir, `clickhouse_${table}.native`);
 
-        // Export data in Native format for efficient restore
+        if (!/^[0-9a-fA-F-]{36}$/.test(organizationId)) {
+          throw new Error(`Invalid organizationId format: ${organizationId}`);
+        }
         const chQuery = `SELECT * FROM ${chDb}.${table} WHERE organization_id = '${organizationId}' FORMAT Native`;
-        const chCmd = `clickhouse-client --host ${chHost} --port ${chPort} --user ${chUser} --password "${chPassword}" --query "${chQuery}" > ${chBackupFile}`;
 
         try {
-          await execAsync(chCmd, { maxBuffer: 1024 * 1024 * 500 }); // 500MB buffer
+          const { spawn } = require("child_process");
+          await new Promise<void>((resolve, reject) => {
+            const out = require("fs").createWriteStream(chBackupFile);
+            const proc = spawn(
+              "clickhouse-client",
+              [
+                "--host",
+                chHost,
+                "--port",
+                chPort,
+                "--user",
+                chUser,
+                "--password",
+                chPassword,
+                "--query",
+                chQuery,
+              ],
+              { timeout: 300000 },
+            );
+            proc.stdout.pipe(out);
+            proc.stderr.on("data", () => {});
+            proc.on("close", (code: number) =>
+              code === 0
+                ? resolve()
+                : reject(new Error(`exit ${code}`)),
+            );
+          });
           this.logger.log(`[backup] ClickHouse ${table} backup completed`);
         } catch (error) {
           this.logger.warn(
@@ -867,10 +925,14 @@ export class RetentionEnforcementService {
       if (s3Match) {
         const [, bucket, prefix] = s3Match;
         const s3Path = `${prefix}/${scheduleType}/${timestamp}/`;
-        const s3Cmd = `aws s3 cp ${backupDir} s3://${bucket}/${s3Path} --recursive`;
-
         try {
-          await execAsync(s3Cmd);
+          await execFileAsync("aws", [
+            "s3",
+            "cp",
+            backupDir,
+            `s3://${bucket}/${s3Path}`,
+            "--recursive",
+          ]);
           this.logger.log(
             `[backup] S3 upload completed to s3://${bucket}/${s3Path}`,
           );
@@ -952,11 +1014,14 @@ export class RetentionEnforcementService {
 
           const query = `
             ALTER TABLE ${this.clickhouseService.getDatabase()}.${table} DELETE
-            WHERE organization_id = '${orgId}'
-              AND timestamp < '${cutoffTimestamp}'
+            WHERE organization_id = {orgId:String}
+              AND timestamp < {cutoff:String}
           `;
 
-          await client.command({ query });
+          await client.command({
+            query,
+            query_params: { orgId, cutoff: cutoffTimestamp },
+          });
 
           this.logger.log(
             `[cleanup] Initiated deletion for ${table} WHERE org=${orgId} AND timestamp < ${cutoffDate.toISOString()}`,
@@ -997,26 +1062,33 @@ export class RetentionEnforcementService {
             .replace("T", " ")
             .replace("Z", "");
 
-          // Build list of org IDs that have specific policies (to exclude)
-          const orgSpecificIds = orgPolicies
-            .map((p) => `'${p.organizationId}'`)
-            .join(", ");
+          const excludedOrgIds = orgPolicies.map((p) => p.organizationId);
 
-          const query = orgSpecificIds
-            ? `
+          let query: string;
+          let queryParams: Record<string, string | string[]>;
+
+          if (excludedOrgIds.length > 0) {
+            query = `
               ALTER TABLE ${this.clickhouseService.getDatabase()}.${table} DELETE
-              WHERE organization_id NOT IN (${orgSpecificIds})
-                AND timestamp < '${cutoffTimestamp}'
-            `
-            : `
-              ALTER TABLE ${this.clickhouseService.getDatabase()}.${table} DELETE
-              WHERE timestamp < '${cutoffTimestamp}'
+              WHERE organization_id NOT IN ({excludedOrgs:Array(String)})
+                AND timestamp < {cutoff:String}
             `;
+            queryParams = {
+              excludedOrgs: excludedOrgIds as unknown as string,
+              cutoff: cutoffTimestamp,
+            };
+          } else {
+            query = `
+              ALTER TABLE ${this.clickhouseService.getDatabase()}.${table} DELETE
+              WHERE timestamp < {cutoff:String}
+            `;
+            queryParams = { cutoff: cutoffTimestamp };
+          }
 
-          await client.command({ query });
+          await client.command({ query, query_params: queryParams });
 
           this.logger.log(
-            `[cleanup] Initiated global deletion for ${table} WHERE org NOT IN (${orgSpecificIds || "none"}) AND timestamp < ${cutoffDate.toISOString()}`,
+            `[cleanup] Initiated global deletion for ${table} WHERE org NOT IN (${excludedOrgIds.join(", ") || "none"}) AND timestamp < ${cutoffDate.toISOString()}`,
           );
         } catch (error) {
           this.logger.error(
