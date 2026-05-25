@@ -149,7 +149,9 @@ export class ApiKey extends AggregateRoot<ApiKeyId> {
     const keyHint = rawKeySecret.slice(-4);
 
     // Hash the secret for storage (one-way) using a slow password hash
-    const apiKeySecret = crypto.createHash('sha256').update(rawKeySecret).digest('hex');
+    const secretSalt = crypto.randomBytes(16).toString('hex');
+    const secretHash = crypto.scryptSync(rawKeySecret, secretSalt, 64).toString('hex');
+    const apiKeySecret = `${secretSalt}:${secretHash}`;
 
     const now = new Date();
     const apiKey = new ApiKey(id, {
