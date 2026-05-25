@@ -51,7 +51,7 @@
     "@opentelemetry/semantic-conventions": "^1.38.0",
     "@opentelemetry/winston-transport": "^0.19.0",
     "argon2": "^0.44.0",
-    "axios": "1.15.2",
+    "axios": "1.16.1",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.65.0",
     "class-transformer": "^0.5.1",
