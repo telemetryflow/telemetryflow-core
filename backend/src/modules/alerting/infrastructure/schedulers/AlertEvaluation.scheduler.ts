@@ -12,7 +12,6 @@ import {
 import { AlertRule, AlertRuleState } from "../../domain/aggregates/AlertRule";
 import {
   AlertInstance,
-  AlertInstanceStatus,
 } from "../../domain/aggregates/AlertInstance";
 import { NotificationChannelService } from "../../application/services/NotificationChannel.service";
 import type { AlertNotification } from "../services/INotificationSender";

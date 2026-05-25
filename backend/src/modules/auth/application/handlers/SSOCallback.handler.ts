@@ -190,7 +190,7 @@ export class SSOCallbackHandler implements ICommandHandler<SSOCallbackCommand> {
    */
   private async findOrCreateUser(
     ssoProfile: any,
-    isNewUser: boolean,
+    _isNewUser: boolean,
   ): Promise<UserEntity> {
     // Try to find existing user by email
     let user = await this.userRepository.findOne({
@@ -294,7 +294,7 @@ export class SSOCallbackHandler implements ICommandHandler<SSOCallbackCommand> {
    * Get user roles and permissions
    */
   private async getUserRolesAndPermissions(
-    userId: string,
+    _userId: string,
   ): Promise<{ roles: string[]; permissions: string[] }> {
     // Simplified version - in production, query actual roles/permissions
     return {

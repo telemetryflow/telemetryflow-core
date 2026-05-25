@@ -27,7 +27,6 @@ type SeedConstructor = new () => PostgresSeed;
 
 function tryRequire(path: string, exportKey: string): SeedConstructor[] {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mod = require(path);
     return mod[exportKey] || [];
   } catch {

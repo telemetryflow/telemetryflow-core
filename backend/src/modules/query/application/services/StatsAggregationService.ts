@@ -113,7 +113,7 @@ export class StatsAggregationService {
    * Get statistics for infrastructure modules (agents, uptime, service-map, network-map, k8s, vm)
    */
   async getModuleStats(options: ModuleStatsOptions): Promise<ModuleStatisticsDto> {
-    const { moduleType, tenantContext, timeRange, compareWithPrevious, includeResourceUsage, filters } = options;
+    const { moduleType } = options;
 
     switch (moduleType) {
       case 'agents':
@@ -139,7 +139,7 @@ export class StatsAggregationService {
    * Get statistics for telemetry signals (metrics, logs, traces)
    */
   async getSignalStats(options: SignalStatsOptions): Promise<ModuleStatisticsDto> {
-    const { signalType, tenantContext, timeRange, compareWithPrevious, metricName, serviceName, filters } = options;
+    const { signalType } = options;
 
     switch (signalType) {
       case 'metrics':
@@ -765,7 +765,7 @@ export class StatsAggregationService {
     try {
       const result = await this.dataSource.query(sql, params);
       return parseInt(result[0]?.total || '0', 10);
-    } catch (error) {
+    } catch (_error) {
       // Table may not exist yet - return 0 gracefully
       return 0;
     }

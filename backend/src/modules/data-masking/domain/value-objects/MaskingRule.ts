@@ -56,7 +56,7 @@ export enum MatchType {
 
 /** Compiled regex patterns for built-in PII types */
 export const BUILTIN_PATTERNS: Record<BuiltinPattern, RegExp> = {
-  [BuiltinPattern.EMAIL]: /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g,
+  [BuiltinPattern.EMAIL]: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
   [BuiltinPattern.CREDIT_CARD]:
     /\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35\d{3})\d{11})\b/g,
   [BuiltinPattern.SSN]: /\b\d{3}-\d{2}-\d{4}\b/g,
@@ -67,8 +67,8 @@ export const BUILTIN_PATTERNS: Record<BuiltinPattern, RegExp> = {
   [BuiltinPattern.JWT_TOKEN]:
     /eyJ[A-Za-z0-9_-]{2,}\.eyJ[A-Za-z0-9_-]{2,}\.[A-Za-z0-9_-]{2,}/g,
   [BuiltinPattern.API_KEY_GENERIC]:
-    /(?:api[_-]?key|apikey|token|secret|password|passwd|pwd)\s*[=:]\s*["']?([A-Za-z0-9_\-\.]{16,})/gi,
-  [BuiltinPattern.URL_CREDENTIALS]: /https?:\/\/[^:@\/\s]+:[^@\/\s]+@[^\s]+/g,
+    /(?:api[_-]?key|apikey|token|secret|password|passwd|pwd)\s*[=:]\s*["']?([A-Za-z0-9_.-]{16,})/gi,
+  [BuiltinPattern.URL_CREDENTIALS]: /https?:\/\/[^:@/\s]+:[^@/\s]+@[^\s]+/g,
   [BuiltinPattern.AWS_ACCESS_KEY]:
     /\b(?:AKIA|ASIA|AROA|AIDA|ANPA|ANVA|APKA)[A-Z0-9]{16}\b/g,
   [BuiltinPattern.PRIVATE_KEY]:

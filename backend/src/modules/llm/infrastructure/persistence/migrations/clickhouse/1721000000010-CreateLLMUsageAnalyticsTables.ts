@@ -122,7 +122,7 @@ export class CreateLLMUsageAnalyticsTables1721000000010 extends BaseClickHouseMi
           query: `ALTER TABLE ${database}.llm_usage_raw ADD INDEX IF NOT EXISTS ${idx.name} ${idx.column} TYPE ${idx.type} GRANULARITY 1`,
         });
         this.log(`Created index: ${idx.name}`);
-      } catch (error) {
+      } catch (_error) {
         this.log(`Index ${idx.name} may already exist, skipping`);
       }
     }

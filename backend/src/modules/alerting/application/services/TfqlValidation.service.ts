@@ -6,7 +6,7 @@ import {
   TfqlLexerError,
   TfqlParserConfig,
 } from '../../../query/domain/types/tfql.types';
-import { TfqlAstNode, FetchNode, CorrelateNode, QueryTarget } from '../../../query/domain/types/ast-nodes.types';
+import { TfqlAstNode, FetchNode, CorrelateNode } from '../../../query/domain/types/ast-nodes.types';
 import {
   ValidateTfqlQueryRequestDto,
   TfqlValidationResultDto,
@@ -131,7 +131,7 @@ export class TfqlValidationService {
   /**
    * Generate suggestions for improving the query
    */
-  private generateSuggestions(ast: TfqlAstNode, query: string): string[] {
+  private generateSuggestions(ast: TfqlAstNode, _query: string): string[] {
     const suggestions: string[] = [];
 
     if (ast.type === 'FETCH') {

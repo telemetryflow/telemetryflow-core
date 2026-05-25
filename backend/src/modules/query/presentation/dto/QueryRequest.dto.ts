@@ -4,7 +4,6 @@ import {
   IsObject,
   IsNumber,
   IsArray,
-  IsEnum,
   IsBoolean,
   ValidateNested,
   Min,
@@ -12,7 +11,7 @@ import {
 } from "class-validator";
 import { Type } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { TELEMETRYFLOW_SOFT_LIMIT, TELEMETRYFLOW_HARD_LIMIT } from "@/shared/constants/telemetry-limits";
+import { TELEMETRYFLOW_HARD_LIMIT } from "@/shared/constants/telemetry-limits";
 
 /**
  * Pagination DTO

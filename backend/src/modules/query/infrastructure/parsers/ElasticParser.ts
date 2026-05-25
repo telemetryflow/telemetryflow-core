@@ -6,8 +6,6 @@ import {
   ConditionNode,
   OrderByNode,
   OrderByClause,
-  LimitNode,
-  OffsetNode,
   ElasticQueryNode,
   ElasticBoolQuery,
   ElasticTermQuery,
@@ -15,7 +13,6 @@ import {
   ElasticMatchQuery,
   ElasticWildcardQuery,
   ElasticRegexpQuery,
-  ComparisonOperator,
 } from '../../domain/types/ast-nodes.types';
 import { SortOrder } from '../../domain/value-objects/AggregationInterval';
 import { TfqlParseError } from '../../domain/types/tfql.types';
@@ -44,7 +41,7 @@ export class ElasticParser {
 
     try {
       parsed = JSON.parse(query);
-    } catch (e) {
+    } catch (_e) {
       throw new TfqlParseError('Invalid JSON', 1, 1, 0);
     }
 
@@ -264,7 +261,7 @@ export class ElasticParser {
     };
   }
 
-  private parseMatchQuery(match: Record<string, unknown>, isPhrase: boolean = false): ElasticMatchQuery {
+  private parseMatchQuery(match: Record<string, unknown>, _isPhrase: boolean = false): ElasticMatchQuery {
     const field = Object.keys(match)[0];
     let query: string;
     let operator: 'AND' | 'OR' = 'OR';

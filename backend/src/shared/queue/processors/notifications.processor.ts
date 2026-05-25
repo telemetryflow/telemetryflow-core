@@ -123,13 +123,12 @@ export class NotificationsProcessor extends BaseProcessor {
   }
 
   private async sendEmail(job: Job<JobData>): Promise<void> {
-    const { to, subject, template, context, attachments } = job.data
+    const { to, subject, template, context } = job.data
       .payload as {
       to: string | string[];
       subject: string;
       template: string;
       context: Record<string, unknown>;
-      attachments?: Array<{ filename: string; content: string | Buffer }>;
     };
 
     this.logger.debug(`Sending email`, { to, subject, template });
@@ -157,11 +156,10 @@ export class NotificationsProcessor extends BaseProcessor {
   }
 
   private async sendEmailVerification(job: Job<JobData>): Promise<void> {
-    const { userId, email, token, expiresAt } = job.data.payload as {
+    const { userId, email, token } = job.data.payload as {
       userId: string;
       email: string;
       token: string;
-      expiresAt: string;
     };
 
     this.logger.debug(`Sending email verification`, { userId, email });
@@ -179,11 +177,10 @@ export class NotificationsProcessor extends BaseProcessor {
   }
 
   private async sendPasswordReset(job: Job<JobData>): Promise<void> {
-    const { userId, email, token, expiresAt } = job.data.payload as {
+    const { userId, email, token } = job.data.payload as {
       userId: string;
       email: string;
       token: string;
-      expiresAt: string;
     };
 
     this.logger.debug(`Sending password reset email`, { userId, email });

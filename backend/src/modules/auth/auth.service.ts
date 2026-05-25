@@ -1,7 +1,6 @@
 import {
   Injectable,
   UnauthorizedException,
-  BadRequestException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -445,7 +444,7 @@ export class AuthService {
   ): Promise<void> {
     const maxAttempts = 5;
     const lockDurationMinutes = 30; // Requirement 10.1: 30 minutes lockout
-    const attemptWindowMinutes = 15; // 5 failures within 15 minutes
+    const _attemptWindowMinutes = 15; // 5 failures within 15 minutes
 
     user.failedLoginAttempts += 1;
     user.lastFailedLoginAt = new Date();

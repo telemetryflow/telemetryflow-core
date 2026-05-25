@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { Inject, NotFoundException } from "@nestjs/common";
+import { Inject } from "@nestjs/common";
 import { v4 as uuidv4 } from "uuid";
 import { CreatePolicyCommand } from "../commands/CreatePolicy.command";
 import { DataMaskingPolicy } from "../../domain/aggregates/DataMaskingPolicy";

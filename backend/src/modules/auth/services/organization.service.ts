@@ -9,11 +9,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateOrganizationCommand } from "../../iam/application/commands/CreateOrganization.command";
 import { UpdateOrganizationCommand } from "../../iam/application/commands/UpdateOrganization.command";
-import { GetOrganizationQuery } from "../../iam/application/queries/GetOrganization.query";
 import { CreateApiKeyCommand } from "../../api-keys/application/commands/CreateApiKey.command";
 import { IOrganizationRepository } from "../../iam/domain/repositories/IOrganizationRepository";
 import { OrganizationId } from "../../iam/domain/value-objects/OrganizationId";
-import { RegionId } from "../../iam/domain/value-objects/RegionId";
 import { UserEntity } from "../../iam/infrastructure/persistence/entities/User.entity";
 import { EmailService } from "./email.service";
 import { randomInt } from "crypto";
@@ -240,7 +238,7 @@ export class OrganizationService {
   async addUserToOrganization(
     organizationId: string,
     userId: string,
-    role: string,
+    _role: string,
   ): Promise<void> {
     // Update user's organization_id
     const user = await this.userRepository.findOne({ where: { id: userId } });

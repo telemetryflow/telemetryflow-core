@@ -329,7 +329,7 @@ export class TokenService {
   decodeToken(token: string): TokenPayload | null {
     try {
       return this.jwtService.decode(token) as TokenPayload;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }

@@ -1,13 +1,11 @@
 import { BaseQueryBuilder } from "../base/BaseQueryBuilder";
 import {
   ITimeSeriesQueryBuilder,
-  QueryCondition,
 } from "../../../domain/interfaces";
 import {
   AggregationInterval,
   AggregationType,
   FillStrategy,
-  SortOrder,
 } from "../../../domain/value-objects";
 import {
   resolveRollupTable,

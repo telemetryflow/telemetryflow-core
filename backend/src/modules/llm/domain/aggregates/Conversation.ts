@@ -3,7 +3,7 @@
  * Represents a chat conversation with an LLM
  */
 
-import { ConversationId, MessageId } from "../value-objects";
+import { ConversationId } from "../value-objects";
 import { Message, MessageRole } from "../entities/Message";
 import { ConversationStartedEvent, MessageSentEvent } from "../events";
 

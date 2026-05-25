@@ -18,7 +18,6 @@ import {
 } from "./PromptBuilder.service";
 import {
   ContextCollectorService,
-  CollectContextOptions,
 } from "./ContextCollector.service";
 import type { ContextType } from "../../domain/aggregates/Conversation";
 

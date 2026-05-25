@@ -124,7 +124,7 @@ export class PasswordResetService {
     newPassword: string,
     confirmPassword: string,
     ipAddress?: string,
-    userAgent?: string,
+    _userAgent?: string,
   ): Promise<{ message: string }> {
     if (newPassword !== confirmPassword) {
       throw new BadRequestException("Passwords do not match");
@@ -198,7 +198,7 @@ export class PasswordResetService {
     newPassword: string,
     confirmPassword: string,
     ipAddress?: string,
-    userAgent?: string,
+    _userAgent?: string,
   ): Promise<{ message: string }> {
     if (newPassword !== confirmPassword) {
       throw new BadRequestException("Passwords do not match");

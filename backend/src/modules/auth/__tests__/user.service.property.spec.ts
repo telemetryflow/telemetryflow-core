@@ -57,7 +57,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
                 /[A-Z]/.test(s) &&
                 /[a-z]/.test(s) &&
                 /[0-9]/.test(s) &&
-                /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s)
+                /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(s)
               );
             }),
           async (password) => {
@@ -110,7 +110,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
                 /[A-Z]/.test(s) &&
                 /[a-z]/.test(s) &&
                 /[0-9]/.test(s) &&
-                /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s)
+                /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(s)
               );
             }),
           async (password) => {
@@ -148,7 +148,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
                 /[A-Z]/.test(s) &&
                 /[a-z]/.test(s) &&
                 /[0-9]/.test(s) &&
-                /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s)
+                /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(s)
               );
             }),
           async (password) => {
@@ -181,7 +181,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
                   /[A-Z]/.test(s) &&
                   /[a-z]/.test(s) &&
                   /[0-9]/.test(s) &&
-                  /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s)
+/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(s)
                 );
               }),
             fc.string({ minLength: 1, maxLength: 50 }),
@@ -259,7 +259,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
                 /[A-Z]/.test(s) &&
                 /[a-z]/.test(s) &&
                 /[0-9]/.test(s) &&
-                /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s)
+                /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(s)
               );
             }),
           async (password) => {

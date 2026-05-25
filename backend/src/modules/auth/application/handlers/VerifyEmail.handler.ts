@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { VerifyEmailCommand } from "../commands/VerifyEmail.command";
 import { EmailVerificationService } from "../../services/email-verification.service";
 

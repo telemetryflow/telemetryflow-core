@@ -19,7 +19,6 @@ import {
   IntervalNode,
   TimeValue,
   ComparisonOperator,
-  LogicalOperator,
 } from "../../domain/types/ast-nodes.types";
 
 // ============================================================================

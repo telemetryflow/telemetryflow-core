@@ -323,7 +323,7 @@ export class RetentionEnforcementService {
     dataType: DataType,
     cutoffDate: Date,
     organizationId?: string,
-    filters?: Record<string, string>,
+    _filters?: Record<string, string>,
   ): Promise<{ recordsToDelete: number; estimatedSize: string }> {
     // This would query ClickHouse/PostgreSQL to estimate data to delete
     // For now, return placeholder values
@@ -921,7 +921,7 @@ export class RetentionEnforcementService {
       this.logger.log(`[backup] Uploading to S3: ${destination}`);
 
       // Parse S3 destination (format: s3://bucket-name/path/)
-      const s3Match = destination.match(/s3:\/\/([^\/]+)\/(.*)/);
+      const s3Match = destination.match(/s3:\/\/([^/]+)\/(.*)/);
       if (s3Match) {
         const [, bucket, prefix] = s3Match;
         const s3Path = `${prefix}/${scheduleType}/${timestamp}/`;

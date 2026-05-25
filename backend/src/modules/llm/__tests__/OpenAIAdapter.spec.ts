@@ -12,7 +12,6 @@ jest.mock("openai", () => {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const MockFn: any = jest
     .fn()
     .mockImplementation((opts: Record<string, string>) => ({

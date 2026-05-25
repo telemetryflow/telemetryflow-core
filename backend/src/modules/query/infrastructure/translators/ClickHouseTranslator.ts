@@ -567,17 +567,20 @@ export class ClickHouseTranslator extends BaseTranslator {
         return `quantile(0.95)(${field})`;
       case "p99":
         return `quantile(0.99)(${field})`;
-      case "histogram_quantile":
+      case "histogram_quantile": {
         const quantile = args?.[0] ?? 0.95;
         return `quantile(${quantile})(${field})`;
+      }
 
       // TopK/BottomK
-      case "topk":
+      case "topk": {
         const topK = args?.[0] ?? 10;
         return `topK(${topK})(${field})`;
-      case "bottomk":
+      }
+      case "bottomk": {
         const bottomK = args?.[0] ?? 10;
         return `topKWeighted(${bottomK})(${field}, -1)`;
+      }
 
       default:
         throw new Error(`Unsupported aggregation function: ${func}`);

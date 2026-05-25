@@ -78,7 +78,6 @@ import {
 } from "./dto/sso.dto";
 import {
   SendVerificationEmailDto,
-  VerifyEmailDto,
   VerifyEmailResponseDto,
 } from "./dto/email-verification.dto";
 import {
@@ -1125,12 +1124,8 @@ export class AuthController {
   })
   async verifyEmail(
     @Param("token") token: string,
-    @Request() req: any,
+    @Request() _req: any,
   ): Promise<VerifyEmailResponseDto> {
-    const ipAddress = req.ip || req.socket.remoteAddress || "unknown";
-    const userAgent = req.headers["user-agent"] || "unknown";
-
-    // Use CQRS command for email verification (Requirements: 3.3, 3.7)
     return this.commandBus.execute(new VerifyEmailCommand(token));
   }
 

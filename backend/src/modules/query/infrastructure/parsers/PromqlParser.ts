@@ -2,12 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   TfqlAstNode,
   FetchNode,
-  FilterNode,
   ConditionNode,
-  AggregationNode,
-  TimeRangeNode,
-  IntervalNode,
-  GroupByNode,
   PromqlNode,
   PromqlInstantVector,
   PromqlRangeVector,
@@ -442,7 +437,7 @@ export class PromqlParser {
 
   private convertLabelMatcher(matcher: PromqlLabelMatcher): ConditionNode {
     let operator: ConditionNode['operator'];
-    let value: unknown = matcher.value;
+    const value: unknown = matcher.value;
 
     switch (matcher.operator) {
       case '=':

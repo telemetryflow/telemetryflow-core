@@ -36,7 +36,6 @@ function tryRequire(
   exportKey: string,
 ): (new () => MigrationInterface)[] {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mod = require(path);
     return mod[exportKey] || [];
   } catch {

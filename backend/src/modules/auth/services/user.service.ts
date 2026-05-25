@@ -9,7 +9,6 @@ import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { UserEntity } from "../../iam/infrastructure/persistence/entities/User.entity";
 import { User } from "../../iam/domain/aggregates/User";
-import { UserId } from "../../iam/domain/value-objects/UserId";
 import { Email } from "../../iam/domain/value-objects/Email";
 import { UserMapper } from "../../iam/infrastructure/persistence/UserMapper";
 
@@ -203,7 +202,7 @@ export class UserService {
     }
 
     // Check for special character
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
       errors.push("Password must contain at least one special character");
     }
 

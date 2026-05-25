@@ -219,7 +219,7 @@ export class DomainEventsProcessor extends BaseProcessor {
 
     try {
       switch (job.data.type) {
-        case DomainEventJobType.AGENT_HEALTH_CHANGED:
+        case DomainEventJobType.AGENT_HEALTH_CHANGED: {
           const health = metadata?.health as string;
 
           if (health === "unhealthy" || health === "down") {
@@ -249,6 +249,7 @@ export class DomainEventsProcessor extends BaseProcessor {
             this.logger.log(`Alert queued for unhealthy agent ${agentId}`);
           }
           break;
+        }
 
         default:
           this.logger.debug(`No specific handler for agent event: ${action}`);

@@ -40,7 +40,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
           /[A-Z]/.test(s) &&
           /[a-z]/.test(s) &&
           /[0-9]/.test(s) &&
-          /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s)
+          /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(s)
         );
       });
 

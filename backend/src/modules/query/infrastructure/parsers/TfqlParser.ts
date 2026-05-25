@@ -94,7 +94,7 @@ export class TfqlParser {
     );
   }
 
-  private parseFetch(depth: number): FetchNode {
+  private parseFetch(_depth: number): FetchNode {
     this.consume(TokenType.FETCH, 'Expected FETCH');
 
     // Parse target (metrics, logs, traces, etc.)

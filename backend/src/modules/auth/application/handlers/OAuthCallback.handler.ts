@@ -430,7 +430,7 @@ export class OAuthCallbackHandler
    * Get user roles and permissions
    */
   private async getUserRolesAndPermissions(
-    userId: string,
+    _userId: string,
   ): Promise<{ roles: string[]; permissions: string[] }> {
     // Simplified version - in production, query actual roles/permissions
     return {

@@ -716,7 +716,7 @@ export class EmailService implements OnModuleInit {
    */
   private getSubject(
     templateType: EmailTemplateType,
-    variables?: TemplateVariables,
+    _variables?: TemplateVariables,
   ): string {
     const subjects: Record<EmailTemplateType, string> = {
       [EmailTemplateType.REGISTRATION_VERIFICATION]: `Verify your ${this.appName} account`,

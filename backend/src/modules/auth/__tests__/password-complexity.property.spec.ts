@@ -53,7 +53,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
               /[A-Z]/.test(s) &&
               /[a-z]/.test(s) &&
               /[0-9]/.test(s) &&
-              /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s)
+/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(s)
             );
           }),
           (password) => {
@@ -242,7 +242,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
             .string({ minLength: 8, maxLength: 100 })
             .filter(
               (s) =>
-                !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(s) &&
+                !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(s) &&
                 s.length >= 8,
             ),
           (password) => {

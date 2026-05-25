@@ -86,7 +86,7 @@ export class OAuth2ProviderService implements ISsoProvider {
     return `${this.providerUrls.authorizationUrl}?${params.toString()}`;
   }
 
-  async handleCallback(code: string, state: string): Promise<SsoAuthResult> {
+  async handleCallback(code: string, _state: string): Promise<SsoAuthResult> {
     try {
       // Exchange code for tokens
       const tokens = await this.exchangeCode(code);

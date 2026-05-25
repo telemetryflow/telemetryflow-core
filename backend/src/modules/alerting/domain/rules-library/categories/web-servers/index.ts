@@ -8,7 +8,6 @@ import {
   AlertRuleTemplate,
   AlertRuleCategory,
   RuleCategory,
-  DefaultThresholds,
   DefaultDurations,
 } from "../../types";
 import { AlertRuleBuilder, ConditionBuilder } from "../../utils";

@@ -666,9 +666,10 @@ export class PostgresTranslator extends BaseTranslator {
         return `PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY ${field})`;
       case "p99":
         return `PERCENTILE_CONT(0.99) WITHIN GROUP (ORDER BY ${field})`;
-      case "histogram_quantile":
+      case "histogram_quantile": {
         const quantile = args?.[0] ?? 0.95;
         return `PERCENTILE_CONT(${quantile}) WITHIN GROUP (ORDER BY ${field})`;
+      }
 
       // Rate functions - less meaningful for infrastructure but supported
       case "rate":
@@ -689,7 +690,6 @@ export class PostgresTranslator extends BaseTranslator {
 
   protected translateNestedField(field: string): string {
     const [parent, ...rest] = field.split(".");
-    const jsonPath = rest.join(".");
 
     // Check if parent is a known JSON column
     const config = this.currentTarget

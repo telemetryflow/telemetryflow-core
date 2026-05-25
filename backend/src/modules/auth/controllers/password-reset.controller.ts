@@ -17,7 +17,6 @@ import {
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { RateLimitGuard, RateLimit } from "../guards/rate-limit.guard";
-import { AuthenticatedUser } from "../interfaces/jwt-payload.interface";
 import { PasswordResetService } from "../services/password-reset.service";
 import {
   ForgotPasswordDto,

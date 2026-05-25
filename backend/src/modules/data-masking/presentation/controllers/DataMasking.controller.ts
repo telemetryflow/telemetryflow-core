@@ -13,10 +13,8 @@ import {
   HttpStatus,
   Request,
   ParseUUIDPipe,
-  ParseBoolPipe,
   ParseIntPipe,
   DefaultValuePipe,
-  Optional,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -248,7 +246,6 @@ export class DataMaskingController {
   })
   getBuiltinPatterns() {
     const {
-      BuiltinPattern,
       BUILTIN_PATTERNS,
     } = require("../../domain/value-objects/MaskingRule");
     return Object.entries(BUILTIN_PATTERNS).map(

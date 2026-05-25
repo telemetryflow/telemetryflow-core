@@ -3507,7 +3507,7 @@ export class ContextCollectorService {
       }
 
       const offlineCount = offlineInstances.length;
-      const degradedCount = offlineInstances.filter((i: any) => i.di_status === "degraded").length;
+      const _degradedCount = offlineInstances.filter((i: any) => i.di_status === "degraded").length;
 
       const summary =
         `DB Fleet Inventory: ${totalCount} total instances. ` +
@@ -4263,7 +4263,9 @@ export class ContextCollectorService {
           },
         });
         topQueries = await queriesResult.json() as any[];
-      } catch {}
+      } catch {
+        /* intentionally ignored */
+      }
 
       // Wait stats by category
       let waitCategories: any[] = [];
@@ -4286,7 +4288,9 @@ export class ContextCollectorService {
           },
         });
         waitCategories = await waitsResult.json() as any[];
-      } catch {}
+      } catch {
+        /* intentionally ignored */
+      }
 
       const summary = [
         `MSSQL Monitoring: ${instances.length} instances registered.`,

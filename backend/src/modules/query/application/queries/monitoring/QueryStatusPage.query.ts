@@ -1,5 +1,5 @@
 import { TenantContext } from "../../../domain/value-objects";
-import { PaginationOptions, InfrastructureQueryOptions } from "../../../domain/types";
+import { PaginationOptions } from "../../../domain/types";
 
 /**
  * Status Page Query Filter

@@ -16,7 +16,7 @@
  *  - ALL → applied to body + all attribute values
  */
 
-import { Injectable, Inject, Logger, Optional } from "@nestjs/common";
+import { Injectable, Inject, Logger } from "@nestjs/common";
 import { LogRecord } from "@/shared/clickhouse/clickhouse.service";
 import {
   IDataMaskingPolicyRepository,

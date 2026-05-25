@@ -4,7 +4,6 @@ import {
   IsArray,
   IsEnum,
   IsObject,
-  IsBoolean,
   MaxLength,
   ValidateNested,
 } from "class-validator";

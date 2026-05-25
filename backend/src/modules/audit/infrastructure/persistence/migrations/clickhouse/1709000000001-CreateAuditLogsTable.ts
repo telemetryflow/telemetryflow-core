@@ -99,7 +99,7 @@ export class CreateAuditLogsTable1709000000001 extends BaseClickHouseMigration {
           query: `ALTER TABLE ${database}.audit_logs ADD INDEX IF NOT EXISTS ${idx.name} ${idx.column} TYPE ${idx.type} GRANULARITY 1`,
         });
         this.log(`Created index: ${idx.name}`);
-      } catch (error) {
+      } catch (_error) {
         // Index might already exist, continue
         this.log(`Index ${idx.name} may already exist, skipping`);
       }

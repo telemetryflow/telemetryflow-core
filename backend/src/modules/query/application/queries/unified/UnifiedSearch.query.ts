@@ -1,5 +1,5 @@
 import { TimeRange, TenantContext, SignalType } from '../../../domain/value-objects';
-import { UnifiedSearchFilter, UnifiedSearchOptions } from '../../../domain/types';
+import { UnifiedSearchOptions } from '../../../domain/types';
 
 /**
  * Unified Search CQRS Query

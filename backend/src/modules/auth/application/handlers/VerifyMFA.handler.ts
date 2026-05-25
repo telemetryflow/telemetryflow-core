@@ -188,7 +188,7 @@ export class VerifyMFAHandler implements ICommandHandler<VerifyMFACommand> {
   }
 
   private async getUserRolesAndPermissions(
-    userId: string,
+    _userId: string,
   ): Promise<{ roles: string[]; permissions: string[] }> {
     // This is a simplified version - in production, you'd query the actual roles/permissions
     // For now, return empty arrays as this is handled by the auth service

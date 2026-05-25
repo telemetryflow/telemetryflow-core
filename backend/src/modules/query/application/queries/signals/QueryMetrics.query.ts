@@ -1,7 +1,6 @@
 import {
   TimeRange,
   TenantContext,
-  AggregationInterval,
 } from "../../../domain/value-objects";
 import {
   MetricsQueryFilter,

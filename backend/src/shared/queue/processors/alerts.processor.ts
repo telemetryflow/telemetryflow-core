@@ -702,7 +702,7 @@ export class AlertsProcessor extends BaseProcessor {
     }
   }
 
-  private async checkAlertHealth(job: Job<JobData>): Promise<void> {
+  private async checkAlertHealth(_job: Job<JobData>): Promise<void> {
     this.logger.debug(`Checking alert system health`);
 
     try {

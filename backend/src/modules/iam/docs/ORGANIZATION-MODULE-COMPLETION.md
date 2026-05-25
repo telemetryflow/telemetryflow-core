@@ -105,7 +105,7 @@ Content-Type: application/json
 
 {
   "name": "Telemetri Data Indonesia",
-  "code": "devopscorner-id",
+  "code": "telemetryflow-id",
   "regionId": "uuid",
   "description": "Main organization",
   "domain": "devopscorner.id"
@@ -148,7 +148,7 @@ Region (us-east-1, ap-southeast-1)
 ```
 
 ## Seed Data
-1. **Telemetri Data Indonesia** (devopscorner-id) - ap-southeast-1
+1. **Telemetri Data Indonesia** (telemetryflow-id) - ap-southeast-1
 2. **TelemetryFlow Global** (telemetryflow-global) - us-east-1
 3. **Demo Organization** (demo-org) - ap-southeast-1
 

@@ -40,7 +40,6 @@ type MigrationConstructor = new () => ClickHouseMigration;
 
 function tryRequire(path: string, exportKey: string): MigrationConstructor[] {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mod = require(path);
     return mod[exportKey] || [];
   } catch {

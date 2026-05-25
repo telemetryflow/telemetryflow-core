@@ -43,9 +43,7 @@ import { LLMAdapterFactory } from "../../infrastructure/providers/LLMAdapterFact
 import { LLMProvider } from "../../domain/aggregates/LLMProvider";
 import { UrlValidator } from "@/shared/security";
 import {
-  LLMProviderId,
   ProviderType,
-  ModelConfig,
   EncryptedApiKey,
 } from "../../domain/value-objects";
 
