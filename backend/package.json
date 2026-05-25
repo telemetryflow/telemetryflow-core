@@ -40,7 +40,7 @@
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.208.0",
     "@opentelemetry/instrumentation-express": "^0.57.0",
     "@opentelemetry/instrumentation-http": "^0.208.0",
-    "@opentelemetry/instrumentation-ioredis": "^0.56.0",
+    "@opentelemetry/instrumentation-ioredis": "^0.66.0",
     "@opentelemetry/instrumentation-nestjs-core": "^0.55.0",
     "@opentelemetry/instrumentation-pg": "^0.61.1",
     "@opentelemetry/resources": "^2.2.0",
