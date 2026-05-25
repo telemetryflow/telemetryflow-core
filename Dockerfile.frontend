@@ -19,7 +19,10 @@ RUN npm install -g pnpm@10.24.0
 # Copy workspace configuration files (required for pnpm workspace)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 
-# Copy frontend source code and nest-cli config
+# Copy backend/package.json for pnpm workspace resolution
+COPY backend/package.json ./backend/package.json
+
+# Copy frontend source code
 COPY frontend/ ./frontend/
 
 # Install all dependencies (workspace-aware)

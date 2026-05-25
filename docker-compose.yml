@@ -216,6 +216,125 @@ services:
       telemetryflow_core_net:
         ipv4_address: ${CONTAINER_IP_FRONTEND:-172.154.154.80}
 
+  #==============================================================================================
+  # MONITORING SERVICES
+  #==============================================================================================
+
+  #----------------------------------------------------------------------------------------------
+  # OTEL COLLECTOR - OpenTelemetry Collector
+  #----------------------------------------------------------------------------------------------
+  # Supports dual ingestion: v1 (OTEL standard) and v2 (TelemetryFlow enhanced)
+  #
+  # OTLP HTTP Endpoints:
+  #   TelemetryFlow Platform (Recommended - TFO Standalone):
+  #     POST http://localhost:4318/v2/traces
+  #     POST http://localhost:4318/v2/metrics
+  #     POST http://localhost:4318/v2/logs
+  #
+  #   OTEL Community (Backwards Compatible - OCB/Standard):
+  #     POST http://localhost:4318/v1/traces
+  #     POST http://localhost:4318/v1/metrics
+  #     POST http://localhost:4318/v1/logs
+  #
+  #   gRPC (Both versions via same port): localhost:4317
+  #----------------------------------------------------------------------------------------------
+  tfo-collector:
+    profiles: ["monitoring", "all"]
+    platform: linux/amd64
+    # =============================================================================
+    # Default: OTEL Collector Community (public image, works everywhere)
+    # image: otel/opentelemetry-collector-contrib:${OTEL_VERSION:-0.116.0}
+    # command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    # =============================================================================
+    # TelemetryFlow Collector (TFO-Collector) - Custom TFO format (v1.1.2+)
+    image: telemetryflow/telemetryflow-collector:${TFO_COLLECTOR_VERSION:-1.2.1}
+    command: ["--config=/etc/tfo-collector/tfo-collector.yaml"]
+    # =============================================================================
+    container_name: ${CONTAINER_OTEL:-telemetryflow_core_tfo_collector}
+    restart: unless-stopped
+    environment:
+      # Backend endpoint for tfo exporter (backend runs on host, not Docker)
+      - TELEMETRYFLOW_ENDPOINT=http://host.docker.internal:3000
+      # API keys for tfoauth extension
+      - TELEMETRYFLOW_API_KEY_ID=${TELEMETRYFLOW_API_KEY_ID}
+      - TELEMETRYFLOW_API_KEY_SECRET=${TELEMETRYFLOW_API_KEY_SECRET}
+      # Collector identity
+      - TELEMETRYFLOW_COLLECTOR_ID=${CONTAINER_OTEL:-telemetryflow_core_tfo_collector}
+      - TELEMETRYFLOW_ENVIRONMENT=development
+    volumes:
+      # TelemetryFlow Collector config (Custom TFO format — used by tfo-collector image)
+      - ./config/tfo-collector/tfo-collector.yaml:/etc/tfo-collector/tfo-collector.yaml:ro
+      # =============================================================================
+      # OTEL Community Collector config (uncomment if using otel/opentelemetry-collector-contrib image)
+      # - ./config/tfo-collector/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      - "${PORT_OTEL_GRPC:-4317}:4317"     # OTLP gRPC (v1 & v2)
+      - "${PORT_OTEL_HTTP:-4318}:4318"     # OTLP HTTP (v1 & v2)
+      - "${PORT_OTEL_METRICS:-8889}:8889"  # Prometheus metrics
+      - "${PORT_OTEL_HEALTH:-13133}:13133" # Health check
+      - "${PORT_OTEL_ZPAGES:-55679}:55679" # zPages
+      - "${PORT_OTEL_PPROF:-1777}:1777"    # pprof
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:13133"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_OTEL:-172.151.151.30}
+
+  #----------------------------------------------------------------------------------------------
+  # TFO-AGENT - TelemetryFlow Host Metrics Agent
+  #   Collects host-level metrics (CPU, memory, disk, network) and sends heartbeats
+  #   to the backend API. Replaces Prometheus for infrastructure monitoring.
+  #----------------------------------------------------------------------------------------------
+  tfo-agent:
+    profiles: ["monitoring", "all"]
+    platform: linux/amd64
+    image: telemetryflow/telemetryflow-agent:${TFO_AGENT_VERSION:-1.2.0}
+    container_name: ${CONTAINER_TFO_AGENT:-telemetryflow_core_tfo_agent}
+    hostname: ${TFO_AGENT_HOSTNAME:-tfo-agent}
+    restart: unless-stopped
+    ports:
+      - "${PORT_TFO_AGENT:-9191}:9191"   # Health & metrics endpoint
+    environment:
+      - TZ=${TZ:-UTC}
+      # Platform backend for heartbeat/registration (host.docker.internal → host port 3000)
+      - TELEMETRYFLOW_ENDPOINT=http://host.docker.internal:3000/api/v2
+      # OTLP data goes through the collector (collector forwards to backend via tfo exporter)
+      - TELEMETRYFLOW_OTLP_ENDPOINT=http://tfo-collector:4318
+      - TELEMETRYFLOW_API_KEY_ID=${TELEMETRYFLOW_API_KEY_ID}
+      - TELEMETRYFLOW_API_KEY_SECRET=${TELEMETRYFLOW_API_KEY_SECRET}
+      - TELEMETRYFLOW_AGENT_ID=${CONTAINER_TFO_AGENT:-telemetryflow_core_tfo_agent}
+      - TELEMETRYFLOW_AGENT_NAME=TFO Docker Agent
+      - TELEMETRYFLOW_ENVIRONMENT=development
+      # Intervals
+      - TFO_AGENT_HEARTBEAT_INTERVAL=${TFO_AGENT_HEARTBEAT_INTERVAL:-60s}
+      - TFO_AGENT_METRICS_INTERVAL=${TFO_AGENT_METRICS_INTERVAL:-30s}
+    volumes:
+      - ./config/tfo-agent/tfo-agent.yaml:/etc/tfo-agent/tfo-agent.yaml:ro
+      - ${DATA_TFO_AGENT:-${VOLUMES_BASE_PATH:-/opt/data/docker/telemetryflow-platform}/tfo-agent}:/data
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/log:/var/log:ro              # Host logs for Fluent Bit / native log collector
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      tfo-collector:
+        condition: service_healthy
+    networks:
+      telemetryflow_core_net:
+        ipv4_address: ${CONTAINER_IP_TFO_AGENT:-172.151.151.35}
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:13133/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
   #----------------------------------------------------------------------------------------------
   # PORTAINER - Docker Management (optional)
   #----------------------------------------------------------------------------------------------

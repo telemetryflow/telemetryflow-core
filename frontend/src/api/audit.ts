@@ -187,8 +187,8 @@ function generateMockAuditStats(params: AuditStatsQueryParams = {}): AuditStatis
   }, {} as Record<string, number>);
 
   const failureCount = byResult["FAILURE"] || 0;
-  const previousTotal = Math.floor(total * (0.8 + Math.random() * 0.4));
-  const previousFailures = Math.floor(failureCount * (0.8 + Math.random() * 0.4));
+  const previousTotal = Math.floor(total * (0.8 + secureRandomInt(100) / 250));
+  const previousFailures = Math.floor(failureCount * (0.8 + secureRandomInt(100) / 250));
 
   return {
     total,
@@ -296,11 +296,11 @@ function generateMockGraph(
   const makeTs = (baseVal: number, variance: number) =>
     Array.from({ length: points }, (_, i) => [
       params.from + i * interval,
-      Math.max(0, Math.round(baseVal + (Math.random() - 0.5) * 2 * variance)),
+      Math.max(0, Math.round(baseVal + (secureRandomInt(200) / 100 - 1) * variance)),
     ] as [number, number]);
 
   const jitter = (val: number, pct: number) =>
-    Math.round(val + (Math.random() - 0.5) * val * pct);
+    Math.round(val + (secureRandomInt(200) / 100 - 1) * val * pct);
 
   switch (type) {
     // ── IAM ──────────────────────────────────────────────────────────────────
@@ -696,7 +696,7 @@ export const auditApi = {
     params: { from: number; to: number },
   ): Promise<{ series: { name: string; data: [number, number][] }[] }> {
     if (config.useMock) {
-      await new Promise((resolve) => setTimeout(resolve, 150 + Math.random() * 200));
+      await new Promise((resolve) => setTimeout(resolve, 150 + secureRandomInt(200)));
       return generateMockGraph(type, params);
     }
 

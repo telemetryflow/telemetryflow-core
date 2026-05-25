@@ -192,29 +192,21 @@ function generateMockApiKeys(): ApiKey[] {
 }
 
 function generateRawApiKeyId(): string {
-  const chars = "0123456789abcdef";
-  let key = "tfk_";
-  for (let i = 0; i < 32; i++) {
-    key += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return key;
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return "tfk_" + Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 function generateRawApiKeySecret(): string {
-  const chars = "0123456789abcdef";
-  let key = "tfs_";
-  for (let i = 0; i < 64; i++) {
-    key += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return key;
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return "tfs_" + Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 function generateRawEncryptKey(): string {
-  const chars = "0123456789abcdef";
-  let key = "";
-  for (let i = 0; i < 64; i++) {
-    key += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
   return key;
 }
 

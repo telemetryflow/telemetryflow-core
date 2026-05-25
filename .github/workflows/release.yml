@@ -115,8 +115,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.REGISTRY_DOCKER }}/${{ env.IMAGE_NAME }}
-            ${{ env.GHCR_IMAGE_NAME }}
+            ${{ env.REGISTRY_DOCKER }}/${{ env.IMAGE_BACKEND }}
+            ${{ env.GHCR_IMAGE_BACKEND }}
           flavor: |
             latest=false
           tags: |

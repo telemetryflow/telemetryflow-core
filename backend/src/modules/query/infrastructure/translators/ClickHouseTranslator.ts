@@ -602,7 +602,8 @@ export class ClickHouseTranslator extends BaseTranslator {
 
     if (isJsonColumn) {
       // Use ClickHouse JSON extraction
-      return `JSONExtractString(${parent}, '${jsonPath}')`;
+      const safeJsonPath = jsonPath.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+      return `JSONExtractString(${parent}, '${safeJsonPath}')`;
     }
 
     // Regular nested field (might be a struct)
@@ -617,8 +618,9 @@ export class ClickHouseTranslator extends BaseTranslator {
     const escapedPattern = pattern
       .replace(/\\/g, "\\\\")
       .replace(/'/g, "\\'");
+    const safeField = this.escapeIdentifier(field);
     const func = negated ? "NOT match" : "match";
-    return `${func}(${field}, '${escapedPattern}')`;
+    return `${func}(${safeField}, '${escapedPattern}')`;
   }
 
   // ==========================================================================

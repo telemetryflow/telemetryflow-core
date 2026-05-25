@@ -153,7 +153,13 @@ export class AlertCondition {
       case ConditionOperator.NOT_CONTAINS:
         return !String(value).includes(String(this.threshold));
       case ConditionOperator.REGEX:
-        return new RegExp(String(this.threshold)).test(String(value));
+        try {
+          const pattern = String(this.threshold);
+          if (pattern.length > 500) return false;
+          return new RegExp(pattern).test(String(value));
+        } catch {
+          return false;
+        }
       default:
         return false;
     }
