@@ -13,7 +13,7 @@
 
 import { describe, it, expect } from "vitest";
 import * as fc from "fast-check";
-import { createHash } from "crypto";
+import { createHash } from "node:crypto";
 
 // ── Utilities under test ─────────────────────────────────────────────────────
 

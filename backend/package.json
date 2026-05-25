@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
-    "@bull-board/api": "^6.20.3",
+    "@bull-board/api": "^7.1.5",
     "@bull-board/express": "^7.1.5",
     "@clickhouse/client": "^1.14.0",
     "@google/generative-ai": "^0.21.0",
@@ -63,7 +63,6 @@
     "handlebars": "^4.7.8",
     "helmet": "^8.1.0",
     "ioredis": "^5.8.2",
-    "nats": "^2.29.3",
     "nodemailer": "^8.0.5",
     "openai": "^6.39.0",
     "passport": "^0.7.0",
