@@ -60,7 +60,7 @@ RUN pnpm build:frontend
 # -----------------------------------------------------------------------------
 # Stage 2: Production
 # -----------------------------------------------------------------------------
-FROM nginx:1.27-alpine AS production
+FROM nginx:1.31-alpine AS production
 
 # Update packages to get security patches (CVE fixes)
 RUN apk upgrade --no-cache
