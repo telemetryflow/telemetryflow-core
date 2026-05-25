@@ -268,7 +268,9 @@ export class ApiKey extends AggregateRoot<ApiKeyId> {
     const rawKeySecret = ApiKey.generateApiKeySecret();
     const rawEncryptionKey = ApiKey.generateEncryptKey();
     const keyHint = rawKeySecret.slice(-4);
-    const apiKeySecret = crypto.createHash('sha256').update(rawKeySecret).digest('hex');
+    const salt = crypto.randomBytes(16).toString('hex');
+    const derivedKey = crypto.scryptSync(rawKeySecret, salt, 64).toString('hex');
+    const apiKeySecret = `${salt}:${derivedKey}`;
 
     this.props.apiKeySecret = apiKeySecret;
     this.props.keyHint = keyHint;
