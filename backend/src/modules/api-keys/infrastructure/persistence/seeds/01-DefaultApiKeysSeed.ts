@@ -319,7 +319,9 @@ export class DefaultApiKeysSeed extends BaseSeed {
         continue;
       }
 
-      const apiKeySecret = crypto.createHash("sha256").update(key.api_key_secret_raw).digest("hex");
+      const secretSalt = crypto.randomBytes(16).toString("hex");
+      const secretHash = crypto.scryptSync(key.api_key_secret_raw, secretSalt, 64).toString("hex");
+      const apiKeySecret = `scrypt$${secretSalt}$${secretHash}`;
       const keyHint = key.api_key_secret_raw.slice(-4);
 
       // Encrypt the per-key encryption key with platform ENCRYPTION_KEY
