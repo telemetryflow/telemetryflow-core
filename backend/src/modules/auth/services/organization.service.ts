@@ -16,6 +16,7 @@ import { OrganizationId } from "../../iam/domain/value-objects/OrganizationId";
 import { RegionId } from "../../iam/domain/value-objects/RegionId";
 import { UserEntity } from "../../iam/infrastructure/persistence/entities/User.entity";
 import { EmailService } from "./email.service";
+import { randomInt } from "crypto";
 
 export interface OrganizationSettings {
   name?: string;
@@ -62,7 +63,7 @@ export class OrganizationService {
     regionId: string,
   ): Promise<string> {
     // Generate random organization name
-    const randomNumber = Math.floor(1000000000 + Math.random() * 9000000000);
+    const randomNumber = randomInt(1000000000, 10000000000);
     const organizationName = `org-${randomNumber}`;
     const organizationCode = `ORG${randomNumber}`;
 

@@ -47,7 +47,7 @@ telemetryflow-core/
 │       │   ├── alerting/       # Alert Rules Engine
 │       │   ├── query/          # TFQL Query Engine
 │       │   ├── llm/            # AI Assistant (LLM Integration)
-│       │   ├── retention/       # Data Retention Policies
+│       │   ├── retention/      # Data Retention Policies
 │       │   ├── notification/   # Notification Service
 │       │   ├── data-masking/   # Data Masking Policies
 │       │   └── cache/          # Caching Service

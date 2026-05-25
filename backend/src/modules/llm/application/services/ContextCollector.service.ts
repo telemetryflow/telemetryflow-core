@@ -3238,13 +3238,18 @@ export class ContextCollectorService {
             count()                  AS prediction_count
           FROM ${db}.predictions
           WHERE
-            organization_id = '${organizationId}'
-            AND timestamp BETWEEN '${fmtCH(timeRange.from)}' AND '${fmtCH(timeRange.to)}'
+            organization_id = {organizationId:String}
+            AND timestamp BETWEEN {fromTime:String} AND {toTime:String}
           GROUP BY resource_type, resource_identifier, horizon
           ORDER BY avg_failure_prob DESC
           LIMIT 50
         `,
         format: "JSONEachRow",
+        query_params: {
+          organizationId,
+          fromTime: fmtCH(timeRange.from),
+          toTime: fmtCH(timeRange.to),
+        },
       });
 
       const rows = await result.json<{
@@ -4207,10 +4212,10 @@ export class ContextCollectorService {
           query: `
             SELECT metric_name, avg(value) as avg_value, max(value) as max_value, min(value) as min_value
             FROM ${chDb}.db_mssql_metrics
-            WHERE instance_id = '${targetInstance?.id || "none"}'
-              AND organization_id = '${organizationId}'
-              AND timestamp >= '${from.toISOString()}'
-              AND timestamp <= '${to.toISOString()}'
+            WHERE instance_id = {instanceId:String}
+              AND organization_id = {organizationId:String}
+              AND timestamp >= {fromTime:String}
+              AND timestamp <= {toTime:String}
               AND metric_name IN (
                 'db.mssql.batch_requests_per_sec',
                 'db.mssql.page_life_expectancy',
@@ -4223,6 +4228,12 @@ export class ContextCollectorService {
             GROUP BY metric_name
           `,
           format: "JSONEachRow",
+          query_params: {
+            instanceId: targetInstance?.id || "none",
+            organizationId,
+            fromTime: from.toISOString(),
+            toTime: to.toISOString(),
+          },
         });
         metrics = await metricsResult.json() as any[];
       } catch {
@@ -4237,14 +4248,19 @@ export class ContextCollectorService {
             SELECT query_hash, any(sql_text) as sql_text, sum(total_worker_time_us) as total_cpu_us,
                    sum(execution_count) as exec_count
             FROM ${chDb}.db_mssql_queries
-            WHERE instance_id = '${targetInstance?.id || "none"}'
-              AND organization_id = '${organizationId}'
-              AND timestamp >= '${from.toISOString()}'
+            WHERE instance_id = {instanceId:String}
+              AND organization_id = {organizationId:String}
+              AND timestamp >= {fromTime:String}
             GROUP BY query_hash
             ORDER BY total_cpu_us DESC
             LIMIT ${maxItems}
           `,
           format: "JSONEachRow",
+          query_params: {
+            instanceId: targetInstance?.id || "none",
+            organizationId,
+            fromTime: from.toISOString(),
+          },
         });
         topQueries = await queriesResult.json() as any[];
       } catch {}
@@ -4256,13 +4272,18 @@ export class ContextCollectorService {
           query: `
             SELECT wait_category, sum(wait_time_ms) as total_wait_ms, sum(waiting_tasks_count) as total_tasks
             FROM ${chDb}.db_mssql_waits
-            WHERE instance_id = '${targetInstance?.id || "none"}'
-              AND organization_id = '${organizationId}'
-              AND timestamp >= '${from.toISOString()}'
+            WHERE instance_id = {instanceId:String}
+              AND organization_id = {organizationId:String}
+              AND timestamp >= {fromTime:String}
             GROUP BY wait_category
             ORDER BY total_wait_ms DESC
           `,
           format: "JSONEachRow",
+          query_params: {
+            instanceId: targetInstance?.id || "none",
+            organizationId,
+            fromTime: from.toISOString(),
+          },
         });
         waitCategories = await waitsResult.json() as any[];
       } catch {}

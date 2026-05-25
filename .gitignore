@@ -8,7 +8,7 @@ frontend/node_modules
 .turbo
 
 # Logs
-logs
+/logs
 *.log
 npm-debug.log*
 pnpm-debug.log*
@@ -43,9 +43,10 @@ frontend/coverage
 
 # Environment
 .env
+/.env
+.env-*
 !.env.example
-backend/.env
-frontend/.env
+!.env.example-*
 
 # Temp
 temp/

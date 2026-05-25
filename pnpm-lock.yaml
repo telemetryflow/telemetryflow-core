@@ -390,14 +390,14 @@ importers:
         specifier: ^8.53.0
         version: 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.7.3)
       '@unocss/preset-icons':
-        specifier: ^0.65.4
-        version: 0.65.4
+        specifier: ^66.7.0
+        version: 66.7.0
       '@unocss/preset-uno':
         specifier: ^0.65.4
         version: 0.65.4
       '@unocss/transformer-directives':
-        specifier: ^0.65.4
-        version: 0.65.4
+        specifier: ^66.7.0
+        version: 66.7.0
       '@vitejs/plugin-vue':
         specifier: ^5.2.4
         version: 5.2.4(vite@6.4.2(@types/node@22.19.19)(jiti@2.7.0)(sass@1.100.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0))(vue@3.5.34(typescript@5.7.3))
@@ -3143,6 +3143,9 @@ packages:
   '@unocss/core@0.65.4':
     resolution: {integrity: sha512-a2JOoFutrhqd5RgPhIR5FIXrDoHDU3gwCbPrpT6KYTjsqlSc/fv02yZ+JGOZFN3MCFhCmaPTs+idDFtwb3xU8g==}
 
+  '@unocss/core@66.7.0':
+    resolution: {integrity: sha512-j6MFMx5C3iIwW4T4hVbh+30fKWgSGkmS3bCcdjlfqM88lRT+dHFBN9nkfNOBJT6e6IHN9415nexuzcQvTjJXxw==}
+
   '@unocss/extractor-arbitrary-variants@0.65.4':
     resolution: {integrity: sha512-GbvTgsDaHplfWfsQtOY8RrvEZvptmvR9k9NwQ5NsZBNIG1JepYVel93CVQvsxT5KioKcoWngXxTYLNOGyxLs0g==}
 
@@ -3160,6 +3163,9 @@ packages:
 
   '@unocss/preset-icons@0.65.4':
     resolution: {integrity: sha512-5sSzTN72X2Ag3VH48xY1pYudeWnql9jqdMiwgZuLJcmvETBNGelXy2wGxm7tsUUEx/l40Yr04Ck8XRPGT9jLBw==}
+
+  '@unocss/preset-icons@66.7.0':
+    resolution: {integrity: sha512-y6I2qZ2cwNAS2XRBig1lHzdFG9qTnZM/mx3fL3XnURnEYZird4uidLyWOyUGcdy1kMot1QcYVb0D/s9NgrEOgQ==}
 
   '@unocss/preset-mini@0.65.4':
     resolution: {integrity: sha512-dcO2PzSl87qN1KdQWcfZDIKEhpdFeImWbYfiXtE7k6pi1393FJkdHEopgI/1ZciIQN1CkTvQJ5c7EpEVWftYRA==}
@@ -3186,6 +3192,9 @@ packages:
     resolution: {integrity: sha512-+EzdJEWcqGcO6HwbBTe7vEdBRpuKkBiz4MycQeLD6GEio04T45y6VHHO7/WTqxltbO4YwwW9/s2TKRMxKtoG8g==}
     engines: {node: '>=14'}
 
+  '@unocss/rule-utils@66.7.0':
+    resolution: {integrity: sha512-DMJIiey/m+xr0hpSbxFhSbKlC3e7QsuwdAEdgMmIM7pEcu/AEMl7oH198QYX9880P2X0hy5iFE6UCWx9CwGAXQ==}
+
   '@unocss/transformer-attributify-jsx@0.65.4':
     resolution: {integrity: sha512-n438EzWdTKlLCOlAUSpFjmH6FflctqzIReMzMZSJDkmkorymc+C5GpjN3Nty2cKRJXIl6Vwq0oxPuB59RT+FIw==}
 
@@ -3194,6 +3203,9 @@ packages:
 
   '@unocss/transformer-directives@0.65.4':
     resolution: {integrity: sha512-zkoDEwzPkgXi6ohW7P11gbArwfTRMZ9knYSUYoPEltQz+UZYzeRQ85exiAmdz5MsbCAuhQEr577Kd/CWfhjEuA==}
+
+  '@unocss/transformer-directives@66.7.0':
+    resolution: {integrity: sha512-6T9JxrPfLQlJFNLv7paG4yGiIgGrJY30268HWLkBFwgsldNPtQ+GeQJOzfemCH19UXXqqXMP0WnvbsFucdclmg==}
 
   '@unocss/transformer-variant-group@0.65.4':
     resolution: {integrity: sha512-ggO6xMGeOeoD5GHS2xXBJrYFuzqyiZ25tM0zHAMJn9QU9GIu1NwWvcXluvLCF/MRIygBJGPpAE98aEICI6ifEA==}
@@ -4961,6 +4973,9 @@ packages:
     resolution: {integrity: sha512-2SPlun1JUPWoM6t3F0dw0FkCF/jWY8kttcY4f599GLTSjh2OCuuhdTkJQsEcZzBqbXZGKMK2OqW1oZsjtf/gQA==}
     engines: {node: '>=8'}
     hasBin: true
+
+  import-meta-resolve@4.2.0:
+    resolution: {integrity: sha512-Iqv2fzaTQN28s/FwZAoFq0ZSs/7hMAHJVX+w8PZl3cY19Pxk6jFFalxQoIfW2826i/fDLXv8IiEZRIT0lDuWcg==}
 
   importx@0.5.2:
     resolution: {integrity: sha512-YEwlK86Ml5WiTxN/ECUYC5U7jd1CisAVw7ya4i9ZppBoHfFkT2+hChhr3PE2fYxUKLkNyivxEQpa5Ruil1LJBQ==}
@@ -10522,6 +10537,8 @@ snapshots:
 
   '@unocss/core@0.65.4': {}
 
+  '@unocss/core@66.7.0': {}
+
   '@unocss/extractor-arbitrary-variants@0.65.4':
     dependencies:
       '@unocss/core': 0.65.4
@@ -10559,6 +10576,12 @@ snapshots:
       ofetch: 1.5.1
     transitivePeerDependencies:
       - supports-color
+
+  '@unocss/preset-icons@66.7.0':
+    dependencies:
+      '@iconify/utils': 3.1.3
+      '@unocss/core': 66.7.0
+      ofetch: 1.5.1
 
   '@unocss/preset-mini@0.65.4':
     dependencies:
@@ -10600,6 +10623,11 @@ snapshots:
       '@unocss/core': 0.65.4
       magic-string: 0.30.21
 
+  '@unocss/rule-utils@66.7.0':
+    dependencies:
+      '@unocss/core': 66.7.0
+      magic-string: 0.30.21
+
   '@unocss/transformer-attributify-jsx@0.65.4':
     dependencies:
       '@unocss/core': 0.65.4
@@ -10612,6 +10640,12 @@ snapshots:
     dependencies:
       '@unocss/core': 0.65.4
       '@unocss/rule-utils': 0.65.4
+      css-tree: 3.2.1
+
+  '@unocss/transformer-directives@66.7.0':
+    dependencies:
+      '@unocss/core': 66.7.0
+      '@unocss/rule-utils': 66.7.0
       css-tree: 3.2.1
 
   '@unocss/transformer-variant-group@0.65.4':
@@ -12621,6 +12655,8 @@ snapshots:
     dependencies:
       pkg-dir: 4.2.0
       resolve-cwd: 3.0.0
+
+  import-meta-resolve@4.2.0: {}
 
   importx@0.5.2:
     dependencies:
