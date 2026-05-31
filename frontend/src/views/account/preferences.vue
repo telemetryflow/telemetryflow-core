@@ -68,7 +68,7 @@ function handleResetPreferences() {
   <div class="preferences-page">
     <!-- Hero Section -->
     <div class="preferences-hero">
-      <div class="hero-background"></div>
+      <div class="hero-background" />
       <div class="hero-content">
         <div class="hero-icon">
           <Icon icon="carbon:settings-adjust" :width="48" :height="48" />

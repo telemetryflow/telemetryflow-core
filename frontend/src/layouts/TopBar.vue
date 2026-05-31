@@ -725,8 +725,10 @@ function handleUserMenuSelect(key: string) {
           <!-- Header -->
           <div class="user-menu-header">
             <div class="user-avatar-wrapper">
-              <n-avatar :src="userAvatar" round :size="48"
-                :style="{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', border: '3px solid rgba(255,255,255,0.2)' }" />
+              <n-avatar
+                :src="userAvatar" round :size="48"
+                :style="{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', border: '3px solid rgba(255,255,255,0.2)' }"
+              />
             </div>
             <div class="user-info">
               <span class="user-name">{{ authStore.currentUser?.username || authStore.currentUser?.email || 'Admin' }}</span>

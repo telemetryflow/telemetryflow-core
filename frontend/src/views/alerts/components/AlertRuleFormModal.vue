@@ -268,7 +268,7 @@ function saveRule() {
                     class="line-numbered-editor-textarea"
                     placeholder="Enter TFQL or PromQL query..."
                     rows="8"
-                  ></textarea>
+                  />
                 </div>
                 <template #feedback>
                   <span style="font-size: 12px; color: var(--n-text-color-3);">

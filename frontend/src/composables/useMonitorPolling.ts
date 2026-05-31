@@ -62,7 +62,7 @@ export function useMonitorPolling(
 
   // Internal state for tracking changes
   let pollingTimer: ReturnType<typeof setInterval> | null = null;
-  let previousMonitors: Map<string, Monitor> = new Map();
+  const previousMonitors: Map<string, Monitor> = new Map();
   let isPageVisible = true;
 
   /**

@@ -98,6 +98,6 @@ export class RoleRepository implements IRoleRepository {
   }
 
   async delete(id: RoleId): Promise<void> {
-    await this.roleRepo.softDelete(id.getValue());
+    await this.roleRepo.delete(id.getValue());
   }
 }

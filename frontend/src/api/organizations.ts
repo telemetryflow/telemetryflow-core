@@ -13,7 +13,7 @@ import type {
 } from "@/types";
 
 // Local state for mock data (to support CRUD operations)
-let mockOrganizations = [...MOCK_ORGANIZATIONS];
+const mockOrganizations = [...MOCK_ORGANIZATIONS];
 
 export interface CreateOrganizationRequest {
   name: string;

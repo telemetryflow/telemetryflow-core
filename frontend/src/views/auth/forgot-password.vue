@@ -88,7 +88,8 @@ function handleResend() {
           <p class="success-hint">
             Didn't receive the email? Check your spam folder or
             <button class="resend-btn" @click="handleResend">
-              click here to resend</button>.
+              click here to resend
+            </button>.
           </p>
           <n-button type="primary" size="large" block @click="handleBackToLogin">
             Back to Login
@@ -106,8 +107,10 @@ function handleResend() {
           <!-- Email -->
           <div class="form-group">
             <label class="form-label">Email</label>
-            <n-input v-model:value="email" placeholder="Enter your email" size="large" :disabled="isLoading"
-              :theme-overrides="authInputOverrides" @keypress="handleKeyPress">
+            <n-input
+              v-model:value="email" placeholder="Enter your email" size="large" :disabled="isLoading"
+              :theme-overrides="authInputOverrides" @keypress="handleKeyPress"
+            >
               <template #prefix>
                 <Icon icon="mdi:email-outline" class="input-icon" />
               </template>
@@ -120,8 +123,10 @@ function handleResend() {
           </n-alert>
 
           <!-- Submit Button -->
-          <n-button type="primary" size="large" block :loading="isLoading" :disabled="!isFormValid"
-            @click="handleSubmit">
+          <n-button
+            type="primary" size="large" block :loading="isLoading" :disabled="!isFormValid"
+            @click="handleSubmit"
+          >
             Send Reset Link
           </n-button>
 

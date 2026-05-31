@@ -63,7 +63,7 @@ export function highlightJsonLine(line: string): string {
 
   // Highlight brackets and braces
   escaped = escaped.replace(
-    /([{}\[\]])/g,
+    /([{}[\]])/g,
     '<span class="json-bracket">$1</span>',
   );
 

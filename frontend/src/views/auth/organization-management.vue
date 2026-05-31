@@ -238,7 +238,7 @@ onMounted(loadOrganization);
       </n-button>
     </div>
 
-    <n-alert v-if="error" type="error" :show-icon="true" closable @close="error = null" aria-live="assertive">
+    <n-alert v-if="error" type="error" :show-icon="true" closable aria-live="assertive" @close="error = null">
       {{ error }}
     </n-alert>
 
@@ -262,26 +262,36 @@ onMounted(loadOrganization);
           <!-- Invite form -->
           <div v-if="showInvite" class="invite-form">
             <h3 class="invite-title">Invite New Member</h3>
-            <n-alert v-if="inviteError" type="error" :show-icon="true" size="small" aria-live="assertive">{{ inviteError
-              }}</n-alert>
+            <n-alert v-if="inviteError" type="error" :show-icon="true" size="small" aria-live="assertive">
+              {{ inviteError
+              }}
+            </n-alert>
             <div class="invite-fields">
               <div class="form-group">
                 <label for="invite-email" class="form-label">Email</label>
-                <n-input id="invite-email" v-model:value="inviteEmail" placeholder="member@example.com" size="small"
-                  :disabled="inviting" @input="inviteError = null" />
+                <n-input
+                  id="invite-email" v-model:value="inviteEmail" placeholder="member@example.com" size="small"
+                  :disabled="inviting" @input="inviteError = null"
+                />
               </div>
               <div class="form-group">
                 <label for="invite-role" class="form-label">Role (5-tier RBAC)</label>
-                <n-select id="invite-role" v-model:value="inviteRole" :options="ROLE_OPTIONS" size="small"
-                  :disabled="inviting" />
+                <n-select
+                  id="invite-role" v-model:value="inviteRole" :options="ROLE_OPTIONS" size="small"
+                  :disabled="inviting"
+                />
               </div>
             </div>
             <div class="invite-actions">
               <n-button type="primary" size="small" :loading="inviting" @click="inviteMember">Send Invite</n-button>
-              <n-button size="small" @click="
-                showInvite = false;
-              inviteError = null;
-              ">Cancel</n-button>
+              <n-button
+                size="small" @click="
+                  showInvite = false;
+                  inviteError = null;
+                "
+              >
+                Cancel
+              </n-button>
             </div>
           </div>
 
@@ -291,9 +301,11 @@ onMounted(loadOrganization);
           </div>
           <div v-else class="members-list" role="list" aria-label="Organization members">
             <div v-for="member in members" :key="member.id" class="member-row" role="listitem">
-              <div class="member-avatar" :style="{
-                backgroundColor: ROLE_COLORS[member.role] || '#6b7280',
-              }" aria-hidden="true">
+              <div
+                class="member-avatar" :style="{
+                  backgroundColor: ROLE_COLORS[member.role] || '#6b7280',
+                }" aria-hidden="true"
+              >
                 {{
                   (member.firstName?.[0] || member.username[0]).toUpperCase()
                 }}
@@ -307,16 +319,18 @@ onMounted(loadOrganization);
                 <span class="member-email">{{ member.email }}</span>
               </div>
               <div class="member-role">
-                <span class="role-badge" :style="{
-                  backgroundColor: `${ROLE_COLORS[member.role]}20`,
-                  color: ROLE_COLORS[member.role],
-                }">
+                <span
+                  class="role-badge" :style="{
+                    backgroundColor: `${ROLE_COLORS[member.role]}20`,
+                    color: ROLE_COLORS[member.role],
+                  }"
+                >
                   {{ getRoleLabel(member.role) }}
                 </span>
               </div>
               <span class="member-last-login">{{
                 formatDate(member.lastLoginAt)
-                }}</span>
+              }}</span>
             </div>
           </div>
         </div>
@@ -361,8 +375,10 @@ onMounted(loadOrganization);
                   </span>
                 </div>
               </div>
-              <n-button v-if="key.isActive && isAdmin" size="small" ghost :loading="rotatingKeyId === key.id"
-                :aria-label="`Rotate ${key.name}`" @click="rotateApiKey(key.id)">
+              <n-button
+                v-if="key.isActive && isAdmin" size="small" ghost :loading="rotatingKeyId === key.id"
+                :aria-label="`Rotate ${key.name}`" @click="rotateApiKey(key.id)"
+              >
                 <template #icon>
                   <Icon icon="mdi:rotate-right" />
                 </template>
@@ -385,14 +401,20 @@ onMounted(loadOrganization);
             <div class="form-group">
               <label for="org-name" class="form-label">Organization Name</label>
               <div class="settings-field-row">
-                <n-input id="org-name" v-model:value="orgNameEdit" :disabled="!editingSettings || savingSettings"
-                  size="large" aria-required="true" />
+                <n-input
+                  id="org-name" v-model:value="orgNameEdit" :disabled="!editingSettings || savingSettings"
+                  size="large" aria-required="true"
+                />
                 <template v-if="editingSettings">
                   <n-button type="primary" :loading="savingSettings" @click="saveSettings">Save</n-button>
-                  <n-button :disabled="savingSettings" @click="
-                    editingSettings = false;
-                  orgNameEdit = org?.name || '';
-                  ">Cancel</n-button>
+                  <n-button
+                    :disabled="savingSettings" @click="
+                      editingSettings = false;
+                      orgNameEdit = org?.name || '';
+                    "
+                  >
+                    Cancel
+                  </n-button>
                 </template>
                 <n-button v-else @click="editingSettings = true">
                   <template #icon>
@@ -407,7 +429,7 @@ onMounted(loadOrganization);
               <label class="form-label">Organization ID</label>
               <div class="readonly-field">
                 <code>{{ org?.id }}</code>
-                <n-button size="tiny" @click="copyOrgId" aria-label="Copy organization ID">
+                <n-button size="tiny" aria-label="Copy organization ID" @click="copyOrgId">
                   <template #icon>
                     <Icon icon="mdi:content-copy" />
                   </template>

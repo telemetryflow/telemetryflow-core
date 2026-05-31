@@ -6,8 +6,7 @@
 import { ref, onUnmounted } from "vue";
 import * as echarts from "echarts/core";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ChartInstance = any;
+ type ChartInstance = any;
 
 // Global chart group registry
 const chartGroups = new Map<string, Set<ChartInstance>>();

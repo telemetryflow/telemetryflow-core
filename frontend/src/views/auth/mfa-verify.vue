@@ -203,14 +203,16 @@ watch(otpCode, (newValue) => {
           <template v-if="!useBackupCode">
             <!-- OTP Input -->
             <div class="otp-container" @paste="handlePaste">
-              <input v-for="(digit, index) in otpDigits" :key="index"
+              <input
+                v-for="(digit, index) in otpDigits" :key="index"
                 :ref="(el) => (otpInputRefs[index] = el as HTMLInputElement)" type="text" inputmode="numeric"
                 maxlength="1" class="otp-input" :class="{
                   'has-value': digit,
                   error: error,
                   success: isCodeComplete && !error,
                 }" :value="digit" :disabled="isLoading" @input="handleInput(index, $event)"
-                @keydown="handleKeydown(index, $event)" />
+                @keydown="handleKeydown(index, $event)"
+              />
             </div>
 
             <!-- Loading Indicator -->
@@ -225,8 +227,10 @@ watch(otpCode, (newValue) => {
             </n-alert>
 
             <!-- Verify Button -->
-            <n-button type="primary" size="large" block :loading="isLoading" :disabled="!isCodeComplete"
-              @click="handleVerify">
+            <n-button
+              type="primary" size="large" block :loading="isLoading" :disabled="!isCodeComplete"
+              @click="handleVerify"
+            >
               Verify
             </n-button>
 
@@ -242,18 +246,22 @@ watch(otpCode, (newValue) => {
 
             <div class="form-group">
               <label for="backup-code-input" class="form-label">Backup Code</label>
-              <n-input id="backup-code-input" v-model:value="backupCode" placeholder="xxxxxxxx" size="large"
+              <n-input
+                id="backup-code-input" v-model:value="backupCode" placeholder="xxxxxxxx" size="large"
                 :disabled="isLoading" :theme-overrides="authInputOverrides" :status="error ? 'error' : undefined"
                 autocomplete="one-time-code" aria-required="true" @input="error = null"
-                @keypress.enter="handleVerify" />
+                @keypress.enter="handleVerify"
+              />
             </div>
 
             <n-alert v-if="error" type="error" :show-icon="true" class="error-alert" aria-live="assertive">
               {{ error }}
             </n-alert>
 
-            <n-button type="primary" size="large" block :loading="isLoading" :disabled="!backupCode.trim() || isLoading"
-              @click="handleVerify">
+            <n-button
+              type="primary" size="large" block :loading="isLoading" :disabled="!backupCode.trim() || isLoading"
+              @click="handleVerify"
+            >
               {{ isLoading ? "Verifying…" : "Verify Backup Code" }}
             </n-button>
 

@@ -47,24 +47,28 @@
                 </n-icon>
               </template>
             </n-button>
-            <n-button quaternary circle size="small" @click.stop="startNewConversation" title="New conversation">
+            <n-button quaternary circle size="small" title="New conversation" @click.stop="startNewConversation">
               <template #icon>
                 <n-icon>
                   <PlusIcon />
                 </n-icon>
               </template>
             </n-button>
-            <n-button quaternary circle size="small" @click.stop="exportConversation"
-              :disabled="!activeConversation || displayMessages.length === 0"
-              title="Export conversation as Markdown">
+            <n-button
+              quaternary circle size="small" :disabled="!activeConversation || displayMessages.length === 0"
+              title="Export conversation as Markdown"
+              @click.stop="exportConversation"
+            >
               <template #icon>
                 <n-icon>
                   <DownloadIcon />
                 </n-icon>
               </template>
             </n-button>
-            <n-button quaternary circle size="small" @click.stop="chatMinimized ? maximizeChat() : minimizeChat()"
-              :title="chatMinimized ? 'Maximize' : 'Minimize'">
+            <n-button
+              quaternary circle size="small" :title="chatMinimized ? 'Maximize' : 'Minimize'"
+              @click.stop="chatMinimized ? maximizeChat() : minimizeChat()"
+            >
               <template #icon>
                 <n-icon>
                   <MinimizeIcon v-if="!chatMinimized" />
@@ -72,8 +76,10 @@
                 </n-icon>
               </template>
             </n-button>
-            <n-button quaternary circle size="small" @click.stop="toggleFullscreen"
-              :title="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'">
+            <n-button
+              quaternary circle size="small" :title="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'"
+              @click.stop="toggleFullscreen"
+            >
               <template #icon>
                 <n-icon>
                   <ContractIcon v-if="isFullscreen" />
@@ -81,7 +87,7 @@
                 </n-icon>
               </template>
             </n-button>
-            <n-button quaternary circle size="small" @click.stop="closeChat" title="Close">
+            <n-button quaternary circle size="small" title="Close" @click.stop="closeChat">
               <template #icon>
                 <n-icon>
                   <CloseIcon />
@@ -94,18 +100,24 @@
         <!-- Content (hidden when minimized) -->
         <template v-if="!chatMinimized">
           <!-- Tab Bar -->
-          <div v-if="hasDefaultProvider && chatTabs.length > 0"
-            class="chat-tabs flex items-center border-b border-gray-200 dark:border-gray-600 overflow-x-auto">
-            <div v-for="tab in chatTabs" :key="tab.id" :class="[
-              'chat-tab flex items-center gap-1 px-3 py-2 cursor-pointer border-b-2 min-w-0 max-w-[140px] group',
-              activeTabId === tab.id
-                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
-                : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700'
-            ]" @click="handleSwitchTab(tab.id)">
+          <div
+            v-if="hasDefaultProvider && chatTabs.length > 0"
+            class="chat-tabs flex items-center border-b border-gray-200 dark:border-gray-600 overflow-x-auto"
+          >
+            <div
+              v-for="tab in chatTabs" :key="tab.id" :class="[
+                'chat-tab flex items-center gap-1 px-3 py-2 cursor-pointer border-b-2 min-w-0 max-w-[140px] group',
+                activeTabId === tab.id
+                  ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
+                  : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700'
+              ]" @click="handleSwitchTab(tab.id)"
+            >
               <span class="truncate text-sm" :title="tab.title">{{ tab.title }}</span>
-              <n-icon v-if="chatTabs.length > 1 && !tab.isStreaming" size="14"
+              <n-icon
+                v-if="chatTabs.length > 1 && !tab.isStreaming" size="14"
                 class="opacity-0 group-hover:opacity-100 flex-shrink-0 hover:text-red-500"
-                @click.stop="handleCloseTab(tab.id)">
+                @click.stop="handleCloseTab(tab.id)"
+              >
                 <CloseIcon />
               </n-icon>
               <n-spin v-if="tab.isStreaming" size="small" class="flex-shrink-0" />
@@ -155,132 +167,153 @@
 
               <!-- Chat main column -->
               <div class="chat-main">
-            <!-- Messages -->
-            <div ref="messagesContainer" class="chat-messages">
-              <!-- Empty State -->
-              <div v-if="displayMessages.length === 0"
-                style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-                <n-icon size="48" color="#6366f1">
-                  <SparklesIcon />
-                </n-icon>
-                <h3 class="mt-4 text-lg font-medium">
-                  Ask anything about your {{ CONTEXT_TYPES[currentContext]?.label?.toLowerCase() || 'data' }}
-                </h3>
-                <p class="mt-2 text-sm opacity-70 max-w-xs">
-                  I can help analyze patterns, identify issues, and provide recommendations.
-                </p>
-                <div class="mt-4 flex flex-wrap gap-2 justify-center max-w-sm">
-                  <n-button v-for="suggestion in suggestions" :key="suggestion" size="small" secondary
-                    @click="sendQuickMessage(suggestion)">
-                    {{ suggestion }}
-                  </n-button>
-                </div>
-              </div>
-
-              <!-- Message List -->
-              <ChatMessage v-for="message in displayMessages" :key="message.id" :message="message" />
-            </div>
-
-            <!-- Attachment Preview -->
-            <div v-if="attachments.length > 0"
-              class="attachment-preview px-4 py-2 border-t border-gray-200 dark:border-gray-600">
-              <div class="flex flex-wrap gap-2">
-                <div v-for="(attachment, index) in attachments" :key="index" class="attachment-item relative group">
-                  <!-- Image Preview -->
-                  <template v-if="attachment.type === 'image'">
-                    <img :src="attachment.preview" :alt="attachment.name"
-                      class="w-16 h-16 object-cover rounded-lg border border-gray-300 dark:border-gray-600" />
-                  </template>
-                  <!-- File Preview -->
-                  <template v-else>
-                    <div
-                      class="w-16 h-16 flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600">
-                      <n-icon size="20" color="#6366f1">
-                        <DocumentIcon />
-                      </n-icon>
-                      <span class="text-[10px] mt-1 text-gray-500 dark:text-gray-400 truncate max-w-[60px]">
-                        {{ attachment.name.split('.').pop()?.toUpperCase() }}
-                      </span>
-                    </div>
-                  </template>
-                  <!-- Remove Button -->
-                  <button @click="removeAttachment(index)"
-                    class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                    &times;
-                  </button>
-                  <!-- File Name Tooltip -->
-                  <n-tooltip>
-                    <template #trigger>
-                      <div class="absolute inset-0"></div>
-                    </template>
-                    {{ attachment.name }} ({{ formatFileSize(attachment.size) }})
-                  </n-tooltip>
-                </div>
-              </div>
-            </div>
-
-            <!-- Input -->
-            <div class="chat-input-area p-3">
-              <!-- Rich Text Editor with Action Buttons -->
-              <div class="flex gap-2 items-start">
-                <!-- Text Input (Resizable) -->
-                <div class="flex-1">
-                  <RichTextInput v-model="inputMessage" placeholder="Ask a question... (Markdown supported)"
-                    :disabled="isStreaming" :min-height="40" :max-height="250" :resizable="true" @submit="handleSend" />
-                </div>
-                <!-- Action Buttons (Top-Center aligned) -->
-                <div class="flex flex-col gap-2 pt-1">
-                  <!-- Attachment Button -->
-                  <n-tooltip>
-                    <template #trigger>
-                      <button class="action-btn" :class="{ 'action-btn--disabled': isStreaming }"
-                        :disabled="isStreaming" @click="triggerFileInput">
-                        <n-icon size="18">
-                          <AttachIcon />
-                        </n-icon>
-                      </button>
-                    </template>
-                    Attach file (txt, doc, docx, jpg, png)
-                  </n-tooltip>
-                  <input ref="fileInputRef" type="file" multiple accept=".txt,.doc,.docx,.jpg,.jpeg,.png"
-                    style="display: none" @change="handleFileSelect" />
-                  <!-- Send Button -->
-                  <n-tooltip>
-                    <template #trigger>
-                      <button class="action-btn action-btn--primary"
-                        :class="{ 'action-btn--disabled': (!inputMessage.trim() && attachments.length === 0) || isStreaming }"
-                        :disabled="(!inputMessage.trim() && attachments.length === 0) || isStreaming"
-                        @click="handleSend">
-                        <n-icon size="18">
-                          <SendIcon />
-                        </n-icon>
-                      </button>
-                    </template>
-                    Send message
-                  </n-tooltip>
-                </div>
-              </div>
-              <div class="mt-2 flex items-center justify-between text-xs">
-                <n-dropdown v-if="providers.length > 0" trigger="click" :options="providerOptions" :z-index="2147483647"
-                  scrollable @select="(key: string) => handleProviderSelect(key)">
-                  <span class="provider-selector cursor-pointer">
-                    Using <strong>{{ defaultProvider?.name || 'Select provider' }}</strong> (<strong>{{
-                      defaultProvider?.modelId
-                      || '-' }}</strong>)
-                    <n-icon size="12">
-                      <ChevronDownIcon />
+                <!-- Messages -->
+                <div ref="messagesContainer" class="chat-messages">
+                  <!-- Empty State -->
+                  <div
+                    v-if="displayMessages.length === 0"
+                    style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;"
+                  >
+                    <n-icon size="48" color="#6366f1">
+                      <SparklesIcon />
                     </n-icon>
-                  </span>
-                </n-dropdown>
-                <span v-else class="text-gray-400">No provider configured</span>
-                <span v-if="isStreaming" class="streaming-indicator flex items-center gap-1">
-                  <n-spin size="small" />
-                  Generating...
-                </span>
+                    <h3 class="mt-4 text-lg font-medium">
+                      Ask anything about your {{ CONTEXT_TYPES[currentContext]?.label?.toLowerCase() || 'data' }}
+                    </h3>
+                    <p class="mt-2 text-sm opacity-70 max-w-xs">
+                      I can help analyze patterns, identify issues, and provide recommendations.
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-2 justify-center max-w-sm">
+                      <n-button
+                        v-for="suggestion in suggestions" :key="suggestion" size="small" secondary
+                        @click="sendQuickMessage(suggestion)"
+                      >
+                        {{ suggestion }}
+                      </n-button>
+                    </div>
+                  </div>
+
+                  <!-- Message List -->
+                  <ChatMessage v-for="message in displayMessages" :key="message.id" :message="message" />
+                </div>
+
+                <!-- Attachment Preview -->
+                <div
+                  v-if="attachments.length > 0"
+                  class="attachment-preview px-4 py-2 border-t border-gray-200 dark:border-gray-600"
+                >
+                  <div class="flex flex-wrap gap-2">
+                    <div v-for="(attachment, index) in attachments" :key="index" class="attachment-item relative group">
+                      <!-- Image Preview -->
+                      <template v-if="attachment.type === 'image'">
+                        <img
+                          :src="attachment.preview" :alt="attachment.name"
+                          class="w-16 h-16 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                        />
+                      </template>
+                      <!-- File Preview -->
+                      <template v-else>
+                        <div
+                          class="w-16 h-16 flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600"
+                        >
+                          <n-icon size="20" color="#6366f1">
+                            <DocumentIcon />
+                          </n-icon>
+                          <span class="text-[10px] mt-1 text-gray-500 dark:text-gray-400 truncate max-w-[60px]">
+                            {{ attachment.name.split('.').pop()?.toUpperCase() }}
+                          </span>
+                        </div>
+                      </template>
+                      <!-- Remove Button -->
+                      <button
+                        class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                        @click="removeAttachment(index)"
+                      >
+                        &times;
+                      </button>
+                      <!-- File Name Tooltip -->
+                      <n-tooltip>
+                        <template #trigger>
+                          <div class="absolute inset-0" />
+                        </template>
+                        {{ attachment.name }} ({{ formatFileSize(attachment.size) }})
+                      </n-tooltip>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Input -->
+                <div class="chat-input-area p-3">
+                  <!-- Rich Text Editor with Action Buttons -->
+                  <div class="flex gap-2 items-start">
+                    <!-- Text Input (Resizable) -->
+                    <div class="flex-1">
+                      <RichTextInput
+                        v-model="inputMessage" placeholder="Ask a question... (Markdown supported)"
+                        :disabled="isStreaming" :min-height="40" :max-height="250" :resizable="true" @submit="handleSend"
+                      />
+                    </div>
+                    <!-- Action Buttons (Top-Center aligned) -->
+                    <div class="flex flex-col gap-2 pt-1">
+                      <!-- Attachment Button -->
+                      <n-tooltip>
+                        <template #trigger>
+                          <button
+                            class="action-btn" :class="{ 'action-btn--disabled': isStreaming }"
+                            :disabled="isStreaming" @click="triggerFileInput"
+                          >
+                            <n-icon size="18">
+                              <AttachIcon />
+                            </n-icon>
+                          </button>
+                        </template>
+                        Attach file (txt, doc, docx, jpg, png)
+                      </n-tooltip>
+                      <input
+                        ref="fileInputRef" type="file" multiple accept=".txt,.doc,.docx,.jpg,.jpeg,.png"
+                        style="display: none" @change="handleFileSelect"
+                      />
+                      <!-- Send Button -->
+                      <n-tooltip>
+                        <template #trigger>
+                          <button
+                            class="action-btn action-btn--primary"
+                            :class="{ 'action-btn--disabled': (!inputMessage.trim() && attachments.length === 0) || isStreaming }"
+                            :disabled="(!inputMessage.trim() && attachments.length === 0) || isStreaming"
+                            @click="handleSend"
+                          >
+                            <n-icon size="18">
+                              <SendIcon />
+                            </n-icon>
+                          </button>
+                        </template>
+                        Send message
+                      </n-tooltip>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between text-xs">
+                    <n-dropdown
+                      v-if="providers.length > 0" trigger="click" :options="providerOptions" :z-index="2147483647"
+                      scrollable @select="(key: string) => handleProviderSelect(key)"
+                    >
+                      <span class="provider-selector cursor-pointer">
+                        Using <strong>{{ defaultProvider?.name || 'Select provider' }}</strong> (<strong>{{
+                          defaultProvider?.modelId
+                            || '-' }}</strong>)
+                        <n-icon size="12">
+                          <ChevronDownIcon />
+                        </n-icon>
+                      </span>
+                    </n-dropdown>
+                    <span v-else class="text-gray-400">No provider configured</span>
+                    <span v-if="isStreaming" class="streaming-indicator flex items-center gap-1">
+                      <n-spin size="small" />
+                      Generating...
+                    </span>
+                  </div>
+                </div>
+                <!-- end .chat-main -->
               </div>
-            </div>
-            <!-- end .chat-main -->
-            </div>
             <!-- end .chat-body -->
             </div>
           </template>

@@ -55,11 +55,15 @@
       </div>
 
       <div v-else class="history-items">
-        <div v-for="conv in filteredConversations" :key="conv.id" class="history-item"
-          :class="{ 'history-item--active': activeConversation?.id === conv.id }" @click="handleOpen(conv)">
+        <div
+          v-for="conv in filteredConversations" :key="conv.id" class="history-item"
+          :class="{ 'history-item--active': activeConversation?.id === conv.id }" @click="handleOpen(conv)"
+        >
           <!-- Context badge -->
-          <n-tag size="tiny" round :bordered="false" class="history-item-ctx"
-            :style="{ background: contextColor(conv.contextType) + '22', color: contextColor(conv.contextType) }">
+          <n-tag
+            size="tiny" round :bordered="false" class="history-item-ctx"
+            :style="{ background: contextColor(conv.contextType) + '22', color: contextColor(conv.contextType) }"
+          >
             {{ contextLabel(conv.contextType) }}
           </n-tag>
 

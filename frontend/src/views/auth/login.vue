@@ -171,32 +171,40 @@ function fillCredentials(userKey: "administrator" | "demo") {
               <Icon icon="carbon:close" class="quick-login-close" @click="showDemoHint = false" />
             </div>
             <div class="quick-login-buttons">
-              <button v-for="userKey in ['administrator', 'demo'] as const" :key="userKey" type="button"
-                class="quick-login-btn" :class="{ active: selectedUser === userKey }" @click="fillCredentials(userKey)">
+              <button
+                v-for="userKey in ['administrator', 'demo'] as const" :key="userKey" type="button"
+                class="quick-login-btn" :class="{ active: selectedUser === userKey }" @click="fillCredentials(userKey)"
+              >
                 <div class="quick-login-btn-content">
-                  <div class="quick-login-icon" :style="{
-                    backgroundColor: getTierColor(
-                      DEFAULT_USERS[userKey].tier,
-                    ),
-                  }">
-                    <Icon :icon="userKey === 'administrator'
+                  <div
+                    class="quick-login-icon" :style="{
+                      backgroundColor: getTierColor(
+                        DEFAULT_USERS[userKey].tier,
+                      ),
+                    }"
+                  >
+                    <Icon
+                      :icon="userKey === 'administrator'
                         ? 'carbon:user-admin'
                         : 'carbon:demo'
-                      " :width="20" :height="20" />
+                      " :width="20" :height="20"
+                    />
                   </div>
                   <div class="quick-login-info">
                     <span class="quick-login-name">{{
                       userKey === "administrator" ? "Administrator" : "Demo"
-                      }}</span>
+                    }}</span>
                     <span class="quick-login-desc">{{
                       DEFAULT_USERS[userKey].description
-                      }}</span>
+                    }}</span>
                   </div>
-                  <span class="tier-badge" :style="{
-                    backgroundColor: getTierColor(
-                      DEFAULT_USERS[userKey].tier,
-                    ),
-                  }">
+                  <span
+                    class="tier-badge" :style="{
+                      backgroundColor: getTierColor(
+                        DEFAULT_USERS[userKey].tier,
+                      ),
+                    }"
+                  >
                     Tier {{ DEFAULT_USERS[userKey].tier }}
                   </span>
                 </div>
@@ -224,11 +232,13 @@ function fillCredentials(userKey: "administrator" | "demo") {
           <!-- Username / Email (Requirement 1.1) -->
           <div class="form-group">
             <label for="login-identifier" class="form-label">Username / Email</label>
-            <n-input id="login-identifier" v-model:value="identifier" placeholder="Type your username or email"
+            <n-input
+              id="login-identifier" v-model:value="identifier" placeholder="Type your username or email"
               size="large" :disabled="authStore.isLoading" :status="fieldErrors.identifier ? 'error' : undefined"
               :theme-overrides="authInputOverrides" autocomplete="username" aria-required="true"
               :aria-describedby="fieldErrors.identifier ? 'identifier-error' : undefined"
-              @keypress="handleKeyPress" @input="fieldErrors.identifier = undefined" />
+              @keypress="handleKeyPress" @input="fieldErrors.identifier = undefined"
+            />
             <span v-if="fieldErrors.identifier" id="identifier-error" class="field-error" role="alert">
               <Icon icon="mdi:alert-circle-outline" class="field-error-icon" aria-hidden="true" />
               {{ fieldErrors.identifier }}
@@ -238,17 +248,21 @@ function fillCredentials(userKey: "administrator" | "demo") {
           <!-- Password -->
           <div class="form-group">
             <label for="login-password" class="form-label">Password</label>
-            <n-input id="login-password" v-model:value="password" :type="showPassword ? 'text' : 'password'"
+            <n-input
+              id="login-password" v-model:value="password" :type="showPassword ? 'text' : 'password'"
               placeholder="Type your password" size="large" :disabled="authStore.isLoading"
               :status="fieldErrors.password ? 'error' : undefined" :theme-overrides="authInputOverrides"
               autocomplete="current-password" aria-required="true"
               :aria-describedby="fieldErrors.password ? 'password-error' : undefined"
-              @keypress="handleKeyPress" @input="fieldErrors.password = undefined">
+              @keypress="handleKeyPress" @input="fieldErrors.password = undefined"
+            >
               <template #suffix>
-                <Icon :icon="showPassword ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
+                <Icon
+                  :icon="showPassword ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
                   " class="password-toggle" :aria-label="showPassword ? 'Hide password' : 'Show password'"
                   role="button" tabindex="0" @click="showPassword = !showPassword"
-                  @keypress.enter="showPassword = !showPassword" />
+                  @keypress.enter="showPassword = !showPassword"
+                />
               </template>
             </n-input>
             <span v-if="fieldErrors.password" id="password-error" class="field-error" role="alert">
@@ -258,8 +272,10 @@ function fillCredentials(userKey: "administrator" | "demo") {
           </div>
 
           <!-- Login button -->
-          <n-button type="primary" size="large" block :loading="authStore.isLoading && !ssoLoading"
-            :disabled="authStore.isLoading" aria-label="Login" @click="handleLogin">
+          <n-button
+            type="primary" size="large" block :loading="authStore.isLoading && !ssoLoading"
+            :disabled="authStore.isLoading" aria-label="Login" @click="handleLogin"
+          >
             {{ authStore.isLoading && !ssoLoading ? "Logging in…" : "Login" }}
           </n-button>
 
@@ -273,44 +289,56 @@ function fillCredentials(userKey: "administrator" | "demo") {
           <template v-if="hasAnySSOEnabled">
             <div class="divider"><span>Or continue with</span></div>
             <div class="sso-buttons" role="group" aria-label="SSO and OAuth providers">
-              <button v-if="ssoConfig.google" class="oauth-btn" type="button"
+              <button
+                v-if="ssoConfig.google" class="oauth-btn" type="button"
                 :disabled="authStore.isLoading || !!ssoLoading" :aria-busy="ssoLoading === 'google'"
-                aria-label="Login with Google" @click="handleSSOLogin('google')">
+                aria-label="Login with Google" @click="handleSSOLogin('google')"
+              >
                 <n-spin v-if="ssoLoading === 'google'" :size="18" />
                 <Icon v-else icon="logos:google-icon" :width="20" :height="20" aria-hidden="true" />
                 <span>{{ ssoLoading === "google" ? "Redirecting…" : "Google" }}</span>
               </button>
-              <button v-if="ssoConfig.github" class="oauth-btn" type="button"
+              <button
+                v-if="ssoConfig.github" class="oauth-btn" type="button"
                 :disabled="authStore.isLoading || !!ssoLoading" :aria-busy="ssoLoading === 'github'"
-                aria-label="Login with GitHub" @click="handleSSOLogin('github')">
+                aria-label="Login with GitHub" @click="handleSSOLogin('github')"
+              >
                 <n-spin v-if="ssoLoading === 'github'" :size="18" />
                 <Icon v-else icon="mdi:github" :width="20" :height="20" aria-hidden="true" />
                 <span>{{ ssoLoading === "github" ? "Redirecting…" : "GitHub" }}</span>
               </button>
-              <button v-if="ssoConfig.microsoft" class="oauth-btn" type="button"
+              <button
+                v-if="ssoConfig.microsoft" class="oauth-btn" type="button"
                 :disabled="authStore.isLoading || !!ssoLoading" :aria-busy="ssoLoading === 'microsoft'"
-                aria-label="Login with Microsoft" @click="handleSSOLogin('microsoft')">
+                aria-label="Login with Microsoft" @click="handleSSOLogin('microsoft')"
+              >
                 <n-spin v-if="ssoLoading === 'microsoft'" :size="18" />
                 <Icon v-else icon="logos:microsoft-icon" :width="20" :height="20" aria-hidden="true" />
                 <span>{{ ssoLoading === "microsoft" ? "Redirecting…" : "Microsoft" }}</span>
               </button>
-              <button v-if="ssoConfig.apple" class="oauth-btn" type="button"
+              <button
+                v-if="ssoConfig.apple" class="oauth-btn" type="button"
                 :disabled="authStore.isLoading || !!ssoLoading" :aria-busy="ssoLoading === 'apple'"
-                aria-label="Login with Apple" @click="handleSSOLogin('apple')">
+                aria-label="Login with Apple" @click="handleSSOLogin('apple')"
+              >
                 <n-spin v-if="ssoLoading === 'apple'" :size="18" />
                 <Icon v-else icon="logos:apple" :width="20" :height="20" aria-hidden="true" />
                 <span>{{ ssoLoading === "apple" ? "Redirecting…" : "Apple" }}</span>
               </button>
-              <button v-if="ssoConfig.slack" class="oauth-btn" type="button"
+              <button
+                v-if="ssoConfig.slack" class="oauth-btn" type="button"
                 :disabled="authStore.isLoading || !!ssoLoading" :aria-busy="ssoLoading === 'slack'"
-                aria-label="Login with Slack" @click="handleSSOLogin('slack')">
+                aria-label="Login with Slack" @click="handleSSOLogin('slack')"
+              >
                 <n-spin v-if="ssoLoading === 'slack'" :size="18" />
                 <Icon v-else icon="logos:slack-icon" :width="20" :height="20" aria-hidden="true" />
                 <span>{{ ssoLoading === "slack" ? "Redirecting…" : "Slack" }}</span>
               </button>
-              <button v-if="ssoConfig.cognito" class="oauth-btn" type="button"
+              <button
+                v-if="ssoConfig.cognito" class="oauth-btn" type="button"
                 :disabled="authStore.isLoading || !!ssoLoading" :aria-busy="ssoLoading === 'cognito'"
-                aria-label="Login with AWS Cognito" @click="handleSSOLogin('cognito')">
+                aria-label="Login with AWS Cognito" @click="handleSSOLogin('cognito')"
+              >
                 <n-spin v-if="ssoLoading === 'cognito'" :size="18" />
                 <Icon v-else icon="logos:aws-cognito" :width="20" :height="20" aria-hidden="true" />
                 <span>{{ ssoLoading === "cognito" ? "Redirecting…" : "AWS Cognito" }}</span>

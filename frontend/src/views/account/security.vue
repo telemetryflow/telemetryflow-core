@@ -184,7 +184,7 @@ async function handleSaveRecoveryEmail() {
   <div class="security-page">
     <!-- Hero Section -->
     <div class="security-hero">
-      <div class="hero-background"></div>
+      <div class="hero-background" />
       <div class="hero-content">
         <div class="hero-icon">
           <Icon icon="carbon:security" :width="48" :height="48" />
@@ -329,12 +329,12 @@ async function handleSaveRecoveryEmail() {
                   <div class="step-number">1</div>
                   <span class="step-label">Install App</span>
                 </div>
-                <div class="step-divider"></div>
+                <div class="step-divider" />
                 <div class="step active">
                   <div class="step-number">2</div>
                   <span class="step-label">Scan Code</span>
                 </div>
-                <div class="step-divider"></div>
+                <div class="step-divider" />
                 <div class="step">
                   <div class="step-number">3</div>
                   <span class="step-label">Verify</span>
@@ -347,7 +347,8 @@ async function handleSaveRecoveryEmail() {
                   <strong>Setup Instructions</strong>
                 </template>
                 <ol class="instruction-list">
-                  <li>Download an authenticator app if you don't have one:
+                  <li>
+                    Download an authenticator app if you don't have one:
                     <ul class="app-list">
                       <li><strong>Google Authenticator</strong> (iOS/Android)</li>
                       <li><strong>Microsoft Authenticator</strong> (iOS/Android)</li>

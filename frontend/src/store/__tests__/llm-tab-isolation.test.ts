@@ -211,7 +211,7 @@ describe('LLM Store - Tab Isolation', () => {
     
     // Verify UUID format
     uuids.forEach(uuid => {
-      expect(uuid).toMatch(/^conv-\d+-[a-z0-9]+$/);
+      expect(uuid).toMatch(/^conv-\d+-[a-f0-9-]+$/);
     });
   });
 });

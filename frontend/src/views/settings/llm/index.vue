@@ -508,10 +508,14 @@ onMounted(() => {
             <Icon icon="carbon:search" />
           </template>
         </n-input>
-        <n-select v-model:value="filterProvider" :options="providerTypeOptions" placeholder="All Providers" clearable
-          style="width: 200px" />
-        <n-select v-model:value="filterStatus" :options="statusOptions" placeholder="All Status" clearable
-          style="width: 150px" />
+        <n-select
+          v-model:value="filterProvider" :options="providerTypeOptions" placeholder="All Providers" clearable
+          style="width: 200px"
+        />
+        <n-select
+          v-model:value="filterStatus" :options="statusOptions" placeholder="All Status" clearable
+          style="width: 150px"
+        />
       </div>
     </n-card>
 
@@ -547,8 +551,10 @@ onMounted(() => {
       <!-- Table Content -->
       <!-- datatableId: LLM30001 -->
       <div class="table-content">
-        <n-data-table class="tfo-datatable" :columns="columns" :data="filteredProviders" :loading="isLoading"
-          :scroll-x="1200" :pagination="tablePagination" :bordered="false" :single-line="false" striped size="small" />
+        <n-data-table
+          class="tfo-datatable" :columns="columns" :data="filteredProviders" :loading="isLoading"
+          :scroll-x="1200" :pagination="tablePagination" :bordered="false" :single-line="false" striped size="small"
+        />
       </div>
     </div>
 

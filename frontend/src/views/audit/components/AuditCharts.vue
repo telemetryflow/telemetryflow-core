@@ -54,14 +54,22 @@ watch(() => appStore.globalTimeRange, () => { loadChartData(); }, { deep: true }
     </div>
     <div v-show="!chartsCollapsed" class="section-content">
       <div class="charts-grid-2">
-        <RegistryGraphPanel graph-id="AUD10001" variant="panel" editable show-toggle show-zoom height="280px"
-          :query-collapsed="true" :override-series="auditEventsByTypeSeries" :override-loading="chartLoading" />
-        <RegistryGraphPanel graph-id="AUD10002" variant="panel" editable show-toggle show-zoom height="280px"
-          :query-collapsed="true" :override-series="auditResultSeries" :override-loading="chartLoading" />
-        <RegistryGraphPanel graph-id="AUD10003" variant="panel" editable show-toggle show-zoom height="280px"
-          :query-collapsed="true" :override-series="auditDurationSeries" :override-loading="chartLoading" />
-        <RegistryGraphPanel graph-id="AUD10004" variant="panel" editable show-toggle show-zoom height="280px"
-          :query-collapsed="true" :override-series="totalEventsSeries" :override-loading="chartLoading" />
+        <RegistryGraphPanel
+          graph-id="AUD10001" variant="panel" editable show-toggle show-zoom height="280px"
+          :query-collapsed="true" :override-series="auditEventsByTypeSeries" :override-loading="chartLoading"
+        />
+        <RegistryGraphPanel
+          graph-id="AUD10002" variant="panel" editable show-toggle show-zoom height="280px"
+          :query-collapsed="true" :override-series="auditResultSeries" :override-loading="chartLoading"
+        />
+        <RegistryGraphPanel
+          graph-id="AUD10003" variant="panel" editable show-toggle show-zoom height="280px"
+          :query-collapsed="true" :override-series="auditDurationSeries" :override-loading="chartLoading"
+        />
+        <RegistryGraphPanel
+          graph-id="AUD10004" variant="panel" editable show-toggle show-zoom height="280px"
+          :query-collapsed="true" :override-series="totalEventsSeries" :override-loading="chartLoading"
+        />
       </div>
     </div>
   </div>

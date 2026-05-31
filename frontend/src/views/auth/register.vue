@@ -207,10 +207,12 @@ function goToVerifyPending() {
           <!-- Username -->
           <div class="form-group">
             <label for="reg-username" class="form-label">Username</label>
-            <n-input id="reg-username" v-model:value="username" placeholder="Choose a username" size="large"
+            <n-input
+              id="reg-username" v-model:value="username" placeholder="Choose a username" size="large"
               :disabled="authStore.isLoading" :theme-overrides="authInputOverrides"
               :status="fieldErrors.username ? 'error' : undefined" autocomplete="username" aria-required="true" :aria-describedby="fieldErrors.username ? 'username-error' : undefined
-                " @keypress="handleKeyPress" @input="fieldErrors.username = undefined" />
+              " @keypress="handleKeyPress" @input="fieldErrors.username = undefined"
+            />
             <span v-if="fieldErrors.username" id="username-error" class="field-error" role="alert">
               <Icon icon="mdi:alert-circle-outline" class="field-error-icon" aria-hidden="true" />
               {{ fieldErrors.username }}
@@ -221,10 +223,12 @@ function goToVerifyPending() {
           <div class="form-row">
             <div class="form-group">
               <label for="reg-firstname" class="form-label">First Name</label>
-              <n-input id="reg-firstname" v-model:value="firstName" placeholder="First name" size="large"
+              <n-input
+                id="reg-firstname" v-model:value="firstName" placeholder="First name" size="large"
                 :disabled="authStore.isLoading" :theme-overrides="authInputOverrides"
                 :status="fieldErrors.firstName ? 'error' : undefined" autocomplete="given-name" aria-required="true" :aria-describedby="fieldErrors.firstName ? 'firstname-error' : undefined
-                  " @keypress="handleKeyPress" @input="fieldErrors.firstName = undefined" />
+                " @keypress="handleKeyPress" @input="fieldErrors.firstName = undefined"
+              />
               <span v-if="fieldErrors.firstName" id="firstname-error" class="field-error" role="alert">
                 <Icon icon="mdi:alert-circle-outline" class="field-error-icon" aria-hidden="true" />
                 {{ fieldErrors.firstName }}
@@ -232,10 +236,12 @@ function goToVerifyPending() {
             </div>
             <div class="form-group">
               <label for="reg-lastname" class="form-label">Last Name</label>
-              <n-input id="reg-lastname" v-model:value="lastName" placeholder="Last name" size="large"
+              <n-input
+                id="reg-lastname" v-model:value="lastName" placeholder="Last name" size="large"
                 :disabled="authStore.isLoading" :theme-overrides="authInputOverrides"
                 :status="fieldErrors.lastName ? 'error' : undefined" autocomplete="family-name" aria-required="true" :aria-describedby="fieldErrors.lastName ? 'lastname-error' : undefined
-                  " @keypress="handleKeyPress" @input="fieldErrors.lastName = undefined" />
+                " @keypress="handleKeyPress" @input="fieldErrors.lastName = undefined"
+              />
               <span v-if="fieldErrors.lastName" id="lastname-error" class="field-error" role="alert">
                 <Icon icon="mdi:alert-circle-outline" class="field-error-icon" aria-hidden="true" />
                 {{ fieldErrors.lastName }}
@@ -246,10 +252,12 @@ function goToVerifyPending() {
           <!-- Email -->
           <div class="form-group">
             <label for="reg-email" class="form-label">Email</label>
-            <n-input id="reg-email" v-model:value="email" placeholder="Enter your email" size="large"
+            <n-input
+              id="reg-email" v-model:value="email" placeholder="Enter your email" size="large"
               :disabled="authStore.isLoading" :theme-overrides="authInputOverrides"
               :status="fieldErrors.email ? 'error' : undefined" autocomplete="email" aria-required="true" :aria-describedby="fieldErrors.email ? 'email-error' : undefined"
-              @keypress="handleKeyPress" @input="fieldErrors.email = undefined" />
+              @keypress="handleKeyPress" @input="fieldErrors.email = undefined"
+            />
             <span v-if="fieldErrors.email" id="email-error" class="field-error" role="alert">
               <Icon icon="mdi:alert-circle-outline" class="field-error-icon" aria-hidden="true" />
               {{ fieldErrors.email }}
@@ -259,31 +267,39 @@ function goToVerifyPending() {
           <!-- Password -->
           <div class="form-group">
             <label for="reg-password" class="form-label">Password</label>
-            <n-input id="reg-password" v-model:value="password" :type="showPassword ? 'text' : 'password'"
+            <n-input
+              id="reg-password" v-model:value="password" :type="showPassword ? 'text' : 'password'"
               placeholder="Create a password" size="large" :disabled="authStore.isLoading"
               :theme-overrides="authInputOverrides" :status="fieldErrors.password ? 'error' : undefined"
               autocomplete="new-password" aria-required="true"
               :aria-describedby="fieldErrors.password ? 'password-error' : undefined
-                " @keypress="handleKeyPress" @input="fieldErrors.password = undefined">
+              " @keypress="handleKeyPress" @input="fieldErrors.password = undefined"
+            >
               <template #suffix>
-                <Icon :icon="showPassword ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
+                <Icon
+                  :icon="showPassword ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
                   " class="password-toggle" :aria-label="showPassword ? 'Hide password' : 'Show password'"
                   role="button" tabindex="0" @click="showPassword = !showPassword"
-                  @keypress.enter="showPassword = !showPassword" />
+                  @keypress.enter="showPassword = !showPassword"
+                />
               </template>
             </n-input>
 
             <!-- Password strength indicator (Requirement 4.6) -->
             <div v-if="password" class="password-strength" aria-live="polite">
-              <div class="strength-bar" role="progressbar" :aria-valuenow="passwordStrength.score" aria-valuemin="0"
-                aria-valuemax="100">
-                <div class="strength-fill" :style="{
-                  width: `${passwordStrength.score}%`,
-                  backgroundColor: passwordStrength.color,
-                }" />
+              <div
+                class="strength-bar" role="progressbar" :aria-valuenow="passwordStrength.score" aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <div
+                  class="strength-fill" :style="{
+                    width: `${passwordStrength.score}%`,
+                    backgroundColor: passwordStrength.color,
+                  }"
+                />
               </div>
               <span class="strength-label" :style="{ color: passwordStrength.color }">{{ passwordStrength.label
-                }}</span>
+              }}</span>
             </div>
 
             <!-- Password requirements -->
@@ -303,21 +319,25 @@ function goToVerifyPending() {
           <!-- Confirm Password -->
           <div class="form-group">
             <label for="reg-confirm-password" class="form-label">Confirm Password</label>
-            <n-input id="reg-confirm-password" v-model:value="confirmPassword"
+            <n-input
+              id="reg-confirm-password" v-model:value="confirmPassword"
               :type="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm your password" size="large"
               :disabled="authStore.isLoading" :theme-overrides="authInputOverrides"
               :status="fieldErrors.confirmPassword ? 'error' : undefined" autocomplete="new-password"
               aria-required="true" :aria-describedby="fieldErrors.confirmPassword
-                  ? 'confirm-password-error'
-                  : undefined
-                " @keypress="handleKeyPress" @input="fieldErrors.confirmPassword = undefined">
+                ? 'confirm-password-error'
+                : undefined
+              " @keypress="handleKeyPress" @input="fieldErrors.confirmPassword = undefined"
+            >
               <template #suffix>
-                <Icon :icon="showConfirmPassword
+                <Icon
+                  :icon="showConfirmPassword
                     ? 'mdi:lock-open-outline'
                     : 'mdi:lock-outline'
                   " class="password-toggle" :aria-label="showConfirmPassword ? 'Hide password' : 'Show password'
-                    " role="button" tabindex="0" @click="showConfirmPassword = !showConfirmPassword"
-                  @keypress.enter="showConfirmPassword = !showConfirmPassword" />
+                  " role="button" tabindex="0" @click="showConfirmPassword = !showConfirmPassword"
+                  @keypress.enter="showConfirmPassword = !showConfirmPassword"
+                />
               </template>
             </n-input>
             <span v-if="fieldErrors.confirmPassword" id="confirm-password-error" class="field-error" role="alert">
@@ -336,8 +356,10 @@ function goToVerifyPending() {
           </div>
 
           <!-- Register button -->
-          <n-button type="primary" size="large" block :loading="authStore.isLoading"
-            :disabled="authStore.isLoading || !agreeToTerms" aria-label="Create Account" @click="handleRegister">
+          <n-button
+            type="primary" size="large" block :loading="authStore.isLoading"
+            :disabled="authStore.isLoading || !agreeToTerms" aria-label="Create Account" @click="handleRegister"
+          >
             {{ authStore.isLoading ? "Creating account…" : "Create Account" }}
           </n-button>
 

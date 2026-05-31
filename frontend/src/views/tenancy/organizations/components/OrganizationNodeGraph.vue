@@ -726,15 +726,19 @@ onUnmounted(() => {
     </div>
 
     <div ref="containerRef" class="node-graph-container">
-      <canvas ref="canvasRef" class="node-graph-canvas" @mousedown="handleMouseDown" @mousemove="handleMouseMove"
-        @mouseup="handleMouseUp" @mouseleave="handleMouseLeave" @wheel="handleWheel" />
+      <canvas
+        ref="canvasRef" class="node-graph-canvas" @mousedown="handleMouseDown" @mousemove="handleMouseMove"
+        @mouseup="handleMouseUp" @mouseleave="handleMouseLeave" @wheel="handleWheel"
+      />
 
       <!-- Node Tooltip -->
-      <div v-if="showTooltip && hoveredNode" class="node-graph-tooltip"
+      <div
+        v-if="showTooltip && hoveredNode" class="node-graph-tooltip"
         :class="{ 'light-tooltip': appStore.isDarkMode }" :style="{
           left: `${tooltipPos.x + 15}px`,
           top: `${tooltipPos.y + 15}px`,
-        }">
+        }"
+      >
         <table class="tooltip-table">
           <tbody>
             <tr>
@@ -799,8 +803,10 @@ onUnmounted(() => {
     </div>
 
     <!-- Zoom Modal -->
-    <NModal v-model:show="showZoomModal" preset="card" class="node-graph-zoom-modal"
-      :style="{ width: '95vw', height: '90vh', maxWidth: '1800px' }" :bordered="false" :closable="false" size="huge">
+    <NModal
+      v-model:show="showZoomModal" preset="card" class="node-graph-zoom-modal"
+      :style="{ width: '95vw', height: '90vh', maxWidth: '1800px' }" :bordered="false" :closable="false" size="huge"
+    >
       <template #header>
         <div class="modal-header">
           <div class="modal-title-section">
@@ -831,21 +837,26 @@ onUnmounted(() => {
 
       <div class="modal-content">
         <div ref="modalContainerRef" class="modal-graph-container">
-          <canvas ref="modalCanvasRef" class="modal-graph-canvas" @mousedown="handleModalMouseDown"
+          <canvas
+            ref="modalCanvasRef" class="modal-graph-canvas" @mousedown="handleModalMouseDown"
             @mousemove="handleModalMouseMove" @mouseup="handleModalMouseUp" @mouseleave="handleModalMouseLeave"
-            @wheel="handleModalWheel" />
+            @wheel="handleModalWheel"
+          />
 
-          <div v-if="showModalTooltip && modalHoveredNode" class="node-graph-tooltip"
+          <div
+            v-if="showModalTooltip && modalHoveredNode" class="node-graph-tooltip"
             :class="{ 'light-tooltip': appStore.isDarkMode }" :style="{
               left: `${modalTooltipPos.x + 15}px`,
               top: `${modalTooltipPos.y + 15}px`,
-            }">
+            }"
+          >
             <table class="tooltip-table">
               <tbody>
                 <tr>
                   <td class="tooltip-label">Type:</td>
-                  <td class="tooltip-value">{{ modalHoveredNode.type === 'organization' ? 'Organization' : 'Workspace'
-                  }}
+                  <td class="tooltip-value">
+                    {{ modalHoveredNode.type === 'organization' ? 'Organization' : 'Workspace'
+                    }}
                   </td>
                 </tr>
                 <tr>

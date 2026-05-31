@@ -21,7 +21,7 @@ import type {
 } from "@/types";
 
 // Local state for mock data (to support CRUD operations)
-let mockRoles = [...MOCK_ROLES];
+const mockRoles = [...MOCK_ROLES];
 
 // Role-Permission assignments (mutable for CRUD)
 const rolePermissionMap: Record<string, string[]> = {};

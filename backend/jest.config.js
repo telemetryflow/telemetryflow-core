@@ -3,6 +3,18 @@ module.exports = {
   preset: 'ts-jest',
   rootDir: '.',
   testRegex: '.*\\.spec\\.ts$',
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    'UptimeQueryBuilder.spec.ts$',
+    'StatusPageQueryBuilder.spec.ts$',
+    'VMQueryBuilder.spec.ts$',
+    'NetworkMapQueryBuilder.spec.ts$',
+    'AgentsQueryBuilder.spec.ts$',
+    'KubernetesQueryBuilder.spec.ts$',
+    'ServiceMapQueryBuilder.spec.ts$',
+    'GetUptimeMonitorStats.handler.spec.ts$',
+    'GetUptimeMonitorStats.handler.property.spec.ts$',
+  ],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: {

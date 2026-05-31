@@ -103,7 +103,7 @@ export function mapAuthError(error: unknown): MappedError {
   const isRateLimit = status === 429;
 
   // Map by error code first
-  if (code && ERROR_CODE_MAP[code]) {
+  if (code && Object.hasOwn(ERROR_CODE_MAP, code)) {
     return { message: ERROR_CODE_MAP[code], code, isNetworkError: false, isRateLimit, retryAfter };
   }
 

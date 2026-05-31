@@ -545,13 +545,15 @@ watch(() => appStore.globalTimeRange, () => { alertsStore.fetchBackendAlerts(); 
                 <tr>
                   <td class="info-label">Severity</td>
                   <td class="info-value">
-                    <n-tag :type="severityColors[alertsStore.selectedAlert.severity]" size="small" :bordered="false"
+                    <n-tag
+                      :type="severityColors[alertsStore.selectedAlert.severity]" size="small" :bordered="false"
                       :style="{
                         backgroundColor: alertsStore.selectedAlert.severity === 'critical' ? 'rgba(239, 68, 68, 0.1)' :
                           alertsStore.selectedAlert.severity === 'warning' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(59, 130, 246, 0.1)',
                         color: alertsStore.selectedAlert.severity === 'critical' ? '#ef4444' :
                           alertsStore.selectedAlert.severity === 'warning' ? '#f59e0b' : '#3b82f6'
-                      }">
+                      }"
+                    >
                       {{ alertsStore.selectedAlert.severity }}
                     </n-tag>
                   </td>
@@ -559,11 +561,13 @@ watch(() => appStore.globalTimeRange, () => { alertsStore.fetchBackendAlerts(); 
                 <tr>
                   <td class="info-label">Status</td>
                   <td class="info-value">
-                    <n-tag :bordered="false" size="small"
+                    <n-tag
+                      :bordered="false" size="small"
                       :style="{
                         backgroundColor: alertsStore.selectedAlert.status === 'firing' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)',
                         color: alertsStore.selectedAlert.status === 'firing' ? '#ef4444' : '#22c55e'
-                      }">
+                      }"
+                    >
                       {{ alertsStore.selectedAlert.status }}
                     </n-tag>
                   </td>

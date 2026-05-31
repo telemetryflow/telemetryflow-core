@@ -5,7 +5,7 @@
       <!-- Text Formatting -->
       <n-tooltip>
         <template #trigger>
-          <n-button quaternary size="tiny" @click="insertFormat('bold')" :disabled="disabled">
+          <n-button quaternary size="tiny" :disabled="disabled" @click="insertFormat('bold')">
             <template #icon>
               <n-icon size="16"><BoldIcon /></n-icon>
             </template>
@@ -16,7 +16,7 @@
 
       <n-tooltip>
         <template #trigger>
-          <n-button quaternary size="tiny" @click="insertFormat('italic')" :disabled="disabled">
+          <n-button quaternary size="tiny" :disabled="disabled" @click="insertFormat('italic')">
             <template #icon>
               <n-icon size="16"><ItalicIcon /></n-icon>
             </template>
@@ -27,7 +27,7 @@
 
       <n-tooltip>
         <template #trigger>
-          <n-button quaternary size="tiny" @click="insertFormat('code')" :disabled="disabled">
+          <n-button quaternary size="tiny" :disabled="disabled" @click="insertFormat('code')">
             <template #icon>
               <n-icon size="16"><CodeIcon /></n-icon>
             </template>
@@ -41,7 +41,7 @@
       <!-- Lists -->
       <n-tooltip>
         <template #trigger>
-          <n-button quaternary size="tiny" @click="insertFormat('bullet')" :disabled="disabled">
+          <n-button quaternary size="tiny" :disabled="disabled" @click="insertFormat('bullet')">
             <template #icon>
               <n-icon size="16"><ListIcon /></n-icon>
             </template>
@@ -52,7 +52,7 @@
 
       <n-tooltip>
         <template #trigger>
-          <n-button quaternary size="tiny" @click="insertFormat('number')" :disabled="disabled">
+          <n-button quaternary size="tiny" :disabled="disabled" @click="insertFormat('number')">
             <template #icon>
               <n-icon size="16"><NumberListIcon /></n-icon>
             </template>
@@ -66,7 +66,7 @@
       <!-- Block Elements -->
       <n-tooltip>
         <template #trigger>
-          <n-button quaternary size="tiny" @click="insertFormat('heading')" :disabled="disabled">
+          <n-button quaternary size="tiny" :disabled="disabled" @click="insertFormat('heading')">
             <template #icon>
               <n-icon size="16"><HeadingIcon /></n-icon>
             </template>
@@ -77,7 +77,7 @@
 
       <n-tooltip>
         <template #trigger>
-          <n-button quaternary size="tiny" @click="insertFormat('quote')" :disabled="disabled">
+          <n-button quaternary size="tiny" :disabled="disabled" @click="insertFormat('quote')">
             <template #icon>
               <n-icon size="16"><QuoteIcon /></n-icon>
             </template>
@@ -88,7 +88,7 @@
 
       <n-tooltip>
         <template #trigger>
-          <n-button quaternary size="tiny" @click="insertFormat('codeblock')" :disabled="disabled">
+          <n-button quaternary size="tiny" :disabled="disabled" @click="insertFormat('codeblock')">
             <template #icon>
               <n-icon size="16"><CodeBlockIcon /></n-icon>
             </template>
@@ -120,13 +120,13 @@
             <span>×</span>
             <n-input-number v-model:value="tableCols" size="small" :min="1" :max="10" placeholder="Cols" class="w-20" />
           </div>
-          <n-button size="small" type="primary" @click="insertTable" block>Insert</n-button>
+          <n-button size="small" type="primary" block @click="insertTable">Insert</n-button>
         </div>
       </n-popover>
 
       <n-tooltip>
         <template #trigger>
-          <n-button quaternary size="tiny" @click="insertFormat('link')" :disabled="disabled">
+          <n-button quaternary size="tiny" :disabled="disabled" @click="insertFormat('link')">
             <template #icon>
               <n-icon size="16"><LinkIcon /></n-icon>
             </template>
@@ -135,7 +135,7 @@
         Insert Link
       </n-tooltip>
 
-      <div class="flex-1"></div>
+      <div class="flex-1" />
 
       <!-- Preview Toggle -->
       <n-tooltip>
@@ -160,19 +160,19 @@
       <textarea
         ref="textareaRef"
         :value="modelValue"
-        @input="handleInput"
-        @keydown="handleKeydown"
         :placeholder="placeholder"
         :disabled="disabled"
         :class="['input-textarea', { 'input-textarea--resizable': resizable }]"
         :style="{ minHeight: minHeight + 'px', maxHeight: maxHeight + 'px' }"
-      ></textarea>
+        @input="handleInput"
+        @keydown="handleKeydown"
+      />
     </div>
 
     <!-- Preview (Optional) -->
     <div v-if="showPreview && modelValue" class="preview-container p-2 border-t border-gray-200 dark:border-gray-600">
       <div class="text-xs text-gray-500 mb-1">Preview:</div>
-      <div class="preview-content prose prose-sm max-w-none" v-html="renderedPreview"></div>
+      <div class="preview-content prose prose-sm max-w-none" v-html="renderedPreview" />
     </div>
   </div>
 </template>

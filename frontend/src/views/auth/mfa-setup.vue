@@ -76,10 +76,12 @@ function handleDone() {
         <!-- Step indicator -->
         <div class="step-indicator" aria-label="Setup progress">
           <div v-for="(s, i) in ['Scan QR', 'Verify', 'Backup Codes']" :key="s" class="step-item">
-            <div class="step-dot" :class="{
-              active: i === ['setup', 'verify', 'backup'].indexOf(step),
-              done: i < ['setup', 'verify', 'backup'].indexOf(step),
-            }">
+            <div
+              class="step-dot" :class="{
+                active: i === ['setup', 'verify', 'backup'].indexOf(step),
+                done: i < ['setup', 'verify', 'backup'].indexOf(step),
+              }"
+            >
               <Icon v-if="i < ['setup', 'verify', 'backup'].indexOf(step)" icon="mdi:check" :width="14" :height="14" />
               <span v-else>{{ i + 1 }}</span>
             </div>
@@ -109,7 +111,7 @@ function handleDone() {
             <template #header>Can't scan? Enter manually</template>
             <div class="secret-display">
               <code class="secret-code">{{ secret }}</code>
-              <button class="copy-btn" type="button" @click="copySecret" aria-label="Copy secret key">
+              <button class="copy-btn" type="button" aria-label="Copy secret key" @click="copySecret">
                 <Icon icon="mdi:content-copy" :width="16" :height="16" />
               </button>
             </div>
@@ -139,14 +141,18 @@ function handleDone() {
 
           <div class="form-group">
             <label for="mfa-verify-code" class="form-label">Verification Code</label>
-            <n-input id="mfa-verify-code" v-model:value="verifyCode" placeholder="000000" size="large" maxlength="6"
+            <n-input
+              id="mfa-verify-code" v-model:value="verifyCode" placeholder="000000" size="large" maxlength="6"
               :disabled="authStore.isLoading" :theme-overrides="authInputOverrides"
               :status="verifyError ? 'error' : undefined" inputmode="numeric" autocomplete="one-time-code"
-              aria-required="true" @input="verifyError = null" @keypress.enter="handleEnable" />
+              aria-required="true" @input="verifyError = null" @keypress.enter="handleEnable"
+            />
           </div>
 
-          <n-button type="primary" size="large" block :loading="authStore.isLoading"
-            :disabled="verifyCode.length !== 6 || authStore.isLoading" @click="handleEnable">
+          <n-button
+            type="primary" size="large" block :loading="authStore.isLoading"
+            :disabled="verifyCode.length !== 6 || authStore.isLoading" @click="handleEnable"
+          >
             {{ authStore.isLoading ? "Verifying…" : "Enable Two-Factor Auth" }}
           </n-button>
           <div class="back-link-container">
@@ -177,7 +183,7 @@ function handleDone() {
             }}</code>
           </div>
 
-          <n-button size="large" block ghost @click="copyBackupCodes" aria-label="Copy all backup codes">
+          <n-button size="large" block ghost aria-label="Copy all backup codes" @click="copyBackupCodes">
             <template #icon>
               <Icon :icon="backupCopied ? 'mdi:check' : 'mdi:content-copy'" />
             </template>

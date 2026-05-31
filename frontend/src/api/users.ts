@@ -16,7 +16,7 @@ import type {
 } from "@/types";
 
 // Local state for mock data (to support CRUD operations)
-let mockUsers = [...MOCK_USERS];
+const mockUsers = [...MOCK_USERS];
 
 export interface UsersListParams extends IAMListParams {
   organizationId?: string;

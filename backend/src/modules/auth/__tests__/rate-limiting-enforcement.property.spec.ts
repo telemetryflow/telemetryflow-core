@@ -64,10 +64,10 @@ describe("Feature: frontend-backend-auth-integration", () => {
             const key = `test:${email}`;
             const now = Date.now();
 
-            // Simulate existing requests at the limit (all within window)
+            const gap = Math.max(1, Math.floor((windowMs / limit) - 1));
             const existingTimestamps = Array.from(
               { length: limit },
-              (_, i) => now - i * 1000 - 1000, // Ensure all are within window
+              (_, i) => now - i * gap - gap,
             );
 
             // Mock get to always return timestamps at limit

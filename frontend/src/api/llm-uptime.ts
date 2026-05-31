@@ -1099,7 +1099,7 @@ webhook:
       "username": "UptimeBot",
       "icon_emoji": ":robot_face:",
       "attachments": [{
-        "color": "{{ if eq .Status \"down\" }}danger{{ else }}good{{ end }}",
+        "color": "{{ if eq .Status "down" }}danger{{ else }}good{{ end }}",
         "title": "{{ .MonitorName }} is {{ .Status }}",
         "fields": [
           {"title": "URL", "value": "{{ .URL }}", "short": true},
@@ -1126,7 +1126,7 @@ webhook:
   payload: |
     {
       "routing_key": "$PAGERDUTY_KEY",
-      "event_action": "{{ if eq .Status \"down\" }}trigger{{ else }}resolve{{ end }}",
+      "event_action": "{{ if eq .Status "down" }}trigger{{ else }}resolve{{ end }}",
       "dedup_key": "{{ .MonitorID }}",
       "payload": {
         "summary": "{{ .MonitorName }} is {{ .Status }}",

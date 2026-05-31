@@ -145,11 +145,13 @@ const detailStats = computed(() => {
       </div>
 
       <!-- Status Banner -->
-      <div class="status-banner" :style="{
-        backgroundColor: getResultStatus(log.result).bg,
-        color: getResultStatus(log.result).color,
-        borderColor: getResultStatus(log.result).borderColor,
-      }">
+      <div
+        class="status-banner" :style="{
+          backgroundColor: getResultStatus(log.result).bg,
+          color: getResultStatus(log.result).color,
+          borderColor: getResultStatus(log.result).borderColor,
+        }"
+      >
         <Icon :icon="getResultStatus(log.result).icon" />
         <span>
           <strong>{{ (AUDIT_RESULTS[log.result]?.label || log.result).toUpperCase() }}</strong>
@@ -312,8 +314,10 @@ const detailStats = computed(() => {
                       {{ idx + 1 }}
                     </span>
                   </div>
-                  <pre class="json-highlight"><code><span v-for="(line, idx) in selectedLogJsonLines.lines"
-                    :key="`jl-${idx}`" class="json-line" v-html="line + '\n'"></span></code></pre>
+                  <pre class="json-highlight"><code><span
+                    v-for="(line, idx) in selectedLogJsonLines.lines"
+                    :key="`jl-${idx}`" class="json-line" v-html="line + '\n'"
+                  /></code></pre>
                 </div>
               </div>
             </NCollapseItem>

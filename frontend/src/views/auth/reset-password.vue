@@ -200,22 +200,28 @@ function handleRequestNewLink() {
           <!-- Password -->
           <div class="form-group">
             <label class="form-label">New Password</label>
-            <n-input v-model:value="password" :type="showPassword ? 'text' : 'password'"
+            <n-input
+              v-model:value="password" :type="showPassword ? 'text' : 'password'"
               placeholder="Enter new password" size="large" :disabled="isLoading"
-              :theme-overrides="authInputOverrides" @keypress="handleKeyPress">
+              :theme-overrides="authInputOverrides" @keypress="handleKeyPress"
+            >
               <template #suffix>
-                <Icon :icon="showPassword ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
-                  " class="password-toggle" @click="showPassword = !showPassword" />
+                <Icon
+                  :icon="showPassword ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
+                  " class="password-toggle" @click="showPassword = !showPassword"
+                />
               </template>
             </n-input>
 
             <!-- Password Strength Indicator -->
             <div v-if="password" class="password-strength">
               <div class="strength-bar">
-                <div class="strength-fill" :style="{
-                  width: `${passwordStrength.score}%`,
-                  backgroundColor: passwordStrength.color,
-                }" />
+                <div
+                  class="strength-fill" :style="{
+                    width: `${passwordStrength.score}%`,
+                    backgroundColor: passwordStrength.color,
+                  }"
+                />
               </div>
               <span class="strength-label" :style="{ color: passwordStrength.color }">
                 {{ passwordStrength.label }}
@@ -234,15 +240,19 @@ function handleRequestNewLink() {
           <!-- Confirm Password -->
           <div class="form-group">
             <label class="form-label">Confirm Password</label>
-            <n-input v-model:value="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
+            <n-input
+              v-model:value="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
               placeholder="Confirm new password" size="large" :disabled="isLoading"
               :theme-overrides="authInputOverrides" :status="!passwordsMatch ? 'error' : undefined"
-              @keypress="handleKeyPress">
+              @keypress="handleKeyPress"
+            >
               <template #suffix>
-                <Icon :icon="showConfirmPassword
+                <Icon
+                  :icon="showConfirmPassword
                     ? 'mdi:lock-open-outline'
                     : 'mdi:lock-outline'
-                  " class="password-toggle" @click="showConfirmPassword = !showConfirmPassword" />
+                  " class="password-toggle" @click="showConfirmPassword = !showConfirmPassword"
+                />
               </template>
             </n-input>
             <span v-if="!passwordsMatch" class="field-error">Passwords do not match</span>
@@ -254,8 +264,10 @@ function handleRequestNewLink() {
           </n-alert>
 
           <!-- Submit Button -->
-          <n-button type="primary" size="large" block :loading="isLoading" :disabled="!isFormValid"
-            @click="handleSubmit">
+          <n-button
+            type="primary" size="large" block :loading="isLoading" :disabled="!isFormValid"
+            @click="handleSubmit"
+          >
             Reset Password
           </n-button>
 

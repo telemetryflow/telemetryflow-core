@@ -35,6 +35,9 @@ function hashApiKeySecret(rawSecret: string): string {
   return createHash("sha256").update(rawSecret).digest("hex");
 }
 
+const hexaString = (opts: { minLength: number; maxLength: number }) =>
+  fc.string({ ...opts, unit: fc.constantFrom(..."0123456789abcdef".split("")) });
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe("Property 9: apiKeyId display masking", () => {
@@ -132,8 +135,7 @@ describe("Property 10: No raw secrets in storage", () => {
   it("SHA-256 hash of raw secret is a 64-char hex string", () => {
     fc.assert(
       fc.property(
-        fc
-          .hexaString({ minLength: 32, maxLength: 64 })
+        hexaString({ minLength: 32, maxLength: 64 })
           .map((s) => `tfs_${s}`),
         (rawSecret) => {
           const hash = hashApiKeySecret(rawSecret);
@@ -147,8 +149,7 @@ describe("Property 10: No raw secrets in storage", () => {
   it("hash never contains the 'tfs_' prefix", () => {
     fc.assert(
       fc.property(
-        fc
-          .hexaString({ minLength: 32, maxLength: 64 })
+        hexaString({ minLength: 32, maxLength: 64 })
           .map((s) => `tfs_${s}`),
         (rawSecret) => {
           const hash = hashApiKeySecret(rawSecret);
@@ -162,8 +163,7 @@ describe("Property 10: No raw secrets in storage", () => {
   it("hash is never equal to the raw secret", () => {
     fc.assert(
       fc.property(
-        fc
-          .hexaString({ minLength: 32, maxLength: 64 })
+        hexaString({ minLength: 32, maxLength: 64 })
           .map((s) => `tfs_${s}`),
         (rawSecret) => {
           const hash = hashApiKeySecret(rawSecret);
@@ -177,8 +177,7 @@ describe("Property 10: No raw secrets in storage", () => {
   it("same raw secret always produces the same hash (deterministic)", () => {
     fc.assert(
       fc.property(
-        fc
-          .hexaString({ minLength: 32, maxLength: 64 })
+        hexaString({ minLength: 32, maxLength: 64 })
           .map((s) => `tfs_${s}`),
         (rawSecret) => {
           const hash1 = hashApiKeySecret(rawSecret);
@@ -193,11 +192,9 @@ describe("Property 10: No raw secrets in storage", () => {
   it("different raw secrets produce different hashes (collision resistance)", () => {
     fc.assert(
       fc.property(
-        fc
-          .hexaString({ minLength: 32, maxLength: 64 })
+        hexaString({ minLength: 32, maxLength: 64 })
           .map((s) => `tfs_${s}`),
-        fc
-          .hexaString({ minLength: 32, maxLength: 64 })
+        hexaString({ minLength: 32, maxLength: 64 })
           .map((s) => `tfs_${s}`),
         (secret1, secret2) => {
           fc.pre(secret1 !== secret2);

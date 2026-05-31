@@ -270,7 +270,7 @@ onMounted(() => {
           View the complete mapping of roles to permissions
         </p>
       </div>
-      <n-button @click="loadData" :loading="isLoading">
+      <n-button :loading="isLoading" @click="loadData">
         <template #icon>
           <Icon icon="carbon:renew" />
         </template>
@@ -411,9 +411,9 @@ onMounted(() => {
         <div class="resource-header">
           <Icon icon="carbon:folder" class="resource-icon" />
           <span class="resource-name">{{ resource }}</span>
-          <n-tag size="small" round
-            >{{ permissionsByResource[resource].length }} permissions</n-tag
-          >
+          <n-tag size="small" round>
+            {{ permissionsByResource[resource].length }} permissions
+          </n-tag>
         </div>
 
         <div class="matrix-container">
@@ -429,9 +429,9 @@ onMounted(() => {
                 >
                   <div class="role-header-content">
                     <span class="role-name">{{ role.name }}</span>
-                    <n-tag v-if="role.isSystem" size="small" type="info"
-                      >System</n-tag
-                    >
+                    <n-tag v-if="role.isSystem" size="small" type="info">
+                      System
+                    </n-tag>
                     <span class="role-count">{{
                       getRolePermissionCount(role.id)
                     }}</span>
@@ -454,9 +454,7 @@ onMounted(() => {
                       {{ permission.action }}
                     </n-tag>
                   </div>
-                  <span class="permission-count"
-                    >{{ getPermissionRoleCount(permission.id) }} roles</span
-                  >
+                  <span class="permission-count">{{ getPermissionRoleCount(permission.id) }} roles</span>
                 </td>
                 <td
                   v-for="role in roles"

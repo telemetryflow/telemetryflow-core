@@ -199,13 +199,17 @@ function handleTabChange(tab: FormTab) {
 </script>
 
 <template>
-  <n-modal :show="show" :mask-closable="false" preset="card" :title="modalTitle" class="provider-form-modal"
-    style="width: 900px; max-width: 95vw" @update:show="handleClose">
+  <n-modal
+    :show="show" :mask-closable="false" preset="card" :title="modalTitle" class="provider-form-modal"
+    style="width: 900px; max-width: 95vw" @update:show="handleClose"
+  >
     <div class="modal-content">
       <!-- Vertical Tabs -->
       <div class="vertical-tabs">
-        <div v-for="tab in formTabs" :key="tab.value" class="tab-item" :class="{ active: activeTab === tab.value }"
-          @click="handleTabChange(tab.value)">
+        <div
+          v-for="tab in formTabs" :key="tab.value" class="tab-item" :class="{ active: activeTab === tab.value }"
+          @click="handleTabChange(tab.value)"
+        >
           <Icon :icon="tab.icon" class="tab-icon" />
           <span class="tab-label">{{ tab.label }}</span>
         </div>
@@ -230,8 +234,10 @@ function handleTabChange(tab: FormTab) {
             </n-form-item>
 
             <n-form-item label="Model ID" required>
-              <n-select v-if="modelOptions.length > 0" v-model:value="form.modelId" :options="modelOptions" filterable
-                tag placeholder="Select or enter model ID" />
+              <n-select
+                v-if="modelOptions.length > 0" v-model:value="form.modelId" :options="modelOptions" filterable
+                tag placeholder="Select or enter model ID"
+              />
               <n-input v-else v-model:value="form.modelId" placeholder="e.g., claude-sonnet-4-20250514" />
             </n-form-item>
 
@@ -248,8 +254,10 @@ function handleTabChange(tab: FormTab) {
           <!-- Authentication Tab -->
           <div v-show="activeTab === 'authentication'" class="tab-panel">
             <n-form-item label="API Key" :required="form.provider !== 'ollama'">
-              <n-input v-model:value="form.apiKey" type="password" show-password-on="click"
-                :placeholder="isEditMode ? 'Leave empty to keep current key' : 'Enter API key'" />
+              <n-input
+                v-model:value="form.apiKey" type="password" show-password-on="click"
+                :placeholder="isEditMode ? 'Leave empty to keep current key' : 'Enter API key'"
+              />
               <template #feedback>
                 <n-text depth="3" style="font-size: 12px">
                   Your API key is encrypted and stored securely.
@@ -289,8 +297,10 @@ function handleTabChange(tab: FormTab) {
 
             <n-form-item label="Temperature">
               <div class="slider-container">
-                <n-slider v-model:value="form.temperature" :min="0" :max="2" :step="0.1"
-                  :marks="{ 0: 'Precise', 1: 'Balanced', 2: 'Creative' }" />
+                <n-slider
+                  v-model:value="form.temperature" :min="0" :max="2" :step="0.1"
+                  :marks="{ 0: 'Precise', 1: 'Balanced', 2: 'Creative' }"
+                />
                 <div class="slider-value">{{ form.temperature }}</div>
               </div>
               <template #feedback>
@@ -302,8 +312,10 @@ function handleTabChange(tab: FormTab) {
 
             <n-form-item label="Top P (Nucleus Sampling)">
               <div class="slider-container">
-                <n-slider v-model:value="form.topP" :min="0" :max="1" :step="0.05"
-                  :marks="{ 0: '0', 0.5: '0.5', 1: '1' }" />
+                <n-slider
+                  v-model:value="form.topP" :min="0" :max="1" :step="0.05"
+                  :marks="{ 0: '0', 0.5: '0.5', 1: '1' }"
+                />
                 <div class="slider-value">{{ form.topP }}</div>
               </div>
               <template #feedback>

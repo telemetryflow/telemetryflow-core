@@ -154,7 +154,7 @@ function saveChannel() {
   if (!channelName.value) return;
 
   switch (channelType.value) {
-    case "email":
+    case "email": {
       const recipients = emailRecipients.value
         .split(",")
         .map((e: string) => e.trim())
@@ -170,6 +170,7 @@ function saveChannel() {
         fromEmail: emailFromEmail.value || undefined,
       });
       break;
+    }
     case "slack":
       if (!slackWebhookUrl.value.trim()) return;
       alertsStore.createSlackChannel(channelName.value, slackWebhookUrl.value.trim(), {
@@ -406,8 +407,10 @@ async function pasteTemplate() {
     <div class="channel-modal-content">
       <!-- Left Side: Vertical Tabs -->
       <div class="channel-tabs">
-        <div v-for="opt in channelTypeOptions" :key="opt.value" class="channel-tab-item"
-          :class="{ active: channelType === opt.value }" @click="channelType = opt.value">
+        <div
+          v-for="opt in channelTypeOptions" :key="opt.value" class="channel-tab-item"
+          :class="{ active: channelType === opt.value }" @click="channelType = opt.value"
+        >
           <Icon :icon="opt.icon" class="tab-icon" />
           <span class="tab-label">{{ opt.label }}</span>
         </div>
@@ -425,8 +428,10 @@ async function pasteTemplate() {
             </n-form-item>
 
             <n-form-item label="Description (optional)">
-              <n-input v-model:value="channelDescription" type="textarea"
-                placeholder="Brief description of this channel" :autosize="{ minRows: 2, maxRows: 3 }" />
+              <n-input
+                v-model:value="channelDescription" type="textarea"
+                placeholder="Brief description of this channel" :autosize="{ minRows: 2, maxRows: 3 }"
+              />
             </n-form-item>
 
             <!-- Email Config -->
@@ -522,8 +527,10 @@ async function pasteTemplate() {
             <!-- Telegram Config -->
             <template v-if="channelType === 'telegram'">
               <n-form-item label="Bot Token">
-                <n-input v-model:value="telegramBotToken" placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
-                  type="password">
+                <n-input
+                  v-model:value="telegramBotToken" placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
+                  type="password"
+                >
                   <template #suffix>
                     <Icon icon="carbon:locked" />
                   </template>
@@ -534,11 +541,13 @@ async function pasteTemplate() {
               </n-form-item>
               <div class="form-row">
                 <n-form-item label="Parse Mode">
-                  <n-select v-model:value="telegramParseMode" :options="[
-                    { label: 'HTML', value: 'HTML' },
-                    { label: 'Markdown', value: 'Markdown' },
-                    { label: 'MarkdownV2', value: 'MarkdownV2' },
-                  ]" />
+                  <n-select
+                    v-model:value="telegramParseMode" :options="[
+                      { label: 'HTML', value: 'HTML' },
+                      { label: 'Markdown', value: 'Markdown' },
+                      { label: 'MarkdownV2', value: 'MarkdownV2' },
+                    ]"
+                  />
                 </n-form-item>
                 <n-form-item label="Silent Notification">
                   <n-switch v-model:value="telegramDisableNotification" />
@@ -558,11 +567,13 @@ async function pasteTemplate() {
                 </n-radio-group>
               </n-form-item>
               <n-form-item label="Authentication">
-                <n-select v-model:value="webhookAuthType" :options="[
-                  { label: 'None', value: 'none' },
-                  { label: 'Basic Auth', value: 'basic' },
-                  { label: 'Bearer Token', value: 'bearer' },
-                ]" />
+                <n-select
+                  v-model:value="webhookAuthType" :options="[
+                    { label: 'None', value: 'none' },
+                    { label: 'Basic Auth', value: 'basic' },
+                    { label: 'Bearer Token', value: 'bearer' },
+                  ]"
+                />
               </n-form-item>
               <n-form-item v-if="webhookAuthType === 'bearer'" label="Bearer Token">
                 <n-input v-model:value="webhookAuthToken" type="password" placeholder="Enter token">
@@ -586,34 +597,42 @@ async function pasteTemplate() {
                 </div>
               </template>
               <n-form-item label="Custom Headers (JSON)">
-                <n-input v-model:value="webhookHeaders" type="textarea"
-                  placeholder='{"Content-Type": "application/json", "X-Custom-Header": "value"}'
-                  :autosize="{ minRows: 3, maxRows: 6 }" />
+                <n-input
+                  v-model:value="webhookHeaders" type="textarea"
+                  placeholder="{&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;X-Custom-Header&quot;: &quot;value&quot;}"
+                  :autosize="{ minRows: 3, maxRows: 6 }"
+                />
               </n-form-item>
               <n-form-item label="Custom Body Template">
-                <n-input v-model:value="webhookBody" type="textarea"
-                  placeholder='{"alert": "{{alertName}}", "severity": "{{severity}}", "message": "{{message}}"}'
-                  :autosize="{ minRows: 4, maxRows: 8 }" />
+                <n-input
+                  v-model:value="webhookBody" type="textarea"
+                  placeholder="{&quot;alert&quot;: &quot;{{alertName}}&quot;, &quot;severity&quot;: &quot;{{severity}}&quot;, &quot;message&quot;: &quot;{{message}}&quot;}"
+                  :autosize="{ minRows: 4, maxRows: 8 }"
+                />
               </n-form-item>
             </template>
 
             <!-- PagerDuty Config -->
             <template v-if="channelType === 'pagerduty'">
               <n-form-item label="Integration Key">
-                <n-input v-model:value="pagerdutyIntegrationKey" placeholder="Events API v2 Integration Key"
-                  type="password">
+                <n-input
+                  v-model:value="pagerdutyIntegrationKey" placeholder="Events API v2 Integration Key"
+                  type="password"
+                >
                   <template #suffix>
                     <Icon icon="carbon:locked" />
                   </template>
                 </n-input>
               </n-form-item>
               <n-form-item label="Default Severity">
-                <n-select v-model:value="pagerdutySeverity" :options="[
-                  { label: 'Critical', value: 'critical' },
-                  { label: 'Error', value: 'error' },
-                  { label: 'Warning', value: 'warning' },
-                  { label: 'Info', value: 'info' },
-                ]" />
+                <n-select
+                  v-model:value="pagerdutySeverity" :options="[
+                    { label: 'Critical', value: 'critical' },
+                    { label: 'Error', value: 'error' },
+                    { label: 'Warning', value: 'warning' },
+                    { label: 'Info', value: 'info' },
+                  ]"
+                />
               </n-form-item>
               <n-form-item label="Dedup Key (optional)">
                 <n-input v-model:value="pagerdutyDedupKey" placeholder="Custom deduplication key" />
@@ -636,13 +655,15 @@ async function pasteTemplate() {
                 </template>
               </n-form-item>
               <n-form-item label="Priority">
-                <n-select v-model:value="opsgeniePriority" :options="[
-                  { label: 'P1 - Critical', value: 'P1' },
-                  { label: 'P2 - High', value: 'P2' },
-                  { label: 'P3 - Moderate', value: 'P3' },
-                  { label: 'P4 - Low', value: 'P4' },
-                  { label: 'P5 - Informational', value: 'P5' },
-                ]" />
+                <n-select
+                  v-model:value="opsgeniePriority" :options="[
+                    { label: 'P1 - Critical', value: 'P1' },
+                    { label: 'P2 - High', value: 'P2' },
+                    { label: 'P3 - Moderate', value: 'P3' },
+                    { label: 'P4 - Low', value: 'P4' },
+                    { label: 'P5 - Informational', value: 'P5' },
+                  ]"
+                />
               </n-form-item>
               <n-form-item label="Tags (optional)">
                 <n-input v-model:value="opsgenieTags" placeholder="tag1, tag2, tag3" />
@@ -660,15 +681,17 @@ async function pasteTemplate() {
                   Send reminder for unresolved alerts
                 </n-checkbox>
                 <n-form-item v-if="sendReminder" label="Reminder Interval" style="margin-top: 8px; margin-bottom: 0">
-                  <n-select v-model:value="reminderInterval" :options="[
-                    { label: '15 minutes', value: '15m' },
-                    { label: '30 minutes', value: '30m' },
-                    { label: '1 hour', value: '1h' },
-                    { label: '2 hours', value: '2h' },
-                    { label: '4 hours', value: '4h' },
-                    { label: '8 hours', value: '8h' },
-                    { label: '24 hours', value: '24h' },
-                  ]" style="width: 180px" />
+                  <n-select
+                    v-model:value="reminderInterval" :options="[
+                      { label: '15 minutes', value: '15m' },
+                      { label: '30 minutes', value: '30m' },
+                      { label: '1 hour', value: '1h' },
+                      { label: '2 hours', value: '2h' },
+                      { label: '4 hours', value: '4h' },
+                      { label: '8 hours', value: '8h' },
+                      { label: '24 hours', value: '24h' },
+                    ]" style="width: 180px"
+                  />
                 </n-form-item>
               </div>
             </n-form-item>
@@ -694,7 +717,7 @@ async function pasteTemplate() {
                     </n-tooltip>
                     <n-tooltip trigger="hover">
                       <template #trigger>
-                        <n-button size="tiny" quaternary @click="pasteTemplate" :disabled="channelType !== 'webhook'">
+                        <n-button size="tiny" quaternary :disabled="channelType !== 'webhook'" @click="pasteTemplate">
                           <template #icon>
                             <Icon icon="carbon:paste" />
                           </template>

@@ -104,9 +104,9 @@
                       type="error"
                       @click="removeRule(idx)"
                     >
-                      <template #icon
-                        ><Icon icon="carbon:trash-can"
-                      /></template>
+                      <template #icon>
+                        <Icon icon="carbon:trash-can" />
+                      </template>
                     </n-button>
                   </div>
 
@@ -186,7 +186,7 @@
                     <n-gi
                       v-if="
                         rule.targetField === 'resource_attribute_key' ||
-                        rule.targetField === 'log_attribute_key'
+                          rule.targetField === 'log_attribute_key'
                       "
                     >
                       <n-form-item label="Attribute Key" size="small">
@@ -202,7 +202,7 @@
                     <n-gi
                       v-if="
                         rule.maskType === 'REDACT' ||
-                        rule.maskType === 'REPLACE'
+                          rule.maskType === 'REPLACE'
                       "
                     >
                       <n-form-item label="Replacement Text" size="small">
@@ -255,8 +255,7 @@
                       <code
                         class="test-value"
                         :class="{ changed: ruleTestResults[idx]?.changed }"
-                        >{{ ruleTestResults[idx]?.masked }}</code
-                      >
+                      >{{ ruleTestResults[idx]?.masked }}</code>
                       <n-tag
                         v-if="ruleTestResults[idx]?.changed"
                         type="success"
@@ -275,7 +274,7 @@
                   <p>No rules yet. Add a rule to define what data to mask.</p>
                 </div>
 
-                <n-button dashed block @click="addRule" class="add-rule-btn">
+                <n-button dashed block class="add-rule-btn" @click="addRule">
                   <template #icon><Icon icon="carbon:add" /></template>
                   Add Rule
                 </n-button>
@@ -333,8 +332,7 @@
                       <code
                         class="test-result-value"
                         :class="{ 'result-changed': activeTestResult.changed }"
-                        >{{ activeTestResult.masked }}</code
-                      >
+                      >{{ activeTestResult.masked }}</code>
                     </div>
                     <div class="test-result-meta">
                       <n-tag

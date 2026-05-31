@@ -9,7 +9,6 @@ import type { DataTableColumn, DataTableRowKey, DataTableCreateRowKey, Paginatio
 import EmptyState from './EmptyState.vue';
 import { exportToCSV, exportToJSON, getExportFilename } from '@/utils';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RowData = any;
 
 interface Props {
@@ -156,13 +155,13 @@ function handleExportJSON() {
       <div class="toolbar-spacer" />
       <slot name="toolbar-right" />
       <n-button-group size="small">
-        <n-button @click="handleExportCSV" :disabled="loading">
+        <n-button :disabled="loading" @click="handleExportCSV">
           <template #icon>
             <Icon icon="carbon:download" />
           </template>
           CSV
         </n-button>
-        <n-button @click="handleExportJSON" :disabled="loading">
+        <n-button :disabled="loading" @click="handleExportJSON">
           <template #icon>
             <Icon icon="carbon:json-reference" />
           </template>

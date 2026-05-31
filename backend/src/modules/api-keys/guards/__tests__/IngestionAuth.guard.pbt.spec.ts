@@ -42,12 +42,13 @@ const validKeySecretArb = fc
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function makeContext(headers: Record<string, string>): ExecutionContext {
+  const res: any = { setHeader: jest.fn() };
   const req: any = {
     headers,
     ip: "127.0.0.1",
     socket: { remoteAddress: "127.0.0.1" },
   };
-  return { switchToHttp: () => ({ getRequest: () => req }) } as any;
+  return { switchToHttp: () => ({ getRequest: () => req, getResponse: () => res }) } as any;
 }
 
 function makeGuardWithKey(
@@ -70,6 +71,7 @@ function makeGuardWithKey(
     getWorkspaceId: () => undefined,
     getPermissions: () => ["*"],
     getScopes: () => [],
+    getRateLimit: () => undefined,
   };
   const repo = {
     findByKeyHash: jest
@@ -226,6 +228,7 @@ describe("IngestionAuthGuard — property-based tests", () => {
             getWorkspaceId: () => undefined,
             getPermissions: () => ["*"],
             getScopes: () => [],
+            getRateLimit: () => undefined,
           };
           const repo = {
             findByKeyHash: jest

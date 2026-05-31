@@ -138,13 +138,17 @@
               :bordered="false"
               size="tiny"
               :type="regTagType(reg)"
-            >{{ reg }}</n-tag>
+            >
+              {{ reg }}
+            </n-tag>
             <n-tag
               v-if="tpl.regulations.length > 3"
               :bordered="false"
               size="tiny"
               type="default"
-            >+{{ tpl.regulations.length - 3 }}</n-tag>
+            >
+              +{{ tpl.regulations.length - 3 }}
+            </n-tag>
             <span v-if="tpl.regulations.length === 0" class="tc-no-regs">No regulations</span>
           </div>
         </div>

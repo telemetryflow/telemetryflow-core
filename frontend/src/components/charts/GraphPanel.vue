@@ -327,8 +327,8 @@ function handleWidgetUpdate() {
       :tooltip-size="'small'"
       :show-chart-type-toggle="
         widget.type === 'timeseries' ||
-        widget.type === 'stat' ||
-        widget.type === 'gauge'
+          widget.type === 'stat' ||
+          widget.type === 'gauge'
       "
       @update:chart-type="chartDisplayType = $event"
     >

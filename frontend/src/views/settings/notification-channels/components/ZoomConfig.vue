@@ -65,7 +65,7 @@ function update(partial: Partial<ZoomConfigModel>) {
       :value="modelValue.headers"
       type="textarea"
       :autosize="{ minRows: 2, maxRows: 4 }"
-      placeholder='{"X-Custom-Header": "value"}'
+      placeholder="{&quot;X-Custom-Header&quot;: &quot;value&quot;}"
       @update:value="update({ headers: $event })"
     />
     <template #feedback>

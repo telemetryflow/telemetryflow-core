@@ -390,7 +390,7 @@ function calculateNodePositions(
             );
             const apiKeyCount = tenantApiKeys.length;
             const apiKeyTotalWidth = apiKeyCount * APIKEY_SPACING;
-            let apiKeyStartX =
+            const apiKeyStartX =
               tenantCenterX - apiKeyTotalWidth / 2 + APIKEY_SPACING / 2;
 
             tenantApiKeys.forEach((apiKey, apiKeyIndex) => {
@@ -1461,9 +1461,7 @@ onUnmounted(() => {
           <div class="modal-title-section">
             <Icon icon="carbon:network-4" class="modal-title-icon" />
             <span class="modal-title">API Key Hierarchy</span>
-            <span class="modal-subtitle"
-              >Regions → Organizations → Workspaces → Tenants → API Keys</span
-            >
+            <span class="modal-subtitle">Regions → Organizations → Workspaces → Tenants → API Keys</span>
           </div>
           <div class="modal-actions">
             <NButtonGroup size="small" class="modal-layout-buttons">
@@ -1535,7 +1533,7 @@ onUnmounted(() => {
                 <tr
                   v-if="
                     modalHoveredNode.type !== 'region' &&
-                    modalHoveredNode.type !== 'apikey'
+                      modalHoveredNode.type !== 'apikey'
                   "
                 >
                   <td class="tooltip-label">Slug:</td>
@@ -1544,7 +1542,7 @@ onUnmounted(() => {
                 <tr
                   v-if="
                     modalHoveredNode.type === 'apikey' &&
-                    modalHoveredNode.keyHint
+                      modalHoveredNode.keyHint
                   "
                 >
                   <td class="tooltip-label">Key Hint:</td>
@@ -1555,7 +1553,7 @@ onUnmounted(() => {
                 <tr
                   v-if="
                     modalHoveredNode.type === 'apikey' &&
-                    modalHoveredNode.locationPath
+                      modalHoveredNode.locationPath
                   "
                 >
                   <td class="tooltip-label">Location:</td>

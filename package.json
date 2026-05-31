@@ -40,9 +40,9 @@
     "db:migrate:seed": "pnpm db:migrate && pnpm db:seed",
     "db:fresh": "pnpm db:cleanup && pnpm db:migrate && pnpm db:seed",
     "generate:secrets": "node scripts/generate-secrets.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "test": "pnpm --filter @telemetryflow/backend test",
+    "test:watch": "pnpm --filter @telemetryflow/backend test:watch",
+    "test:cov": "pnpm --filter @telemetryflow/backend test:cov"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

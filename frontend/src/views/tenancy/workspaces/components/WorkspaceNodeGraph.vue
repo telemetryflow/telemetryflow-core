@@ -905,7 +905,7 @@ onUnmounted(() => {
               <td class="tooltip-value">
                 {{
                   hoveredNode.type.charAt(0).toUpperCase() +
-                  hoveredNode.type.slice(1)
+                    hoveredNode.type.slice(1)
                 }}
               </td>
             </tr>
@@ -998,9 +998,7 @@ onUnmounted(() => {
           <div class="modal-title-section">
             <Icon icon="carbon:network-4" class="modal-title-icon" />
             <span class="modal-title">Workspace Hierarchy</span>
-            <span class="modal-subtitle"
-              >Organizations → Workspaces → Tenants</span
-            >
+            <span class="modal-subtitle">Organizations → Workspaces → Tenants</span>
           </div>
           <div class="modal-actions">
             <NButtonGroup size="small" class="modal-layout-buttons">
@@ -1060,7 +1058,7 @@ onUnmounted(() => {
                   <td class="tooltip-value">
                     {{
                       modalHoveredNode.type.charAt(0).toUpperCase() +
-                      modalHoveredNode.type.slice(1)
+                        modalHoveredNode.type.slice(1)
                     }}
                   </td>
                 </tr>

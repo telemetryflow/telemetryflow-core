@@ -810,15 +810,14 @@ watch(
             <span
               v-if="series?.[0] && isSeriesHidden(series[0].name)"
               class="hidden-badge"
-              >Hidden</span
-            >
+            >Hidden</span>
           </div>
 
           <!-- Current value when hovering -->
           <div
             v-if="
               currentHoverValue !== null &&
-              !(series?.[0] && isSeriesHidden(series[0].name))
+                !(series?.[0] && isSeriesHidden(series[0].name))
             "
             class="current-value-section"
           >
@@ -834,27 +833,19 @@ watch(
           <div class="stats-grid">
             <div class="stat-item">
               <span class="stat-label">MIN</span>
-              <span class="stat-value min"
-                >{{ formatValue(singleSeriesStats.min) }} {{ displayUnit }}</span
-              >
+              <span class="stat-value min">{{ formatValue(singleSeriesStats.min) }} {{ displayUnit }}</span>
             </div>
             <div class="stat-item">
               <span class="stat-label">MAX</span>
-              <span class="stat-value max"
-                >{{ formatValue(singleSeriesStats.max) }} {{ displayUnit }}</span
-              >
+              <span class="stat-value max">{{ formatValue(singleSeriesStats.max) }} {{ displayUnit }}</span>
             </div>
             <div class="stat-item">
               <span class="stat-label">AVG</span>
-              <span class="stat-value avg"
-                >{{ formatValue(singleSeriesStats.avg) }} {{ displayUnit }}</span
-              >
+              <span class="stat-value avg">{{ formatValue(singleSeriesStats.avg) }} {{ displayUnit }}</span>
             </div>
             <div class="stat-item">
               <span class="stat-label">LAST</span>
-              <span class="stat-value last"
-                >{{ formatValue(singleSeriesStats.last) }} {{ displayUnit }}</span
-              >
+              <span class="stat-value last">{{ formatValue(singleSeriesStats.last) }} {{ displayUnit }}</span>
             </div>
           </div>
         </div>
@@ -887,34 +878,24 @@ watch(
                 >
                   {{ formatValue(item.current) }} {{ displayUnit }}
                 </span>
-                <span v-if="isSeriesHidden(item.name)" class="hidden-badge"
-                  >Hidden</span
-                >
+                <span v-if="isSeriesHidden(item.name)" class="hidden-badge">Hidden</span>
               </div>
               <div class="compact-stats" :class="{ 'two-column': isTwoSeries }">
                 <div class="compact-stat">
                   <span class="compact-label">MIN</span>
-                  <span class="compact-value min"
-                    >{{ formatValue(item.min) }} {{ displayUnit }}</span
-                  >
+                  <span class="compact-value min">{{ formatValue(item.min) }} {{ displayUnit }}</span>
                 </div>
                 <div class="compact-stat">
                   <span class="compact-label">MAX</span>
-                  <span class="compact-value max"
-                    >{{ formatValue(item.max) }} {{ displayUnit }}</span
-                  >
+                  <span class="compact-value max">{{ formatValue(item.max) }} {{ displayUnit }}</span>
                 </div>
                 <div class="compact-stat">
                   <span class="compact-label">AVG</span>
-                  <span class="compact-value avg"
-                    >{{ formatValue(item.avg) }} {{ displayUnit }}</span
-                  >
+                  <span class="compact-value avg">{{ formatValue(item.avg) }} {{ displayUnit }}</span>
                 </div>
                 <div class="compact-stat">
                   <span class="compact-label">LAST</span>
-                  <span class="compact-value last"
-                    >{{ formatValue(item.last) }} {{ displayUnit }}</span
-                  >
+                  <span class="compact-value last">{{ formatValue(item.last) }} {{ displayUnit }}</span>
                 </div>
               </div>
             </div>

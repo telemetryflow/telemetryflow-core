@@ -547,9 +547,11 @@ const wsTagColor = computed(() => {
           <div class="section-label">
             <Icon icon="carbon:locked" />
             <span>Permissions</span>
-            <NTag size="small" round :bordered="false" type="info">{{
-              apiKey.permissions.length
-            }}</NTag>
+            <NTag size="small" round :bordered="false" type="info">
+              {{
+                apiKey.permissions.length
+              }}
+            </NTag>
           </div>
           <table v-if="permissionItems.length > 0" class="info-table">
             <tbody>
@@ -575,9 +577,11 @@ const wsTagColor = computed(() => {
           <div class="section-label">
             <Icon icon="carbon:catalog" />
             <span>Scopes</span>
-            <NTag size="small" round :bordered="false" type="info">{{
-              apiKey.scopes.length
-            }}</NTag>
+            <NTag size="small" round :bordered="false" type="info">
+              {{
+                apiKey.scopes.length
+              }}
+            </NTag>
           </div>
           <table v-if="scopeItems.length > 0" class="info-table">
             <tbody>

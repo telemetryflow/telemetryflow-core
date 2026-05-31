@@ -62,6 +62,7 @@ vi.mock("@/config", () => ({
     brandName: "TelemetryFlow",
     brandTagline: "Observability Platform",
   },
+  authInputOverrides: {},
 }));
 
 vi.mock("@/config/whitelabel", () => ({
@@ -97,11 +98,21 @@ vi.mock("vue-router", () => ({
 }));
 
 // ─── Helper: mount login view with injected field errors ──────────────────────
+let _LoginView: any = null;
+
+async function getLoginView() {
+  if (!_LoginView) {
+    const mod = await import("../login.vue");
+    _LoginView = mod.default;
+  }
+  return _LoginView;
+}
+
 async function mountLoginWithErrors(errors: {
   identifier?: string;
   password?: string;
 }) {
-  const { default: LoginView } = await import("../login.vue");
+  const LoginView = await getLoginView();
 
   const wrapper = mount(LoginView, {
     global: {
@@ -129,10 +140,10 @@ async function mountLoginWithErrors(errors: {
 
 describe("Property 11: Frontend validation error display (login.vue)", () => {
   beforeEach(() => {
+    _LoginView = null;
     setActivePinia(createPinia());
   });
 
-  // ── Property: arbitrary identifier error strings render inline ──────────────
   it("displays arbitrary identifier error strings inline with role=alert", async () => {
     await fc.assert(
       fc.asyncProperty(
@@ -145,14 +156,14 @@ describe("Property 11: Frontend validation error display (login.vue)", () => {
           const errorEl = wrapper.find("#identifier-error");
           expect(errorEl.exists()).toBe(true);
           expect(errorEl.attributes("role")).toBe("alert");
-          expect(errorEl.text()).toContain(errorMsg);
+          expect(errorEl.text().trim()).toContain(errorMsg.trim());
+          wrapper.unmount();
         },
       ),
       { numRuns: 20 },
     );
-  });
+  }, 60_000);
 
-  // ── Property: arbitrary password error strings render inline ─────────────────
   it("displays arbitrary password error strings inline with role=alert", async () => {
     await fc.assert(
       fc.asyncProperty(
@@ -165,14 +176,14 @@ describe("Property 11: Frontend validation error display (login.vue)", () => {
           const errorEl = wrapper.find("#password-error");
           expect(errorEl.exists()).toBe(true);
           expect(errorEl.attributes("role")).toBe("alert");
-          expect(errorEl.text()).toContain(errorMsg);
+          expect(errorEl.text().trim()).toContain(errorMsg.trim());
+          wrapper.unmount();
         },
       ),
       { numRuns: 20 },
     );
-  });
+  }, 60_000);
 
-  // ── Property: both errors can appear simultaneously ───────────────────────────
   it("displays both identifier and password errors simultaneously", async () => {
     await fc.assert(
       fc.asyncProperty(
@@ -195,15 +206,15 @@ describe("Property 11: Frontend validation error display (login.vue)", () => {
 
           expect(idErr.exists()).toBe(true);
           expect(pwErr.exists()).toBe(true);
-          expect(idErr.text()).toContain(identifierError);
-          expect(pwErr.text()).toContain(passwordError);
+          expect(idErr.text().trim()).toContain(identifierError.trim());
+          expect(pwErr.text().trim()).toContain(passwordError.trim());
+          wrapper.unmount();
         },
       ),
       { numRuns: 20 },
     );
-  });
+  }, 60_000);
 
-  // ── Property: no errors → no error elements rendered ─────────────────────────
   it("renders no error elements when fieldErrors is empty", async () => {
     const wrapper = await mountLoginWithErrors({});
 
@@ -211,14 +222,12 @@ describe("Property 11: Frontend validation error display (login.vue)", () => {
     expect(wrapper.find("#password-error").exists()).toBe(false);
   });
 
-  // ── Property: empty string errors do not render ───────────────────────────────
   it("does not render error elements for empty string errors", async () => {
     const wrapper = await mountLoginWithErrors({
       identifier: "",
       password: "",
     });
 
-    // v-if="fieldErrors.identifier" — empty string is falsy
     expect(wrapper.find("#identifier-error").exists()).toBe(false);
     expect(wrapper.find("#password-error").exists()).toBe(false);
   });

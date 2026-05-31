@@ -93,8 +93,10 @@ function startCooldown() {
             <li>Wait a few minutes and try again</li>
           </ul>
 
-          <n-button type="primary" size="large" block :loading="isResending" :disabled="resendCooldown > 0"
-            @click="handleResend">
+          <n-button
+            type="primary" size="large" block :loading="isResending" :disabled="resendCooldown > 0"
+            @click="handleResend"
+          >
             {{
               resendCooldown > 0
                 ? `Resend in ${resendCooldown}s`

@@ -9,7 +9,7 @@ import { iamClient } from "./iam";
 import type { Region, IAMPaginatedResponse, IAMListParams } from "@/types";
 
 // Local state for mock data (to support CRUD operations)
-let mockRegions = [...MOCK_REGIONS];
+const mockRegions = [...MOCK_REGIONS];
 
 export interface CreateRegionRequest {
   name: string;

@@ -9,7 +9,7 @@ import { iamClient } from "./iam";
 import type { Workspace, IAMPaginatedResponse, IAMListParams } from "@/types";
 
 // Local state for mock data (to support CRUD operations)
-let mockWorkspaces = [...MOCK_WORKSPACES];
+const mockWorkspaces = [...MOCK_WORKSPACES];
 
 export interface CreateWorkspaceRequest {
   name: string;

@@ -29,12 +29,14 @@ const appStore = useAppStore();
       <div class="appearance-item">
         <span class="appearance-label">Sidebar</span>
         <div class="sidebar-toggle">
-          <n-switch :value="!appStore.sidebarCollapsed" @update:value="
-            (expanded: boolean) => (appStore.sidebarCollapsed = !expanded)
-          " />
+          <n-switch
+            :value="!appStore.sidebarCollapsed" @update:value="
+              (expanded: boolean) => (appStore.sidebarCollapsed = !expanded)
+            "
+          />
           <span class="toggle-label">{{
             appStore.sidebarCollapsed ? "Collapsed" : "Expanded"
-            }}</span>
+          }}</span>
         </div>
       </div>
     </div>

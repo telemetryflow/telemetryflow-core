@@ -1,6 +1,8 @@
 const js = require('@eslint/js');
 const tseslint = require('@typescript-eslint/eslint-plugin');
 const tsparser = require('@typescript-eslint/parser');
+const vuePlugin = require('eslint-plugin-vue');
+const vueParser = require('vue-eslint-parser');
 
 module.exports = [
   js.configs.recommended,
@@ -38,7 +40,7 @@ module.exports = [
       '@typescript-eslint': tseslint,
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': ['warn', { 
+      '@typescript-eslint/no-unused-vars': ['warn', {
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         caughtErrorsIgnorePattern: '^_'
@@ -54,6 +56,76 @@ module.exports = [
       'prefer-const': 'error',
       'no-var': 'error',
       'no-undef': 'off',
+    },
+  },
+  ...vuePlugin.configs['flat/recommended'],
+  {
+    files: ['frontend/src/**/*.vue', 'frontend/src/**/*.ts', 'frontend/src/**/*.tsx'],
+    ignores: ['frontend/src/**/*.spec.ts', 'frontend/src/**/*.test.ts', 'frontend/src/**/__tests__/**/*.ts'],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tsparser,
+        sourceType: 'module',
+        ecmaVersion: 2021,
+        extraFileExtensions: ['.vue'],
+      },
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
+        fetch: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        FormData: 'readonly',
+        HTMLElement: 'readonly',
+        Event: 'readonly',
+        WebSocket: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
+        IntersectionObserver: 'readonly',
+        ResizeObserver: 'readonly',
+        MutationObserver: 'readonly',
+        AbortController: 'readonly',
+        performance: 'readonly',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint,
+    },
+    rules: {
+      'vue/multi-word-component-names': 'off',
+      'vue/no-v-html': 'off',
+      'vue/require-default-prop': 'off',
+      'vue/require-explicit-emits': 'off',
+      'vue/max-attributes-per-line': 'off',
+      'vue/singleline-html-element-content-newline': 'off',
+      'vue/html-self-closing': ['error', {
+        html: { void: 'always', normal: 'always', component: 'always' },
+        svg: 'always',
+        math: 'always',
+      }],
+      '@typescript-eslint/no-unused-vars': ['warn', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      }],
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      'no-console': 'off',
+      'no-unused-vars': 'off',
+      'no-undef': 'off',
+      'prefer-const': 'error',
+      'no-var': 'error',
     },
   },
   {
@@ -83,6 +155,7 @@ module.exports = [
         beforeAll: 'readonly',
         afterAll: 'readonly',
         test: 'readonly',
+        vi: 'readonly',
       },
     },
     plugins: {
@@ -134,7 +207,6 @@ module.exports = [
       '.eslintrc.js',
       'eslint.config.js',
       '**/*.d.ts',
-      'frontend/**',
     ],
   },
 ];

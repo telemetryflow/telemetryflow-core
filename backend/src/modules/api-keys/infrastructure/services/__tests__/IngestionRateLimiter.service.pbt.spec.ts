@@ -88,7 +88,7 @@ describe("Property 7: Environment-aware rate limit enforcement", () => {
 
   it("the (limit+1)th request is denied", () => {
     fc.assert(
-      fc.property(
+      fc.asyncProperty(
         fc.constantFrom("production", "development", "staging"),
         fc.option(fc.integer({ min: 1, max: 500 }), { nil: undefined }),
         async (env, perKeyLimit) => {
@@ -109,7 +109,7 @@ describe("Property 7: Environment-aware rate limit enforcement", () => {
 
   it("any request at or below the limit is allowed", () => {
     fc.assert(
-      fc.property(fc.integer({ min: 1, max: 100 }), async (count) => {
+      fc.asyncProperty(fc.integer({ min: 1, max: 100 }), async (count) => {
         process.env.NODE_ENV = "production";
         const svc = makeService("production");
 
@@ -136,8 +136,8 @@ describe("Property 8: Rate limit result shape on all responses", () => {
    */
   it("result always has correct shape for allowed requests", () => {
     fc.assert(
-      fc.property(
-        fc.integer({ min: 1, max: 99 }), // count within limit
+      fc.asyncProperty(
+        fc.integer({ min: 1, max: 99 }),
         async (count) => {
           process.env.NODE_ENV = "production";
           const svc = makeService("production");
@@ -162,8 +162,8 @@ describe("Property 8: Rate limit result shape on all responses", () => {
 
   it("remaining is always max(0, limit - count)", () => {
     fc.assert(
-      fc.property(
-        fc.integer({ min: 1, max: 200 }), // count (may exceed limit)
+      fc.asyncProperty(
+        fc.integer({ min: 1, max: 200 }),
         async (count) => {
           process.env.NODE_ENV = "production";
           const svc = makeService("production");
@@ -182,7 +182,7 @@ describe("Property 8: Rate limit result shape on all responses", () => {
 
   it("fail-open result always has correct shape on Redis error", () => {
     fc.assert(
-      fc.property(
+      fc.asyncProperty(
         fc.string({ minLength: 1, maxLength: 64 }),
         fc.option(fc.integer({ min: 1, max: 1000 }), { nil: undefined }),
         async (apiKeyId, perKeyLimit) => {

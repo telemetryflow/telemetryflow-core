@@ -116,18 +116,22 @@ async function handleSubmit() {
           <!-- Current password -->
           <div class="form-group">
             <label for="current-password" class="form-label">Current Password</label>
-            <n-input id="current-password" v-model:value="currentPassword" :type="showCurrent ? 'text' : 'password'"
+            <n-input
+              id="current-password" v-model:value="currentPassword" :type="showCurrent ? 'text' : 'password'"
               placeholder="Enter current password" size="large" :disabled="authStore.isLoading"
               :theme-overrides="authInputOverrides" :status="fieldErrors.currentPassword ? 'error' : undefined"
               autocomplete="current-password"
               aria-required="true" :aria-describedby="fieldErrors.currentPassword
-                  ? 'current-password-error'
-                  : undefined
-                " @input="fieldErrors.currentPassword = undefined">
+                ? 'current-password-error'
+                : undefined
+              " @input="fieldErrors.currentPassword = undefined"
+            >
               <template #suffix>
-                <Icon :icon="showCurrent ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
+                <Icon
+                  :icon="showCurrent ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
                   " class="password-toggle" role="button" tabindex="0" @click="showCurrent = !showCurrent"
-                  @keypress.enter="showCurrent = !showCurrent" />
+                  @keypress.enter="showCurrent = !showCurrent"
+                />
               </template>
             </n-input>
             <span v-if="fieldErrors.currentPassword" id="current-password-error" class="field-error" role="alert">
@@ -139,27 +143,35 @@ async function handleSubmit() {
           <!-- New password -->
           <div class="form-group">
             <label for="new-password" class="form-label">New Password</label>
-            <n-input id="new-password" v-model:value="newPassword" :type="showNew ? 'text' : 'password'"
+            <n-input
+              id="new-password" v-model:value="newPassword" :type="showNew ? 'text' : 'password'"
               placeholder="Enter new password" size="large" :disabled="authStore.isLoading"
               :theme-overrides="authInputOverrides" :status="fieldErrors.newPassword ? 'error' : undefined"
               autocomplete="new-password" aria-required="true"
               :aria-describedby="fieldErrors.newPassword ? 'new-password-error' : undefined
-                " @input="fieldErrors.newPassword = undefined">
+              " @input="fieldErrors.newPassword = undefined"
+            >
               <template #suffix>
-                <Icon :icon="showNew ? 'mdi:lock-open-outline' : 'mdi:lock-outline'" class="password-toggle"
-                  role="button" tabindex="0" @click="showNew = !showNew" @keypress.enter="showNew = !showNew" />
+                <Icon
+                  :icon="showNew ? 'mdi:lock-open-outline' : 'mdi:lock-outline'" class="password-toggle"
+                  role="button" tabindex="0" @click="showNew = !showNew" @keypress.enter="showNew = !showNew"
+                />
               </template>
             </n-input>
             <div v-if="newPassword" class="password-strength" aria-live="polite">
-              <div class="strength-bar" role="progressbar" :aria-valuenow="passwordStrength.score" aria-valuemin="0"
-                aria-valuemax="100">
-                <div class="strength-fill" :style="{
-                  width: `${passwordStrength.score}%`,
-                  backgroundColor: passwordStrength.color,
-                }" />
+              <div
+                class="strength-bar" role="progressbar" :aria-valuenow="passwordStrength.score" aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <div
+                  class="strength-fill" :style="{
+                    width: `${passwordStrength.score}%`,
+                    backgroundColor: passwordStrength.color,
+                  }"
+                />
               </div>
               <span class="strength-label" :style="{ color: passwordStrength.color }">{{ passwordStrength.label
-                }}</span>
+              }}</span>
             </div>
             <div v-if="newPassword && passwordRequirementErrors.length > 0" class="password-requirements">
               <span v-for="err in passwordRequirementErrors" :key="err" class="requirement">
@@ -175,18 +187,22 @@ async function handleSubmit() {
           <!-- Confirm new password -->
           <div class="form-group">
             <label for="confirm-new-password" class="form-label">Confirm New Password</label>
-            <n-input id="confirm-new-password" v-model:value="confirmPassword" :type="showConfirm ? 'text' : 'password'"
+            <n-input
+              id="confirm-new-password" v-model:value="confirmPassword" :type="showConfirm ? 'text' : 'password'"
               placeholder="Confirm new password" size="large" :disabled="authStore.isLoading"
               :theme-overrides="authInputOverrides" :status="fieldErrors.confirmPassword ? 'error' : undefined"
               autocomplete="new-password"
               aria-required="true" :aria-describedby="fieldErrors.confirmPassword
-                  ? 'confirm-new-password-error'
-                  : undefined
-                " @input="fieldErrors.confirmPassword = undefined">
+                ? 'confirm-new-password-error'
+                : undefined
+              " @input="fieldErrors.confirmPassword = undefined"
+            >
               <template #suffix>
-                <Icon :icon="showConfirm ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
+                <Icon
+                  :icon="showConfirm ? 'mdi:lock-open-outline' : 'mdi:lock-outline'
                   " class="password-toggle" role="button" tabindex="0" @click="showConfirm = !showConfirm"
-                  @keypress.enter="showConfirm = !showConfirm" />
+                  @keypress.enter="showConfirm = !showConfirm"
+                />
               </template>
             </n-input>
             <span v-if="fieldErrors.confirmPassword" id="confirm-new-password-error" class="field-error" role="alert">
@@ -195,8 +211,10 @@ async function handleSubmit() {
             </span>
           </div>
 
-          <n-button type="primary" size="large" block :loading="authStore.isLoading" :disabled="authStore.isLoading"
-            @click="handleSubmit">
+          <n-button
+            type="primary" size="large" block :loading="authStore.isLoading" :disabled="authStore.isLoading"
+            @click="handleSubmit"
+          >
             {{ authStore.isLoading ? "Updating…" : "Update Password" }}
           </n-button>
 

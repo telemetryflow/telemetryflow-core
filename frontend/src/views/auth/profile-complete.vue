@@ -184,8 +184,10 @@ function copyBackupCodes() {
 
         <div class="form-group">
           <label class="form-label">Recovery Email</label>
-          <n-input v-model:value="recoveryEmail" placeholder="Enter recovery email" size="large"
-            :disabled="isSavingRecoveryEmail" :theme-overrides="authInputOverrides">
+          <n-input
+            v-model:value="recoveryEmail" placeholder="Enter recovery email" size="large"
+            :disabled="isSavingRecoveryEmail" :theme-overrides="authInputOverrides"
+          >
             <template #prefix>
               <Icon icon="mdi:email-outline" class="input-icon" />
             </template>
@@ -197,8 +199,10 @@ function copyBackupCodes() {
         </n-alert>
 
         <div class="button-group">
-          <n-button type="primary" size="large" block :loading="isSavingRecoveryEmail" :disabled="!recoveryEmail"
-            @click="handleSaveRecoveryEmail">
+          <n-button
+            type="primary" size="large" block :loading="isSavingRecoveryEmail" :disabled="!recoveryEmail"
+            @click="handleSaveRecoveryEmail"
+          >
             Save & Continue
           </n-button>
           <n-button size="large" block ghost @click="handleSkipRecoveryEmail">
@@ -271,8 +275,10 @@ function copyBackupCodes() {
 
           <div class="form-group">
             <label class="form-label">Verification Code</label>
-            <n-input v-model:value="mfaCode" placeholder="Enter 6-digit code" size="large" maxlength="6"
-              :disabled="isVerifyingMfa" :theme-overrides="authInputOverrides" />
+            <n-input
+              v-model:value="mfaCode" placeholder="Enter 6-digit code" size="large" maxlength="6"
+              :disabled="isVerifyingMfa" :theme-overrides="authInputOverrides"
+            />
           </div>
 
           <n-alert v-if="error" type="error" :show-icon="true" class="error-alert">
@@ -280,8 +286,10 @@ function copyBackupCodes() {
           </n-alert>
 
           <div class="button-group">
-            <n-button type="primary" size="large" block :loading="isVerifyingMfa" :disabled="mfaCode.length !== 6"
-              @click="handleVerifyMfaSetup">
+            <n-button
+              type="primary" size="large" block :loading="isVerifyingMfa" :disabled="mfaCode.length !== 6"
+              @click="handleVerifyMfaSetup"
+            >
               Verify & Enable
             </n-button>
             <n-button size="large" block ghost @click="handleGoBack">
@@ -338,22 +346,26 @@ function copyBackupCodes() {
 
         <div class="setup-summary">
           <div class="summary-item">
-            <Icon :icon="recoveryEmail ? 'mdi:check-circle' : 'mdi:minus-circle'"
-              :class="recoveryEmail ? 'success' : 'skipped'" />
+            <Icon
+              :icon="recoveryEmail ? 'mdi:check-circle' : 'mdi:minus-circle'"
+              :class="recoveryEmail ? 'success' : 'skipped'"
+            />
             <span>Recovery Email</span>
             <span class="status">{{
               recoveryEmail ? "Added" : "Skipped"
-              }}</span>
+            }}</span>
           </div>
           <div class="summary-item">
-            <Icon :icon="mfaBackupCodes.length > 0
+            <Icon
+              :icon="mfaBackupCodes.length > 0
                 ? 'mdi:check-circle'
                 : 'mdi:minus-circle'
-              " :class="mfaBackupCodes.length > 0 ? 'success' : 'skipped'" />
+              " :class="mfaBackupCodes.length > 0 ? 'success' : 'skipped'"
+            />
             <span>Two-Factor Auth</span>
             <span class="status">{{
               mfaBackupCodes.length > 0 ? "Enabled" : "Skipped"
-              }}</span>
+            }}</span>
           </div>
         </div>
 

@@ -271,36 +271,36 @@ onMounted(() => {
 
     <!-- Content -->
     <div v-if="user" class="content-layout">
-        <!-- User Profile Card -->
-        <div class="profile-section">
-          <div class="profile-card">
-            <div class="profile-header">
-              <div class="user-avatar-large">
-                {{
-                  user.firstName?.charAt(0) ||
+      <!-- User Profile Card -->
+      <div class="profile-section">
+        <div class="profile-card">
+          <div class="profile-header">
+            <div class="user-avatar-large">
+              {{
+                user.firstName?.charAt(0) ||
                   user.email?.charAt(0)?.toUpperCase() || "?"
-                }}
-              </div>
-              <div class="profile-info">
-                <div class="profile-name">
-                  <h2>{{ user.firstName }} {{ user.lastName }}</h2>
-                  <n-tag
-                    v-if="
-                      user.email === 'superadmin.telemetryflow@telemetryflow.id'
-                    "
-                    type="warning"
-                    size="small"
-                    :bordered="false"
-                    class="superadmin-badge"
-                  >
-                    <Icon icon="carbon:star-filled" :width="11" :height="11" />
-                    SUPERADMIN
-                  </n-tag>
-                </div>
+              }}
+            </div>
+            <div class="profile-info">
+              <div class="profile-name">
+                <h2>{{ user.firstName }} {{ user.lastName }}</h2>
                 <n-tag
-                  size="medium"
+                  v-if="
+                    user.email === 'superadmin.telemetryflow@telemetryflow.id'
+                  "
+                  type="warning"
+                  size="small"
                   :bordered="false"
-                  style="
+                  class="superadmin-badge"
+                >
+                  <Icon icon="carbon:star-filled" :width="11" :height="11" />
+                  SUPERADMIN
+                </n-tag>
+              </div>
+              <n-tag
+                size="medium"
+                :bordered="false"
+                style="
                     font-size: 12px;
                     padding: 4px 10px;
                     background: rgba(99, 102, 241, 0.1);
@@ -308,339 +308,339 @@ onMounted(() => {
                     font-family: monospace;
                     margin-bottom: 8px;
                   "
-                >
-                  {{ user.email }}
-                </n-tag>
-                <div class="profile-badges">
-                  <n-tag
-                    :type="user.isActive ? 'success' : 'error'"
-                    size="small"
-                  >
-                    {{ user.isActive ? "Active" : "Inactive" }}
-                  </n-tag>
-                  <n-tag v-if="user.emailVerified" type="success" size="small">
-                    <template #icon>
-                      <Icon icon="carbon:checkmark-filled" />
-                    </template>
-                    Verified
-                  </n-tag>
-                  <n-tag v-if="user.mfaEnabled" type="info" size="small">
-                    <template #icon>
-                      <Icon icon="carbon:security" />
-                    </template>
-                    MFA Enabled
-                  </n-tag>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Main Content - Row 1 -->
-        <div class="content-row-1">
-          <!-- User Information -->
-          <div class="section">
-            <div class="section-header">
-              <div class="section-title">
-                <Icon icon="carbon:user" class="section-icon" />
-                <span>User Information</span>
-              </div>
-            </div>
-            <div class="section-content">
-              <n-form
-                :disabled="!canEdit || isSaving"
-                label-placement="left"
-                label-width="120"
               >
-                <n-form-item label="First Name">
-                  <n-input
-                    v-model:value="formData.firstName"
-                    placeholder="First name"
-                  />
-                </n-form-item>
-                <n-form-item label="Last Name">
-                  <n-input
-                    v-model:value="formData.lastName"
-                    placeholder="Last name"
-                  />
-                </n-form-item>
-                <n-form-item label="Username">
-                  <n-input :value="user.username" disabled />
-                </n-form-item>
-                <n-form-item label="Email">
-                  <n-input :value="user.email" disabled />
-                </n-form-item>
-                <n-form-item label="Timezone">
-                  <n-select
-                    v-model:value="formData.timezone"
-                    :options="[
-                      { label: 'UTC', value: 'UTC' },
-                      { label: 'America/New_York', value: 'America/New_York' },
-                      { label: 'Europe/London', value: 'Europe/London' },
-                      { label: 'Asia/Tokyo', value: 'Asia/Tokyo' },
-                      { label: 'Asia/Jakarta', value: 'Asia/Jakarta' },
-                    ]"
-                  />
-                </n-form-item>
-                <n-form-item label="Locale">
-                  <n-select
-                    v-model:value="formData.locale"
-                    :options="[
-                      { label: 'English (US)', value: 'en-US' },
-                      { label: 'English (UK)', value: 'en-GB' },
-                      { label: 'Indonesian', value: 'id-ID' },
-                      { label: 'Japanese', value: 'ja-JP' },
-                    ]"
-                  />
-                </n-form-item>
-              </n-form>
-            </div>
-          </div>
-
-          <!-- Activity & Security -->
-          <div class="section">
-            <div class="section-header">
-              <div class="section-title">
-                <Icon icon="carbon:activity" class="section-icon" />
-                <span>Activity & Security</span>
-              </div>
-            </div>
-            <div class="section-content table-content activity-scroll">
-              <table class="info-table">
-                <tbody>
-                  <!-- Account Info -->
-                  <tr>
-                    <td class="info-label"><Icon icon="carbon:login" class="label-icon" /> Last Activity</td>
-                    <td class="info-value">
-                      <code v-if="lastActivity">{{ lastActivity }}</code>
-                      <span v-else class="text-muted">Never</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="info-label"><Icon icon="carbon:chart-line" class="label-icon" /> Activity Count</td>
-                    <td class="info-value"><code>{{ activityCount }}</code></td>
-                  </tr>
-                  <tr>
-                    <td class="info-label"><Icon icon="carbon:security" class="label-icon" /> MFA</td>
-                    <td class="info-value">
-                      <n-tag :bordered="false" size="small" :type="user.mfaEnabled ? 'success' : 'warning'">
-                        {{ user.mfaEnabled ? 'Enabled' : 'Disabled' }}
-                      </n-tag>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="info-label"><Icon icon="carbon:email" class="label-icon" /> Email Status</td>
-                    <td class="info-value">
-                      <n-tag :bordered="false" size="small" :type="user.emailVerified ? 'success' : 'warning'">
-                        {{ user.emailVerified ? 'Verified' : 'Not Verified' }}
-                      </n-tag>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="info-label"><Icon icon="carbon:calendar" class="label-icon" /> Created</td>
-                    <td class="info-value"><code>{{ formatDateTime(user.createdAt) }}</code></td>
-                  </tr>
-                  <tr>
-                    <td class="info-label"><Icon icon="carbon:update-now" class="label-icon" /> Updated</td>
-                    <td class="info-value"><code>{{ formatDateTime(user.updatedAt) }}</code></td>
-                  </tr>
-                  <!-- Recent Audit Activity -->
-                  <tr class="permission-group-row">
-                    <td colspan="2" class="group-header-cell">
-                      <Icon icon="carbon:recently-viewed" class="label-icon" />
-                      <span>Recent Activity</span>
-                      <n-tag size="tiny" :bordered="false" round type="info">{{ recentAuditLogs.length }}</n-tag>
-                    </td>
-                  </tr>
-                  <template v-if="recentAuditLogs.length > 0">
-                    <template v-for="log in recentAuditLogs" :key="log.id">
-                      <tr class="audit-action-row">
-                        <td class="info-label">
-                          <n-tag size="tiny" :bordered="false" :style="{ background: getResultColor(log.result) + '18', color: getResultColor(log.result), fontWeight: 600 }">
-                            {{ log.result }}
-                          </n-tag>
-                        </td>
-                        <td class="info-value">
-                          <div class="audit-action-cell">
-                            <span class="audit-action-text">{{ log.action }}</span>
-                            <code class="audit-time-text">{{ formatAuditTime(log.timestamp) }}</code>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr v-if="log.ipAddress">
-                        <td class="info-label"><Icon icon="carbon:network-3" class="label-icon" /> IP Address</td>
-                        <td class="info-value"><code>{{ log.ipAddress }}</code></td>
-                      </tr>
-                      <tr v-if="log.requestPath">
-                        <td class="info-label"><Icon icon="carbon:api" class="label-icon" /> Request</td>
-                        <td class="info-value">
-                          <n-tag v-if="log.requestMethod" size="tiny" :bordered="false" type="info" style="margin-right: 6px;">{{ log.requestMethod }}</n-tag>
-                          <code class="text-xs">{{ log.requestPath }}</code>
-                        </td>
-                      </tr>
-                      <tr v-if="log.userAgent">
-                        <td class="info-label"><Icon icon="carbon:application-web" class="label-icon" /> User Agent</td>
-                        <td class="info-value"><code class="text-xs">{{ log.userAgent }}</code></td>
-                      </tr>
-                      <tr v-if="log.durationMs">
-                        <td class="info-label"><Icon icon="carbon:timer" class="label-icon" /> Duration</td>
-                        <td class="info-value"><code>{{ log.durationMs }}ms</code></td>
-                      </tr>
-                      <tr v-if="log.metadata && (log.metadata as any).statusCode">
-                        <td class="info-label"><Icon icon="carbon:status-change" class="label-icon" /> Status</td>
-                        <td class="info-value">
-                          <n-tag size="tiny" :bordered="false" :type="(log.metadata as any).statusCode < 400 ? 'success' : 'error'">
-                            {{ (log.metadata as any).statusCode }}
-                          </n-tag>
-                        </td>
-                      </tr>
-                    </template>
-                  </template>
-                  <tr v-else>
-                    <td colspan="2" class="empty-audit-cell">
-                      No recent audit activity for this user
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- Organization & Tenant -->
-        <div class="content-row-org">
-          <div class="section">
-            <div class="section-header">
-              <div class="section-title">
-                <Icon icon="carbon:enterprise" class="section-icon" />
-                <span>Organization & Tenant</span>
-              </div>
-            </div>
-            <div class="section-content table-content">
-              <table class="info-table">
-                <tbody>
-                  <tr>
-                    <td class="info-label"><Icon icon="carbon:enterprise" class="label-icon" /> Organization</td>
-                    <td class="info-value">
-                      <n-tag v-if="getOrgName(user.organizationId) !== '—'" :bordered="false" size="small" type="info">
-                        {{ getOrgName(user.organizationId) }}
-                      </n-tag>
-                      <span v-else class="text-muted">Not assigned</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="info-label"><Icon icon="carbon:group" class="label-icon" /> Tenant</td>
-                    <td class="info-value">
-                      <n-tag v-if="getTenantName(user.tenantId) !== '—'" :bordered="false" size="small" type="success">
-                        {{ getTenantName(user.tenantId) }}
-                      </n-tag>
-                      <span v-else class="text-muted">Not assigned</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="info-label"><Icon icon="carbon:fingerprint-recognition" class="label-icon" /> User ID</td>
-                    <td class="info-value"><code class="text-xs">{{ user.id }}</code></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- Roles & Permissions Row -->
-        <div class="content-row-2">
-          <!-- Roles -->
-          <div class="section">
-            <div class="section-header">
-              <div class="section-title">
-                <Icon icon="carbon:user-role" class="section-icon" />
-                <span>Roles</span>
-                <n-tag :bordered="false" size="small" type="info">
-                  {{ userRoles.length }} assigned
+                {{ user.email }}
+              </n-tag>
+              <div class="profile-badges">
+                <n-tag
+                  :type="user.isActive ? 'success' : 'error'"
+                  size="small"
+                >
+                  {{ user.isActive ? "Active" : "Inactive" }}
                 </n-tag>
-              </div>
-            </div>
-            <div class="section-content scrollable-table roles-grid-content">
-              <div v-if="userRoles.length > 0" class="roles-grid">
-                <div v-for="role in userRoles" :key="role.id" class="role-card">
-                  <div class="role-card-icon">
-                    <Icon icon="carbon:user-role" :width="20" :height="20" />
-                  </div>
-                  <div class="role-card-body">
-                    <div class="role-card-header">
-                      <span class="role-card-name">{{ role.name }}</span>
-                      <n-tag v-if="role.isSystem" size="tiny" type="info" :bordered="false">System</n-tag>
-                    </div>
-                    <p v-if="role.description" class="role-card-desc">{{ role.description }}</p>
-                  </div>
-                  <n-button v-if="canManageRoles" size="tiny" type="error" ghost @click="revokeRole(role.id)">
-                    <template #icon><Icon icon="carbon:subtract" /></template>
-                    Revoke
-                  </n-button>
-                </div>
-              </div>
-              <div v-else class="empty-state-sm">
-                <Icon icon="carbon:user-role" />
-                <span>No roles assigned</span>
-              </div>
-            </div>
-            <div v-if="canManageRoles" class="role-assign-footer">
-              <n-select
-                placeholder="Assign role..."
-                :options="allRoles.filter((r) => !userRoles.some((ur) => ur.id === r.id)).map((r) => ({ label: r.name, value: r.id }))"
-                @update:value="assignRole"
-                clearable
-                size="small"
-              />
-            </div>
-          </div>
-
-          <!-- Permissions -->
-          <div class="section">
-            <div class="section-header">
-              <div class="section-title">
-                <Icon icon="carbon:password" class="section-icon" />
-                <span>Permissions</span>
-                <n-tag :bordered="false" size="small" type="info">
-                  {{ userPermissions.length }} from {{ userRoles.length }} role{{ userRoles.length !== 1 ? 's' : '' }}
-                </n-tag>
-              </div>
-            </div>
-            <div class="section-content table-content scrollable-table">
-              <table v-if="Object.keys(permissionsByResource).length > 0" class="info-table">
-                <tbody>
-                  <template v-for="(permissions, resource) in permissionsByResource" :key="resource">
-                    <tr class="permission-group-row">
-                      <td colspan="2" class="group-header-cell">
-                        <Icon icon="carbon:folder" class="label-icon" />
-                        <span>{{ resource }}</span>
-                        <n-tag size="tiny" :bordered="false" round type="info">{{ permissions.length }}</n-tag>
-                      </td>
-                    </tr>
-                    <tr v-for="permission in permissions" :key="permission.id">
-                      <td class="info-label">
-                        <Icon icon="carbon:checkmark-filled" class="label-icon" style="color: #10b981" />
-                        {{ permission.name }}
-                      </td>
-                      <td class="info-value">
-                        <n-tag size="small" :bordered="false" :style="{ background: getActionColor(permission.action) + '20', color: getActionColor(permission.action), fontWeight: 600 }">
-                          {{ permission.action }}
-                        </n-tag>
-                        <span v-if="permission.description" class="perm-desc">{{ permission.description }}</span>
-                      </td>
-                    </tr>
+                <n-tag v-if="user.emailVerified" type="success" size="small">
+                  <template #icon>
+                    <Icon icon="carbon:checkmark-filled" />
                   </template>
-                </tbody>
-              </table>
-              <div v-else class="empty-state-sm">
-                <Icon icon="carbon:password" />
-                <span>No permissions — assign a role to grant permissions</span>
+                  Verified
+                </n-tag>
+                <n-tag v-if="user.mfaEnabled" type="info" size="small">
+                  <template #icon>
+                    <Icon icon="carbon:security" />
+                  </template>
+                  MFA Enabled
+                </n-tag>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Main Content - Row 1 -->
+      <div class="content-row-1">
+        <!-- User Information -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <Icon icon="carbon:user" class="section-icon" />
+              <span>User Information</span>
+            </div>
+          </div>
+          <div class="section-content">
+            <n-form
+              :disabled="!canEdit || isSaving"
+              label-placement="left"
+              label-width="120"
+            >
+              <n-form-item label="First Name">
+                <n-input
+                  v-model:value="formData.firstName"
+                  placeholder="First name"
+                />
+              </n-form-item>
+              <n-form-item label="Last Name">
+                <n-input
+                  v-model:value="formData.lastName"
+                  placeholder="Last name"
+                />
+              </n-form-item>
+              <n-form-item label="Username">
+                <n-input :value="user.username" disabled />
+              </n-form-item>
+              <n-form-item label="Email">
+                <n-input :value="user.email" disabled />
+              </n-form-item>
+              <n-form-item label="Timezone">
+                <n-select
+                  v-model:value="formData.timezone"
+                  :options="[
+                    { label: 'UTC', value: 'UTC' },
+                    { label: 'America/New_York', value: 'America/New_York' },
+                    { label: 'Europe/London', value: 'Europe/London' },
+                    { label: 'Asia/Tokyo', value: 'Asia/Tokyo' },
+                    { label: 'Asia/Jakarta', value: 'Asia/Jakarta' },
+                  ]"
+                />
+              </n-form-item>
+              <n-form-item label="Locale">
+                <n-select
+                  v-model:value="formData.locale"
+                  :options="[
+                    { label: 'English (US)', value: 'en-US' },
+                    { label: 'English (UK)', value: 'en-GB' },
+                    { label: 'Indonesian', value: 'id-ID' },
+                    { label: 'Japanese', value: 'ja-JP' },
+                  ]"
+                />
+              </n-form-item>
+            </n-form>
+          </div>
+        </div>
+
+        <!-- Activity & Security -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <Icon icon="carbon:activity" class="section-icon" />
+              <span>Activity & Security</span>
+            </div>
+          </div>
+          <div class="section-content table-content activity-scroll">
+            <table class="info-table">
+              <tbody>
+                <!-- Account Info -->
+                <tr>
+                  <td class="info-label"><Icon icon="carbon:login" class="label-icon" /> Last Activity</td>
+                  <td class="info-value">
+                    <code v-if="lastActivity">{{ lastActivity }}</code>
+                    <span v-else class="text-muted">Never</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="info-label"><Icon icon="carbon:chart-line" class="label-icon" /> Activity Count</td>
+                  <td class="info-value"><code>{{ activityCount }}</code></td>
+                </tr>
+                <tr>
+                  <td class="info-label"><Icon icon="carbon:security" class="label-icon" /> MFA</td>
+                  <td class="info-value">
+                    <n-tag :bordered="false" size="small" :type="user.mfaEnabled ? 'success' : 'warning'">
+                      {{ user.mfaEnabled ? 'Enabled' : 'Disabled' }}
+                    </n-tag>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="info-label"><Icon icon="carbon:email" class="label-icon" /> Email Status</td>
+                  <td class="info-value">
+                    <n-tag :bordered="false" size="small" :type="user.emailVerified ? 'success' : 'warning'">
+                      {{ user.emailVerified ? 'Verified' : 'Not Verified' }}
+                    </n-tag>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="info-label"><Icon icon="carbon:calendar" class="label-icon" /> Created</td>
+                  <td class="info-value"><code>{{ formatDateTime(user.createdAt) }}</code></td>
+                </tr>
+                <tr>
+                  <td class="info-label"><Icon icon="carbon:update-now" class="label-icon" /> Updated</td>
+                  <td class="info-value"><code>{{ formatDateTime(user.updatedAt) }}</code></td>
+                </tr>
+                <!-- Recent Audit Activity -->
+                <tr class="permission-group-row">
+                  <td colspan="2" class="group-header-cell">
+                    <Icon icon="carbon:recently-viewed" class="label-icon" />
+                    <span>Recent Activity</span>
+                    <n-tag size="tiny" :bordered="false" round type="info">{{ recentAuditLogs.length }}</n-tag>
+                  </td>
+                </tr>
+                <template v-if="recentAuditLogs.length > 0">
+                  <template v-for="log in recentAuditLogs" :key="log.id">
+                    <tr class="audit-action-row">
+                      <td class="info-label">
+                        <n-tag size="tiny" :bordered="false" :style="{ background: getResultColor(log.result) + '18', color: getResultColor(log.result), fontWeight: 600 }">
+                          {{ log.result }}
+                        </n-tag>
+                      </td>
+                      <td class="info-value">
+                        <div class="audit-action-cell">
+                          <span class="audit-action-text">{{ log.action }}</span>
+                          <code class="audit-time-text">{{ formatAuditTime(log.timestamp) }}</code>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="log.ipAddress">
+                      <td class="info-label"><Icon icon="carbon:network-3" class="label-icon" /> IP Address</td>
+                      <td class="info-value"><code>{{ log.ipAddress }}</code></td>
+                    </tr>
+                    <tr v-if="log.requestPath">
+                      <td class="info-label"><Icon icon="carbon:api" class="label-icon" /> Request</td>
+                      <td class="info-value">
+                        <n-tag v-if="log.requestMethod" size="tiny" :bordered="false" type="info" style="margin-right: 6px;">{{ log.requestMethod }}</n-tag>
+                        <code class="text-xs">{{ log.requestPath }}</code>
+                      </td>
+                    </tr>
+                    <tr v-if="log.userAgent">
+                      <td class="info-label"><Icon icon="carbon:application-web" class="label-icon" /> User Agent</td>
+                      <td class="info-value"><code class="text-xs">{{ log.userAgent }}</code></td>
+                    </tr>
+                    <tr v-if="log.durationMs">
+                      <td class="info-label"><Icon icon="carbon:timer" class="label-icon" /> Duration</td>
+                      <td class="info-value"><code>{{ log.durationMs }}ms</code></td>
+                    </tr>
+                    <tr v-if="log.metadata && (log.metadata as any).statusCode">
+                      <td class="info-label"><Icon icon="carbon:status-change" class="label-icon" /> Status</td>
+                      <td class="info-value">
+                        <n-tag size="tiny" :bordered="false" :type="(log.metadata as any).statusCode < 400 ? 'success' : 'error'">
+                          {{ (log.metadata as any).statusCode }}
+                        </n-tag>
+                      </td>
+                    </tr>
+                  </template>
+                </template>
+                <tr v-else>
+                  <td colspan="2" class="empty-audit-cell">
+                    No recent audit activity for this user
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Organization & Tenant -->
+      <div class="content-row-org">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <Icon icon="carbon:enterprise" class="section-icon" />
+              <span>Organization & Tenant</span>
+            </div>
+          </div>
+          <div class="section-content table-content">
+            <table class="info-table">
+              <tbody>
+                <tr>
+                  <td class="info-label"><Icon icon="carbon:enterprise" class="label-icon" /> Organization</td>
+                  <td class="info-value">
+                    <n-tag v-if="getOrgName(user.organizationId) !== '—'" :bordered="false" size="small" type="info">
+                      {{ getOrgName(user.organizationId) }}
+                    </n-tag>
+                    <span v-else class="text-muted">Not assigned</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="info-label"><Icon icon="carbon:group" class="label-icon" /> Tenant</td>
+                  <td class="info-value">
+                    <n-tag v-if="getTenantName(user.tenantId) !== '—'" :bordered="false" size="small" type="success">
+                      {{ getTenantName(user.tenantId) }}
+                    </n-tag>
+                    <span v-else class="text-muted">Not assigned</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="info-label"><Icon icon="carbon:fingerprint-recognition" class="label-icon" /> User ID</td>
+                  <td class="info-value"><code class="text-xs">{{ user.id }}</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Roles & Permissions Row -->
+      <div class="content-row-2">
+        <!-- Roles -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <Icon icon="carbon:user-role" class="section-icon" />
+              <span>Roles</span>
+              <n-tag :bordered="false" size="small" type="info">
+                {{ userRoles.length }} assigned
+              </n-tag>
+            </div>
+          </div>
+          <div class="section-content scrollable-table roles-grid-content">
+            <div v-if="userRoles.length > 0" class="roles-grid">
+              <div v-for="role in userRoles" :key="role.id" class="role-card">
+                <div class="role-card-icon">
+                  <Icon icon="carbon:user-role" :width="20" :height="20" />
+                </div>
+                <div class="role-card-body">
+                  <div class="role-card-header">
+                    <span class="role-card-name">{{ role.name }}</span>
+                    <n-tag v-if="role.isSystem" size="tiny" type="info" :bordered="false">System</n-tag>
+                  </div>
+                  <p v-if="role.description" class="role-card-desc">{{ role.description }}</p>
+                </div>
+                <n-button v-if="canManageRoles" size="tiny" type="error" ghost @click="revokeRole(role.id)">
+                  <template #icon><Icon icon="carbon:subtract" /></template>
+                  Revoke
+                </n-button>
+              </div>
+            </div>
+            <div v-else class="empty-state-sm">
+              <Icon icon="carbon:user-role" />
+              <span>No roles assigned</span>
+            </div>
+          </div>
+          <div v-if="canManageRoles" class="role-assign-footer">
+            <n-select
+              placeholder="Assign role..."
+              :options="allRoles.filter((r) => !userRoles.some((ur) => ur.id === r.id)).map((r) => ({ label: r.name, value: r.id }))"
+              clearable
+              size="small"
+              @update:value="assignRole"
+            />
+          </div>
+        </div>
+
+        <!-- Permissions -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <Icon icon="carbon:password" class="section-icon" />
+              <span>Permissions</span>
+              <n-tag :bordered="false" size="small" type="info">
+                {{ userPermissions.length }} from {{ userRoles.length }} role{{ userRoles.length !== 1 ? 's' : '' }}
+              </n-tag>
+            </div>
+          </div>
+          <div class="section-content table-content scrollable-table">
+            <table v-if="Object.keys(permissionsByResource).length > 0" class="info-table">
+              <tbody>
+                <template v-for="(permissions, resource) in permissionsByResource" :key="resource">
+                  <tr class="permission-group-row">
+                    <td colspan="2" class="group-header-cell">
+                      <Icon icon="carbon:folder" class="label-icon" />
+                      <span>{{ resource }}</span>
+                      <n-tag size="tiny" :bordered="false" round type="info">{{ permissions.length }}</n-tag>
+                    </td>
+                  </tr>
+                  <tr v-for="permission in permissions" :key="permission.id">
+                    <td class="info-label">
+                      <Icon icon="carbon:checkmark-filled" class="label-icon" style="color: #10b981" />
+                      {{ permission.name }}
+                    </td>
+                    <td class="info-value">
+                      <n-tag size="small" :bordered="false" :style="{ background: getActionColor(permission.action) + '20', color: getActionColor(permission.action), fontWeight: 600 }">
+                        {{ permission.action }}
+                      </n-tag>
+                      <span v-if="permission.description" class="perm-desc">{{ permission.description }}</span>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+            <div v-else class="empty-state-sm">
+              <Icon icon="carbon:password" />
+              <span>No permissions — assign a role to grant permissions</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped lang="scss">

@@ -315,7 +315,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
         ),
         { numRuns: 10 }, // Reduced from 50 due to bcrypt performance
       );
-    }, 30000); // 30 second timeout for bcrypt operations
+    }, 120000);
 
     it("should reject login attempts with both incorrect email and password", async () => {
       await fc.assert(

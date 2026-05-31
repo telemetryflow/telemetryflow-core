@@ -28,8 +28,10 @@ const mainStyle = computed(() => ({
 <template>
   <n-layout has-sider class="min-h-screen">
     <!-- Sidebar -->
-    <n-layout-sider bordered :collapsed="appStore.sidebarCollapsed" :collapsed-width="64" :width="240"
-      :native-scrollbar="false" collapse-mode="width" class="sidebar">
+    <n-layout-sider
+      bordered :collapsed="appStore.sidebarCollapsed" :collapsed-width="64" :width="240"
+      :native-scrollbar="false" collapse-mode="width" class="sidebar"
+    >
       <SideNav />
     </n-layout-sider>
 

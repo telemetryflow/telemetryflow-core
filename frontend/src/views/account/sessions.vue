@@ -125,7 +125,7 @@ async function handleRevokeAllOther() {
   <div class="sessions-page">
     <!-- Hero Section -->
     <div class="sessions-hero">
-      <div class="hero-background"></div>
+      <div class="hero-background" />
       <div class="hero-content">
         <div class="hero-icon">
           <Icon icon="carbon:devices" :width="48" :height="48" />

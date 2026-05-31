@@ -919,8 +919,10 @@ onMounted(() => {
               </n-tag>
             </div>
             <div class="table-actions">
-              <n-input v-model:value="searchQuery" placeholder="Search rules..." size="small" clearable
-                class="search-input">
+              <n-input
+                v-model:value="searchQuery" placeholder="Search rules..." size="small" clearable
+                class="search-input"
+              >
                 <template #prefix>
                   <Icon icon="carbon:search" />
                 </template>
@@ -975,20 +977,22 @@ onMounted(() => {
               </n-tag>
             </div>
             <div class="table-actions">
-              <n-input v-model:value="templateSearchQuery" placeholder="Search templates..." size="small" clearable
-                class="search-input" :disabled="!templatesLoaded">
+              <n-input
+                v-model:value="templateSearchQuery" placeholder="Search templates..." size="small" clearable
+                class="search-input" :disabled="!templatesLoaded"
+              >
                 <template #prefix>
                   <Icon icon="carbon:search" />
                 </template>
               </n-input>
               <n-button-group size="small">
-                <n-button @click="handleExportTemplatesCSV" :disabled="!templatesLoaded">
+                <n-button :disabled="!templatesLoaded" @click="handleExportTemplatesCSV">
                   <template #icon>
                     <Icon icon="carbon:download" />
                   </template>
                   CSV
                 </n-button>
-                <n-button @click="handleExportTemplatesJSON" :disabled="!templatesLoaded">
+                <n-button :disabled="!templatesLoaded" @click="handleExportTemplatesJSON">
                   <template #icon>
                     <Icon icon="carbon:json-reference" />
                   </template>
@@ -1000,19 +1004,25 @@ onMounted(() => {
 
           <!-- Filters Bar -->
           <div class="filters-bar">
-            <n-select v-model:value="selectedCategory" :options="categoryOptions" size="small"
-              style="width: 200px; min-width: 200px;" placeholder="All Categories" clearable class="category-select" />
-            <n-select v-model:value="selectedSeverity" :options="severityFilterOptions" size="small"
-              style="width: 150px" placeholder="All Severities" />
-            <n-select v-model:value="selectedSource" :options="sourceFilterOptions" size="small" style="width: 180px"
-              placeholder="All Sources" />
-            <n-button size="small" @click="resetFilters" :disabled="!templatesLoaded">
+            <n-select
+              v-model:value="selectedCategory" :options="categoryOptions" size="small"
+              style="width: 200px; min-width: 200px;" placeholder="All Categories" clearable class="category-select"
+            />
+            <n-select
+              v-model:value="selectedSeverity" :options="severityFilterOptions" size="small"
+              style="width: 150px" placeholder="All Severities"
+            />
+            <n-select
+              v-model:value="selectedSource" :options="sourceFilterOptions" size="small" style="width: 180px"
+              placeholder="All Sources"
+            />
+            <n-button size="small" :disabled="!templatesLoaded" @click="resetFilters">
               <template #icon>
                 <Icon icon="carbon:reset" />
               </template>
               Reset
             </n-button>
-            <n-button size="small" @click="refreshTemplates" :disabled="!templatesLoaded">
+            <n-button size="small" :disabled="!templatesLoaded" @click="refreshTemplates">
               <template #icon>
                 <Icon icon="carbon:renew" />
               </template>
@@ -1113,10 +1123,12 @@ onMounted(() => {
                 <tr>
                   <td class="info-label">Severity</td>
                   <td class="info-value">
-                    <span class="severity-badge" :style="{
-                      backgroundColor: severityBadgeColors[selectedRule.severity].bg,
-                      color: severityBadgeColors[selectedRule.severity].color,
-                    }">
+                    <span
+                      class="severity-badge" :style="{
+                        backgroundColor: severityBadgeColors[selectedRule.severity].bg,
+                        color: severityBadgeColors[selectedRule.severity].color,
+                      }"
+                    >
                       {{ selectedRule.severity.toUpperCase() }}
                     </span>
                   </td>
@@ -1177,12 +1189,15 @@ onMounted(() => {
               </div>
               <div
                 v-if="selectedRule.channelIds && selectedRule.channelIds.length > 0 && !selectedRule.useDefaultChannels"
-                class="channels-card-body">
+                class="channels-card-body"
+              >
                 <template v-for="chId in selectedRule.channelIds" :key="chId">
                   <span v-if="alertsStore.notificationChannels.find(c => c.id === chId)" class="channel-badge">
-                    <Icon :icon="getChannelIcon(alertsStore.notificationChannels.find(c => c.id === chId)!.type)"
-                      :width="14" :height="14" />
-                    {{alertsStore.notificationChannels.find(c => c.id === chId)!.name}}
+                    <Icon
+                      :icon="getChannelIcon(alertsStore.notificationChannels.find(c => c.id === chId)!.type)"
+                      :width="14" :height="14"
+                    />
+                    {{ alertsStore.notificationChannels.find(c => c.id === chId)!.name }}
                   </span>
                 </template>
               </div>

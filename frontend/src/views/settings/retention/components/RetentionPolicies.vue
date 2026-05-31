@@ -659,9 +659,7 @@ defineExpose({ openCreateModal });
                     placeholder="s3://bucket/path"
                   />
                   <template #feedback>
-                    <span class="form-hint"
-                      >Supports S3, GCS, or Azure Blob storage paths</span
-                    >
+                    <span class="form-hint">Supports S3, GCS, or Azure Blob storage paths</span>
                   </template>
                 </NFormItem>
               </template>
@@ -672,9 +670,9 @@ defineExpose({ openCreateModal });
 
       <template #footer>
         <div class="modal-footer tfo-modal-footer">
-          <NButton type="primary" ghost @click="showCreateModal = false"
-            >Cancel</NButton
-          >
+          <NButton type="primary" ghost @click="showCreateModal = false">
+            Cancel
+          </NButton>
           <NButton
             type="primary"
             :disabled="!createForm.name.trim()"
@@ -778,9 +776,7 @@ defineExpose({ openCreateModal });
                     placeholder="s3://bucket/path"
                   />
                   <template #feedback>
-                    <span class="form-hint"
-                      >Supports S3, GCS, or Azure Blob storage paths</span
-                    >
+                    <span class="form-hint">Supports S3, GCS, or Azure Blob storage paths</span>
                   </template>
                 </NFormItem>
               </template>

@@ -305,9 +305,7 @@ watch(
           class="panel-icon"
           :class="{ rotated: appStore.sidebarCollapsed }"
         />
-        <span v-if="!appStore.sidebarCollapsed" class="toggle-text"
-          >Hide Panel</span
-        >
+        <span v-if="!appStore.sidebarCollapsed" class="toggle-text">Hide Panel</span>
       </div>
       <Icon
         :icon="

@@ -808,7 +808,7 @@ onUnmounted(() => {
               <td class="tooltip-value">
                 {{
                   hoveredNode.type.charAt(0).toUpperCase() +
-                  hoveredNode.type.slice(1)
+                    hoveredNode.type.slice(1)
                 }}
               </td>
             </tr>
@@ -951,7 +951,7 @@ onUnmounted(() => {
                   <td class="tooltip-value">
                     {{
                       modalHoveredNode.type.charAt(0).toUpperCase() +
-                      modalHoveredNode.type.slice(1)
+                        modalHoveredNode.type.slice(1)
                     }}
                   </td>
                 </tr>

@@ -44,9 +44,7 @@ function update(partial: Partial<OpsGenieConfigModel>) {
       @update:value="update({ apiUrl: $event })"
     />
     <template #feedback>
-      <span class="form-hint"
-        >Use https://api.eu.opsgenie.com/v2/alerts for EU region</span
-      >
+      <span class="form-hint">Use https://api.eu.opsgenie.com/v2/alerts for EU region</span>
     </template>
   </n-form-item>
   <n-form-item label="Priority">

@@ -78,7 +78,9 @@
         <div
           class="summary-box"
           :class="{ 'summary-box--changed': result.changed }"
-        >{{ result.masked }}</div>
+        >
+          {{ result.masked }}
+        </div>
       </div>
 
       <n-alert

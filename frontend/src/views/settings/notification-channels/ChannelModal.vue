@@ -739,12 +739,12 @@ function handleClose() {
                         <n-button
                           size="tiny"
                           quaternary
-                          @click="pasteTemplate"
                           :disabled="channelType !== 'webhook'"
+                          @click="pasteTemplate"
                         >
-                          <template #icon
-                            ><Icon icon="carbon:paste"
-                          /></template>
+                          <template #icon>
+                            <Icon icon="carbon:paste" />
+                          </template>
                         </n-button>
                       </template>
                       {{

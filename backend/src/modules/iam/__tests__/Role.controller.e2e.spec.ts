@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../../../app.module';
 
@@ -7,6 +7,7 @@ describe('RoleController (e2e)', () => {
   let app: INestApplication;
   let authToken: string;
   let createdRoleId: string;
+  const uniqueSuffix = Date.now();
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -14,42 +15,52 @@ describe('RoleController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api/v2');
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: false,
+        stopAtFirstError: false,
+      }),
+    );
     await app.init();
 
-    // Login to get auth token
     const loginResponse = await request(app.getHttpServer())
       .post('/api/v2/auth/login')
-      .send({ email: 'administrator.telemetryflow@telemetryflow.id', password: 'Admin@654123' });
+      .send({ email: 'superadmin.telemetryflow@telemetryflow.id', password: 'SuperAdmin@654123' });
 
     authToken = loginResponse.body.accessToken;
-  });
+  }, 30000);
 
   afterAll(async () => {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
   });
 
-  describe('POST /api/v2/iam/roles', () => {
+  describe('POST /api/v2/roles', () => {
     it('should create a new role', async () => {
       const response = await request(app.getHttpServer())
-        .post('/api/v2/iam/roles')
+        .post('/api/v2/roles')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
-          name: 'TestRole',
+          name: `TestRole-${uniqueSuffix}`,
           description: 'Test role description',
           permissionIds: [],
         })
         .expect(201);
 
       expect(response.body).toHaveProperty('id');
-      expect(response.body.name).toBe('TestRole');
+      expect(response.body.name).toBe(`TestRole-${uniqueSuffix}`);
       createdRoleId = response.body.id;
     });
   });
 
-  describe('GET /api/v2/iam/roles', () => {
+  describe('GET /api/v2/roles', () => {
     it('should list all roles', async () => {
       const response = await request(app.getHttpServer())
-        .get('/api/v2/iam/roles')
+        .get('/api/v2/roles')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
@@ -58,34 +69,34 @@ describe('RoleController (e2e)', () => {
     });
   });
 
-  describe('GET /api/v2/iam/roles/:id', () => {
+  describe('GET /api/v2/roles/:id', () => {
     it('should get role by id', async () => {
       const response = await request(app.getHttpServer())
-        .get(`/api/v2/iam/roles/${createdRoleId}`)
+        .get(`/api/v2/roles/${createdRoleId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
       expect(response.body.id).toBe(createdRoleId);
-      expect(response.body.name).toBe('TestRole');
+      expect(response.body.name).toBe(`TestRole-${uniqueSuffix}`);
     });
   });
 
-  describe('PATCH /api/v2/iam/roles/:id', () => {
+  describe('PATCH /api/v2/roles/:id', () => {
     it('should update role', async () => {
       const response = await request(app.getHttpServer())
-        .patch(`/api/v2/iam/roles/${createdRoleId}`)
+        .patch(`/api/v2/roles/${createdRoleId}`)
         .set('Authorization', `Bearer ${authToken}`)
-        .send({ name: 'UpdatedTestRole' })
+        .send({ name: `UpdatedTestRole-${uniqueSuffix}` })
         .expect(200);
 
-      expect(response.body.name).toBe('UpdatedTestRole');
+      expect(response.body.name).toBe(`UpdatedTestRole-${uniqueSuffix}`);
     });
   });
 
-  describe('DELETE /api/v2/iam/roles/:id', () => {
+  describe('DELETE /api/v2/roles/:id', () => {
     it('should delete role', async () => {
       await request(app.getHttpServer())
-        .delete(`/api/v2/iam/roles/${createdRoleId}`)
+        .delete(`/api/v2/roles/${createdRoleId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(204);
     });

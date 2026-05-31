@@ -133,8 +133,8 @@ describe("Feature: frontend-backend-auth-integration", () => {
         { numRuns: 5 }, // Reduced runs due to computational cost
       );
     },
-    30000,
-  ); // 30 second timeout
+    120000,
+  );
 
     it(
       "should verify password correctly against its hash",
@@ -165,8 +165,8 @@ describe("Feature: frontend-backend-auth-integration", () => {
         { numRuns: 10 },
       );
     },
-    30000,
-  ); // 30 second timeout
+    90000,
+  );
 
     it(
       "should reject incorrect passwords during verification",
@@ -203,8 +203,8 @@ describe("Feature: frontend-backend-auth-integration", () => {
         { numRuns: 10 },
       );
     },
-    30000,
-  ); // 30 second timeout
+    90000,
+  );
 
     it(
       "should maintain hash format consistency across different password types",

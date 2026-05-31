@@ -94,7 +94,7 @@ function downloadFile(content: string, filename: string, mimeType: string) {
     </n-input>
 
     <!-- Filters Slot -->
-    <slot name="filters"></slot>
+    <slot name="filters" />
 
     <!-- View Mode & Export -->
     <n-button-group size="small">

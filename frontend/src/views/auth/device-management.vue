@@ -133,7 +133,7 @@ onMounted(loadDevices);
       </n-button>
     </div>
 
-    <n-alert v-if="error" type="error" :show-icon="true" closable @close="error = null" aria-live="assertive">
+    <n-alert v-if="error" type="error" :show-icon="true" closable aria-live="assertive" @close="error = null">
       {{ error }}
     </n-alert>
 
@@ -150,31 +150,39 @@ onMounted(loadDevices);
 
     <!-- Device list (Requirement 8.3) -->
     <div v-else class="device-list" role="list" aria-label="Known devices">
-      <div v-for="device in devices" :key="device.id" class="device-card" :class="{ current: device.isCurrent }"
-        role="listitem">
+      <div
+        v-for="device in devices" :key="device.id" class="device-card" :class="{ current: device.isCurrent }"
+        role="listitem"
+      >
         <div class="device-icons">
           <Icon :icon="getOsIcon(device.os)" :width="32" :height="32" :aria-label="device.os" />
-          <Icon :icon="getBrowserIcon(device.browser)" :width="20" :height="20" class="browser-icon"
-            :aria-label="device.browser" />
+          <Icon
+            :icon="getBrowserIcon(device.browser)" :width="20" :height="20" class="browser-icon"
+            :aria-label="device.browser"
+          />
         </div>
 
         <div class="device-info">
           <!-- Device name / edit (Requirement 8.9) -->
           <div class="device-name-row">
             <template v-if="editingId === device.id">
-              <n-input v-model:value="editName" size="small" placeholder="Device name" class="name-input"
+              <n-input
+                v-model:value="editName" size="small" placeholder="Device name" class="name-input"
                 aria-label="Edit device name" @keypress.enter="saveDeviceName(device.id)"
-                @keypress.escape="editingId = null" />
+                @keypress.escape="editingId = null"
+              />
               <n-button size="tiny" type="primary" @click="saveDeviceName(device.id)">Save</n-button>
               <n-button size="tiny" @click="editingId = null">Cancel</n-button>
             </template>
             <template v-else>
               <span class="device-name">{{
                 device.name || `${device.browser} on ${device.os}`
-                }}</span>
+              }}</span>
               <span v-if="device.isCurrent" class="current-badge">Current</span>
-              <button class="edit-btn" type="button" :aria-label="`Rename ${device.name || device.browser}`"
-                @click="startEdit(device)">
+              <button
+                class="edit-btn" type="button" :aria-label="`Rename ${device.name || device.browser}`"
+                @click="startEdit(device)"
+              >
                 <Icon icon="mdi:pencil-outline" :width="14" :height="14" />
               </button>
             </template>
@@ -208,8 +216,10 @@ onMounted(loadDevices);
         </div>
 
         <!-- Revoke (Requirement 8.5) -->
-        <n-button v-if="!device.isCurrent" type="error" size="small" ghost :loading="revokingId === device.id"
-          :aria-label="`Revoke ${device.name || device.browser}`" @click="revokeDevice(device.id)">
+        <n-button
+          v-if="!device.isCurrent" type="error" size="small" ghost :loading="revokingId === device.id"
+          :aria-label="`Revoke ${device.name || device.browser}`" @click="revokeDevice(device.id)"
+        >
           Revoke
         </n-button>
       </div>

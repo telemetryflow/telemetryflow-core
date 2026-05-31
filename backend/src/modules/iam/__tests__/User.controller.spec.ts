@@ -33,7 +33,7 @@ describe('UserController', () => {
         lastName: 'Doe',
       };
 
-      commandBus.execute.mockResolvedValue('user-123');
+      commandBus.execute.mockResolvedValue({ userId: 'user-123', emailVerificationRequired: false });
 
       const result = await controller.create(dto);
       expect(result).toEqual({ id: 'user-123' });
@@ -46,7 +46,7 @@ describe('UserController', () => {
       const result = [{ id: 'user-123', email: 'test@telemetryflow.id' }];
       queryBus.execute.mockResolvedValue(result);
 
-      expect(await controller.list()).toEqual(result);
+      expect(await controller.list({ user: { organizationId: 'org-1', roles: ['super_admin'] } })).toEqual(result);
       expect(queryBus.execute).toHaveBeenCalledTimes(1);
     });
   });

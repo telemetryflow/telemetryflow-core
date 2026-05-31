@@ -448,9 +448,7 @@ async function handleDelete(provider: LLMProvider) {
           <Icon icon="carbon:machine-learning-model" class="title-icon" />
           AI Assistant
         </h1>
-        <span class="page-subtitle"
-          >Configure LLM providers for AI-powered observability insights</span
-        >
+        <span class="page-subtitle">Configure LLM providers for AI-powered observability insights</span>
       </div>
       <div class="header-right">
         <NButton type="primary" @click="openCreateModal">

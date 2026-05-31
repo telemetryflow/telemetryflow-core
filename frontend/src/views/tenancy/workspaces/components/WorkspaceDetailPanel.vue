@@ -227,9 +227,11 @@ const workspaceTenants = computed(() => {
           <div class="section-label">
             <Icon icon="carbon:user-multiple" />
             <span>Tenants</span>
-            <NTag size="small" round :bordered="false" type="info">{{
-              workspaceTenants.length
-            }}</NTag>
+            <NTag size="small" round :bordered="false" type="info">
+              {{
+                workspaceTenants.length
+              }}
+            </NTag>
           </div>
           <div class="list-container">
             <div v-if="workspaceTenants.length === 0" class="empty-state">

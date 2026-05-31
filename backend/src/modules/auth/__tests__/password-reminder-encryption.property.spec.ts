@@ -332,24 +332,25 @@ describe("Feature: frontend-backend-auth-integration", () => {
             const tamperedCiphertext = parts[2] + "00"; // Add extra bytes
             const tamperedEncrypted = `${parts[0]}:${parts[1]}:${tamperedCiphertext}`;
 
-            await expect(async () => {
+            expect(() => {
               PasswordReminderEncryption.decrypt(tamperedEncrypted, encryptionKey);
-            }).rejects.toThrow();
+            }).toThrow();
 
             // Property 2: Tampering with auth tag should cause decryption to fail
-            const tamperedAuthTag = parts[1].slice(0, -2) + "00";
+            const tamperedAuthTag = parts[1].slice(0, -2) + (parts[1].endsWith("00") ? "ff" : "00");
+            fc.pre(tamperedAuthTag !== parts[1]);
             const tamperedEncrypted2 = `${parts[0]}:${tamperedAuthTag}:${parts[2]}`;
 
-            await expect(async () => {
+            expect(() => {
               PasswordReminderEncryption.decrypt(tamperedEncrypted2, encryptionKey);
-            }).rejects.toThrow();
+            }).toThrow();
 
             // Property 3: Using wrong key should cause decryption to fail
             const wrongKey = PasswordReminderEncryption.generateKey();
 
-            await expect(async () => {
+            expect(() => {
               PasswordReminderEncryption.decrypt(encryptedReminder, wrongKey);
-            }).rejects.toThrow();
+            }).toThrow();
 
             return true;
           },

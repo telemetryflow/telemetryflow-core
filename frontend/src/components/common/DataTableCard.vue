@@ -10,7 +10,6 @@ import DataTable from './DataTable.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 import { exportToCSV, exportToJSON, getExportFilename } from '@/utils';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RowData = any;
 
 interface Props {
@@ -182,13 +181,13 @@ function handleExportJSON() {
           <span class="badge-count">{{ filteredData.length }}</span> {{ countLabel }}
         </n-tag>
         <n-button-group v-if="exportable" size="small">
-          <n-button @click="handleExportCSV" :disabled="loading || filteredData.length === 0">
+          <n-button :disabled="loading || filteredData.length === 0" @click="handleExportCSV">
             <template #icon>
               <Icon icon="carbon:download" />
             </template>
             CSV
           </n-button>
-          <n-button @click="handleExportJSON" :disabled="loading || filteredData.length === 0">
+          <n-button :disabled="loading || filteredData.length === 0" @click="handleExportJSON">
             <template #icon>
               <Icon icon="carbon:json-reference" />
             </template>

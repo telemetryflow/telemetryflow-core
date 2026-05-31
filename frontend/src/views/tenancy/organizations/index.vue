@@ -418,14 +418,18 @@ onMounted(() => {
           </n-tag>
         </div>
         <div class="table-actions">
-          <n-input v-model:value="searchQuery" placeholder="Search organizations..." size="small" clearable
-            class="search-input">
+          <n-input
+            v-model:value="searchQuery" placeholder="Search organizations..." size="small" clearable
+            class="search-input"
+          >
             <template #prefix>
               <Icon icon="carbon:search" />
             </template>
           </n-input>
-          <n-select v-model:value="selectedRegion" placeholder="All Regions" clearable size="small"
-            :options="regionOptions" style="width: 160px" />
+          <n-select
+            v-model:value="selectedRegion" placeholder="All Regions" clearable size="small"
+            :options="regionOptions" style="width: 160px"
+          />
           <n-button-group size="small">
             <n-button :type="viewMode === 'grid' ? 'primary' : 'default'" @click="viewMode = 'grid'">
               <template #icon>
@@ -458,7 +462,6 @@ onMounted(() => {
               JSON
             </n-button>
           </n-button-group>
-
         </div>
       </div>
 
@@ -471,16 +474,18 @@ onMounted(() => {
                 <div class="card-icon">
                   <Icon icon="carbon:enterprise" />
                 </div>
-                <n-dropdown trigger="click" :options="[
-                  { label: 'Detail', key: 'detail', icon: () => h(Icon, { icon: 'carbon:magnify' }) },
-                  { label: 'Edit', key: 'edit', icon: () => h(Icon, { icon: 'carbon:edit' }), disabled: !canEdit },
-                  { type: 'divider', key: 'd1' },
-                  { label: 'Delete', key: 'delete', icon: () => h(Icon, { icon: 'carbon:trash-can' }), props: { class: 'delete-action' }, disabled: !canDelete },
-                ]" @select="(key: string) => {
-                  if (key === 'detail') openDetailPanel(org);
-                  else if (key === 'edit' && canEdit) openEditModal(org);
-                  else if (key === 'delete' && canDelete) handleDeleteOrg(org);
-                }">
+                <n-dropdown
+                  trigger="click" :options="[
+                    { label: 'Detail', key: 'detail', icon: () => h(Icon, { icon: 'carbon:magnify' }) },
+                    { label: 'Edit', key: 'edit', icon: () => h(Icon, { icon: 'carbon:edit' }), disabled: !canEdit },
+                    { type: 'divider', key: 'd1' },
+                    { label: 'Delete', key: 'delete', icon: () => h(Icon, { icon: 'carbon:trash-can' }), props: { class: 'delete-action' }, disabled: !canDelete },
+                  ]" @select="(key: string) => {
+                    if (key === 'detail') openDetailPanel(org);
+                    else if (key === 'edit' && canEdit) openEditModal(org);
+                    else if (key === 'delete' && canDelete) handleDeleteOrg(org);
+                  }"
+                >
                   <n-button quaternary circle size="small" @click.stop>
                     <template #icon>
                       <Icon icon="carbon:overflow-menu-vertical" />
@@ -526,7 +531,8 @@ onMounted(() => {
       <!-- Data Table -->
       <!-- datatableId: TEN30001 -->
       <div v-else class="table-content">
-        <n-data-table :columns="columns" :data="filteredOrganizations" :loading="isLoading"
+        <n-data-table
+          :columns="columns" :data="filteredOrganizations" :loading="isLoading"
           :row-key="(row: Organization) => row.id" :scroll-x="800" :pagination="{
             page: page,
             pageSize: pageSize,
@@ -536,13 +542,16 @@ onMounted(() => {
             onChange: handlePageChange,
             onUpdatePageSize: handlePageSizeChange,
             prefix: (info: any) => `${info.itemCount} items`
-          }" :bordered="false" :single-line="false" striped size="small" />
+          }" :bordered="false" :single-line="false" striped size="small"
+        />
       </div>
     </div>
 
     <!-- Create Modal -->
-    <n-modal v-model:show="showCreateModal" preset="card" title="Create New Organization" style="width: 500px;"
-      :mask-closable="false">
+    <n-modal
+      v-model:show="showCreateModal" preset="card" title="Create New Organization" style="width: 500px;"
+      :mask-closable="false"
+    >
       <n-form :model="createForm" label-placement="top">
         <n-form-item label="Region" required>
           <n-select v-model:value="createForm.regionId" placeholder="Select region" :options="regionOptions" />
@@ -554,8 +563,10 @@ onMounted(() => {
           <n-input v-model:value="createForm.slug" placeholder="e.g., acme-corporation" />
         </n-form-item>
         <n-form-item label="Description">
-          <n-input v-model:value="createForm.description" type="textarea" placeholder="Describe this organization"
-            :rows="3" />
+          <n-input
+            v-model:value="createForm.description" type="textarea" placeholder="Describe this organization"
+            :rows="3"
+          />
         </n-form-item>
       </n-form>
       <template #footer>
@@ -569,8 +580,10 @@ onMounted(() => {
     </n-modal>
 
     <!-- Edit Modal -->
-    <n-modal v-model:show="showEditModal" preset="card" title="Edit Organization" style="width: 500px;"
-      :mask-closable="false">
+    <n-modal
+      v-model:show="showEditModal" preset="card" title="Edit Organization" style="width: 500px;"
+      :mask-closable="false"
+    >
       <n-form :model="editForm" label-placement="top">
         <n-form-item label="Organization Name" required>
           <n-input v-model:value="editForm.name" placeholder="Organization name" />
@@ -579,8 +592,10 @@ onMounted(() => {
           <n-input v-model:value="editForm.slug" placeholder="Slug" />
         </n-form-item>
         <n-form-item label="Description">
-          <n-input v-model:value="editForm.description" type="textarea" placeholder="Describe this organization"
-            :rows="3" />
+          <n-input
+            v-model:value="editForm.description" type="textarea" placeholder="Describe this organization"
+            :rows="3"
+          />
         </n-form-item>
       </n-form>
       <template #footer>

@@ -24,7 +24,7 @@ function update(partial: Partial<MSTeamsConfigModel>) {
     retired as of <strong>April 30, 2026</strong>. Use a
     <strong>Power Automate Workflow</strong> webhook URL instead. In Teams,
     go to a channel → <em>Workflows</em> → <em>Post to a channel when a webhook
-    request is received</em>.
+      request is received</em>.
   </n-alert>
 
   <n-form-item label="Webhook URL *">

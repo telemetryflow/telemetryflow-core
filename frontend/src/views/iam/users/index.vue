@@ -1271,9 +1271,7 @@ onMounted(fetchAll);
                         v-model:value="formModel.sendEmailVerification"
                       />
                       <div class="toggle-text">
-                        <span class="toggle-title"
-                          >Send Verification Email</span
-                        >
+                        <span class="toggle-title">Send Verification Email</span>
                         <span class="toggle-desc">{{
                           formModel.sendEmailVerification
                             ? "A verification email will be sent on account creation."
@@ -1286,9 +1284,7 @@ onMounted(fetchAll);
                     <div class="toggle-row">
                       <NSwitch v-model:value="formModel.forcePasswordChange" />
                       <div class="toggle-text">
-                        <span class="toggle-title"
-                          >Force Password Reset on First Login</span
-                        >
+                        <span class="toggle-title">Force Password Reset on First Login</span>
                         <span class="toggle-desc">{{
                           formModel.forcePasswordChange
                             ? "User must set a new password before accessing the platform."
@@ -1490,8 +1486,7 @@ onMounted(fetchAll);
         >
           <NAlert type="warning" class="mb-4" :show-icon="true">
             You are resetting the password for
-            <strong>{{ selectedUser?.email }}</strong
-            >. The user will be required to change their password on next login.
+            <strong>{{ selectedUser?.email }}</strong>. The user will be required to change their password on next login.
           </NAlert>
           <NFormItem label="New Password" path="password">
             <NInput

@@ -382,7 +382,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
 
             // Mock multiple recent devices with different locations
             const recentDevices: Partial<DeviceEntity>[] = [];
-            const windowStart = new Date(Date.now() - 60 * 60 * 1000); // 60 minutes ago
+            const windowStart = new Date(Date.now() - 30 * 60 * 1000); // 30 minutes ago — well inside the 60-min service window
 
             for (let i = 0; i < numLocations; i++) {
               recentDevices.push({
@@ -393,8 +393,8 @@ describe("Feature: frontend-backend-auth-integration", () => {
                   city: `City${i}`,
                 },
                 last_seen_at: new Date(
-                  windowStart.getTime() + i * 10 * 60 * 1000,
-                ), // 10 minutes apart
+                  Date.now() - (numLocations - i) * 5 * 60 * 1000,
+                ),
               });
             }
 
@@ -425,9 +425,10 @@ describe("Feature: frontend-backend-auth-integration", () => {
             // Note: The service checks if uniqueLocations.size > maxLocationChanges (3)
             // So we need at least 4 unique locations from the recent devices
             // (not counting the current one since it's not in the database yet)
+            const serviceWindowStart = new Date(Date.now() - 60 * 60 * 1000);
             const uniqueRecentLocations = new Set(
               recentDevices
-                .filter((d) => d.last_seen_at! >= windowStart)
+                .filter((d) => d.last_seen_at! >= serviceWindowStart)
                 .map((d) => `${d.last_location!.country}-${d.last_location!.city}`),
             );
 

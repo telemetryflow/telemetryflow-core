@@ -65,15 +65,26 @@ describe("Feature: frontend-backend-auth-integration", () => {
           fc.uuid(),
           fc.emailAddress(),
           fc.string({ minLength: 20, maxLength: 32 }),
-          fc.array(fc.string({ minLength: 10, maxLength: 10 }), {
-            minLength: 2,
-            maxLength: 3,
-          }),
+          fc.array(
+            fc
+              .string({ minLength: 10, maxLength: 10 })
+              .filter((s) => /[A-Za-z0-9]/.test(s)),
+            {
+              minLength: 2,
+              maxLength: 3,
+            },
+          ),
           async (userId, email, mfaSecret, backupCodes) => {
-            // Ensure codes are unique to avoid duplicate hash issues
+            jest.clearAllMocks();
+
             const uniqueCodes = [...new Set(backupCodes)];
             if (uniqueCodes.length < 2) {
-              return; // Skip if not enough unique codes
+              return;
+            }
+
+            const uniqueNormalized = [...new Set(uniqueCodes.map(c => c.replace(/-/g, "").toUpperCase()))];
+            if (uniqueNormalized.length < uniqueCodes.length) {
+              return;
             }
 
             // Hash backup codes
@@ -132,7 +143,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
         ),
         { numRuns: 3 },
       );
-    }, 30000);
+    }, 60000);
 
     it("should not accept the same backup code twice", async () => {
       await fc.assert(
@@ -140,12 +151,17 @@ describe("Feature: frontend-backend-auth-integration", () => {
           fc.uuid(),
           fc.emailAddress(),
           fc.string({ minLength: 20, maxLength: 32 }),
-          fc.array(fc.string({ minLength: 10, maxLength: 10 }), {
-            minLength: 3,
-            maxLength: 5,
-          }),
+          fc.array(
+            fc
+              .string({ minLength: 10, maxLength: 10 })
+              .filter((s) => /[A-Za-z0-9]/.test(s)),
+            {
+              minLength: 3,
+              maxLength: 5,
+            },
+          ),
           async (userId, email, mfaSecret, backupCodes) => {
-            // Hash backup codes
+            jest.clearAllMocks();
             const hashedCodes = await Promise.all(
               backupCodes.map((code) =>
                 argon2.hash(code.replace(/-/g, "").toUpperCase()),
@@ -210,15 +226,25 @@ describe("Feature: frontend-backend-auth-integration", () => {
           fc.uuid(),
           fc.emailAddress(),
           fc.string({ minLength: 20, maxLength: 32 }),
-          fc.array(fc.string({ minLength: 10, maxLength: 10 }), {
-            minLength: 2,
-            maxLength: 3,
-          }),
+          fc.array(
+            fc
+              .string({ minLength: 10, maxLength: 10 })
+              .filter((s) => /[A-Za-z0-9]/.test(s)),
+            {
+              minLength: 2,
+              maxLength: 3,
+            },
+          ),
           async (userId, email, mfaSecret, backupCodes) => {
-            // Ensure codes are unique
+            jest.clearAllMocks();
             const uniqueCodes = [...new Set(backupCodes)];
             if (uniqueCodes.length < 2) {
-              return; // Skip if not enough unique codes
+              return;
+            }
+
+            const uniqueNormalized = [...new Set(uniqueCodes.map(c => c.replace(/-/g, "").toUpperCase()))];
+            if (uniqueNormalized.length < uniqueCodes.length) {
+              return;
             }
 
             // Hash backup codes
@@ -283,7 +309,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
         ),
         { numRuns: 3 },
       );
-    }, 30000);
+    }, 60000);
 
     it("should handle backup codes with different formats", async () => {
       await fc.assert(
@@ -292,7 +318,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
           fc.emailAddress(),
           fc.string({ minLength: 20, maxLength: 32 }),
           async (userId, email, mfaSecret) => {
-            // Generate backup codes in different formats
+            jest.clearAllMocks();
             const plainCode = "ABCDE12345";
             const dashedCode = "ABCDE-12345";
             const lowercaseCode = "abcde12345";

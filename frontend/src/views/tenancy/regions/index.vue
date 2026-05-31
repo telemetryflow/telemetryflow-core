@@ -375,8 +375,10 @@ onMounted(() => {
           </n-tag>
         </div>
         <div class="table-actions">
-          <n-input v-model:value="searchQuery" placeholder="Search regions..." size="small" clearable
-            class="search-input">
+          <n-input
+            v-model:value="searchQuery" placeholder="Search regions..." size="small" clearable
+            class="search-input"
+          >
             <template #prefix>
               <Icon icon="carbon:search" />
             </template>
@@ -413,13 +415,14 @@ onMounted(() => {
               JSON
             </n-button>
           </n-button-group>
-
         </div>
       </div>
 
       <!-- Create Modal -->
-      <n-modal v-model:show="showCreateModal" preset="card" title="Create New Region" style="width: 500px;"
-        :mask-closable="false">
+      <n-modal
+        v-model:show="showCreateModal" preset="card" title="Create New Region" style="width: 500px;"
+        :mask-closable="false"
+      >
         <n-form :model="createForm" label-placement="top">
           <n-form-item label="Region Name" required>
             <n-input v-model:value="createForm.name" placeholder="e.g., Asia Pacific" />
@@ -428,8 +431,10 @@ onMounted(() => {
             <n-input v-model:value="createForm.code" placeholder="e.g., ap-southeast-1" />
           </n-form-item>
           <n-form-item label="Description">
-            <n-input v-model:value="createForm.description" type="textarea" placeholder="Describe this region"
-              :rows="3" />
+            <n-input
+              v-model:value="createForm.description" type="textarea" placeholder="Describe this region"
+              :rows="3"
+            />
           </n-form-item>
         </n-form>
         <template #footer>
@@ -443,8 +448,10 @@ onMounted(() => {
       </n-modal>
 
       <!-- Edit Modal -->
-      <n-modal v-model:show="showEditModal" preset="card" title="Edit Region" style="width: 500px;"
-        :mask-closable="false">
+      <n-modal
+        v-model:show="showEditModal" preset="card" title="Edit Region" style="width: 500px;"
+        :mask-closable="false"
+      >
         <n-form :model="editForm" label-placement="top">
           <n-form-item label="Region Name" required>
             <n-input v-model:value="editForm.name" placeholder="Region name" />
@@ -453,8 +460,10 @@ onMounted(() => {
             <n-input v-model:value="editForm.code" placeholder="Region code" />
           </n-form-item>
           <n-form-item label="Description">
-            <n-input v-model:value="editForm.description" type="textarea" placeholder="Describe this region"
-              :rows="3" />
+            <n-input
+              v-model:value="editForm.description" type="textarea" placeholder="Describe this region"
+              :rows="3"
+            />
           </n-form-item>
         </n-form>
         <template #footer>
@@ -482,17 +491,21 @@ onMounted(() => {
       <div v-if="viewMode === 'grid'" class="grid-content">
         <n-spin :show="isLoading">
           <div class="cards-grid">
-            <div v-for="region in filteredRegions" :key="region.id" class="dashboard-card"
-              @click="openDetailPanel(region)">
+            <div
+              v-for="region in filteredRegions" :key="region.id" class="dashboard-card"
+              @click="openDetailPanel(region)"
+            >
               <div class="card-header">
                 <div class="card-icon region-icon">
                   <Icon icon="carbon:location" />
                 </div>
-                <n-dropdown trigger="click" :options="getActionOptions(region).map(opt =>
-                  opt.type === 'divider'
-                    ? { type: 'divider', key: opt.key }
-                    : { label: opt.label, key: opt.key, icon: opt.icon ? () => h(Icon, { icon: opt.icon }) : undefined, disabled: opt.disabled }
-                )" @select="(key: string) => handleActionSelect(key, region)">
+                <n-dropdown
+                  trigger="click" :options="getActionOptions(region).map(opt =>
+                    opt.type === 'divider'
+                      ? { type: 'divider', key: opt.key }
+                      : { label: opt.label, key: opt.key, icon: opt.icon ? () => h(Icon, { icon: opt.icon }) : undefined, disabled: opt.disabled }
+                  )" @select="(key: string) => handleActionSelect(key, region)"
+                >
                   <n-button quaternary circle size="small" @click.stop>
                     <template #icon>
                       <Icon icon="carbon:overflow-menu-vertical" />
@@ -534,14 +547,17 @@ onMounted(() => {
       <!-- Graph View -->
       <div v-else-if="viewMode === 'graph'" class="graph-content">
         <n-spin :show="isLoading">
-          <RegionNodeGraph :regions="filteredRegions" :organizations="organizations" :workspaces="workspaces"
-            :tenants="tenants" />
+          <RegionNodeGraph
+            :regions="filteredRegions" :organizations="organizations" :workspaces="workspaces"
+            :tenants="tenants"
+          />
         </n-spin>
       </div>
 
       <!-- Table View -->
       <div v-else class="table-content">
-        <n-data-table :columns="columns" :data="filteredRegions" :loading="isLoading" :row-key="(row: Region) => row.id"
+        <n-data-table
+          :columns="columns" :data="filteredRegions" :loading="isLoading" :row-key="(row: Region) => row.id"
           :scroll-x="800" :pagination="{
             page: page,
             pageSize: pageSize,
@@ -551,7 +567,8 @@ onMounted(() => {
             onChange: handlePageChange,
             onUpdatePageSize: handlePageSizeChange,
             prefix: (info: any) => `${info.itemCount} items`
-          }" :bordered="false" :single-line="false" striped size="small" />
+          }" :bordered="false" :single-line="false" striped size="small"
+        />
       </div>
     </div>
   </div>

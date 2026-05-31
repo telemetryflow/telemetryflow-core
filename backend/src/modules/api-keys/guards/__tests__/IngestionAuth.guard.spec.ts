@@ -40,6 +40,7 @@ function makeApiKey(
     getWorkspaceId: () => undefined,
     getPermissions: () => ["*"],
     getScopes: () => [],
+    getRateLimit: () => undefined,
   } as Partial<ApiKey>;
 }
 
@@ -47,6 +48,9 @@ function makeContext(
   headers: Record<string, string | undefined>,
   ip = "1.2.3.4",
 ): ExecutionContext {
+  const res: any = {
+    setHeader: jest.fn(),
+  };
   const req: any = {
     headers: Object.fromEntries(
       Object.entries(headers).filter(([, v]) => v !== undefined),
@@ -55,7 +59,7 @@ function makeContext(
     socket: { remoteAddress: ip },
   };
   return {
-    switchToHttp: () => ({ getRequest: () => req }),
+    switchToHttp: () => ({ getRequest: () => req, getResponse: () => res }),
   } as any;
 }
 

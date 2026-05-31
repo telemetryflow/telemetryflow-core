@@ -212,7 +212,7 @@ async function processFile(file: File) {
 
     <!-- Hero Section with Avatar -->
     <div class="profile-hero">
-      <div class="hero-background"></div>
+      <div class="hero-background" />
       <div class="hero-content">
         <div class="avatar-wrapper">
           <n-spin :show="isUploadingAvatar" size="small">
@@ -221,7 +221,7 @@ async function processFile(file: File) {
               <n-avatar v-else :size="120" round class="avatar-initials-large">
                 {{ initials }}
               </n-avatar>
-              <button class="avatar-edit-btn-large" @click="handleAvatarUpload" :disabled="isUploadingAvatar">
+              <button class="avatar-edit-btn-large" :disabled="isUploadingAvatar" @click="handleAvatarUpload">
                 <Icon icon="carbon:camera" :width="20" :height="20" />
               </button>
             </div>
@@ -256,7 +256,7 @@ async function processFile(file: File) {
             <h3 class="card-title">Personal Information</h3>
             <p class="card-subtitle">Update your personal details</p>
           </div>
-          <n-button v-if="!isEditing" text @click="handleEdit" class="edit-btn">
+          <n-button v-if="!isEditing" text class="edit-btn" @click="handleEdit">
             <template #icon>
               <Icon icon="carbon:edit" :width="18" :height="18" />
             </template>
@@ -480,7 +480,7 @@ async function processFile(file: File) {
           </div>
 
           <div class="avatar-actions-grid">
-            <n-button size="large" @click="handleAvatarUpload" :loading="isUploadingAvatar">
+            <n-button size="large" :loading="isUploadingAvatar" @click="handleAvatarUpload">
               <template #icon>
                 <Icon icon="carbon:upload" />
               </template>

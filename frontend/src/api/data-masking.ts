@@ -191,7 +191,7 @@ export async function testRule(payload: TestRuleRequest): Promise<TestRuleRespon
     const { sampleInput, rule } = payload
     const changed = sampleInput.includes('@') || sampleInput.match(/\d{3}-\d{2}-\d{4}/) !== null
     const masked = changed
-      ? sampleInput.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, rule.replacement ?? '[REDACTED]')
+      ? sampleInput.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, rule.replacement ?? '[REDACTED]')
       : sampleInput
     return { original: sampleInput, masked, changed, matchCount: changed ? 1 : 0 }
   }

@@ -196,7 +196,7 @@ function update(partial: Partial<WebhookConfigModel>) {
     <n-input
       :value="modelValue.headers"
       type="textarea"
-      placeholder='{"X-Custom-Header": "value", "X-Source": "TelemetryFlow"}'
+      placeholder="{&quot;X-Custom-Header&quot;: &quot;value&quot;, &quot;X-Source&quot;: &quot;TelemetryFlow&quot;}"
       :autosize="{ minRows: 2, maxRows: 4 }"
       @update:value="update({ headers: $event })"
     />
@@ -209,7 +209,7 @@ function update(partial: Partial<WebhookConfigModel>) {
     <n-input
       :value="modelValue.bodyTemplate"
       type="textarea"
-      placeholder='{"alert": "{{alertName}}", "severity": "{{severity}}", "status": "{{status}}", "message": "{{message}}", "value": {{currentValue}}, "threshold": {{threshold}}}'
+      placeholder="{&quot;alert&quot;: &quot;{{alertName}}&quot;, &quot;severity&quot;: &quot;{{severity}}&quot;, &quot;status&quot;: &quot;{{status}}&quot;, &quot;message&quot;: &quot;{{message}}&quot;, &quot;value&quot;: {{currentValue}}, &quot;threshold&quot;: {{threshold}}}"
       :autosize="{ minRows: 4, maxRows: 10 }"
       @update:value="update({ bodyTemplate: $event })"
     />

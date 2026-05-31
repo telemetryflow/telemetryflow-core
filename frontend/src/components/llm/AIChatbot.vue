@@ -195,10 +195,12 @@ defineExpose({
               <template #trigger>
                 <n-button text @click="toggleMinimize">
                   <template #icon>
-                    <Icon :icon="isMinimized
+                    <Icon
+                      :icon="isMinimized
                         ? 'carbon:chevron-up'
                         : 'carbon:chevron-down'
-                      " />
+                      "
+                    />
                   </template>
                 </n-button>
               </template>
@@ -217,19 +219,21 @@ defineExpose({
           <div ref="chatContainer" class="messages-container">
             <div v-for="msg in messages" :key="msg.id" class="message" :class="msg.role">
               <div class="message-avatar">
-                <Icon :icon="msg.role === 'user'
+                <Icon
+                  :icon="msg.role === 'user'
                     ? 'carbon:user-avatar'
                     : 'carbon:ai-status'
-                  " :width="20" :height="20" />
+                  " :width="20" :height="20"
+                />
               </div>
               <div class="message-content">
                 <div class="message-header">
                   <span class="message-sender">{{
                     msg.role === "user" ? "You" : "AI Assistant"
-                    }}</span>
+                  }}</span>
                   <span class="message-time">{{
                     formatTime(msg.timestamp)
-                    }}</span>
+                  }}</span>
                 </div>
                 <div v-if="msg.isLoading" class="message-loading">
                   <n-spin size="small" />
@@ -242,16 +246,22 @@ defineExpose({
 
           <!-- Input Area -->
           <div class="chat-input">
-            <n-select v-model:value="selectedProvider" size="small" :options="enabledProviders.map((p) => ({
-              label: p.displayName,
-              value: p.id,
-            }))
-              " placeholder="Select Provider" class="provider-select" />
-            <n-input v-model:value="userInput" type="textarea"
+            <n-select
+              v-model:value="selectedProvider" size="small" :options="enabledProviders.map((p) => ({
+                label: p.displayName,
+                value: p.id,
+              }))
+              " placeholder="Select Provider" class="provider-select"
+            />
+            <n-input
+              v-model:value="userInput" type="textarea"
               placeholder="Ask me anything about your observability data..." :autosize="{ minRows: 1, maxRows: 4 }"
-              :disabled="isLoading" @keydown.enter.prevent="sendMessage" />
-            <n-button type="primary" :disabled="!userInput.trim() || isLoading" :loading="isLoading"
-              @click="sendMessage">
+              :disabled="isLoading" @keydown.enter.prevent="sendMessage"
+            />
+            <n-button
+              type="primary" :disabled="!userInput.trim() || isLoading" :loading="isLoading"
+              @click="sendMessage"
+            >
               <template #icon>
                 <Icon icon="carbon:send-alt" />
               </template>

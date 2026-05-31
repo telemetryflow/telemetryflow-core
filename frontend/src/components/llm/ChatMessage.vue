@@ -1,17 +1,21 @@
 <template>
-  <div :class="[
-    'flex gap-3',
-    message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
-  ]">
+  <div
+    :class="[
+      'flex gap-3',
+      message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+    ]"
+  >
     <!-- Avatar -->
-    <div :class="[
-      'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center',
-      message.isError
-        ? 'bg-red-500'
-        : message.role === 'user'
-          ? 'bg-blue-500'
-          : 'bg-gradient-to-br from-indigo-500 to-purple-600'
-    ]">
+    <div
+      :class="[
+        'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center',
+        message.isError
+          ? 'bg-red-500'
+          : message.role === 'user'
+            ? 'bg-blue-500'
+            : 'bg-gradient-to-br from-indigo-500 to-purple-600'
+      ]"
+    >
       <n-icon size="16" color="white">
         <AlertIcon v-if="message.isError" />
         <PersonIcon v-else-if="message.role === 'user'" />
@@ -20,18 +24,22 @@
     </div>
 
     <!-- Message Content -->
-    <div :class="[
-      'flex-1',
-      message.role === 'user' ? 'max-w-[85%] text-right' : 'max-w-[95%] text-left'
-    ]">
-      <div :class="[
-        'inline-block px-4 py-2 rounded-2xl',
-        message.isError
-          ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700 rounded-bl-sm message-error'
-          : message.role === 'user'
-            ? 'bg-blue-500 text-white rounded-br-sm'
-            : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-sm message-assistant'
-      ]">
+    <div
+      :class="[
+        'flex-1',
+        message.role === 'user' ? 'max-w-[85%] text-right' : 'max-w-[95%] text-left'
+      ]"
+    >
+      <div
+        :class="[
+          'inline-block px-4 py-2 rounded-2xl',
+          message.isError
+            ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700 rounded-bl-sm message-error'
+            : message.role === 'user'
+              ? 'bg-blue-500 text-white rounded-br-sm'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-sm message-assistant'
+        ]"
+      >
         <!-- Error message -->
         <template v-if="message.isError">
           <p class="whitespace-pre-wrap text-sm font-medium">{{ message.content }}</p>

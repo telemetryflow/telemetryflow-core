@@ -101,16 +101,13 @@ const iconSize = computed(() => {
         <div v-if="icon" class="stat-icon" :style="iconStyle">
           <Icon :icon="icon" :width="iconSize" :height="iconSize" />
         </div>
-        <span class="stat-title"
-          >{{ title
-          }}<span
-            v-if="titleSuffix"
-            class="title-suffix"
-            :style="{ color: borderColor }"
-          >
-            {{ titleSuffix }}</span
-          ></span
+        <span class="stat-title">{{ title
+        }}<span
+          v-if="titleSuffix"
+          class="title-suffix"
+          :style="{ color: borderColor }"
         >
+          {{ titleSuffix }}</span></span>
       </div>
       <div
         class="stat-value"

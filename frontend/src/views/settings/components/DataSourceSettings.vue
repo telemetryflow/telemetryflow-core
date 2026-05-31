@@ -113,7 +113,7 @@ async function testConnection() {
     </n-form>
 
     <div class="form-actions">
-      <n-button type="primary" ghost @click="testConnection" :loading="isTesting">
+      <n-button type="primary" ghost :loading="isTesting" @click="testConnection">
         <template #icon>
           <Icon icon="carbon:connection-signal" />
         </template>

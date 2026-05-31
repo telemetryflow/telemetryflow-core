@@ -55,7 +55,7 @@ function handleEnablePush() {
   <div class="notifications-page">
     <!-- Hero Section -->
     <div class="notifications-hero">
-      <div class="hero-background"></div>
+      <div class="hero-background" />
       <div class="hero-content">
         <div class="hero-icon">
           <Icon icon="carbon:notification" :width="48" :height="48" />

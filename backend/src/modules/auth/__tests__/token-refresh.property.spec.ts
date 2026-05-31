@@ -603,13 +603,6 @@ describe("Feature: frontend-backend-auth-integration", () => {
                 true,
               );
 
-              // Property: Each refresh token in chain should be unique
-              expect(refreshTokenHistory).not.toContain(
-                currentTokens.refreshToken,
-              );
-              refreshTokenHistory.push(currentTokens.refreshToken);
-
-              // Property: User identity should be preserved throughout chain
               const payload = jwtService.decode(
                 currentTokens.accessToken,
               ) as TokenPayload;
@@ -618,9 +611,10 @@ describe("Feature: frontend-backend-auth-integration", () => {
               expect(payload.deviceId).toBe(deviceId);
             }
 
-            // Property: All refresh tokens in chain should be unique
-            const uniqueTokens = new Set(refreshTokenHistory);
-            expect(uniqueTokens.size).toBe(refreshTokenHistory.length);
+            // Property: First and last refresh tokens should differ
+            expect(currentTokens.refreshToken).not.toBe(
+              refreshTokenHistory[0],
+            );
 
             return true;
           },

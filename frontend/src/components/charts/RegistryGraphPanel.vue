@@ -455,103 +455,103 @@ async function handleCopyShortLink() {
 
         <!-- Controls — right-aligned on the same row as title -->
         <div class="mini-hdr-actions">
-        <!-- Chart type toggles (timeseries only) -->
-        <div v-if="isTimeseriesFamily" class="action-group">
-          <button
-            v-for="opt in [
-              { type: 'line' as MiniChartType, icon: 'carbon:chart-line' },
-              { type: 'area' as MiniChartType, icon: 'carbon:chart-area' },
-              { type: 'bar' as MiniChartType, icon: 'carbon:chart-bar' },
-            ]"
-            :key="opt.type"
-            class="panel-icon-btn"
-            :class="{ 'is-active-tool': miniChartType === opt.type }"
-            @click="miniChartType = opt.type"
-          >
-            <Icon :icon="opt.icon" :width="13" :height="13" />
-          </button>
-        </div>
+          <!-- Chart type toggles (timeseries only) -->
+          <div v-if="isTimeseriesFamily" class="action-group">
+            <button
+              v-for="opt in [
+                { type: 'line' as MiniChartType, icon: 'carbon:chart-line' },
+                { type: 'area' as MiniChartType, icon: 'carbon:chart-area' },
+                { type: 'bar' as MiniChartType, icon: 'carbon:chart-bar' },
+              ]"
+              :key="opt.type"
+              class="panel-icon-btn"
+              :class="{ 'is-active-tool': miniChartType === opt.type }"
+              @click="miniChartType = opt.type"
+            >
+              <Icon :icon="opt.icon" :width="13" :height="13" />
+            </button>
+          </div>
 
-        <!-- Feature group: Alert + Share -->
-        <div class="action-group">
-          <n-tooltip>
-            <template #trigger>
-              <button
-                class="panel-icon-btn"
-                :class="{ 'is-active-alert': alertEnabled }"
-                :disabled="savingAlert"
-                @click="handleAlertToggle"
-              >
-                <Icon icon="carbon:alarm" :width="14" :height="14" />
-                <span v-if="alertEnabled" class="btn-dot btn-dot--alert" />
-              </button>
-            </template>
-            {{
-              alertEnabled
-                ? "Alert ON — click to disable"
-                : "Alert OFF — click to enable"
-            }}
-          </n-tooltip>
+          <!-- Feature group: Alert + Share -->
+          <div class="action-group">
+            <n-tooltip>
+              <template #trigger>
+                <button
+                  class="panel-icon-btn"
+                  :class="{ 'is-active-alert': alertEnabled }"
+                  :disabled="savingAlert"
+                  @click="handleAlertToggle"
+                >
+                  <Icon icon="carbon:alarm" :width="14" :height="14" />
+                  <span v-if="alertEnabled" class="btn-dot btn-dot--alert" />
+                </button>
+              </template>
+              {{
+                alertEnabled
+                  ? "Alert ON — click to disable"
+                  : "Alert OFF — click to enable"
+              }}
+            </n-tooltip>
 
-          <n-tooltip>
-            <template #trigger>
-              <button class="panel-icon-btn" @click="openAlertModal">
-                <Icon icon="carbon:notification" :width="14" :height="14" />
-              </button>
-            </template>
-            Configure alert channels
-          </n-tooltip>
+            <n-tooltip>
+              <template #trigger>
+                <button class="panel-icon-btn" @click="openAlertModal">
+                  <Icon icon="carbon:notification" :width="14" :height="14" />
+                </button>
+              </template>
+              Configure alert channels
+            </n-tooltip>
 
-          <div class="action-sep" />
+            <div class="action-sep" />
 
-          <n-tooltip>
-            <template #trigger>
-              <button
-                class="panel-icon-btn"
-                :class="{ 'is-active-share': isShared }"
-                :disabled="shareLoading"
-                @click="openShareModal"
-              >
-                <Icon
-                  :icon="isShared ? 'carbon:link' : 'carbon:share'"
-                  :width="14"
-                  :height="14"
-                />
-                <span v-if="isShared" class="btn-dot btn-dot--share" />
-              </button>
-            </template>
-            {{
-              isShared
-                ? "Shared — click to manage link"
-                : "Share publicly (no login)"
-            }}
-          </n-tooltip>
-        </div>
+            <n-tooltip>
+              <template #trigger>
+                <button
+                  class="panel-icon-btn"
+                  :class="{ 'is-active-share': isShared }"
+                  :disabled="shareLoading"
+                  @click="openShareModal"
+                >
+                  <Icon
+                    :icon="isShared ? 'carbon:link' : 'carbon:share'"
+                    :width="14"
+                    :height="14"
+                  />
+                  <span v-if="isShared" class="btn-dot btn-dot--share" />
+                </button>
+              </template>
+              {{
+                isShared
+                  ? "Shared — click to manage link"
+                  : "Share publicly (no login)"
+              }}
+            </n-tooltip>
+          </div>
 
-        <!-- Tool group: Settings + Zoom -->
-        <div class="action-group">
-          <n-tooltip>
-            <template #trigger>
-              <button
-                class="panel-icon-btn"
-                :class="{ 'is-active-tool': showProperties }"
-                @click="toggleProperties"
-              >
-                <Icon icon="carbon:settings" :width="14" :height="14" />
-              </button>
-            </template>
-            {{ showProperties ? "Hide properties" : "Widget properties" }}
-          </n-tooltip>
+          <!-- Tool group: Settings + Zoom -->
+          <div class="action-group">
+            <n-tooltip>
+              <template #trigger>
+                <button
+                  class="panel-icon-btn"
+                  :class="{ 'is-active-tool': showProperties }"
+                  @click="toggleProperties"
+                >
+                  <Icon icon="carbon:settings" :width="14" :height="14" />
+                </button>
+              </template>
+              {{ showProperties ? "Hide properties" : "Widget properties" }}
+            </n-tooltip>
 
-          <n-tooltip v-if="showZoom">
-            <template #trigger>
-              <button class="panel-icon-btn" @click="showZoomModal = true">
-                <Icon icon="carbon:zoom-in" :width="14" :height="14" />
-              </button>
-            </template>
-            Zoom in
-          </n-tooltip>
-        </div>
+            <n-tooltip v-if="showZoom">
+              <template #trigger>
+                <button class="panel-icon-btn" @click="showZoomModal = true">
+                  <Icon icon="carbon:zoom-in" :width="14" :height="14" />
+                </button>
+              </template>
+              Zoom in
+            </n-tooltip>
+          </div>
         </div><!-- /mini-hdr-actions -->
       </div><!-- /mini-hdr-top -->
 
@@ -586,9 +586,9 @@ async function handleCopyShortLink() {
         <Icon icon="carbon:warning-alt" class="chart-error-icon" />
         <span class="chart-error-text">{{ error }}</span>
         <n-button size="tiny" quaternary @click="refresh">
-          <template #icon
-            ><Icon icon="carbon:renew" :width="14" :height="14"
-          /></template>
+          <template #icon>
+            <Icon icon="carbon:renew" :width="14" :height="14" />
+          </template>
           Retry
         </n-button>
       </div>
@@ -849,9 +849,9 @@ async function handleCopyShortLink() {
         <Icon icon="carbon:warning-alt" class="chart-error-icon" />
         <span class="chart-error-text">{{ error }}</span>
         <n-button size="tiny" quaternary @click="refresh">
-          <template #icon
-            ><Icon icon="carbon:renew" :width="14" :height="14"
-          /></template>
+          <template #icon>
+            <Icon icon="carbon:renew" :width="14" :height="14" />
+          </template>
           Retry
         </n-button>
       </div>
@@ -908,8 +908,8 @@ async function handleCopyShortLink() {
       <HeatmapChart
         v-else-if="
           isHeatmap &&
-          overrideHeatmapData &&
-          overrideHeatmapData.data.length > 0
+            overrideHeatmapData &&
+            overrideHeatmapData.data.length > 0
         "
         :x-categories="overrideHeatmapData.xCategories"
         :y-categories="overrideHeatmapData.yCategories"
@@ -1023,19 +1023,16 @@ async function handleCopyShortLink() {
           :height="14"
           class="sq-chevron"
         />
-        <span class="sq-label"
-          >Series Queries ({{ coloredSeries.length }}/{{
-            allColoredSeries.length
-          }})</span
-        >
+        <span class="sq-label">Series Queries ({{ coloredSeries.length }}/{{
+          allColoredSeries.length
+        }})</span>
         <code
           v-if="
             definition.defaultQueries[0]?.seriesKey &&
-            definition.defaultQueries[0]?.seriesKey !== '__name__'
+              definition.defaultQueries[0]?.seriesKey !== '__name__'
           "
           class="sq-key-tag"
-          >by {{ definition.defaultQueries[0].seriesKey }}</code
-        >
+        >by {{ definition.defaultQueries[0].seriesKey }}</code>
       </div>
       <div v-show="!seriesCollapsed" class="sq-list">
         <div
@@ -1318,9 +1315,9 @@ async function handleCopyShortLink() {
       <Icon icon="carbon:warning-alt" class="chart-error-icon" />
       <span class="chart-error-text">{{ error }}</span>
       <n-button size="tiny" quaternary @click="refresh">
-        <template #icon
-          ><Icon icon="carbon:renew" :width="14" :height="14"
-        /></template>
+        <template #icon>
+          <Icon icon="carbon:renew" :width="14" :height="14" />
+        </template>
         Retry
       </n-button>
     </div>
@@ -1541,8 +1538,7 @@ async function handleCopyShortLink() {
                 size="tiny"
                 type="warning"
                 style="margin-left: 4px"
-                >disabled</n-tag
-              >
+              >disabled</n-tag>
             </span>
           </n-checkbox>
         </n-space>
@@ -1556,9 +1552,9 @@ async function handleCopyShortLink() {
           {{ alertError }}
         </span>
         <div class="alert-modal-footer-btns">
-          <n-button size="small" @click="showAlertModal = false"
-            >Cancel</n-button
-          >
+          <n-button size="small" @click="showAlertModal = false">
+            Cancel
+          </n-button>
           <n-button
             type="primary"
             size="small"

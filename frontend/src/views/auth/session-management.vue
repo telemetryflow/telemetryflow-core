@@ -133,8 +133,10 @@ onMounted(loadSessions);
           </template>
           Refresh
         </n-button>
-        <n-button v-if="otherSessions.length > 0" type="error" ghost :loading="revokingAll" :disabled="revokingAll"
-          @click="revokeAllOther">
+        <n-button
+          v-if="otherSessions.length > 0" type="error" ghost :loading="revokingAll" :disabled="revokingAll"
+          @click="revokeAllOther"
+        >
           <template #icon>
             <Icon icon="mdi:logout-variant" />
           </template>
@@ -143,7 +145,7 @@ onMounted(loadSessions);
       </div>
     </div>
 
-    <n-alert v-if="error" type="error" :show-icon="true" closable @close="error = null" aria-live="assertive">
+    <n-alert v-if="error" type="error" :show-icon="true" closable aria-live="assertive" @close="error = null">
       {{ error }}
     </n-alert>
 
@@ -164,8 +166,10 @@ onMounted(loadSessions);
         <h2 class="section-title">Current Session</h2>
         <div class="session-card current" role="article" aria-label="Current session">
           <div class="session-icon">
-            <Icon :icon="getBrowserIcon(currentSession.browser)" :width="32" :height="32"
-              :aria-label="currentSession.browser" />
+            <Icon
+              :icon="getBrowserIcon(currentSession.browser)" :width="32" :height="32"
+              :aria-label="currentSession.browser"
+            />
           </div>
           <div class="session-info">
             <div class="session-name-row">
@@ -219,8 +223,10 @@ onMounted(loadSessions);
                 </span>
               </div>
             </div>
-            <n-button type="error" size="small" ghost :loading="revokingId === session.id"
-              :aria-label="`Revoke session on ${session.browser}`" @click="revokeSession(session.id)">
+            <n-button
+              type="error" size="small" ghost :loading="revokingId === session.id"
+              :aria-label="`Revoke session on ${session.browser}`" @click="revokeSession(session.id)"
+            >
               Revoke
             </n-button>
           </div>

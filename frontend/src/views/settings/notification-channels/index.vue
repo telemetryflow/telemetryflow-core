@@ -705,9 +705,11 @@ onMounted(() => {
             </NText>
           </div>
         </div>
-        <NSelect :value="defaultChannelIds" :options="defaultChannelOptions" :render-label="renderDefaultLabel"
+        <NSelect
+          :value="defaultChannelIds" :options="defaultChannelOptions" :render-label="renderDefaultLabel"
           :render-tag="renderDefaultTag" multiple :max-tag-count="3" placeholder="Select default channels..."
-          style="min-width: 300px; max-width: 500px" @update:value="handleDefaultsChange" />
+          style="min-width: 300px; max-width: 500px" @update:value="handleDefaultsChange"
+        />
       </div>
     </NCard>
 
@@ -722,16 +724,22 @@ onMounted(() => {
           </NTag>
         </div>
         <div class="table-actions">
-          <NInput v-model:value="searchQuery" placeholder="Search channels..." size="small" clearable
-            class="search-input">
+          <NInput
+            v-model:value="searchQuery" placeholder="Search channels..." size="small" clearable
+            class="search-input"
+          >
             <template #prefix>
               <Icon icon="carbon:search" />
             </template>
           </NInput>
-          <NSelect v-model:value="filterType" :options="typeOptions" :render-label="renderTypeLabel" placeholder="Type"
-            size="small" style="width: 140px" />
-          <NSelect v-model:value="filterStatus" :options="statusOptions" placeholder="Status" size="small"
-            style="width: 130px" />
+          <NSelect
+            v-model:value="filterType" :options="typeOptions" :render-label="renderTypeLabel" placeholder="Type"
+            size="small" style="width: 140px"
+          />
+          <NSelect
+            v-model:value="filterStatus" :options="statusOptions" placeholder="Status" size="small"
+            style="width: 130px"
+          />
           <NButton size="small" ghost @click="handleResetFilters">
             <template #icon>
               <Icon icon="carbon:reset" />
@@ -741,10 +749,12 @@ onMounted(() => {
         </div>
       </div>
       <div class="table-content">
-        <NDataTable :columns="columns" :data="filteredChannels" :loading="loading" :scroll-x="1350"
+        <NDataTable
+          :columns="columns" :data="filteredChannels" :loading="loading" :scroll-x="1350"
           :row-key="(row: NotificationChannel) => row.id"
           :pagination="{ pageSize: 10, showSizePicker: true, pageSizes: [10, 20, 50, 100, 200, 500] }" :bordered="false" striped
-          size="small" />
+          size="small"
+        />
       </div>
     </div>
 
@@ -752,8 +762,10 @@ onMounted(() => {
     <ChannelModal v-model:show="showModal" :editing-channel="editingChannel" @save="handleModalSave" />
 
     <!-- Detail Drawer -->
-    <NDrawer :show="showDetailDrawer" :width="500" placement="right"
-      @update:show="(val: boolean) => showDetailDrawer = val">
+    <NDrawer
+      :show="showDetailDrawer" :width="500" placement="right"
+      @update:show="(val: boolean) => showDetailDrawer = val"
+    >
       <NDrawerContent v-if="selectedChannel">
         <template #header>
           <div class="drawer-header">
@@ -788,8 +800,10 @@ onMounted(() => {
                 <tr>
                   <td class="info-label">Type</td>
                   <td class="info-value">
-                    <NTag size="small" :bordered="false"
-                      :style="`color: ${getChannelColor(selectedChannel.type).color}; background: ${getChannelColor(selectedChannel.type).bg}; font-weight: 700;`">
+                    <NTag
+                      size="small" :bordered="false"
+                      :style="`color: ${getChannelColor(selectedChannel.type).color}; background: ${getChannelColor(selectedChannel.type).bg}; font-weight: 700;`"
+                    >
                       <template #icon>
                         <Icon :icon="getChannelIcon(selectedChannel.type)" />
                       </template>
@@ -831,8 +845,10 @@ onMounted(() => {
               <Icon icon="carbon:connect" />
               <span>Used By</span>
             </div>
-            <div v-if="selectedChannelRules.length === 0 && selectedChannelMonitors.length === 0"
-              class="empty-rules-hint">
+            <div
+              v-if="selectedChannelRules.length === 0 && selectedChannelMonitors.length === 0"
+              class="empty-rules-hint"
+            >
               <NText depth="3">This channel is not used by any rules or monitors</NText>
             </div>
             <div v-else class="used-by-groups">
@@ -841,14 +857,18 @@ onMounted(() => {
                 <div class="usage-group-label">
                   <Icon icon="carbon:rule" :style="{ fontSize: '14px' }" />
                   <span>Alert Rules</span>
-                  <NTag size="tiny" :bordered="false" round :style="{ backgroundColor: '#fef3c7', color: '#d97706' }">{{
-                    selectedChannelRules.length }}</NTag>
+                  <NTag size="tiny" :bordered="false" round :style="{ backgroundColor: '#fef3c7', color: '#d97706' }">
+                    {{
+                      selectedChannelRules.length }}
+                  </NTag>
                 </div>
                 <div class="used-by-tags">
-                  <span v-for="(rule, idx) in selectedChannelRules" :key="`rule-${idx}`" class="rule-badge" :style="{
-                    backgroundColor: (severityBadgeColors[rule.severity] || severityBadgeColors.info).bg,
-                    color: (severityBadgeColors[rule.severity] || severityBadgeColors.info).color,
-                  }">
+                  <span
+                    v-for="(rule, idx) in selectedChannelRules" :key="`rule-${idx}`" class="rule-badge" :style="{
+                      backgroundColor: (severityBadgeColors[rule.severity] || severityBadgeColors.info).bg,
+                      color: (severityBadgeColors[rule.severity] || severityBadgeColors.info).color,
+                    }"
+                  >
                     <Icon icon="carbon:rule" :style="{ fontSize: '12px' }" />
                     {{ rule.name }}
                   </span>
@@ -860,17 +880,23 @@ onMounted(() => {
                 <div class="usage-group-label">
                   <Icon icon="carbon:activity" :style="{ fontSize: '14px' }" />
                   <span>Uptime Monitors</span>
-                  <NTag size="tiny" :bordered="false" round :style="{ backgroundColor: '#e0f2fe', color: '#0ea5e9' }">{{
-                    selectedChannelMonitors.length }}</NTag>
+                  <NTag size="tiny" :bordered="false" round :style="{ backgroundColor: '#e0f2fe', color: '#0ea5e9' }">
+                    {{
+                      selectedChannelMonitors.length }}
+                  </NTag>
                 </div>
                 <div class="used-by-tags">
-                  <span v-for="(monitor, idx) in selectedChannelMonitors" :key="`monitor-${idx}`" class="rule-badge"
+                  <span
+                    v-for="(monitor, idx) in selectedChannelMonitors" :key="`monitor-${idx}`" class="rule-badge"
                     :style="{
                       backgroundColor: usageBadgeColors.monitor.bg,
                       color: usageBadgeColors.monitor.color,
-                    }">
-                    <Icon :icon="MONITOR_TYPES[monitor.type as keyof typeof MONITOR_TYPES]?.icon || 'carbon:activity'"
-                      :style="{ fontSize: '12px' }" />
+                    }"
+                  >
+                    <Icon
+                      :icon="MONITOR_TYPES[monitor.type as keyof typeof MONITOR_TYPES]?.icon || 'carbon:activity'"
+                      :style="{ fontSize: '12px' }"
+                    />
                     {{ monitor.name }}
                   </span>
                 </div>

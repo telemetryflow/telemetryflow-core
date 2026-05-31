@@ -348,8 +348,10 @@ defineExpose({ refreshStats, refreshTable });
     <!-- Statistics Cards -->
     <NSpin :show="statsLoading">
       <div class="stats-grid">
-        <StatPanel v-for="(config, index) in statCards" :key="`stat-${index}`" size="small" v-bind="config"
-          :show-compact="true" />
+        <StatPanel
+          v-for="(config, index) in statCards" :key="`stat-${index}`" size="small" v-bind="config"
+          :show-compact="true"
+        />
       </div>
     </NSpin>
 
@@ -374,15 +376,19 @@ defineExpose({ refreshStats, refreshTable });
             </template>
             Filtered
           </NTag>
-          <NTag v-if="!isFiltered && successEvents > 0" :bordered="false" size="small" type="success"
-            class="mini-stat-tag">
+          <NTag
+            v-if="!isFiltered && successEvents > 0" :bordered="false" size="small" type="success"
+            class="mini-stat-tag"
+          >
             <template #icon>
               <Icon icon="carbon:checkmark-filled" style="font-size:11px" />
             </template>
             {{ formatCompactNumber(successEvents) }}
           </NTag>
-          <NTag v-if="!isFiltered && failureEvents > 0" :bordered="false" size="small" type="error"
-            class="mini-stat-tag">
+          <NTag
+            v-if="!isFiltered && failureEvents > 0" :bordered="false" size="small" type="error"
+            class="mini-stat-tag"
+          >
             <template #icon>
               <Icon icon="carbon:error-filled" style="font-size:11px" />
             </template>
@@ -390,22 +396,30 @@ defineExpose({ refreshStats, refreshTable });
           </NTag>
         </div>
         <div class="table-actions">
-          <NInput v-model:value="searchQuery" placeholder="Search by email..." clearable size="small"
-            class="filter-search">
+          <NInput
+            v-model:value="searchQuery" placeholder="Search by email..." clearable size="small"
+            class="filter-search"
+          >
             <template #prefix>
               <Icon icon="carbon:search" />
             </template>
           </NInput>
-          <NSelect v-model:value="selectedEventType" :options="eventTypeOptions" placeholder="Event Type" clearable
-            size="small" class="filter-event-type" />
-          <NSelect v-model:value="selectedResult" :options="resultOptions" placeholder="Result" clearable size="small"
-            class="filter-result" />
-          <NDatePicker v-model:value="dateRange" type="daterange" clearable size="small" class="filter-date"
+          <NSelect
+            v-model:value="selectedEventType" :options="eventTypeOptions" placeholder="Event Type" clearable
+            size="small" class="filter-event-type"
+          />
+          <NSelect
+            v-model:value="selectedResult" :options="resultOptions" placeholder="Result" clearable size="small"
+            class="filter-result"
+          />
+          <NDatePicker
+            v-model:value="dateRange" type="daterange" clearable size="small" class="filter-date"
             :shortcuts="{
               'Last 24h': () => [Date.now() - 24 * 60 * 60 * 1000, Date.now()],
               'Last 7 days': () => [Date.now() - 7 * 24 * 60 * 60 * 1000, Date.now()],
               'Last 30 days': () => [Date.now() - 30 * 24 * 60 * 60 * 1000, Date.now()],
-            }" />
+            }"
+          />
           <NButton size="small" ghost class="filter-reset" @click="handleResetFilters">
             <template #icon>
               <Icon icon="carbon:reset" />
@@ -429,9 +443,11 @@ defineExpose({ refreshStats, refreshTable });
         </div>
       </div>
       <div class="table-content">
-        <NDataTable :columns="columns" :data="auditLogs" :loading="tableLoading" :pagination="paginationConfig"
+        <NDataTable
+          :columns="columns" :data="auditLogs" :loading="tableLoading" :pagination="paginationConfig"
           :scroll-x="1200" :row-key="(row: AuditLog) => row.id" :bordered="false" striped size="small" remote
-          @update:sorter="handleSorterChange" />
+          @update:sorter="handleSorterChange"
+        />
       </div>
     </div>
   </div>

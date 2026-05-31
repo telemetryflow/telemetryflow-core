@@ -359,15 +359,14 @@ watch(() => appStore.globalTimeRange, () => {
                 <span
                   class="tier-badge"
                   :style="{ backgroundColor: tier.color }"
-                  >Tier {{ tier.tier }}</span
-                >
+                >Tier {{ tier.tier }}</span>
                 <span class="tier-name">{{ tier.name }}</span>
-                <n-tag size="small" type="info" :bordered="false"
-                  >{{ tier.permissions }} permissions</n-tag
-                >
-                <n-tag size="small" type="success" :bordered="false"
-                  >{{ tier.coverage }} coverage</n-tag
-                >
+                <n-tag size="small" type="info" :bordered="false">
+                  {{ tier.permissions }} permissions
+                </n-tag>
+                <n-tag size="small" type="success" :bordered="false">
+                  {{ tier.coverage }} coverage
+                </n-tag>
               </div>
               <div class="tier-scope">
                 <Icon icon="carbon:location" />
@@ -492,9 +491,9 @@ watch(() => appStore.globalTimeRange, () => {
                   color: getRoleBackground(role.name) ? 'white' : undefined,
                 }"
               />
-              <n-tag v-if="role.isSystem" size="small" type="info"
-                >System</n-tag
-              >
+              <n-tag v-if="role.isSystem" size="small" type="info">
+                System
+              </n-tag>
             </div>
 
             <div

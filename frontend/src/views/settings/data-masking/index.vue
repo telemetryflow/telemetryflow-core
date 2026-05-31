@@ -42,8 +42,8 @@
       v-if="store.error"
       type="error"
       closable
-      @close="store.clearError()"
       class="error-alert"
+      @close="store.clearError()"
     >
       {{ store.error }}
     </n-alert>
@@ -129,9 +129,9 @@
               Table
             </n-button>
             <n-button secondary @click="exportCSV">
-              <template #icon
-                ><Icon icon="carbon:document-download"
-              /></template>
+              <template #icon>
+                <Icon icon="carbon:document-download" />
+              </template>
               CSV
             </n-button>
             <n-button secondary @click="exportJSON">
@@ -155,9 +155,9 @@
               Create your first PII masking policy to automatically protect
               sensitive data in logs.
             </p>
-            <n-button v-if="canWrite" type="primary" @click="openCreateModal"
-              >Create Policy</n-button
-            >
+            <n-button v-if="canWrite" type="primary" @click="openCreateModal">
+              Create Policy
+            </n-button>
           </div>
 
           <div v-else class="policy-grid">

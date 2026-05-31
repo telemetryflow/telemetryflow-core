@@ -13,7 +13,7 @@ import type {
 } from "@/types";
 
 // Local state for mock data (to support CRUD operations)
-let mockPermissions = [...MOCK_PERMISSIONS];
+const mockPermissions = [...MOCK_PERMISSIONS];
 
 interface PermissionsListResponse {
   data: Permission[];

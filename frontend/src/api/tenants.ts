@@ -9,7 +9,7 @@ import { iamClient } from "./iam";
 import type { Tenant, IAMPaginatedResponse, IAMListParams } from "@/types";
 
 // Local state for mock data (to support CRUD operations)
-let mockTenants = [...MOCK_TENANTS];
+const mockTenants = [...MOCK_TENANTS];
 
 export interface CreateTenantRequest {
   name: string;

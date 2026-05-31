@@ -260,19 +260,25 @@ async function handleSave() {
 </script>
 
 <template>
-  <NModal :show="show" preset="card" :title="modalTitle" :style="{ maxWidth: '860px', width: '95vw' }"
-    :mask-closable="false" @update:show="$emit('update:show', $event)">
+  <NModal
+    :show="show" preset="card" :title="modalTitle" :style="{ maxWidth: '860px', width: '95vw' }"
+    :mask-closable="false" @update:show="$emit('update:show', $event)"
+  >
     <div class="provider-form-content">
       <!-- Left Side: Vertical Tabs -->
       <div class="form-tabs">
-        <div v-for="tab in formTabs" :key="tab.value" class="form-tab-item"
+        <div
+          v-for="tab in formTabs" :key="tab.value" class="form-tab-item"
           :class="{ active: activeTab === tab.value, 'test-tab': tab.value === 'test' }"
-          @click="activeTab = tab.value">
+          @click="activeTab = tab.value"
+        >
           <Icon :icon="tab.icon" class="tab-icon" />
           <span class="tab-label">{{ tab.label }}</span>
           <!-- Status dot on Test tab -->
-          <span v-if="tab.value === 'test' && testStatus !== 'idle'" class="test-dot"
-            :class="testStatus" />
+          <span
+            v-if="tab.value === 'test' && testStatus !== 'idle'" class="test-dot"
+            :class="testStatus"
+          />
         </div>
         <div class="tab-description">
           <p>{{ tabDescriptions[activeTab] }}</p>
@@ -316,8 +322,10 @@ async function handleSave() {
               <!-- Edit mode: show current masked key hint -->
               <template v-if="isEditMode && props.provider?.apiKey">
                 <NFormItem label="Current API Key">
-                  <NInput :value="props.provider.apiKey" type="password" readonly
-                    :input-props="{ style: 'cursor: default; opacity: 0.7;' }">
+                  <NInput
+                    :value="props.provider.apiKey" type="password" readonly
+                    :input-props="{ style: 'cursor: default; opacity: 0.7;' }"
+                  >
                     <template #suffix>
                       <Icon icon="carbon:locked" style="color: var(--n-text-color-3); font-size: 14px;" />
                     </template>
@@ -328,8 +336,10 @@ async function handleSave() {
                 </NFormItem>
 
                 <NFormItem label="New API Key (optional)">
-                  <NInput v-model:value="form.apiKey" type="password" show-password-on="click"
-                    placeholder="Leave empty to keep existing key" clearable />
+                  <NInput
+                    v-model:value="form.apiKey" type="password" show-password-on="click"
+                    placeholder="Leave empty to keep existing key" clearable
+                  />
                   <template #feedback>
                     <span class="form-hint">Only fill in to replace the current API key</span>
                   </template>
@@ -339,8 +349,10 @@ async function handleSave() {
               <!-- Create mode: standard API key input -->
               <template v-else>
                 <NFormItem label="API Key">
-                  <NInput v-model:value="form.apiKey" type="password" show-password-on="click"
-                    placeholder="Enter your API key" />
+                  <NInput
+                    v-model:value="form.apiKey" type="password" show-password-on="click"
+                    placeholder="Enter your API key"
+                  />
                   <template #feedback>
                     <span class="form-hint">Your provider's API authentication key</span>
                   </template>
@@ -542,8 +554,10 @@ async function handleSave() {
           </template>
           Cancel
         </NButton>
-        <NButton type="primary" ghost :disabled="!canTest || testStatus === 'testing'"
-          style="margin-right: auto;" @click="activeTab = 'test'; handleTest()">
+        <NButton
+          type="primary" ghost :disabled="!canTest || testStatus === 'testing'"
+          style="margin-right: auto;" @click="activeTab = 'test'; handleTest()"
+        >
           <template #icon>
             <Icon icon="carbon:connection-signal" />
           </template>

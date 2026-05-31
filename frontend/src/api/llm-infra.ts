@@ -122,7 +122,7 @@ Consider scaling web tier during 10:00-14:00 window. Current capacity is near li
 ### API Configuration
 \`\`\`bash
 curl -X POST https://api.telemetryflow.id/api/v2/alerts/rules \\
-  -H "Authorization: Bearer \$TOKEN" \\
+  -H "Authorization: Bearer $TOKEN" \\
   -d '{
     "name": "High CPU Utilization",
     "metric": "system_cpu_usage_percent",

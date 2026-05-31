@@ -1434,9 +1434,7 @@ function handleActionSelect(key: string, row: ApiKey) {
           <Icon icon="carbon:password" class="title-icon" />
           API Keys
         </h1>
-        <span class="page-subtitle"
-          >Manage API keys for programmatic access</span
-        >
+        <span class="page-subtitle">Manage API keys for programmatic access</span>
       </div>
       <div class="header-right">
         <NButton type="primary" @click="openCreateModal">
@@ -1571,11 +1569,11 @@ function handleActionSelect(key: string, row: ApiKey) {
                       opt.type === 'divider'
                         ? { type: 'divider', key: opt.key }
                         : {
-                            label: opt.label,
-                            key: opt.key,
-                            icon: () => h(Icon, { icon: opt.icon }),
-                            disabled: opt.disabled,
-                          },
+                          label: opt.label,
+                          key: opt.key,
+                          icon: () => h(Icon, { icon: opt.icon }),
+                          disabled: opt.disabled,
+                        },
                     )
                   "
                   @select="(key: string) => handleActionSelect(key, apiKey)"
@@ -1594,9 +1592,7 @@ function handleActionSelect(key: string, row: ApiKey) {
                 </p>
               </div>
               <div class="card-meta">
-                <span class="usage-count"
-                  >{{ apiKey.usageCount.toLocaleString() }} calls</span
-                >
+                <span class="usage-count">{{ apiKey.usageCount.toLocaleString() }} calls</span>
                 <span class="rate-limit">{{
                   apiKey.rateLimit ? `${apiKey.rateLimit}/min` : "—"
                 }}</span>
@@ -1855,9 +1851,9 @@ function handleActionSelect(key: string, row: ApiKey) {
               quaternary
               @click="handleCopyKey(createdKeys!.rawApiKeyId, 'API Key ID')"
             >
-              <template #icon
-                ><Icon icon="carbon:copy" style="font-size: 11px"
-              /></template>
+              <template #icon>
+                <Icon icon="carbon:copy" style="font-size: 11px" />
+              </template>
             </NButton>
           </div>
         </div>
@@ -1877,9 +1873,9 @@ function handleActionSelect(key: string, row: ApiKey) {
                 handleCopyKey(createdKeys!.rawApiKeySecret, 'API Key Secret')
               "
             >
-              <template #icon
-                ><Icon icon="carbon:copy" style="font-size: 11px"
-              /></template>
+              <template #icon>
+                <Icon icon="carbon:copy" style="font-size: 11px" />
+              </template>
             </NButton>
           </div>
         </div>
@@ -1899,9 +1895,9 @@ function handleActionSelect(key: string, row: ApiKey) {
                 handleCopyKey(createdKeys!.rawEncryptKey, 'Encryption Key')
               "
             >
-              <template #icon
-                ><Icon icon="carbon:copy" style="font-size: 11px"
-              /></template>
+              <template #icon>
+                <Icon icon="carbon:copy" style="font-size: 11px" />
+              </template>
             </NButton>
           </div>
         </div>
@@ -1949,8 +1945,9 @@ function handleActionSelect(key: string, row: ApiKey) {
                     white-space: nowrap;
                     line-height: 28px;
                   "
-                  >Platform:</NText
                 >
+                  Platform:
+                </NText>
                 <NSelect
                   v-model:value="implInstallPlatform"
                   :options="installPlatformOptions"
@@ -2061,8 +2058,9 @@ function handleActionSelect(key: string, row: ApiKey) {
                     white-space: nowrap;
                     line-height: 28px;
                   "
-                  >Platform:</NText
                 >
+                  Platform:
+                </NText>
                 <NSelect
                   v-model:value="implInstallPlatform"
                   :options="installPlatformOptions"
@@ -2646,9 +2644,9 @@ function handleActionSelect(key: string, row: ApiKey) {
               quaternary
               @click="handleCopyKey(rotatedKeys.apiKeyId, 'API Key ID')"
             >
-              <template #icon
-                ><Icon icon="carbon:copy" style="font-size: 11px"
-              /></template>
+              <template #icon>
+                <Icon icon="carbon:copy" style="font-size: 11px" />
+              </template>
             </NButton>
           </div>
         </div>
@@ -2668,9 +2666,9 @@ function handleActionSelect(key: string, row: ApiKey) {
                 handleCopyKey(rotatedKeys.rawApiKeySecret, 'API Key Secret')
               "
             >
-              <template #icon
-                ><Icon icon="carbon:copy" style="font-size: 11px"
-              /></template>
+              <template #icon>
+                <Icon icon="carbon:copy" style="font-size: 11px" />
+              </template>
             </NButton>
           </div>
         </div>
@@ -2690,9 +2688,9 @@ function handleActionSelect(key: string, row: ApiKey) {
                 handleCopyKey(rotatedKeys.rawEncryptKey, 'Encryption Key')
               "
             >
-              <template #icon
-                ><Icon icon="carbon:copy" style="font-size: 11px"
-              /></template>
+              <template #icon>
+                <Icon icon="carbon:copy" style="font-size: 11px" />
+              </template>
             </NButton>
           </div>
         </div>
@@ -2742,8 +2740,9 @@ function handleActionSelect(key: string, row: ApiKey) {
                     white-space: nowrap;
                     line-height: 28px;
                   "
-                  >Platform:</NText
                 >
+                  Platform:
+                </NText>
                 <NSelect
                   v-model:value="implInstallPlatform"
                   :options="installPlatformOptions"
@@ -2862,8 +2861,9 @@ function handleActionSelect(key: string, row: ApiKey) {
                     white-space: nowrap;
                     line-height: 28px;
                   "
-                  >Platform:</NText
                 >
+                  Platform:
+                </NText>
                 <NSelect
                   v-model:value="implInstallPlatform"
                   :options="installPlatformOptions"
