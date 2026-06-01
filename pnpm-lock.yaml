@@ -156,8 +156,8 @@ importers:
         specifier: ^1.38.0
         version: 1.41.1
       '@opentelemetry/winston-transport':
-        specifier: ^0.19.0
-        version: 0.19.0
+        specifier: ^0.28.0
+        version: 0.28.0
       argon2:
         specifier: ^0.44.0
         version: 0.44.0
@@ -2500,8 +2500,8 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
 
-  '@opentelemetry/winston-transport@0.19.0':
-    resolution: {integrity: sha512-MeG0fGNcpAhW9J9LiHgAJqIPySzj1xHCx4F+2R0ir4fzvm0ghKQRv6iUm3u1AhyKKJzDBeoHu7W98jJHNw8dnA==}
+  '@opentelemetry/winston-transport@0.28.0':
+    resolution: {integrity: sha512-MHfFCGXB8UlIvIcqjmHQ8DwZa8ie7e9lKoddhfMvUOdT+sX04rsS2KG8zi8stdV7M9T+G4bbEZlrvZblpgqppA==}
     engines: {node: ^18.19.0 || >=20.6.0}
 
   '@paralleldrive/cuid2@2.3.1':
@@ -9777,9 +9777,9 @@ snapshots:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/core': 2.7.1(@opentelemetry/api@1.9.1)
 
-  '@opentelemetry/winston-transport@0.19.0':
+  '@opentelemetry/winston-transport@0.28.0':
     dependencies:
-      '@opentelemetry/api-logs': 0.208.0
+      '@opentelemetry/api-logs': 0.218.0
       winston-transport: 4.9.0
 
   '@paralleldrive/cuid2@2.3.1':
