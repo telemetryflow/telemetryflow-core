@@ -17,7 +17,7 @@
     "@bull-board/api": "^7.1.5",
     "@bull-board/express": "^7.1.5",
     "@clickhouse/client": "^1.14.0",
-    "@google/generative-ai": "^0.21.0",
+    "@google/generative-ai": "^0.24.1",
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.1.9",
     "@nestjs/config": "^4.0.2",
