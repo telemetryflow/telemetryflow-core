@@ -11,8 +11,11 @@ import {
   Min,
   Max,
   IsUrl,
+  IsIn,
 } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
+
+const SAMPLING_MODES = ["temperature", "top_p", "auto"] as const;
 
 export class UpdateLLMProviderRequestDto {
   @ApiPropertyOptional({
@@ -79,6 +82,15 @@ export class UpdateLLMProviderRequestDto {
   @Min(0)
   @Max(1)
   topP?: number;
+
+  @ApiPropertyOptional({
+    description:
+      "Sampling mode: 'temperature' uses temperature only, 'top_p' uses top_p only, 'auto' prefers temperature over top_p",
+    enum: SAMPLING_MODES,
+  })
+  @IsOptional()
+  @IsIn(SAMPLING_MODES)
+  samplingMode?: string;
 
   @ApiPropertyOptional({
     description: "Activate or deactivate the provider",

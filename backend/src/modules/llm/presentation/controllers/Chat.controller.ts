@@ -31,7 +31,7 @@ import {
 import { JwtAuthGuard } from "../../../auth/guards/jwt-auth.guard";
 import { PermissionsGuard } from "../../../auth/guards/permissions.guard";
 import { RequirePermissions } from "../../../auth/decorators/permissions.decorator";
-import { LLMRateLimiterGuard } from "../../infrastructure/guards";
+import { LLMRateLimiterGuard, LLMRateLimit } from "../../infrastructure/guards";
 import type { AuthenticatedUser } from "../../../auth/interfaces/jwt-payload.interface";
 import { SendMessageRequestDto, ListConversationsQueryDto } from "../dto";
 import { LLMProviderRepository } from "../../infrastructure/repositories/LLMProvider.repository";
@@ -44,6 +44,8 @@ import {
   Conversation,
   ContextType,
 } from "../../domain/aggregates/Conversation";
+import { Message } from "../../domain/entities/Message";
+import { ConversationId, MessageId } from "../../domain/value-objects";
 import type { ChatMessage } from "../../infrastructure/providers/ILLMAdapter";
 
 @ApiTags("llm-chat")
@@ -186,6 +188,7 @@ export class ChatController {
       temperature: modelConfig.getTemperature(),
       maxTokens: modelConfig.getMaxTokens(),
       topP: modelConfig.getTopP(),
+      samplingMode: modelConfig.getSamplingMode(),
     });
     const latencyMs = Date.now() - startTime;
 
@@ -369,15 +372,16 @@ export class ChatController {
         temperature: modelConfig.getTemperature(),
         maxTokens: modelConfig.getMaxTokens(),
         topP: modelConfig.getTopP(),
+        samplingMode: modelConfig.getSamplingMode(),
       });
 
-      let _result;
+      let result;
       for await (const chunk of stream) {
         fullContent += chunk;
         res.write(
           `data: ${JSON.stringify({ type: "chunk", content: chunk })}\n\n`,
         );
-        _result = chunk;
+        result = chunk;
       }
 
       const latencyMs = Date.now() - startTime;

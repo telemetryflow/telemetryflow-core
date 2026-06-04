@@ -17,12 +17,15 @@ export interface ChatMessage {
   attachments?: ChatAttachment[];
 }
 
+export type SamplingMode = "temperature" | "top_p" | "auto";
+
 export interface ChatCompletionOptions {
   model: string;
   messages: ChatMessage[];
   temperature?: number;
   maxTokens?: number;
   topP?: number;
+  samplingMode?: SamplingMode;
   frequencyPenalty?: number;
   presencePenalty?: number;
   stopSequences?: string[];

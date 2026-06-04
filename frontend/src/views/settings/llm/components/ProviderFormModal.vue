@@ -261,22 +261,32 @@ async function handleSave() {
 
 <template>
   <NModal
-    :show="show" preset="card" :title="modalTitle" :style="{ maxWidth: '860px', width: '95vw' }"
-    :mask-closable="false" @update:show="$emit('update:show', $event)"
+    :show="show"
+    preset="card"
+    :title="modalTitle"
+    :style="{ maxWidth: '860px', width: '95vw' }"
+    :mask-closable="false"
+    @update:show="$emit('update:show', $event)"
   >
     <div class="provider-form-content">
       <!-- Left Side: Vertical Tabs -->
       <div class="form-tabs">
         <div
-          v-for="tab in formTabs" :key="tab.value" class="form-tab-item"
+          v-for="tab in formTabs"
+          :key="tab.value"
+          class="form-tab-item"
           :class="{ active: activeTab === tab.value, 'test-tab': tab.value === 'test' }"
           @click="activeTab = tab.value"
         >
-          <Icon :icon="tab.icon" class="tab-icon" />
+          <Icon
+            :icon="tab.icon"
+            class="tab-icon"
+          />
           <span class="tab-label">{{ tab.label }}</span>
           <!-- Status dot on Test tab -->
           <span
-            v-if="tab.value === 'test' && testStatus !== 'idle'" class="test-dot"
+            v-if="tab.value === 'test' && testStatus !== 'idle'"
+            class="test-dot"
             :class="testStatus"
           />
         </div>
@@ -288,29 +298,61 @@ async function handleSave() {
       <!-- Right Side: Form Content -->
       <div class="form-content">
         <div class="form-box">
-          <NForm ref="formRef" :model="form" :rules="formRules" label-placement="top">
+          <NForm
+            ref="formRef"
+            :model="form"
+            :rules="formRules"
+            label-placement="top"
+          >
             <!-- General Tab -->
             <template v-if="activeTab === 'general'">
-              <NFormItem label="Provider Type" path="provider">
-                <NSelect v-model:value="form.provider" :options="providerTypeOptions" :disabled="isEditMode" />
-                <template v-if="isEditMode" #feedback>
+              <NFormItem
+                label="Provider Type"
+                path="provider"
+              >
+                <NSelect
+                  v-model:value="form.provider"
+                  :options="providerTypeOptions"
+                  :disabled="isEditMode"
+                />
+                <template
+                  v-if="isEditMode"
+                  #feedback
+                >
                   <span class="form-hint">Provider type cannot be changed after creation</span>
                 </template>
               </NFormItem>
 
-              <NFormItem label="Display Name" path="displayName" required>
-                <NInput v-model:value="form.displayName" placeholder="e.g., Claude Sonnet 4" />
+              <NFormItem
+                label="Display Name"
+                path="displayName"
+                required
+              >
+                <NInput
+                  v-model:value="form.displayName"
+                  placeholder="e.g., Claude Sonnet 4"
+                />
               </NFormItem>
 
-              <NFormItem label="Model ID" path="modelId" required>
-                <NInput v-model:value="form.modelId" placeholder="e.g., claude-sonnet-4-6" />
+              <NFormItem
+                label="Model ID"
+                path="modelId"
+                required
+              >
+                <NInput
+                  v-model:value="form.modelId"
+                  placeholder="e.g., claude-sonnet-4-6"
+                />
                 <template #feedback>
                   <span class="form-hint">The specific model identifier from your provider</span>
                 </template>
               </NFormItem>
 
               <NFormItem label="Internal Name (Optional)">
-                <NInput v-model:value="form.name" placeholder="Auto-generated from display name" />
+                <NInput
+                  v-model:value="form.name"
+                  placeholder="Auto-generated from display name"
+                />
                 <template #feedback>
                   <span class="form-hint">Unique identifier for API usage (auto-generated if empty)</span>
                 </template>
@@ -323,11 +365,16 @@ async function handleSave() {
               <template v-if="isEditMode && props.provider?.apiKey">
                 <NFormItem label="Current API Key">
                   <NInput
-                    :value="props.provider.apiKey" type="password" readonly
+                    :value="props.provider.apiKey"
+                    type="password"
+                    readonly
                     :input-props="{ style: 'cursor: default; opacity: 0.7;' }"
                   >
                     <template #suffix>
-                      <Icon icon="carbon:locked" style="color: var(--n-text-color-3); font-size: 14px;" />
+                      <Icon
+                        icon="carbon:locked"
+                        style="color: var(--n-text-color-3); font-size: 14px;"
+                      />
                     </template>
                   </NInput>
                   <template #feedback>
@@ -337,8 +384,11 @@ async function handleSave() {
 
                 <NFormItem label="New API Key (optional)">
                   <NInput
-                    v-model:value="form.apiKey" type="password" show-password-on="click"
-                    placeholder="Leave empty to keep existing key" clearable
+                    v-model:value="form.apiKey"
+                    type="password"
+                    show-password-on="click"
+                    placeholder="Leave empty to keep existing key"
+                    clearable
                   />
                   <template #feedback>
                     <span class="form-hint">Only fill in to replace the current API key</span>
@@ -350,7 +400,9 @@ async function handleSave() {
               <template v-else>
                 <NFormItem label="API Key">
                   <NInput
-                    v-model:value="form.apiKey" type="password" show-password-on="click"
+                    v-model:value="form.apiKey"
+                    type="password"
+                    show-password-on="click"
                     placeholder="Enter your API key"
                   />
                   <template #feedback>
@@ -360,14 +412,20 @@ async function handleSave() {
               </template>
 
               <NFormItem label="API Endpoint (Optional)">
-                <NInput v-model:value="form.apiEndpoint" :placeholder="brandDefaults.exampleUrl('api', '/v1')" />
+                <NInput
+                  v-model:value="form.apiEndpoint"
+                  :placeholder="brandDefaults.exampleUrl('api', '/v1')"
+                />
                 <template #feedback>
                   <span class="form-hint">Custom endpoint URL (leave empty for default)</span>
                 </template>
               </NFormItem>
 
               <div class="info-box">
-                <Icon icon="carbon:information" class="info-icon" />
+                <Icon
+                  icon="carbon:information"
+                  class="info-icon"
+                />
                 <div class="info-content">
                   <strong>Security Note:</strong> API keys are encrypted and stored securely. They are never exposed in
                   logs or responses.
@@ -378,8 +436,15 @@ async function handleSave() {
             <!-- Parameters Tab -->
             <template v-if="activeTab === 'parameters'">
               <NFormItem label="Max Tokens">
-                <NInputNumber v-model:value="form.maxTokens" :min="1" :max="100000" style="width: 100%">
-                  <template #suffix>tokens</template>
+                <NInputNumber
+                  v-model:value="form.maxTokens"
+                  :min="1"
+                  :max="100000"
+                  style="width: 100%"
+                >
+                  <template #suffix>
+                    tokens
+                  </template>
                 </NInputNumber>
                 <template #feedback>
                   <span class="form-hint">Maximum number of tokens to generate (1-100000)</span>
@@ -387,8 +452,16 @@ async function handleSave() {
               </NFormItem>
 
               <NFormItem label="Temperature">
-                <NInputNumber v-model:value="form.temperature" :min="0" :max="2" :step="0.1" style="width: 100%">
-                  <template #suffix>{{ form.temperature }}</template>
+                <NInputNumber
+                  v-model:value="form.temperature"
+                  :min="0"
+                  :max="2"
+                  :step="0.1"
+                  style="width: 100%"
+                >
+                  <template #suffix>
+                    {{ form.temperature }}
+                  </template>
                 </NInputNumber>
                 <template #feedback>
                   <span class="form-hint">Controls randomness: 0 = focused, 2 = creative (0.0-2.0)</span>
@@ -396,8 +469,16 @@ async function handleSave() {
               </NFormItem>
 
               <NFormItem label="Top P">
-                <NInputNumber v-model:value="form.topP" :min="0" :max="1" :step="0.1" style="width: 100%">
-                  <template #suffix>{{ form.topP }}</template>
+                <NInputNumber
+                  v-model:value="form.topP"
+                  :min="0"
+                  :max="1"
+                  :step="0.1"
+                  style="width: 100%"
+                >
+                  <template #suffix>
+                    {{ form.topP }}
+                  </template>
                 </NInputNumber>
                 <template #feedback>
                   <span class="form-hint">Nucleus sampling threshold (0.0-1.0)</span>
@@ -405,7 +486,10 @@ async function handleSave() {
               </NFormItem>
 
               <div class="info-box">
-                <Icon icon="carbon:information" class="info-icon" />
+                <Icon
+                  icon="carbon:information"
+                  class="info-icon"
+                />
                 <div class="info-content">
                   <strong>Recommended Settings:</strong>
                   <ul>
@@ -430,7 +514,9 @@ async function handleSave() {
                 </template>
               </NFormItem>
 
-              <NDivider style="margin: 16px 0">Default Configuration</NDivider>
+              <NDivider style="margin: 16px 0">
+                Default Configuration
+              </NDivider>
 
               <NFormItem label="Set as Default">
                 <div class="checkbox-wrapper">
@@ -444,7 +530,10 @@ async function handleSave() {
               </NFormItem>
 
               <div class="info-box warning">
-                <Icon icon="carbon:warning" class="info-icon" />
+                <Icon
+                  icon="carbon:warning"
+                  class="info-icon"
+                />
                 <div class="info-content">
                   <strong>Note:</strong> Setting this as default will remove the default flag from other providers.
                 </div>
@@ -457,7 +546,13 @@ async function handleSave() {
               <div class="test-summary">
                 <div class="test-summary-row">
                   <span class="test-summary-label">Provider</span>
-                  <NTag size="small" :bordered="false" type="info">{{ form.provider }}</NTag>
+                  <NTag
+                    size="small"
+                    :bordered="false"
+                    type="info"
+                  >
+                    {{ form.provider }}
+                  </NTag>
                 </div>
                 <div class="test-summary-row">
                   <span class="test-summary-label">Model</span>
@@ -467,23 +562,51 @@ async function handleSave() {
                   <span class="test-summary-label">API Key</span>
                   <span class="test-summary-value key-hint">{{ testKeyHint }}</span>
                 </div>
-                <div v-if="form.apiEndpoint" class="test-summary-row">
+                <div
+                  v-if="form.apiEndpoint"
+                  class="test-summary-row"
+                >
                   <span class="test-summary-label">Endpoint</span>
                   <span class="test-summary-value">{{ form.apiEndpoint }}</span>
                 </div>
-                <div v-if="isEditMode && testKeySource === 'new-key'" class="test-summary-row">
+                <div
+                  v-if="isEditMode && testKeySource === 'new-key'"
+                  class="test-summary-row"
+                >
                   <span class="test-summary-label">Key Source</span>
-                  <NTag size="small" :bordered="false" type="warning">New (unsaved)</NTag>
+                  <NTag
+                    size="small"
+                    :bordered="false"
+                    type="warning"
+                  >
+                    New (unsaved)
+                  </NTag>
                 </div>
-                <div v-if="isEditMode && testKeySource === 'stored'" class="test-summary-row">
+                <div
+                  v-if="isEditMode && testKeySource === 'stored'"
+                  class="test-summary-row"
+                >
                   <span class="test-summary-label">Key Source</span>
-                  <NTag size="small" :bordered="false" type="default">Stored (encrypted)</NTag>
+                  <NTag
+                    size="small"
+                    :bordered="false"
+                    type="default"
+                  >
+                    Stored (encrypted)
+                  </NTag>
                 </div>
               </div>
 
               <!-- Warning if create mode and no key entered -->
-              <div v-if="!canTest" class="info-box warning" style="margin-bottom: 16px;">
-                <Icon icon="carbon:warning" class="info-icon" />
+              <div
+                v-if="!canTest"
+                class="info-box warning"
+                style="margin-bottom: 16px;"
+              >
+                <Icon
+                  icon="carbon:warning"
+                  class="info-icon"
+                />
                 <div class="info-content">
                   <strong>API Key required</strong> — go to the Authentication tab and enter your key before testing.
                 </div>
@@ -498,38 +621,76 @@ async function handleSave() {
                 @click="handleTest"
               >
                 <template #icon>
-                  <NSpin v-if="testStatus === 'testing'" size="small" />
-                  <Icon v-else icon="carbon:connection-signal" />
+                  <NSpin
+                    v-if="testStatus === 'testing'"
+                    size="small"
+                  />
+                  <Icon
+                    v-else
+                    icon="carbon:connection-signal"
+                  />
                 </template>
                 {{ testStatus === 'testing' ? 'Testing connection...' : 'Test Connection' }}
               </NButton>
 
               <!-- Result panel -->
-              <div v-if="testStatus === 'success'" class="test-result success">
+              <div
+                v-if="testStatus === 'success'"
+                class="test-result success"
+              >
                 <div class="test-result-header">
-                  <Icon icon="carbon:checkmark-filled" class="result-icon" />
+                  <Icon
+                    icon="carbon:checkmark-filled"
+                    class="result-icon"
+                  />
                   <span class="result-title">Connection Successful</span>
-                  <NTag v-if="testLatencyMs" size="small" :bordered="false" type="success">
+                  <NTag
+                    v-if="testLatencyMs"
+                    size="small"
+                    :bordered="false"
+                    type="success"
+                  >
                     {{ testLatencyMs }}ms
                   </NTag>
                 </div>
-                <p class="result-message">{{ testMessage }}</p>
+                <p class="result-message">
+                  {{ testMessage }}
+                </p>
               </div>
 
-              <div v-else-if="testStatus === 'error'" class="test-result error">
+              <div
+                v-else-if="testStatus === 'error'"
+                class="test-result error"
+              >
                 <div class="test-result-header">
-                  <Icon icon="carbon:close-filled" class="result-icon" />
+                  <Icon
+                    icon="carbon:close-filled"
+                    class="result-icon"
+                  />
                   <span class="result-title">Connection Failed</span>
-                  <NTag v-if="testLatencyMs" size="small" :bordered="false" type="error">
+                  <NTag
+                    v-if="testLatencyMs"
+                    size="small"
+                    :bordered="false"
+                    type="error"
+                  >
                     {{ testLatencyMs }}ms
                   </NTag>
                 </div>
-                <p class="result-message">{{ testMessage }}</p>
+                <p class="result-message">
+                  {{ testMessage }}
+                </p>
               </div>
 
               <!-- Notes -->
-              <div class="info-box" style="margin-top: 16px;">
-                <Icon icon="carbon:information" class="info-icon" />
+              <div
+                class="info-box"
+                style="margin-top: 16px;"
+              >
+                <Icon
+                  icon="carbon:information"
+                  class="info-icon"
+                />
                 <div class="info-content">
                   <strong>How testing works</strong>
                   <ul>
@@ -548,22 +709,32 @@ async function handleSave() {
 
     <template #footer>
       <div class="modal-footer tfo-modal-footer">
-        <NButton type="primary" ghost @click="closeModal">
+        <NButton
+          type="primary"
+          ghost
+          @click="closeModal"
+        >
           <template #icon>
             <Icon icon="carbon:close" />
           </template>
           Cancel
         </NButton>
         <NButton
-          type="primary" ghost :disabled="!canTest || testStatus === 'testing'"
-          style="margin-right: auto;" @click="activeTab = 'test'; handleTest()"
+          type="primary"
+          ghost
+          :disabled="!canTest || testStatus === 'testing'"
+          style="margin-right: auto;"
+          @click="activeTab = 'test'; handleTest()"
         >
           <template #icon>
             <Icon icon="carbon:connection-signal" />
           </template>
           Test
         </NButton>
-        <NButton type="primary" @click="handleSave">
+        <NButton
+          type="primary"
+          @click="handleSave"
+        >
           <template #icon>
             <Icon icon="carbon:save" />
           </template>

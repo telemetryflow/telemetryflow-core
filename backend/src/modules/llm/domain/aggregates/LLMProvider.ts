@@ -8,6 +8,7 @@ import {
   ProviderType,
   ModelConfig,
   EncryptedApiKey,
+  SamplingMode,
 } from "../value-objects";
 import { LLMProviderCreatedEvent, LLMProviderUpdatedEvent } from "../events";
 
@@ -44,6 +45,7 @@ export interface CreateLLMProviderParams {
     frequencyPenalty: number;
     presencePenalty: number;
     systemPrompt: string;
+    samplingMode: SamplingMode;
   }>;
   isDefault?: boolean;
 }
@@ -202,6 +204,7 @@ export class LLMProvider {
       frequencyPenalty: number;
       presencePenalty: number;
       systemPrompt: string;
+      samplingMode: SamplingMode;
     }>,
   ): void {
     this.props.modelConfig = ModelConfig.create({

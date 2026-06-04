@@ -18,6 +18,7 @@ import {
 } from "./PromptBuilder.service";
 import {
   ContextCollectorService,
+  CollectContextOptions,
 } from "./ContextCollector.service";
 import type { ContextType } from "../../domain/aggregates/Conversation";
 
@@ -131,6 +132,7 @@ export class InsightGeneratorService {
       temperature: modelConfig.getTemperature() || 0.7,
       maxTokens: modelConfig.getMaxTokens() || 2048,
       topP: modelConfig.getTopP() || 0.9,
+      samplingMode: modelConfig.getSamplingMode(),
     };
 
     const result = await adapter.chat(
@@ -213,6 +215,7 @@ export class InsightGeneratorService {
       temperature: modelConfig.getTemperature() || 0.7,
       maxTokens: modelConfig.getMaxTokens() || 2048,
       topP: modelConfig.getTopP() || 0.9,
+      samplingMode: modelConfig.getSamplingMode(),
     };
 
     const streamGenerator = adapter.chatStream(

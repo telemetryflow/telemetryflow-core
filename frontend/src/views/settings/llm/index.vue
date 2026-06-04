@@ -484,10 +484,17 @@ onMounted(() => {
     <!-- Header -->
     <div class="page-header">
       <div class="header-left">
-        <h2 class="page-title">AI Assistant (BYOLLM)</h2>
-        <p class="page-subtitle">Bring Your Own LLM - Configure AI models for chatbot</p>
+        <h2 class="page-title">
+          AI Assistant (BYOLLM)
+        </h2>
+        <p class="page-subtitle">
+          Bring Your Own LLM - Configure AI models for chatbot
+        </p>
       </div>
-      <n-button type="primary" @click="openCreateModal">
+      <n-button
+        type="primary"
+        @click="openCreateModal"
+      >
         <template #icon>
           <Icon icon="carbon:add" />
         </template>
@@ -497,23 +504,38 @@ onMounted(() => {
 
     <!-- Stats Row -->
     <div class="stats-row">
-      <StatPanel v-for="stat in statCards" :key="stat.title" v-bind="stat" />
+      <StatPanel
+        v-for="stat in statCards"
+        :key="stat.title"
+        v-bind="stat"
+      />
     </div>
 
     <!-- Filters -->
     <n-card class="filters-card">
       <div class="filters-row">
-        <n-input v-model:value="searchQuery" placeholder="Search providers..." clearable style="width: 300px">
+        <n-input
+          v-model:value="searchQuery"
+          placeholder="Search providers..."
+          clearable
+          style="width: 300px"
+        >
           <template #prefix>
             <Icon icon="carbon:search" />
           </template>
         </n-input>
         <n-select
-          v-model:value="filterProvider" :options="providerTypeOptions" placeholder="All Providers" clearable
+          v-model:value="filterProvider"
+          :options="providerTypeOptions"
+          placeholder="All Providers"
+          clearable
           style="width: 200px"
         />
         <n-select
-          v-model:value="filterStatus" :options="statusOptions" placeholder="All Status" clearable
+          v-model:value="filterStatus"
+          :options="statusOptions"
+          placeholder="All Status"
+          clearable
           style="width: 150px"
         />
       </div>
@@ -524,9 +546,17 @@ onMounted(() => {
       <!-- Section Header -->
       <div class="section-header">
         <div class="section-title">
-          <Icon icon="carbon:ai-status" class="section-icon" />
+          <Icon
+            icon="carbon:ai-status"
+            class="section-icon"
+          />
           <span>LLM Providers</span>
-          <n-tag :bordered="false" type="info" size="small" round>
+          <n-tag
+            :bordered="false"
+            type="info"
+            size="small"
+            round
+          >
             {{ totalProviders }} total providers
           </n-tag>
         </div>
@@ -552,14 +582,26 @@ onMounted(() => {
       <!-- datatableId: LLM30001 -->
       <div class="table-content">
         <n-data-table
-          class="tfo-datatable" :columns="columns" :data="filteredProviders" :loading="isLoading"
-          :scroll-x="1200" :pagination="tablePagination" :bordered="false" :single-line="false" striped size="small"
+          class="tfo-datatable"
+          :columns="columns"
+          :data="filteredProviders"
+          :loading="isLoading"
+          :scroll-x="1200"
+          :pagination="tablePagination"
+          :bordered="false"
+          :single-line="false"
+          striped
+          size="small"
         />
       </div>
     </div>
 
     <!-- Form Modal (Create/Edit) -->
-    <ProviderFormModal v-model:show="showFormModal" :provider="selectedProvider" @save="handleSave" />
+    <ProviderFormModal
+      v-model:show="showFormModal"
+      :provider="selectedProvider"
+      @save="handleSave"
+    />
   </div>
 </template>
 

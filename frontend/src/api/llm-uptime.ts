@@ -24,18 +24,18 @@ export const UPTIME_MOCK_DATA: MockQA[] = [
 ### Service Status
 | Service | Status | Uptime (30d) | Response Time | Last Check |
 |---------|--------|--------------|---------------|------------|
-| api.telemetryflow.id | ✅ Up | 99.95% | 145ms | 30s ago |
-| web.telemetryflow.id | ✅ Up | 99.98% | 89ms | 30s ago |
-| auth.telemetryflow.id | ⚠️ Degraded | 99.21% | 890ms | 30s ago |
-| payment.telemetryflow.id | ✅ Up | 99.99% | 234ms | 30s ago |
+| api.sinux.co.id | ✅ Up | 99.95% | 145ms | 30s ago |
+| web.sinux.co.id | ✅ Up | 99.98% | 89ms | 30s ago |
+| auth.sinux.co.id | ⚠️ Degraded | 99.21% | 890ms | 30s ago |
+| payment.sinux.co.id | ✅ Up | 99.99% | 234ms | 30s ago |
 | database.internal | ❌ Down | 98.45% | - | 2m ago |
 
 ### Incidents Today
 | Time | Service | Duration | Impact |
 |------|---------|----------|--------|
 | 14:23 | database.internal | Ongoing | Critical |
-| 09:15 | auth.telemetryflow.id | 12 min | Degraded |
-| 03:45 | web.telemetryflow.id | 3 min | Minor |
+| 09:15 | auth.sinux.co.id | 12 min | Degraded |
+| 03:45 | web.sinux.co.id | 3 min | Minor |
 
 ### 30-Day Availability Summary
 - **SLA Target:** 99.9%
@@ -45,13 +45,13 @@ export const UPTIME_MOCK_DATA: MockQA[] = [
   },
   {
     question: "Why did the API endpoint fail the health check?",
-    answer: `## Health Check Failure Analysis: api.telemetryflow.id/health
+    answer: `## Health Check Failure Analysis: api.sinux.co.id/health
 
 ### Failure Details
 | Metric | Value |
 |--------|-------|
 | Monitor | api-health-check |
-| Endpoint | https://api.telemetryflow.id/health |
+| Endpoint | https://api.sinux.co.id/health |
 | Method | GET |
 | Expected Status | 200 |
 | Actual Status | 503 |
@@ -105,10 +105,10 @@ export const UPTIME_MOCK_DATA: MockQA[] = [
 ### Summary Statistics
 | Service | Min | Avg | P95 | P99 | Max |
 |---------|-----|-----|-----|-----|-----|
-| api.telemetryflow.id | 45ms | 145ms | 380ms | 890ms | 2.3s |
-| web.telemetryflow.id | 32ms | 89ms | 210ms | 456ms | 1.1s |
-| auth.telemetryflow.id | 89ms | 234ms | 890ms | 1.8s | 4.5s |
-| payment.telemetryflow.id | 120ms | 234ms | 456ms | 780ms | 1.5s |
+| api.sinux.co.id | 45ms | 145ms | 380ms | 890ms | 2.3s |
+| web.sinux.co.id | 32ms | 89ms | 210ms | 456ms | 1.1s |
+| auth.sinux.co.id | 89ms | 234ms | 890ms | 1.8s | 4.5s |
+| payment.sinux.co.id | 120ms | 234ms | 456ms | 780ms | 1.5s |
 
 ### Hourly Response Time Trend
 \`\`\`
@@ -126,7 +126,7 @@ Response Time (ms)
 
 ### Performance Degradation Detected
 
-**auth.telemetryflow.id** showing elevated latency:
+**auth.sinux.co.id** showing elevated latency:
 | Time Range | Avg Response | Change |
 |------------|--------------|--------|
 | 00:00-06:00 | 156ms | Baseline |
@@ -191,9 +191,9 @@ Root Cause: Third-party dependency issues
 ### Current SSL Monitor Status
 | Domain | Issuer | Expiry | Days Left | Status |
 |--------|--------|--------|-----------|--------|
-| api.telemetryflow.id | Let's Encrypt | Mar 15 | 58 | ✅ Valid |
-| web.telemetryflow.id | DigiCert | Feb 28 | 43 | ✅ Valid |
-| auth.telemetryflow.id | Let's Encrypt | Feb 10 | 25 | ⚠️ Expiring |
+| api.sinux.co.id | Let's Encrypt | Mar 15 | 58 | ✅ Valid |
+| web.sinux.co.id | DigiCert | Feb 28 | 43 | ✅ Valid |
+| auth.sinux.co.id | Let's Encrypt | Feb 10 | 25 | ⚠️ Expiring |
 | *.internal.com | Internal CA | Jan 28 | 12 | 🔴 Critical |
 
 ### SSL Monitor Configuration
@@ -203,7 +203,7 @@ Root Cause: Third-party dependency issues
 monitor:
   name: "API SSL Certificate"
   type: ssl
-  target: api.telemetryflow.id
+  target: api.sinux.co.id
   port: 443
 
   # Alert thresholds
@@ -245,7 +245,7 @@ notifications:
       webhook: $SLACK_WEBHOOK
       events: [warning, critical]
     - type: email
-      recipients: [ops@telemetryflow.id]
+      recipients: [ops@sinux.co.id]
       events: [critical, emergency]
     - type: pagerduty
       routing_key: $PD_KEY
@@ -386,7 +386,7 @@ Availability %
 // Step 5 failure
 {
   "step": "Submit payment",
-  "url": "https://api.telemetryflow.id/v1/orders",
+  "url": "https://api.sinux.co.id/v1/orders",
   "method": "POST",
   "status": 500,
   "response": {
@@ -487,13 +487,13 @@ Disadvantages:
 monitors:
   - name: api-tcp
     type: tcp
-    target: api.telemetryflow.id
+    target: api.sinux.co.id
     port: 443
     interval: 30s  # Fast, frequent checks
 
   - name: api-http
     type: http
-    target: https://api.telemetryflow.id/health
+    target: https://api.sinux.co.id/health
     interval: 60s  # Slower, detailed checks
     validation:
       status: 200
@@ -699,7 +699,7 @@ Requests/min (typical Saturday 02:00 UTC)
 monitor:
   name: api-global
   type: http
-  target: https://api.telemetryflow.id/health
+  target: https://api.sinux.co.id/health
 
   locations:
     enabled:
@@ -754,7 +754,7 @@ monitor:
   },
   {
     question: "What's causing the flapping behavior on the web monitor?",
-    answer: `## Monitor Flapping Analysis: web.telemetryflow.id
+    answer: `## Monitor Flapping Analysis: web.sinux.co.id
 
 ### Flapping Statistics
 | Metric | Value |
@@ -820,9 +820,9 @@ monitor:
 
   # Check multiple backends
   targets:
-    - https://web-1.telemetryflow.id/health
-    - https://web-2.telemetryflow.id/health
-    - https://web-3.telemetryflow.id/health
+    - https://web-1.sinux.co.id/health
+    - https://web-2.sinux.co.id/health
+    - https://web-3.sinux.co.id/health
   success_threshold: 2    # 2 of 3 must be up
 \`\`\`
 
@@ -932,14 +932,14 @@ monitor:
 monitor:
   name: oauth-protected-api
   type: http
-  target: https://api.telemetryflow.id/v1/users
+  target: https://api.sinux.co.id/v1/users
 
   authentication:
     type: bearer
     token: $JWT_TOKEN
 
     # Or with auto-refresh
-    token_endpoint: https://auth.telemetryflow.id/oauth/token
+    token_endpoint: https://auth.sinux.co.id/oauth/token
     client_id: $CLIENT_ID
     client_secret: $CLIENT_SECRET
     scope: "read:users"
@@ -950,11 +950,11 @@ monitor:
 monitor:
   name: external-partner-api
   type: http
-  target: https://partner-api.telemetryflow.id/v1/status
+  target: https://partner-api.sinux.co.id/v1/status
 
   authentication:
     type: oauth2_client_credentials
-    token_url: https://partner-api.telemetryflow.id/oauth/token
+    token_url: https://partner-api.sinux.co.id/oauth/token
     client_id: $PARTNER_CLIENT_ID
     client_secret: $PARTNER_CLIENT_SECRET
     scope: "api:read"
@@ -1070,7 +1070,7 @@ Remaining: -31m 6s (EXCEEDED)
 |------|-----|--------|--------|
 | slack-ops | hooks.slack.com/... | all | ✅ Active |
 | pagerduty | events.pagerduty.com/... | critical | ✅ Active |
-| custom-dashboard | internal.telemetryflow.id/hooks | all | ✅ Active |
+| custom-dashboard | internal.sinux.co.id/hooks | all | ✅ Active |
 | discord-alerts | discord.com/api/webhooks/... | down,up | ⚠️ Failing |
 
 ### Webhook Configuration
@@ -1107,7 +1107,7 @@ webhook:
           {"title": "Location", "value": "{{ .Location }}", "short": true},
           {"title": "Error", "value": "{{ .Error }}", "short": false}
         ],
-        "footer": "TelemetryFlow Uptime",
+        "footer": "Nusametric Uptime",
         "ts": {{ .Timestamp }}
       }]
     }
@@ -1175,11 +1175,11 @@ Fix: Add rate limiting to webhook
 ### Current DNS Monitors
 | Domain | Record | Expected | Actual | Status |
 |--------|--------|----------|--------|--------|
-| api.telemetryflow.id | A | 52.1.2.3 | 52.1.2.3 | ✅ Match |
-| www.telemetryflow.id | CNAME | cdn.example.net | cdn.example.net | ✅ Match |
-| telemetryflow.id | MX | mail.telemetryflow.id | mail.telemetryflow.id | ✅ Match |
-| telemetryflow.id | TXT | v=spf1... | v=spf1... | ✅ Match |
-| old.telemetryflow.id | A | (deprecated) | 52.1.2.3 | ⚠️ Unexpected |
+| api.sinux.co.id | A | 52.1.2.3 | 52.1.2.3 | ✅ Match |
+| www.sinux.co.id | CNAME | cdn.example.net | cdn.example.net | ✅ Match |
+| sinux.co.id | MX | mail.sinux.co.id | mail.sinux.co.id | ✅ Match |
+| sinux.co.id | TXT | v=spf1... | v=spf1... | ✅ Match |
+| old.sinux.co.id | A | (deprecated) | 52.1.2.3 | ⚠️ Unexpected |
 
 ### DNS Monitor Configuration
 
@@ -1187,7 +1187,7 @@ Fix: Add rate limiting to webhook
 monitor:
   name: api-dns
   type: dns
-  domain: api.telemetryflow.id
+  domain: api.sinux.co.id
 
   queries:
     - record_type: A
@@ -1228,8 +1228,8 @@ monitor:
 ### DNS Propagation Check
 | Location | Nameserver | Result | TTL | Status |
 |----------|------------|--------|-----|--------|
-| US-East | ns1.telemetryflow.id | 52.1.2.3 | 300 | ✅ |
-| US-West | ns2.telemetryflow.id | 52.1.2.3 | 300 | ✅ |
+| US-East | ns1.sinux.co.id | 52.1.2.3 | 300 | ✅ |
+| US-West | ns2.sinux.co.id | 52.1.2.3 | 300 | ✅ |
 | EU-West | 8.8.8.8 | 52.1.2.3 | 298 | ✅ |
 | APAC | 1.1.1.1 | 52.1.2.4 | 300 | ⚠️ Stale |
 
@@ -1318,14 +1318,14 @@ monitor:
 \`\`\`yaml
 status_page:
   enabled: true
-  slug: status.telemetryflow.id
+  slug: status.sinux.co.id
   title: "Example Service Status"
   description: "Real-time status of Example services"
 
   # Branding
   branding:
-    logo: https://telemetryflow.id/logo.png
-    favicon: https://telemetryflow.id/favicon.ico
+    logo: https://sinux.co.id/logo.png
+    favicon: https://sinux.co.id/favicon.ico
     primary_color: "#4F46E5"
     custom_css: |
       .header { background: linear-gradient(...) }
@@ -1630,7 +1630,7 @@ eu-west:
 \`\`\`yaml
 monitor:
   name: api-health
-  target: https://api.telemetryflow.id/health
+  target: https://api.sinux.co.id/health
 
   # Tolerant settings
   timeout: 15s
@@ -1772,7 +1772,7 @@ monitor:
 monitors:
   - name: user-prefs-get
     type: http
-    target: https://api.telemetryflow.id/v1/users/test/preferences
+    target: https://api.sinux.co.id/v1/users/test/preferences
     method: GET
     headers:
       Authorization: Bearer $TEST_TOKEN
@@ -1826,7 +1826,7 @@ monitors:
 monitor:
   name: user-prefs-ssl
   type: ssl
-  target: user-preferences.telemetryflow.id
+  target: user-preferences.sinux.co.id
   alerts:
     - days_before_expiry: 30
       severity: warning
@@ -1859,7 +1859,7 @@ alert_rules:
     condition: health_check == "down"
     for: 2m
     severity: critical
-    runbook: https://wiki.telemetryflow.id/runbooks/user-prefs
+    runbook: https://wiki.sinux.co.id/runbooks/user-prefs
 
   - name: user-prefs-slow
     condition: response_time_p99 > 500ms

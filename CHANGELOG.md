@@ -34,13 +34,26 @@ All notable changes to **TelemetryFlow Core** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.0] - 2026-05-24
+## [1.4.0] - 2026-06-04
 
 ### Summary
 
 **Test Suite Stabilization** - Comprehensive fix of failing test suites across backend (Jest) and frontend (Vitest). Resolved property-based test issues with fast-check v4 API changes, mock completeness, timeout tuning, and test data generation. Fixed application bug in RoleRepository soft-delete.
 
+### Added
+
+- **`SamplingMode` selector** for LLM providers — new `"temperature"`, `"top_p"`, `"auto"` options give users per-provider control over sampling strategy
+- **`samplingMode` field** added to all backend DTOs, frontend types, adapters, and seed data
+- **`ProviderFormModal.vue`** — sampling mode selector UI in provider create/edit
+- **`org-resolver.ts`** shared utility (`backend/src/shared/utils/`) — centralized `resolveOrganizationId(req)`, `getDefaultOrgId()`, `setDefaultOrgId()` for standardized org ID resolution
+
 ### Fixed
+
+#### Backend — LLM & Sampling
+
+- **`ClaudeAdapter.buildSamplingParams()`** — routes sampling params via `samplingMode`; thinking-only models (Claude ≥ 4.7) always return `{}` regardless of mode, preventing Anthropic `400 top_p is deprecated` errors
+- **`LLMProvider` aggregate** — added `SamplingMode` type to `modelConfig` partial types
+- **`ModelConfig` value object** — added `samplingMode` prop and `getSamplingMode()` getter
 
 #### Backend Tests
 

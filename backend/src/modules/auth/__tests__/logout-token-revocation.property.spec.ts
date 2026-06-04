@@ -210,6 +210,7 @@ describe("Feature: frontend-backend-auth-integration", () => {
           fc.string({ minLength: 20, maxLength: 200 }),
           fc.string({ minLength: 20, maxLength: 200 }),
           async (userId, sessionId, accessToken, refreshToken) => {
+            fc.pre(accessToken !== refreshToken);
             // Track call order
             const callOrder: string[] = [];
 

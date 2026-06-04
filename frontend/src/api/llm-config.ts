@@ -1,5 +1,6 @@
 import { collectorClient } from "./collector";
 import { config } from "@/config";
+import type { SamplingMode } from "@/types/llm";
 
 // ==================== ENDPOINTS ====================
 
@@ -41,6 +42,7 @@ export interface LLMProvider {
   maxTokens?: number;
   temperature?: number;
   topP?: number;
+  samplingMode?: SamplingMode;
   createdAt: string;
   updatedAt: string;
 }
@@ -57,6 +59,7 @@ export interface CreateLLMProviderRequest {
   maxTokens?: number;
   temperature?: number;
   topP?: number;
+  samplingMode?: SamplingMode;
 }
 
 export interface UpdateLLMProviderRequest {
@@ -70,6 +73,7 @@ export interface UpdateLLMProviderRequest {
   maxTokens?: number;
   temperature?: number;
   topP?: number;
+  samplingMode?: SamplingMode;
 }
 
 // ==================== MOCK DATA ====================
@@ -107,6 +111,8 @@ function generateMockProviders(): LLMProvider[] {
     temperature: number,
     isDefault: boolean,
     enabled: boolean,
+    samplingMode?: SamplingMode,
+    topP?: number,
   ): LLMProvider => ({
     id: `provider-${modelId}`,
     name: displayName,
@@ -118,23 +124,25 @@ function generateMockProviders(): LLMProvider[] {
     isDefault,
     maxTokens,
     temperature,
+    samplingMode,
+    topP,
     createdAt: ts,
     updatedAt: ts,
   });
 
   return [
     // ─── Anthropic Claude (11 models) ───
-    m("anthropic", "claude-opus-4-7", "Anthropic Claude Opus 4.7", ANTHROPIC, 16384, 0.7, true, true),
-    m("anthropic", "claude-opus-4-7-fast", "Anthropic Claude Opus 4.7 Fast", ANTHROPIC, 16384, 0.7, false, false),
-    m("anthropic", "claude-opus-4-6", "Anthropic Claude Opus 4.6", ANTHROPIC, 8192, 0.7, false, false),
-    m("anthropic", "claude-opus-4-6-fast", "Anthropic Claude Opus 4.6 Fast", ANTHROPIC, 8192, 0.7, false, false),
+    m("anthropic", "claude-opus-4-7", "Anthropic Claude Opus 4.7", ANTHROPIC, 16384, 0.7, true, true, "top_p", 0),
+    m("anthropic", "claude-opus-4-7-fast", "Anthropic Claude Opus 4.7 Fast", ANTHROPIC, 16384, 0.7, false, false, "top_p", 0),
+    m("anthropic", "claude-opus-4-6", "Anthropic Claude Opus 4.6", ANTHROPIC, 8192, 0.7, false, false, "top_p", 0),
+    m("anthropic", "claude-opus-4-6-fast", "Anthropic Claude Opus 4.6 Fast", ANTHROPIC, 8192, 0.7, false, false, "top_p", 0),
     m("anthropic", "claude-sonnet-4-6", "Anthropic Claude Sonnet 4.6", ANTHROPIC, 8192, 0.7, false, false),
     m("anthropic", "claude-opus-4-5", "Anthropic Claude Opus 4.5", ANTHROPIC, 8192, 0.7, false, false),
     m("anthropic", "claude-sonnet-4-5-20250929", "Anthropic Claude Sonnet 4.5", ANTHROPIC, 8192, 0.7, false, false),
     m("anthropic", "claude-haiku-4-5", "Anthropic Claude Haiku 4.5", ANTHROPIC, 8192, 0.7, false, false),
     m("anthropic", "claude-haiku-4-5-20251001", "Anthropic Claude Haiku 4.5 (Oct 2025)", ANTHROPIC, 8192, 0.7, false, false),
     m("anthropic", "claude-sonnet-4-20250514", "Anthropic Claude Sonnet 4", ANTHROPIC, 8192, 0.7, false, false),
-    m("anthropic", "claude-mythos-preview", "Anthropic Claude Mythos Preview", ANTHROPIC, 16384, 0.7, false, false),
+    m("anthropic", "claude-mythos-preview", "Anthropic Claude Mythos Preview", ANTHROPIC, 16384, 0.7, false, false, "top_p", 0),
 
     // ─── Google Gemini (10 models) ───
     m("google", "gemini-3.5-flash", "Google Gemini 3.5 Flash", GOOGLE, 65536, 0.7, false, false),
@@ -277,6 +285,7 @@ function transformProvider(raw: any): LLMProvider {
     maxTokens: raw.modelConfig?.maxTokens ?? raw.maxTokens,
     temperature: raw.modelConfig?.temperature ?? raw.temperature,
     topP: raw.modelConfig?.topP ?? raw.topP,
+    samplingMode: raw.modelConfig?.samplingMode ?? raw.samplingMode,
     createdAt: raw.createdAt,
     updatedAt: raw.updatedAt,
   };
@@ -347,6 +356,7 @@ export const llmConfigApi = {
       temperature: data.temperature,
       maxTokens: data.maxTokens,
       topP: data.topP,
+      samplingMode: data.samplingMode,
     };
     // Remove undefined keys
     Object.keys(backendData).forEach(
@@ -395,6 +405,7 @@ export const llmConfigApi = {
       backendData.temperature = data.temperature;
     if (data.maxTokens !== undefined) backendData.maxTokens = data.maxTokens;
     if (data.topP !== undefined) backendData.topP = data.topP;
+    if (data.samplingMode !== undefined) backendData.samplingMode = data.samplingMode;
     if (data.enabled !== undefined) backendData.isActive = data.enabled;
     // isDefault is NOT handled by PATCH — use /set-default endpoint instead
 

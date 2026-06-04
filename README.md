@@ -410,8 +410,8 @@ Apache-2.0 License - see [LICENSE](./LICENSE) file for details
 
 ## Acknowledgments
 
-Extracted from [TelemetryFlow Platform](https://github.com/telemetryflow/telemetryflow-platform) - Enterprise Telemetry & Observability Platform.
+Extracted from [TelemetryFlow Platform](https://github.com/telemetryflow/telemetryflow-platform) - Community Enterprise Observability Platform (CEOP).
 
 ---
 
-**Built with care by Telemetri Data Indonesia**
+**Built with ❤️ by Telemetri Data Indonesia** collaboration with [**Kiro**](https://kiro.dev/)

@@ -565,10 +565,13 @@ export interface LLMProvider {
 /**
  * Model configuration
  */
+export type SamplingMode = "temperature" | "top_p" | "auto";
+
 export interface ModelConfig {
   temperature: number;
   maxTokens: number;
   topP: number;
+  samplingMode: SamplingMode;
 }
 
 /**
@@ -649,6 +652,7 @@ export interface CreateLLMProviderRequest {
   temperature?: number;
   maxTokens?: number;
   topP?: number;
+  samplingMode?: SamplingMode;
   isDefault?: boolean;
 }
 
@@ -663,6 +667,7 @@ export interface UpdateLLMProviderRequest {
   temperature?: number;
   maxTokens?: number;
   topP?: number;
+  samplingMode?: SamplingMode;
   isActive?: boolean;
 }
 

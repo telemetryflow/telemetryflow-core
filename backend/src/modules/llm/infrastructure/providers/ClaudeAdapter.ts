@@ -11,6 +11,7 @@ import {
   ChatCompletionResult,
   ChatMessage,
   ChatAttachment,
+  SamplingMode,
 } from "./ILLMAdapter";
 
 @Injectable()
@@ -61,14 +62,20 @@ export class ClaudeAdapter implements ILLMAdapter {
     model: string,
     temperature?: number,
     topP?: number,
+    samplingMode: SamplingMode = "auto",
   ): Record<string, number> {
     if (ClaudeAdapter.isThinkingOnlyModel(model)) {
-      if (topP !== undefined && topP >= 0.95 && topP <= 1.0) {
-        return { top_p: topP };
-      }
       return {};
     }
-    // Anthropic API: temperature and top_p are mutually exclusive
+    if (samplingMode === "top_p") {
+      if (topP !== undefined) return { top_p: topP };
+      return {};
+    }
+    if (samplingMode === "temperature") {
+      if (temperature !== undefined) return { temperature };
+      return {};
+    }
+    // "auto" mode: temperature preferred, fallback to top_p
     if (temperature !== undefined) return { temperature };
     if (topP !== undefined) return { top_p: topP };
     return {};
@@ -89,6 +96,7 @@ export class ClaudeAdapter implements ILLMAdapter {
       options.model,
       options.temperature,
       options.topP,
+      options.samplingMode,
     );
 
     const response = await client.messages.create({
@@ -133,6 +141,7 @@ export class ClaudeAdapter implements ILLMAdapter {
       options.model,
       options.temperature,
       options.topP,
+      options.samplingMode,
     );
 
     const stream = client.messages.stream({

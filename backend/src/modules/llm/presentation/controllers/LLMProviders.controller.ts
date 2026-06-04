@@ -43,7 +43,9 @@ import { LLMAdapterFactory } from "../../infrastructure/providers/LLMAdapterFact
 import { LLMProvider } from "../../domain/aggregates/LLMProvider";
 import { UrlValidator } from "@/shared/security";
 import {
+  LLMProviderId,
   ProviderType,
+  ModelConfig,
   EncryptedApiKey,
 } from "../../domain/value-objects";
 
@@ -111,6 +113,7 @@ export class LLMProvidersController {
         temperature: dto.temperature,
         maxTokens: dto.maxTokens,
         topP: dto.topP,
+        samplingMode: dto.samplingMode as any,
       },
       baseUrl: dto.baseUrl,
       isDefault: dto.isDefault || false,
@@ -331,13 +334,15 @@ export class LLMProvidersController {
     if (
       dto.temperature !== undefined ||
       dto.maxTokens !== undefined ||
-      dto.topP !== undefined
+      dto.topP !== undefined ||
+      dto.samplingMode !== undefined
     ) {
       const currentConfig = provider.getModelConfig();
       provider.updateModelConfig({
         temperature: dto.temperature ?? currentConfig.getTemperature(),
         maxTokens: dto.maxTokens ?? currentConfig.getMaxTokens(),
         topP: dto.topP ?? currentConfig.getTopP(),
+        samplingMode: (dto.samplingMode as any) ?? currentConfig.getSamplingMode(),
       });
     }
 
@@ -486,6 +491,7 @@ export class LLMProvidersController {
         temperature: modelConfig.getTemperature(),
         maxTokens: modelConfig.getMaxTokens(),
         topP: modelConfig.getTopP(),
+        samplingMode: modelConfig.getSamplingMode(),
       },
       isDefault: provider.isDefault(),
       isActive: provider.isActive(),

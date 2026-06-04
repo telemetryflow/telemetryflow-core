@@ -272,7 +272,7 @@ export class OllamaAdapter implements ILLMAdapter {
         "codellama:13b",
         "phi3:medium",
       ];
-    } catch (_error) {
+    } catch (error) {
       // Return default models if endpoint is not reachable
       return [
         "llama3.3:70b",
