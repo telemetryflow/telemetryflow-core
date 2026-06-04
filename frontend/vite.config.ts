@@ -161,10 +161,10 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 2000,
       rollupOptions: {
         output: {
-          manualChunks: {
-            'vue-vendor': ['vue', 'vue-router', 'pinia'],
-            'ui-vendor': ['naive-ui'],
-            'chart-vendor': ['echarts', 'vue-echarts'],
+          manualChunks(id) {
+            if (id.includes('node_modules/vue/') || id.includes('node_modules/vue-router/') || id.includes('node_modules/pinia/')) return 'vue-vendor'
+            if (id.includes('node_modules/naive-ui/')) return 'ui-vendor'
+            if (id.includes('node_modules/echarts/') || id.includes('node_modules/vue-echarts/')) return 'chart-vendor'
           },
         },
       },

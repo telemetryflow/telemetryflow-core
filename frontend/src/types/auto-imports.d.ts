@@ -6,156 +6,233 @@
 // biome-ignore lint: disable
 export {}
 declare global {
-  const EffectScope: typeof import('vue')['EffectScope']
-  const LABEL_COLORS: typeof import('../composables/useQueryPanel')['LABEL_COLORS']
-  const QUERY_LABELS: typeof import('../composables/useQueryPanel')['QUERY_LABELS']
-  const TIME_RANGE_OPTIONS: typeof import('../composables/useUptimeBars')['TIME_RANGE_OPTIONS']
-  const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
-  const buildBarsFromChecks: typeof import('../composables/useUptimeBars')['buildBarsFromChecks']
-  const buildBarsFromHourlyStats: typeof import('../composables/useUptimeBars')['buildBarsFromHourlyStats']
-  const buildBarsFromPercentage: typeof import('../composables/useUptimeBars')['buildBarsFromPercentage']
-  const computed: typeof import('vue')['computed']
-  const createApp: typeof import('vue')['createApp']
-  const createPinia: typeof import('pinia')['createPinia']
-  const customRef: typeof import('vue')['customRef']
-  const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
-  const defineComponent: typeof import('vue')['defineComponent']
-  const defineStore: typeof import('pinia')['defineStore']
-  const effectScope: typeof import('vue')['effectScope']
-  const fillEmptyBars: typeof import('../composables/useUptimeBars')['fillEmptyBars']
-  const getActivePinia: typeof import('pinia')['getActivePinia']
-  const getAuditLogColumns: typeof import('../composables/useAuditLogs')['getAuditLogColumns']
-  const getAuditLogCompactColumns: typeof import('../composables/useAuditLogs')['getAuditLogCompactColumns']
-  const getContextIcon: typeof import('../composables/useLLMContext')['getContextIcon']
-  const getContextLabel: typeof import('../composables/useLLMContext')['getContextLabel']
-  const getCurrentInstance: typeof import('vue')['getCurrentInstance']
-  const getCurrentScope: typeof import('vue')['getCurrentScope']
-  const h: typeof import('vue')['h']
-  const inject: typeof import('vue')['inject']
-  const isProxy: typeof import('vue')['isProxy']
-  const isReactive: typeof import('vue')['isReactive']
-  const isReadonly: typeof import('vue')['isReadonly']
-  const isRef: typeof import('vue')['isRef']
-  const mapActions: typeof import('pinia')['mapActions']
-  const mapAuthError: typeof import('../composables/useAuthError')['mapAuthError']
-  const mapGetters: typeof import('pinia')['mapGetters']
-  const mapState: typeof import('pinia')['mapState']
-  const mapStores: typeof import('pinia')['mapStores']
-  const mapWritableState: typeof import('pinia')['mapWritableState']
-  const markRaw: typeof import('vue')['markRaw']
-  const mockGraphData: typeof import('../composables/useTelemetryGraph.mock')['mockGraphData']
-  const mockKubernetesData: typeof import('../composables/useKubernetesData.mock')['mockKubernetesData']
-  const mockRowData: typeof import('../composables/useQueryPanel.mock')['mockRowData']
-  const mockTableResponse: typeof import('../composables/useTelemetryTable.mock')['mockTableResponse']
-  const mockWidgetSeries: typeof import('../composables/useWidgetQuery.mock')['mockWidgetSeries']
-  const mockWidgetValue: typeof import('../composables/useWidgetQuery.mock')['mockWidgetValue']
-  const nextTick: typeof import('vue')['nextTick']
-  const onActivated: typeof import('vue')['onActivated']
-  const onBeforeMount: typeof import('vue')['onBeforeMount']
-  const onBeforeRouteLeave: typeof import('vue-router')['onBeforeRouteLeave']
-  const onBeforeRouteUpdate: typeof import('vue-router')['onBeforeRouteUpdate']
-  const onBeforeUnmount: typeof import('vue')['onBeforeUnmount']
-  const onBeforeUpdate: typeof import('vue')['onBeforeUpdate']
-  const onDeactivated: typeof import('vue')['onDeactivated']
-  const onErrorCaptured: typeof import('vue')['onErrorCaptured']
-  const onMounted: typeof import('vue')['onMounted']
-  const onRenderTracked: typeof import('vue')['onRenderTracked']
-  const onRenderTriggered: typeof import('vue')['onRenderTriggered']
-  const onScopeDispose: typeof import('vue')['onScopeDispose']
-  const onServerPrefetch: typeof import('vue')['onServerPrefetch']
-  const onUnmounted: typeof import('vue')['onUnmounted']
-  const onUpdated: typeof import('vue')['onUpdated']
-  const onWatcherCleanup: typeof import('vue')['onWatcherCleanup']
-  const provide: typeof import('vue')['provide']
-  const rangeToHours: typeof import('../composables/useUptimeBars')['rangeToHours']
-  const reactive: typeof import('vue')['reactive']
-  const readonly: typeof import('vue')['readonly']
-  const recaptchaEnabled: typeof import('../composables/useRecaptcha')['recaptchaEnabled']
-  const ref: typeof import('vue')['ref']
-  const registerChart: typeof import('../composables/useChartGroup')['registerChart']
-  const reportDetailUtils: typeof import('../composables/useReportDetail')['reportDetailUtils']
-  const resolveComponent: typeof import('vue')['resolveComponent']
-  const setActivePinia: typeof import('pinia')['setActivePinia']
-  const setMapStoreSuffix: typeof import('pinia')['setMapStoreSuffix']
-  const shallowReactive: typeof import('vue')['shallowReactive']
-  const shallowReadonly: typeof import('vue')['shallowReadonly']
-  const shallowRef: typeof import('vue')['shallowRef']
-  const storeToRefs: typeof import('pinia')['storeToRefs']
-  const toRaw: typeof import('vue')['toRaw']
-  const toRef: typeof import('vue')['toRef']
-  const toRefs: typeof import('vue')['toRefs']
-  const toValue: typeof import('vue')['toValue']
-  const triggerRef: typeof import('vue')['triggerRef']
-  const unref: typeof import('vue')['unref']
-  const unregisterChart: typeof import('../composables/useChartGroup')['unregisterChart']
-  const useAIChatbot: typeof import('../composables/useAIChatbot')['useAIChatbot']
-  const useAgentStats: typeof import('../composables/useAgentStats')['useAgentStats']
-  const useAlertStats: typeof import('../composables/useAlertStats')['useAlertStats']
-  const useApiCache: typeof import('../composables/useApiCache')['default']
-  const useApiError: typeof import('../composables/useApiError')['useApiError']
-  const useAttrs: typeof import('vue')['useAttrs']
-  const useAuditLogs: typeof import('../composables/useAuditLogs')['useAuditLogs']
-  const useAuditStats: typeof import('../composables/useAuditStats')['useAuditStats']
-  const useAuditSummary: typeof import('../composables/useAuditStats')['useAuditSummary']
-  const useAuthError: typeof import('../composables/useAuthError')['useAuthError']
-  const useChartGroup: typeof import('../composables/useChartGroup')['default']
-  const useChartZoom: typeof import('../composables/useChartZoom')['useChartZoom']
-  const useCockroachDBMonitoring: typeof import('../composables/useCockroachDBMonitoring')['useCockroachDBMonitoring']
-  const useCssModule: typeof import('vue')['useCssModule']
-  const useCssVars: typeof import('vue')['useCssVars']
-  const useDataTableFromRegistry: typeof import('../composables/useDataTableFromRegistry')['useDataTableFromRegistry']
-  const useDialog: typeof import('naive-ui')['useDialog']
-  const useFailedLogins: typeof import('../composables/useAuditLogs')['useFailedLogins']
-  const useGraphAlert: typeof import('../composables/useGraphAlert')['useGraphAlert']
-  const useGraphFromRegistry: typeof import('../composables/useGraphFromRegistry')['useGraphFromRegistry']
-  const useGraphShare: typeof import('../composables/useGraphShare')['useGraphShare']
-  const useId: typeof import('vue')['useId']
-  const useKubernetesDataMock: typeof import('../composables/useKubernetesData.mock')['default']
-  const useKubernetesStats: typeof import('../composables/useKubernetesStats')['useKubernetesStats']
-  const useLLMContext: typeof import('../composables/useLLMContext')['useLLMContext']
-  const useLineNumberedEditor: typeof import('../composables/useLineNumberedEditor')['useLineNumberedEditor']
-  const useLink: typeof import('vue-router')['useLink']
-  const useLoadingBar: typeof import('naive-ui')['useLoadingBar']
-  const useMessage: typeof import('naive-ui')['useMessage']
-  const useModel: typeof import('vue')['useModel']
-  const useModuleDatatable: typeof import('../composables/useModuleDatatable')['useModuleDatatable']
-  const useModuleStats: typeof import('../composables/useModuleStats')['useModuleStats']
-  const useMonitorPolling: typeof import('../composables/useMonitorPolling')['useMonitorPolling']
-  const useNotification: typeof import('naive-ui')['useNotification']
-  const useOverviewStats: typeof import('../composables/useOverviewStats')['useOverviewStats']
-  const usePagination: typeof import('../composables/usePagination')['usePagination']
-  const usePermission: typeof import('../composables/usePermission')['default']
-  const useQueryPanel: typeof import('../composables/useQueryPanel')['default']
-  const useRawJsonView: typeof import('../composables/useRawJsonView')['useRawJsonView']
-  const useRecaptcha: typeof import('../composables/useRecaptcha')['useRecaptcha']
-  const useRecentLogins: typeof import('../composables/useAuditLogs')['useRecentLogins']
-  const useReportDetailChart: typeof import('../composables/useReportDetail')['useReportDetailChart']
-  const useReportDetailTable: typeof import('../composables/useReportDetail')['useReportDetailTable']
-  const useResourceEvents: typeof import('../composables/useResourceEvents')['useResourceEvents']
-  const useRoute: typeof import('vue-router')['useRoute']
-  const useRouter: typeof import('vue-router')['useRouter']
-  const useSecurityEvents: typeof import('../composables/useAuditLogs')['useSecurityEvents']
-  const useServiceMapPolling: typeof import('../composables/useServiceMapPolling')['useServiceMapPolling']
-  const useSlots: typeof import('vue')['useSlots']
-  const useStatPanelFromRegistry: typeof import('../composables/useStatPanelsFromRegistry')['useStatPanelFromRegistry']
-  const useStatPanelsFromRegistry: typeof import('../composables/useStatPanelsFromRegistry')['useStatPanelsFromRegistry']
-  const useTableScroll: typeof import('../composables/useTableScroll')['useTableScroll']
-  const useTagColors: typeof import('../composables/useTagColors')['useTagColors']
-  const useTelemetryGraph: typeof import('../composables/useTelemetryGraph')['useTelemetryGraph']
-  const useTelemetryStats: typeof import('../composables/useTelemetryStats')['useTelemetryStats']
-  const useTelemetryTable: typeof import('../composables/useTelemetryTable')['useTelemetryTable']
-  const useTemplateRef: typeof import('vue')['useTemplateRef']
-  const useWidgetQuery: typeof import('../composables/useWidgetQuery')['default']
-  const watch: typeof import('vue')['watch']
-  const watchEffect: typeof import('vue')['watchEffect']
-  const watchPostEffect: typeof import('vue')['watchPostEffect']
-  const watchSyncEffect: typeof import('vue')['watchSyncEffect']
+  const EffectScope: typeof import('vue').EffectScope
+  const LABEL_COLORS: typeof import('../composables/useQueryPanel').LABEL_COLORS
+  const QUERY_LABELS: typeof import('../composables/useQueryPanel').QUERY_LABELS
+  const TIME_RANGE_OPTIONS: typeof import('../composables/useUptimeBars').TIME_RANGE_OPTIONS
+  const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
+  const buildBarsFromChecks: typeof import('../composables/useUptimeBars').buildBarsFromChecks
+  const buildBarsFromHourlyStats: typeof import('../composables/useUptimeBars').buildBarsFromHourlyStats
+  const buildBarsFromPercentage: typeof import('../composables/useUptimeBars').buildBarsFromPercentage
+  const computed: typeof import('vue').computed
+  const createApp: typeof import('vue').createApp
+  const createPinia: typeof import('pinia').createPinia
+  const customRef: typeof import('vue').customRef
+  const defineAsyncComponent: typeof import('vue').defineAsyncComponent
+  const defineComponent: typeof import('vue').defineComponent
+  const defineStore: typeof import('pinia').defineStore
+  const effectScope: typeof import('vue').effectScope
+  const fillEmptyBars: typeof import('../composables/useUptimeBars').fillEmptyBars
+  const getActivePinia: typeof import('pinia').getActivePinia
+  const getAuditLogColumns: typeof import('../composables/useAuditLogs').getAuditLogColumns
+  const getAuditLogCompactColumns: typeof import('../composables/useAuditLogs').getAuditLogCompactColumns
+  const getContextIcon: typeof import('../composables/useLLMContext').getContextIcon
+  const getContextLabel: typeof import('../composables/useLLMContext').getContextLabel
+  const getCurrentInstance: typeof import('vue').getCurrentInstance
+  const getCurrentScope: typeof import('vue').getCurrentScope
+  const getCurrentWatcher: typeof import('vue').getCurrentWatcher
+  const h: typeof import('vue').h
+  const inject: typeof import('vue').inject
+  const isProxy: typeof import('vue').isProxy
+  const isReactive: typeof import('vue').isReactive
+  const isReadonly: typeof import('vue').isReadonly
+  const isRef: typeof import('vue').isRef
+  const isShallow: typeof import('vue').isShallow
+  const mapActions: typeof import('pinia').mapActions
+  const mapAuthError: typeof import('../composables/useAuthError').mapAuthError
+  const mapGetters: typeof import('pinia').mapGetters
+  const mapState: typeof import('pinia').mapState
+  const mapStores: typeof import('pinia').mapStores
+  const mapWritableState: typeof import('pinia').mapWritableState
+  const markRaw: typeof import('vue').markRaw
+  const mockGraphData: typeof import('../composables/useTelemetryGraph.mock').mockGraphData
+  const mockKubernetesData: typeof import('../composables/useKubernetesData.mock').mockKubernetesData
+  const mockRowData: typeof import('../composables/useQueryPanel.mock').mockRowData
+  const mockTableResponse: typeof import('../composables/useTelemetryTable.mock').mockTableResponse
+  const mockWidgetSeries: typeof import('../composables/useWidgetQuery.mock').mockWidgetSeries
+  const mockWidgetValue: typeof import('../composables/useWidgetQuery.mock').mockWidgetValue
+  const nextTick: typeof import('vue').nextTick
+  const onActivated: typeof import('vue').onActivated
+  const onBeforeMount: typeof import('vue').onBeforeMount
+  const onBeforeRouteLeave: typeof import('vue-router').onBeforeRouteLeave
+  const onBeforeRouteUpdate: typeof import('vue-router').onBeforeRouteUpdate
+  const onBeforeUnmount: typeof import('vue').onBeforeUnmount
+  const onBeforeUpdate: typeof import('vue').onBeforeUpdate
+  const onDeactivated: typeof import('vue').onDeactivated
+  const onErrorCaptured: typeof import('vue').onErrorCaptured
+  const onMounted: typeof import('vue').onMounted
+  const onRenderTracked: typeof import('vue').onRenderTracked
+  const onRenderTriggered: typeof import('vue').onRenderTriggered
+  const onScopeDispose: typeof import('vue').onScopeDispose
+  const onServerPrefetch: typeof import('vue').onServerPrefetch
+  const onUnmounted: typeof import('vue').onUnmounted
+  const onUpdated: typeof import('vue').onUpdated
+  const onWatcherCleanup: typeof import('vue').onWatcherCleanup
+  const provide: typeof import('vue').provide
+  const rangeToHours: typeof import('../composables/useUptimeBars').rangeToHours
+  const reactive: typeof import('vue').reactive
+  const readonly: typeof import('vue').readonly
+  const recaptchaEnabled: typeof import('../composables/useRecaptcha').recaptchaEnabled
+  const ref: typeof import('vue').ref
+  const registerChart: typeof import('../composables/useChartGroup').registerChart
+  const reportDetailUtils: typeof import('../composables/useReportDetail').reportDetailUtils
+  const resolveComponent: typeof import('vue').resolveComponent
+  const setActivePinia: typeof import('pinia').setActivePinia
+  const setMapStoreSuffix: typeof import('pinia').setMapStoreSuffix
+  const shallowReactive: typeof import('vue').shallowReactive
+  const shallowReadonly: typeof import('vue').shallowReadonly
+  const shallowRef: typeof import('vue').shallowRef
+  const storeToRefs: typeof import('pinia').storeToRefs
+  const toRaw: typeof import('vue').toRaw
+  const toRef: typeof import('vue').toRef
+  const toRefs: typeof import('vue').toRefs
+  const toValue: typeof import('vue').toValue
+  const triggerRef: typeof import('vue').triggerRef
+  const unref: typeof import('vue').unref
+  const unregisterChart: typeof import('../composables/useChartGroup').unregisterChart
+  const useAIChatbot: typeof import('../composables/useAIChatbot').useAIChatbot
+  const useAgentStats: typeof import('../composables/useAgentStats').useAgentStats
+  const useAlertStats: typeof import('../composables/useAlertStats').useAlertStats
+  const useApiCache: typeof import('../composables/useApiCache').default
+  const useApiError: typeof import('../composables/useApiError').useApiError
+  const useAttrs: typeof import('vue').useAttrs
+  const useAuditLogs: typeof import('../composables/useAuditLogs').useAuditLogs
+  const useAuditStats: typeof import('../composables/useAuditStats').useAuditStats
+  const useAuditSummary: typeof import('../composables/useAuditStats').useAuditSummary
+  const useAuthError: typeof import('../composables/useAuthError').useAuthError
+  const useChartGroup: typeof import('../composables/useChartGroup').default
+  const useChartZoom: typeof import('../composables/useChartZoom').useChartZoom
+  const useCockroachDBMonitoring: typeof import('../composables/useCockroachDBMonitoring').useCockroachDBMonitoring
+  const useCssModule: typeof import('vue').useCssModule
+  const useCssVars: typeof import('vue').useCssVars
+  const useDataTableFromRegistry: typeof import('../composables/useDataTableFromRegistry').useDataTableFromRegistry
+  const useDialog: typeof import('naive-ui').useDialog
+  const useFailedLogins: typeof import('../composables/useAuditLogs').useFailedLogins
+  const useGraphAlert: typeof import('../composables/useGraphAlert').useGraphAlert
+  const useGraphFromRegistry: typeof import('../composables/useGraphFromRegistry').useGraphFromRegistry
+  const useGraphShare: typeof import('../composables/useGraphShare').useGraphShare
+  const useId: typeof import('vue').useId
+  const useKubernetesDataMock: typeof import('../composables/useKubernetesData.mock').default
+  const useKubernetesStats: typeof import('../composables/useKubernetesStats').useKubernetesStats
+  const useLLMContext: typeof import('../composables/useLLMContext').useLLMContext
+  const useLineNumberedEditor: typeof import('../composables/useLineNumberedEditor').useLineNumberedEditor
+  const useLink: typeof import('vue-router').useLink
+  const useLoadingBar: typeof import('naive-ui').useLoadingBar
+  const useMessage: typeof import('naive-ui').useMessage
+  const useModel: typeof import('vue').useModel
+  const useModuleDatatable: typeof import('../composables/useModuleDatatable').useModuleDatatable
+  const useModuleStats: typeof import('../composables/useModuleStats').useModuleStats
+  const useMonitorPolling: typeof import('../composables/useMonitorPolling').useMonitorPolling
+  const useNotification: typeof import('naive-ui').useNotification
+  const useOverviewStats: typeof import('../composables/useOverviewStats').useOverviewStats
+  const usePagination: typeof import('../composables/usePagination').usePagination
+  const usePermission: typeof import('../composables/usePermission').default
+  const useQueryPanel: typeof import('../composables/useQueryPanel').default
+  const useRawJsonView: typeof import('../composables/useRawJsonView').useRawJsonView
+  const useRecaptcha: typeof import('../composables/useRecaptcha').useRecaptcha
+  const useRecentLogins: typeof import('../composables/useAuditLogs').useRecentLogins
+  const useReportDetailChart: typeof import('../composables/useReportDetail').useReportDetailChart
+  const useReportDetailTable: typeof import('../composables/useReportDetail').useReportDetailTable
+  const useResourceEvents: typeof import('../composables/useResourceEvents').useResourceEvents
+  const useRoute: typeof import('vue-router').useRoute
+  const useRouter: typeof import('vue-router').useRouter
+  const useSecurityEvents: typeof import('../composables/useAuditLogs').useSecurityEvents
+  const useServiceMapPolling: typeof import('../composables/useServiceMapPolling').useServiceMapPolling
+  const useSlots: typeof import('vue').useSlots
+  const useStatPanelFromRegistry: typeof import('../composables/useStatPanelsFromRegistry').useStatPanelFromRegistry
+  const useStatPanelsFromRegistry: typeof import('../composables/useStatPanelsFromRegistry').useStatPanelsFromRegistry
+  const useTableScroll: typeof import('../composables/useTableScroll').useTableScroll
+  const useTagColors: typeof import('../composables/useTagColors').useTagColors
+  const useTelemetryGraph: typeof import('../composables/useTelemetryGraph').useTelemetryGraph
+  const useTelemetryStats: typeof import('../composables/useTelemetryStats').useTelemetryStats
+  const useTelemetryTable: typeof import('../composables/useTelemetryTable').useTelemetryTable
+  const useTemplateRef: typeof import('vue').useTemplateRef
+  const useWidgetQuery: typeof import('../composables/useWidgetQuery').default
+  const watch: typeof import('vue').watch
+  const watchEffect: typeof import('vue').watchEffect
+  const watchPostEffect: typeof import('vue').watchPostEffect
+  const watchSyncEffect: typeof import('vue').watchSyncEffect
 }
 // for type re-export
 declare global {
   // @ts-ignore
-  export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
+  export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { ChartZoomState } from '../composables/useChartZoom'
+  import('../composables/useChartZoom')
+  // @ts-ignore
+  export type { PaginationConfig } from '../composables/usePagination'
+  import('../composables/usePagination')
+  // @ts-ignore
+  export type { UseApiCacheOptions, UseApiCacheReturn } from '../composables/useApiCache'
+  import('../composables/useApiCache')
+  // @ts-ignore
+  export type { ErrorInfo } from '../composables/useApiError'
+  import('../composables/useApiError')
+  // @ts-ignore
+  export type { UseModuleStatsOptions, UseModuleStatsReturn } from '../composables/useModuleStats'
+  import('../composables/useModuleStats')
+  // @ts-ignore
+  export type { UseModuleDatatableOptions, UseModuleDatatableReturn } from '../composables/useModuleDatatable'
+  import('../composables/useModuleDatatable')
+  // @ts-ignore
+  export type { AuditStatsActiveFilters } from '../composables/useAuditStats'
+  import('../composables/useAuditStats')
+  // @ts-ignore
+  export type { AuditLogFilters, UseAuditLogsOptions, UseAuditLogsReturn } from '../composables/useAuditLogs'
+  import('../composables/useAuditLogs')
+  // @ts-ignore
+  export type { TelemetryStatsOptions } from '../composables/useTelemetryStats'
+  import('../composables/useTelemetryStats')
+  // @ts-ignore
+  export type { UseOverviewStatsReturn } from '../composables/useOverviewStats'
+  import('../composables/useOverviewStats')
+  // @ts-ignore
+  export type { GraphFromRegistryOptions, GraphFromRegistryResult } from '../composables/useGraphFromRegistry'
+  import('../composables/useGraphFromRegistry')
+  // @ts-ignore
+  export type { StatPanelValueMap, StatPanelTrendInfo, StatPanelTrendMap, StatPanelsFromRegistryOptions } from '../composables/useStatPanelsFromRegistry'
+  import('../composables/useStatPanelsFromRegistry')
+  // @ts-ignore
+  export type { ColumnRenderFn, ColumnRenderOverrides, NDataTableColumn, RegistryPaginationConfig, DataTableFromRegistryResult } from '../composables/useDataTableFromRegistry'
+  import('../composables/useDataTableFromRegistry')
+  // @ts-ignore
+  export type { GraphAlertChannel } from '../composables/useGraphAlert'
+  import('../composables/useGraphAlert')
+  // @ts-ignore
+  export type { GraphShareState } from '../composables/useGraphShare'
+  import('../composables/useGraphShare')
+  // @ts-ignore
+  export type { TelemetrySignal, TelemetryTableFilters, UseTelemetryTableOptions, UseTelemetryTableReturn } from '../composables/useTelemetryTable'
+  import('../composables/useTelemetryTable')
+  // @ts-ignore
+  export type { GraphSignalType, GraphAggregation, GraphQueryType, TelemetryGraphFilters, UseTelemetryGraphOptions, UseTelemetryGraphReturn } from '../composables/useTelemetryGraph'
+  import('../composables/useTelemetryGraph')
+  // @ts-ignore
+  export type { QueryRowState, QueryPanelOptions, QueryPanelResult } from '../composables/useQueryPanel'
+  import('../composables/useQueryPanel')
+  // @ts-ignore
+  export type { WidgetQueryOptions, WidgetQueryResult } from '../composables/useWidgetQuery'
+  import('../composables/useWidgetQuery')
+  // @ts-ignore
+  export type { UsageStats, ResourceCount, TimeSeriesData, K8sStatCard, K8sClusterInfo, K8sOverviewData, K8sRegionId, K8sClusterConfig } from '../composables/useKubernetesData'
+  import('../composables/useKubernetesData')
+  // @ts-ignore
+  export type { BarEntry } from '../composables/useUptimeBars'
+  import('../composables/useUptimeBars')
+  // @ts-ignore
+  export type { MonitorStatusChange, UseMonitorPollingOptions, UseMonitorPollingReturn } from '../composables/useMonitorPolling'
+  import('../composables/useMonitorPolling')
+  // @ts-ignore
+  export type { MappedError } from '../composables/useAuthError'
+  import('../composables/useAuthError')
+  // @ts-ignore
+  export type { ResourceEvent } from '../composables/useResourceEvents'
+  import('../composables/useResourceEvents')
+  // @ts-ignore
+  export type { MockGraphOptions } from '../composables/useTelemetryGraph.mock'
+  import('../composables/useTelemetryGraph.mock')
 }
 
 // for vue template auto import
@@ -187,12 +264,14 @@ declare module 'vue' {
     readonly getContextLabel: UnwrapRef<typeof import('../composables/useLLMContext')['getContextLabel']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getCurrentWatcher: UnwrapRef<typeof import('vue')['getCurrentWatcher']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
     readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
+    readonly isShallow: UnwrapRef<typeof import('vue')['isShallow']>
     readonly mapActions: UnwrapRef<typeof import('pinia')['mapActions']>
     readonly mapAuthError: UnwrapRef<typeof import('../composables/useAuthError')['mapAuthError']>
     readonly mapGetters: UnwrapRef<typeof import('pinia')['mapGetters']>
