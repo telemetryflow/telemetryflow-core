@@ -516,8 +516,8 @@ function generateMockChannels(): NotificationChannel[] {
       enabled: true,
       configuration: {
         recipients: [
-          "devops-alerts@devopscorner.id",
-          "sre-team@devopscorner.id",
+          "devops-alerts@telemetryflow.id",
+          "sre-team@telemetryflow.id",
         ],
         subject_prefix: "[TelemetryFlow Alert]",
         include_details: true,

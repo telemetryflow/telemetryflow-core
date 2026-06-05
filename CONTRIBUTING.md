@@ -738,7 +738,7 @@ GitHub Actions will automatically:
 - **Questions**: Open a GitHub Discussion
 - **Bugs**: Open a GitHub Issue with the bug template
 - **Features**: Open a GitHub Issue with the feature request template
-- **Security**: Email security@devopscorner.id (do not open public issues)
+- **Security**: Email security@telemetryflow.id (do not open public issues)
 - **Standardization**: Review specs in `.kiro/specs/` directory
 
 ## Recognition

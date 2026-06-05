@@ -1783,17 +1783,17 @@ export const ACCOUNT_ORGANIZATION_MOCK_DATA: MockQA[] = [
 **Super Admin (2)**
 | Name | Email | Last Login | MFA |
 |------|-------|-----------|-----|
-| Ahmad Ridwan | ahmad@devopscorner.id | Today | ✅ |
-| Sarah Chen | sarah@devopscorner.id | Today | ✅ |
+| Ahmad Ridwan | ahmad@telemetryflow.id | Today | ✅ |
+| Sarah Chen | sarah@telemetryflow.id | Today | ✅ |
 
 **Org Admin (5)**
 | Name | Email | Last Login | MFA |
 |------|-------|-----------|-----|
-| Budi Santoso | budi@devopscorner.id | Today | ✅ |
-| Dewi Rahayu | dewi@devopscorner.id | 2h ago | ✅ |
-| James Wilson | james@devopscorner.id | Yesterday | ⚠️ |
-| Li Wei | liwei@devopscorner.id | Today | ✅ |
-| Maya Sari | maya@devopscorner.id | 3h ago | ✅ |
+| Budi Santoso | budi@telemetryflow.id | Today | ✅ |
+| Dewi Rahayu | dewi@telemetryflow.id | 2h ago | ✅ |
+| James Wilson | james@telemetryflow.id | Yesterday | ⚠️ |
+| Li Wei | liwei@telemetryflow.id | Today | ✅ |
+| Maya Sari | maya@telemetryflow.id | 3h ago | ✅ |
 
 ### Activity Metrics (30d)
 | Metric | Value |
@@ -1930,21 +1930,21 @@ POST /api/v2/iam/assignments
 |-----------------|-------|-----------|
 | User login | 4,567 | Various |
 | Dashboard views | 12,345 | Developer role |
-| Alert rule changes | 34 | budi@devopscorner.id |
-| User management | 23 | ahmad@devopscorner.id |
+| Alert rule changes | 34 | budi@telemetryflow.id |
+| User management | 23 | ahmad@telemetryflow.id |
 | API key operations | 45 | CI/CD systems |
-| Settings changes | 12 | sarah@devopscorner.id |
+| Settings changes | 12 | sarah@telemetryflow.id |
 | Data exports | 8 | analytics team |
-| Permission changes | 5 | ahmad@devopscorner.id |
+| Permission changes | 5 | ahmad@telemetryflow.id |
 
 ### Notable Events
 | Date | Event | Actor | Detail |
 |------|-------|-------|--------|
-| Mar 13 | New user invited | ahmad@devopscorner.id | 3 new developers |
-| Mar 12 | Alert rule deleted | budi@devopscorner.id | legacy pod-cpu rule |
+| Mar 13 | New user invited | ahmad@telemetryflow.id | 3 new developers |
+| Mar 12 | Alert rule deleted | budi@telemetryflow.id | legacy pod-cpu rule |
 | Mar 10 | API key rotated | ci-runner-sa | Annual rotation |
-| Mar 8 | SSO config updated | sarah@devopscorner.id | Added Okta IDP |
-| Mar 5 | Data export | analytics@devopscorner.id | Monthly report |
+| Mar 8 | SSO config updated | sarah@telemetryflow.id | Added Okta IDP |
+| Mar 5 | Data export | analytics@telemetryflow.id | Monthly report |
 
 ### Login Anomalies
 No suspicious login patterns detected. All logins from expected IP ranges.
@@ -1959,12 +1959,12 @@ Enable email alerts for: user invitation, permission change, data export actions
 ### Configured Integrations
 | Integration | Type | Status | Connected By | Date |
 |-------------|------|--------|-------------|------|
-| Okta | SSO/IDP | ✅ Active | sarah@devopscorner.id | 2025-03-08 |
-| Slack | Notifications | ✅ Active | budi@devopscorner.id | 2024-06-01 |
-| PagerDuty | Alerting | ✅ Active | budi@devopscorner.id | 2024-06-01 |
+| Okta | SSO/IDP | ✅ Active | sarah@telemetryflow.id | 2025-03-08 |
+| Slack | Notifications | ✅ Active | budi@telemetryflow.id | 2024-06-01 |
+| PagerDuty | Alerting | ✅ Active | budi@telemetryflow.id | 2024-06-01 |
 | GitHub Actions | CI/CD API | ✅ Active | ci-runner-sa | 2024-08-15 |
-| AWS S3 | Export | ✅ Active | sarah@devopscorner.id | 2025-01-20 |
-| Jira | Incident | ⚠️ Warning | budi@devopscorner.id | 2024-09-01 |
+| AWS S3 | Export | ✅ Active | sarah@telemetryflow.id | 2025-01-20 |
+| Jira | Incident | ⚠️ Warning | budi@telemetryflow.id | 2024-09-01 |
 
 ### Jira Integration Warning
 Last successful sync: 8 days ago.
@@ -2071,9 +2071,9 @@ Enforce SSO for all Org Admins — currently 1/5 uses password auth only.`,
 ### On-Call Schedule
 | Week | Primary | Secondary |
 |------|---------|-----------|
-| Mar 10-17 | budi@devopscorner.id | maya@devopscorner.id |
-| Mar 17-24 | dewi@devopscorner.id | james@devopscorner.id |
-| Mar 24-31 | li@devopscorner.id | budi@devopscorner.id |
+| Mar 10-17 | budi@telemetryflow.id | maya@telemetryflow.id |
+| Mar 17-24 | dewi@telemetryflow.id | james@telemetryflow.id |
+| Mar 24-31 | li@telemetryflow.id | budi@telemetryflow.id |
 
 ### Notification Channel Health
 | Channel | Status | Last Delivery | Failure Rate |

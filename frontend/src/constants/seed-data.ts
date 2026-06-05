@@ -537,7 +537,7 @@ export const SEED_USERS = [
   {
     id: "user-admin",
     username: "admin.devopscorner",
-    email: "admin@devopscorner.id",
+    email: "admin@telemetryflow.id",
     name: "Admin DevOpsCorner",
     role: "administrator",
     organizationId: SEED_ORGANIZATIONS.DEVOPSCORNER.id,
@@ -545,7 +545,7 @@ export const SEED_USERS = [
   {
     id: "user-developer",
     username: "dev.devopscorner",
-    email: "developer@devopscorner.id",
+    email: "developer@telemetryflow.id",
     name: "Developer DevOpsCorner",
     role: "developer",
     organizationId: SEED_ORGANIZATIONS.DEVOPSCORNER.id,
@@ -553,7 +553,7 @@ export const SEED_USERS = [
   {
     id: "user-viewer",
     username: "viewer.devopscorner",
-    email: "viewer@devopscorner.id",
+    email: "viewer@telemetryflow.id",
     name: "Viewer DevOpsCorner",
     role: "viewer",
     organizationId: SEED_ORGANIZATIONS.DEVOPSCORNER.id,

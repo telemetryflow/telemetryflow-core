@@ -70,9 +70,9 @@ function generateMockAuditLogs(count: number): AuditLog[] {
     "alert", "agent", "cluster", "api_key",
   ];
   const users = [
-    { id: "user-001", email: "admin@devopscorner.id", firstName: "Admin", lastName: "DevOps" },
-    { id: "user-002", email: "developer@devopscorner.id", firstName: "John", lastName: "Developer" },
-    { id: "user-003", email: "viewer@devopscorner.id", firstName: "Jane", lastName: "Viewer" },
+    { id: "user-001", email: "admin@telemetryflow.id", firstName: "Admin", lastName: "DevOps" },
+    { id: "user-002", email: "developer@telemetryflow.id", firstName: "John", lastName: "Developer" },
+    { id: "user-003", email: "viewer@telemetryflow.id", firstName: "Jane", lastName: "Viewer" },
     { id: "user-004", email: "support@telemetryflow.id", firstName: "Support", lastName: "Team" },
   ];
   const ips = ["192.168.1.100", "10.0.0.50", "172.16.0.25", "203.0.113.42"];
