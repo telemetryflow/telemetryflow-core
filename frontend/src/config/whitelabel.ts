@@ -2,8 +2,8 @@
  * White Label Configuration
  * Customize branding, logo, and copyright information
  */
-import defaultLogoLight from "@/assets/tfo-logo-light.svg";
-import defaultLogoDark from "@/assets/tfo-logo-dark.svg";
+import defaultLogoLight from "@/assets/tfo-logo-core-light.svg";
+import defaultLogoDark from "@/assets/tfo-logo-core-dark.svg";
 import defaultLogoIcon from "@/assets/favicon.svg";
 import { rt } from "./runtime";
 

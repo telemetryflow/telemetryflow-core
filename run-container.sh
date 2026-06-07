@@ -25,7 +25,7 @@
 #
 # Images:
 #   backend  → telemetryflow/telemetryflow-core
-#   frontend → telemetryflow/telemetryflow-viz
+#   frontend → telemetryflow/telemetryflow-core-viz
 #
 # Tags generated per image:
 #   :latest, :<version>, :<version>-<commit>, :demo-<YYYYMMDD>
@@ -35,7 +35,7 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-IMAGE_CORE="telemetryflow/telemetryflow-core"
+IMAGE_BACKEND="telemetryflow/telemetryflow-core"
 IMAGE_VIZ="telemetryflow/telemetryflow-core-viz"
 VERSION="1.4.0"
 COMMIT=$(git rev-parse --short HEAD)
@@ -176,17 +176,17 @@ if [[ -n "$BUILD_TARGET" ]]; then
   case $BUILD_TARGET in
     backend)
       build_backend
-      tag_image "$IMAGE_CORE" "Core"
+      tag_image "$IMAGE_BACKEND" "Core Backend"
       ;;
     frontend)
       build_frontend
-      tag_image "$IMAGE_VIZ" "Viz"
+      tag_image "$IMAGE_VIZ" "Core Viz"
       ;;
     all)
       build_backend
       build_frontend
-      tag_image "$IMAGE_CORE" "Core"
-      tag_image "$IMAGE_VIZ" "Viz"
+      tag_image "$IMAGE_BACKEND" "Core Backend"
+      tag_image "$IMAGE_VIZ" "Core Viz"
       ;;
   esac
 fi
@@ -196,11 +196,11 @@ fi
 # ---------------------------------------------------------------------------
 if [[ -n "$PUSH_TARGET" ]]; then
   case $PUSH_TARGET in
-    backend)  push_image "$IMAGE_CORE" "Core" ;;
-    frontend) push_image "$IMAGE_VIZ" "Viz" ;;
+    backend)  push_image "$IMAGE_BACKEND" "Core Backend" ;;
+    frontend) push_image "$IMAGE_VIZ" "Core Viz" ;;
     all)
-      push_image "$IMAGE_CORE" "Core"
-      push_image "$IMAGE_VIZ" "Viz"
+      push_image "$IMAGE_BACKEND" "Core Backend"
+      push_image "$IMAGE_VIZ" "Core Viz"
       ;;
   esac
 fi
@@ -211,24 +211,24 @@ fi
 header "Done."
 if [[ -n "$BUILD_TARGET" ]]; then
   case $BUILD_TARGET in
-    backend)  print_summary "$IMAGE_CORE" "Core" "built+tagged" ;;
-    frontend) print_summary "$IMAGE_VIZ" "Viz" "built+tagged" ;;
+    backend)  print_summary "$IMAGE_BACKEND" "Core Backend" "built+tagged" ;;
+    frontend) print_summary "$IMAGE_VIZ" "Core Viz" "built+tagged" ;;
     all)
-      print_summary "$IMAGE_CORE" "Core" "built+tagged"
+      print_summary "$IMAGE_BACKEND" "Core Backend" "built+tagged"
       echo ""
-      print_summary "$IMAGE_VIZ" "Viz" "built+tagged"
+      print_summary "$IMAGE_VIZ" "Core Viz" "built+tagged"
       ;;
   esac
 fi
 if [[ -n "$PUSH_TARGET" ]]; then
   case $PUSH_TARGET in
-    backend)  print_summary "$IMAGE_CORE" "Core" "pushed" ;;
-    frontend) print_summary "$IMAGE_VIZ" "Viz" "pushed" ;;
+    backend)  print_summary "$IMAGE_BACKEND" "Core Backend" "pushed" ;;
+    frontend) print_summary "$IMAGE_VIZ" "Core Viz" "pushed" ;;
     all)
       echo ""
-      print_summary "$IMAGE_CORE" "Core" "pushed"
+      print_summary "$IMAGE_BACKEND" "Core Backend" "pushed"
       echo ""
-      print_summary "$IMAGE_VIZ" "Viz" "pushed"
+      print_summary "$IMAGE_VIZ" "Core Viz" "pushed"
       ;;
   esac
 fi
