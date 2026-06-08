@@ -52,10 +52,10 @@ importers:
         version: 0.39.0
       '@bull-board/api':
         specifier: ^7.2.1
-        version: 7.2.1(@bull-board/ui@7.1.5)
+        version: 7.2.1(@bull-board/ui@7.2.1)
       '@bull-board/express':
-        specifier: ^7.1.5
-        version: 7.1.5
+        specifier: ^7.2.1
+        version: 7.2.1
       '@clickhouse/client':
         specifier: ^1.14.0
         version: 1.18.5
@@ -739,21 +739,16 @@ packages:
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
     hasBin: true
 
-  '@bull-board/api@7.1.5':
-    resolution: {integrity: sha512-EW0sbTtGIysu9vipdVpPQeToPqOpPgVZTt+pn1Ut3gbSS/GLWbEgIfFtMmSQDUoSL9WH00RzjgUY5K+43nWh0A==}
-    peerDependencies:
-      '@bull-board/ui': 7.1.5
-
   '@bull-board/api@7.2.1':
     resolution: {integrity: sha512-ldRG4POJLHf6oDrbDA7AsbTKliBmV4eySlwdUAumiRDtfvtbRSdXGE4Md2uPDova1r/ck7ExEe1+pHEQAZElqw==}
     peerDependencies:
       '@bull-board/ui': 7.2.1
 
-  '@bull-board/express@7.1.5':
-    resolution: {integrity: sha512-kp4SzhVjZlykryiQwcOhJjDhiLbBnZoAMoSgEstzqQ0raLw+jERRC6ryJ0MIQO+SO+Jv9EjjxrXCR8O2YSP/eg==}
+  '@bull-board/express@7.2.1':
+    resolution: {integrity: sha512-tBr/xV5letzKYPRGRkilTQZmfoCoy3mCuUo4M2dDoDKOhbrF360mK5v9/rIcSgYSyI9c7BgEgrve80LhmexNxQ==}
 
-  '@bull-board/ui@7.1.5':
-    resolution: {integrity: sha512-2IkatKwNRx/1M9/lAZIptcxS1FPNq6icpp2M46Upwd4olVxs/ujF9Kvs+Ff9ExtIO/OgYfwx7mG2IprGZ+nQCg==}
+  '@bull-board/ui@7.2.1':
+    resolution: {integrity: sha512-O4ykrXrl2UJNHnhJrCvJxrw1ar+DlUBgyZUeZ8Ci+Ne5Wbq6rBv1gfpQH54/eu3IFbLso0S/kjc6WUGb2HPqZw==}
 
   '@clickhouse/client-common@1.18.5':
     resolution: {integrity: sha512-g9LwcS1dvkatKDsIjT1PwUHldsiYzwdKAB0nXfd9APLd+t4PrNJa+my+dXcqJdmcWyhWjKLP/2/ztBwgxp+sbQ==}
@@ -4259,8 +4254,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  ejs@5.0.2:
-    resolution: {integrity: sha512-IpbUaI/CAW86l3f+T8zN0iggSc0LmMZLcIW5eRVStLVNCoTXkE0YlncbbH50fp8Cl6zHIky0sW2uUbhBqGw0Jw==}
+  ejs@6.0.1:
+    resolution: {integrity: sha512-UaaM14yby8U3k02ihS1Bmj5Kz2d7CCQM1scxpgs4Mhkq8F1wR2gl3+Ts4h5Ne4Mnt7M9m4Dw7jsuMr3+xO4vZA==}
     engines: {node: '>=0.12.18'}
     hasBin: true
 
@@ -7678,28 +7673,23 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
 
-  '@bull-board/api@7.1.5(@bull-board/ui@7.1.5)':
+  '@bull-board/api@7.2.1(@bull-board/ui@7.2.1)':
     dependencies:
-      '@bull-board/ui': 7.1.5
+      '@bull-board/ui': 7.2.1
       redis-info: 3.1.0
 
-  '@bull-board/api@7.2.1(@bull-board/ui@7.1.5)':
+  '@bull-board/express@7.2.1':
     dependencies:
-      '@bull-board/ui': 7.1.5
-      redis-info: 3.1.0
-
-  '@bull-board/express@7.1.5':
-    dependencies:
-      '@bull-board/api': 7.1.5(@bull-board/ui@7.1.5)
-      '@bull-board/ui': 7.1.5
-      ejs: 5.0.2
+      '@bull-board/api': 7.2.1(@bull-board/ui@7.2.1)
+      '@bull-board/ui': 7.2.1
+      ejs: 6.0.1
       express: 5.2.1
     transitivePeerDependencies:
       - supports-color
 
-  '@bull-board/ui@7.1.5':
+  '@bull-board/ui@7.2.1':
     dependencies:
-      '@bull-board/api': 7.1.5(@bull-board/ui@7.1.5)
+      '@bull-board/api': 7.2.1(@bull-board/ui@7.2.1)
 
   '@clickhouse/client-common@1.18.5': {}
 
@@ -11718,7 +11708,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  ejs@5.0.2: {}
+  ejs@6.0.1: {}
 
   elastic-apm-node@3.52.2:
     dependencies:
