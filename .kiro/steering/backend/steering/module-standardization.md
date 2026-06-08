@@ -1,6 +1,6 @@
 # Module Standardization Guide
 
-This document outlines the standardization requirements for TelemetryFlow Core modules, ensuring consistency, quality, and maintainability across the codebase.
+This document outlines the standardization requirements for TelemetryFlow Platform modules, ensuring consistency, quality, and maintainability across the codebase.
 
 ## Standardization Principles
 
@@ -444,4 +444,4 @@ A module is considered "standardized" when:
 - Review and update quality thresholds
 - Plan standardization improvements
 
-This standardization guide ensures that all TelemetryFlow Core modules maintain the same high quality, consistency, and maintainability standards established by the reference implementation.
+This standardization guide ensures that all TelemetryFlow Platform modules maintain the same high quality, consistency, and maintainability standards established by the reference implementation.

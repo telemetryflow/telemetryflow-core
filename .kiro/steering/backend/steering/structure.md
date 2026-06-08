@@ -3,7 +3,7 @@
 ## Root Directory Structure
 
 ```
-telemetryflow-core/
+telemetryflow-backend/
 ├── src/                    # Source code (TypeScript)
 ├── config/                 # Service configurations (ClickHouse, PostgreSQL, OTEL, etc.)
 ├── docs/                   # Documentation and guides

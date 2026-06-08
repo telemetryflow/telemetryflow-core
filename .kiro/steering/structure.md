@@ -3,7 +3,7 @@
 ## Root Layout
 
 ```
-telemetryflow-platform/
+telemetryflow-platform-monolith/
 ├── backend/          # NestJS backend (@telemetryflow/backend)
 ├── frontend/         # Vue 3 frontend (@telemetryflow/viz)
 ├── config/           # Infrastructure configs (nginx, clickhouse, otel, postgres, certbot)

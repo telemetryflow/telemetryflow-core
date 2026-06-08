@@ -1,6 +1,6 @@
 # Git Hooks & Quality Gates
 
-This document defines the git hooks and automated quality checks for TelemetryFlow Core, ensuring code quality and module standardization before commits.
+This document defines the git hooks and automated quality checks for TelemetryFlow Platform, ensuring code quality and module standardization before commits.
 
 ## Pre-commit Hook Implementation
 
@@ -14,12 +14,12 @@ This document defines the git hooks and automated quality checks for TelemetryFl
 
 ```bash
 #!/bin/bash
-# TelemetryFlow Core Pre-commit Hook
+# TelemetryFlow Platform Pre-commit Hook
 # Ensures code quality and module standardization
 
 set -e
 
-echo "🔍 Running TelemetryFlow Core pre-commit checks..."
+echo "🔍 Running TelemetryFlow Platform pre-commit checks..."
 
 # Colors for output
 RED='\033[0;31m'
@@ -446,4 +446,4 @@ CHANGED_MODULES=$(git diff --cached --name-only | grep "src/modules/" | cut -d'/
 4. **Allow emergency bypasses** but log them for review
 5. **Update hooks regularly** as project standards evolve
 
-This git hooks system ensures that all code committed to TelemetryFlow Core meets the established quality standards and module standardization requirements.
+This git hooks system ensures that all code committed to TelemetryFlow Platform meets the established quality standards and module standardization requirements.

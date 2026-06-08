@@ -1,10 +1,10 @@
 # Development Patterns & LEGO Builder Guide
 
-This document outlines the development patterns and modular architecture principles for TelemetryFlow Core, based on the LEGO Builder methodology from the Platform.
+This document outlines the development patterns and modular architecture principles for TelemetryFlow Platform, based on the LEGO Builder methodology from the Platform.
 
 ## LEGO Builder Philosophy
 
-TelemetryFlow Core follows the **LEGO Builder** approach where each module is a self-contained "LEGO block" that can be discovered, loaded, and connected automatically.
+TelemetryFlow Platform follows the **LEGO Builder** approach where each module is a self-contained "LEGO block" that can be discovered, loaded, and connected automatically.
 
 ### Core Principles
 
@@ -700,4 +700,4 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 - Integration test repositories with real database
 - E2E test controllers with full application context
 
-This development pattern guide ensures consistency with TelemetryFlow Core's existing architecture while providing clear guidelines for implementing new features using DDD and CQRS patterns.
+This development pattern guide ensures consistency with TelemetryFlow Platform's existing architecture while providing clear guidelines for implementing new features using DDD and CQRS patterns.

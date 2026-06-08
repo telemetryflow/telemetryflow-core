@@ -1,10 +1,10 @@
 # 5-Tier RBAC System Implementation Guide
 
-This document provides comprehensive guidance for implementing and working with TelemetryFlow Core's 5-tier Role-Based Access Control (RBAC) system.
+This document provides comprehensive guidance for implementing and working with TelemetryFlow Platform's 5-tier Role-Based Access Control (RBAC) system.
 
 ## System Overview
 
-TelemetryFlow Core implements a **5-tier RBAC system** with hierarchical permissions and organizational scoping:
+TelemetryFlow Platform implements a **5-tier RBAC system** with hierarchical permissions and organizational scoping:
 
 1. **Tier 1: Super Administrator** - Global platform management
 2. **Tier 2: Administrator** - Organization-scoped management
@@ -932,4 +932,4 @@ describe("RBAC System E2E", () => {
 - Test demo environment isolation
 - Include negative test cases (access denied scenarios)
 
-This RBAC system provides a robust, scalable foundation for managing access control in TelemetryFlow Core while maintaining security and organizational isolation.
+This RBAC system provides a robust, scalable foundation for managing access control in TelemetryFlow Platform while maintaining security and organizational isolation.

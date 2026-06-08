@@ -1,6 +1,6 @@
-# TelemetryFlow Core Product Overview
+# TelemetryFlow Platform Product Overview
 
-TelemetryFlow Core is a lightweight, production-ready Identity and Access Management (IAM) service extracted from the larger TelemetryFlow Platform. It provides complete identity and access management with enterprise-grade security features.
+TelemetryFlow Platform is a monolith, production-ready Identity and Access Management (IAM) service extracted from the larger TelemetryFlow Platform. It provides complete identity and access management with enterprise-grade security features.
 
 ## Core Features
 
@@ -14,7 +14,6 @@ TelemetryFlow Core is a lightweight, production-ready Identity and Access Manage
 ## Architecture
 
 The system follows Domain-Driven Design (DDD) with Clean Architecture principles:
-
 - **Domain Layer**: 8 aggregates, 10 value objects, domain services
 - **Application Layer**: CQRS with 33 commands and 18 queries
 - **Infrastructure Layer**: TypeORM repositories, event processors
@@ -31,7 +30,6 @@ The system follows Domain-Driven Design (DDD) with Clean Architecture principles
 ## Default Users
 
 The system comes with pre-configured users for each RBAC tier:
-
 - Super Administrator: `superadmin.telemetryflow@telemetryflow.id`
 - Administrator: `administrator.telemetryflow@telemetryflow.id`
 - Developer: `developer.telemetryflow@telemetryflow.id`
