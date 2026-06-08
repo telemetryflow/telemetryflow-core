@@ -53,7 +53,7 @@
     "eslint-plugin-vue": "^10.9.1",
     "fast-check": "^4.5.3",
     "happy-dom": "^20.6.1",
-    "jsdom": "^28.1.0",
+    "jsdom": "^29.1.1",
     "sass": "^1.97.2",
     "typescript": "~5.7.3",
     "unocss": "^66.7.0",
