@@ -20,7 +20,6 @@ Before marking a module as "complete", it MUST pass all these gates:
 ### Gate 1: Documentation (100% Complete)
 
 #### Root README.md (500+ lines)
-
 - [ ] Overview section with quick facts table
 - [ ] Architecture diagram (DDD 4-layer structure)
 - [ ] Features checklist with status indicators
@@ -32,7 +31,6 @@ Before marking a module as "complete", it MUST pass all these gates:
 - [ ] License & support section
 
 #### Documentation Structure
-
 ```
 docs/
 ├── README.md                    # Main documentation entry
@@ -50,7 +48,6 @@ docs/
 ### Gate 2: Test Coverage (≥90%)
 
 #### Coverage Requirements by Layer
-
 - **Domain layer**: ≥95% (business logic is critical)
 - **Application layer**: ≥90% (use cases and handlers)
 - **Infrastructure layer**: ≥85% (database and external integrations)
@@ -58,7 +55,6 @@ docs/
 - **Overall module**: ≥90%
 
 #### Test Structure
-
 ```
 tests/
 ├── unit/                        # Unit tests
@@ -92,7 +88,6 @@ tests/
 ### Gate 3: DDD Structure (100% Compliant)
 
 #### Domain Layer Requirements
-
 ```
 domain/
 ├── aggregates/                  # Business entities
@@ -116,7 +111,6 @@ domain/
 ```
 
 #### Application Layer Requirements
-
 ```
 application/
 ├── commands/                    # Write operations
@@ -135,7 +129,6 @@ application/
 ```
 
 #### Infrastructure Layer Requirements
-
 ```
 infrastructure/
 ├── persistence/
@@ -161,7 +154,6 @@ infrastructure/
 ```
 
 #### Presentation Layer Requirements
-
 ```
 presentation/
 ├── controllers/                 # REST controllers
@@ -181,7 +173,6 @@ presentation/
 ### Gate 4: Database Patterns (100% Compliant)
 
 #### Migration Requirements
-
 - [ ] Follow naming: `{timestamp}-{Description}.ts`
 - [ ] Include both `up()` and `down()` methods
 - [ ] Use environment variables (NO hardcoded database names)
@@ -190,7 +181,6 @@ presentation/
 - [ ] Include soft delete columns if applicable
 
 #### Seed Requirements
-
 - [ ] Follow naming: `{timestamp}-seed-{module}-{entity}.ts`
 - [ ] Include error handling and logging
 - [ ] Implement idempotency (check before seeding)
@@ -198,7 +188,6 @@ presentation/
 - [ ] Include comprehensive test data
 
 #### Entity Requirements
-
 - [ ] Use `.entity.ts` suffix (NOT `Entity.ts`)
 - [ ] Include proper TypeORM decorators
 - [ ] Define relationships correctly
@@ -208,7 +197,6 @@ presentation/
 ### Gate 5: API Standards (100% Compliant)
 
 #### Controller Requirements
-
 - [ ] Use Swagger decorators: `@ApiOperation`, `@ApiResponse`, `@ApiTags`
 - [ ] Include validation: `@Body`, `@Param`, `@Query` with ValidationPipe
 - [ ] Use permission guards: `@RequirePermissions`
@@ -216,14 +204,12 @@ presentation/
 - [ ] Include proper error handling
 
 #### DTO Requirements
-
 - [ ] Use class-validator decorators: `@IsString`, `@IsEmail`, etc.
 - [ ] Include Swagger decorators: `@ApiProperty`
 - [ ] Separate request and response DTOs
 - [ ] Include transformation decorators if needed
 
 ### Gate 6: Build & Quality (0 Errors)
-
 - [ ] `pnpm build` succeeds with 0 errors
 - [ ] `pnpm lint` succeeds with 0 errors
 - [ ] `pnpm test` succeeds with 0 failures
@@ -236,7 +222,6 @@ Use this checklist for each module:
 ### Module: `{module-name}`
 
 #### Documentation ✅
-
 - [ ] README.md (500+ lines) with all required sections
 - [ ] docs/INDEX.md with complete navigation
 - [ ] docs/ERD.mermaid.md with entity diagrams
@@ -245,7 +230,6 @@ Use this checklist for each module:
 - [ ] docs/openapi.yaml with complete API spec
 
 #### Domain Layer ✅
-
 - [ ] All aggregates follow pattern and extend AggregateRoot
 - [ ] All value objects extend ValueObject base class
 - [ ] All events follow naming convention and extend DomainEvent
@@ -254,7 +238,6 @@ Use this checklist for each module:
 - [ ] No infrastructure dependencies in domain layer
 
 #### Application Layer ✅
-
 - [ ] All commands follow naming pattern
 - [ ] All queries follow naming pattern
 - [ ] All handlers use @CommandHandler/@QueryHandler decorators
@@ -262,7 +245,6 @@ Use this checklist for each module:
 - [ ] DTOs include proper validation and documentation
 
 #### Infrastructure Layer ✅
-
 - [ ] All entities use .entity.ts suffix
 - [ ] All repositories implement domain interfaces
 - [ ] All mappers handle domain ↔ entity conversion
@@ -271,7 +253,6 @@ Use this checklist for each module:
 - [ ] No hardcoded database names
 
 #### Presentation Layer ✅
-
 - [ ] All controllers use proper Swagger decorators
 - [ ] All endpoints include permission checks
 - [ ] All DTOs include validation decorators
@@ -279,7 +260,6 @@ Use this checklist for each module:
 - [ ] API follows REST conventions
 
 #### Testing ✅
-
 - [ ] Unit tests for all aggregates (≥95% coverage)
 - [ ] Unit tests for all value objects (≥95% coverage)
 - [ ] Unit tests for all handlers (≥90% coverage)
@@ -291,7 +271,6 @@ Use this checklist for each module:
 - [ ] Mock implementations for external dependencies
 
 #### Database ✅
-
 - [ ] All tables follow snake_case naming
 - [ ] All foreign keys properly defined
 - [ ] All indexes created for performance
@@ -300,7 +279,6 @@ Use this checklist for each module:
 - [ ] Seeds create comprehensive test data
 
 #### Quality Gates ✅
-
 - [ ] Build passes without errors
 - [ ] Linting passes without errors
 - [ ] All tests pass
@@ -345,34 +323,34 @@ MODULES=$(find src/modules -maxdepth 1 -type d -name "*" | grep -v "__")
 
 for MODULE in $MODULES; do
   MODULE_NAME=$(basename $MODULE)
-
+  
   # Check for required documentation
   if [ ! -f "$MODULE/README.md" ]; then
     echo "❌ Missing README.md in $MODULE_NAME"
     exit 1
   fi
-
+  
   if [ ! -f "$MODULE/docs/INDEX.md" ]; then
     echo "❌ Missing docs/INDEX.md in $MODULE_NAME"
     exit 1
   fi
-
+  
   # Check for required structure
   if [ ! -d "$MODULE/domain" ]; then
     echo "❌ Missing domain/ directory in $MODULE_NAME"
     exit 1
   fi
-
+  
   if [ ! -d "$MODULE/application" ]; then
     echo "❌ Missing application/ directory in $MODULE_NAME"
     exit 1
   fi
-
+  
   if [ ! -d "$MODULE/infrastructure" ]; then
     echo "❌ Missing infrastructure/ directory in $MODULE_NAME"
     exit 1
   fi
-
+  
   if [ ! -d "$MODULE/presentation" ]; then
     echo "❌ Missing presentation/ directory in $MODULE_NAME"
     exit 1
@@ -395,22 +373,22 @@ echo "✅ All module standardization checks passed"
 
 ```typescript
 // scripts/generate-module-docs.ts
-import { generateModuleReadme } from "./generators/readme-generator";
-import { generateERD } from "./generators/erd-generator";
-import { generateOpenAPI } from "./generators/openapi-generator";
+import { generateModuleReadme } from './generators/readme-generator';
+import { generateERD } from './generators/erd-generator';
+import { generateOpenAPI } from './generators/openapi-generator';
 
 async function generateModuleDocs(moduleName: string) {
   console.log(`📚 Generating documentation for ${moduleName}...`);
-
+  
   // Generate README.md
   await generateModuleReadme(moduleName);
-
+  
   // Generate ERD from database schema
   await generateERD(moduleName);
-
+  
   // Generate OpenAPI spec from controllers
   await generateOpenAPI(moduleName);
-
+  
   console.log(`✅ Documentation generated for ${moduleName}`);
 }
 
@@ -431,14 +409,12 @@ A module is considered "standardized" when:
 ## Continuous Improvement
 
 ### Monthly Reviews
-
 - Review module standardization status
 - Update templates based on lessons learned
 - Identify common issues and create automated checks
 - Update documentation standards as needed
 
 ### Quarterly Assessments
-
 - Audit all modules against latest standards
 - Update tooling and generators
 - Review and update quality thresholds
