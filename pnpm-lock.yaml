@@ -371,8 +371,8 @@ importers:
         specifier: ^3.5.27
         version: 3.5.34(typescript@5.7.3)
       vue-echarts:
-        specifier: ^7.0.3
-        version: 7.0.3(@vue/runtime-core@3.5.34)(echarts@5.6.0)(vue@3.5.34(typescript@5.7.3))
+        specifier: ^8.0.1
+        version: 8.0.1(echarts@5.6.0)(vue@3.5.34(typescript@5.7.3))
       vue-router:
         specifier: ^4.6.4
         version: 4.6.4(vue@3.5.34(typescript@5.7.3))
@@ -6110,6 +6110,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.8.2:
+    resolution: {integrity: sha512-c8jsqUZm3omBOI66G90z1Dyw5z622G8oLG+omfsHBJf3CWQTlOcwOjvOG6wtiNfW6anKm/eA39LMwMtMez2TiQ==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   send@1.2.1:
     resolution: {integrity: sha512-1gnZf7DFcoIcajTjTwjwuDjzuz4PPcY2StKPlsGAQ1+YH20IRVrBaXSWmdjowTJ6u8Rc01PoYOGHXfP1mYcZNQ==}
     engines: {node: '>= 18'}
@@ -6921,26 +6926,11 @@ packages:
   vue-component-type-helpers@3.3.1:
     resolution: {integrity: sha512-pu58kqxmVyEH6VfNYW1UyEfR3XAnJ27ZXT3yzXxxpjLxVzAbyC35Zk/nm/RMs7ijWnJNSd9fWkeex2OhUsx3MA==}
 
-  vue-demi@0.13.11:
-    resolution: {integrity: sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==}
-    engines: {node: '>=12'}
-    hasBin: true
+  vue-echarts@8.0.1:
+    resolution: {integrity: sha512-23rJTFLu1OUEGRWjJGmdGt8fP+8+ja1gVgzMYPIPaHWpXegcO1viIAaeu2H4QHESlVeHzUAHIxKXGrwjsyXAaA==}
     peerDependencies:
-      '@vue/composition-api': ^1.0.0-rc.1
-      vue: ^3.0.0-0 || ^2.6.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-
-  vue-echarts@7.0.3:
-    resolution: {integrity: sha512-/jSxNwOsw5+dYAUcwSfkLwKPuzTQ0Cepz1LxCOpj2QcHrrmUa/Ql0eQqMmc1rTPQVrh2JQ29n2dhq75ZcHvRDw==}
-    peerDependencies:
-      '@vue/runtime-core': ^3.0.0
-      echarts: ^5.5.1
-      vue: ^2.7.0 || ^3.1.1
-    peerDependenciesMeta:
-      '@vue/runtime-core':
-        optional: true
+      echarts: ^6.0.0
+      vue: ^3.3.0
 
   vue-eslint-parser@9.4.3:
     resolution: {integrity: sha512-2rYRLWlIpaiN8xbPiDyXZXRgLGOtWxERV7ND5fFAv5qo1D2N9Fu9MNajBNc6o13lZ+24DAWCkQCvj4klgmcITg==}
@@ -13809,6 +13799,8 @@ snapshots:
 
   semver@7.8.1: {}
 
+  semver@7.8.2: {}
+
   send@1.2.1:
     dependencies:
       debug: 4.4.3
@@ -14624,19 +14616,10 @@ snapshots:
 
   vue-component-type-helpers@3.3.1: {}
 
-  vue-demi@0.13.11(vue@3.5.34(typescript@5.7.3)):
-    dependencies:
-      vue: 3.5.34(typescript@5.7.3)
-
-  vue-echarts@7.0.3(@vue/runtime-core@3.5.34)(echarts@5.6.0)(vue@3.5.34(typescript@5.7.3)):
+  vue-echarts@8.0.1(echarts@5.6.0)(vue@3.5.34(typescript@5.7.3)):
     dependencies:
       echarts: 5.6.0
       vue: 3.5.34(typescript@5.7.3)
-      vue-demi: 0.13.11(vue@3.5.34(typescript@5.7.3))
-    optionalDependencies:
-      '@vue/runtime-core': 3.5.34
-    transitivePeerDependencies:
-      - '@vue/composition-api'
 
   vue-eslint-parser@9.4.3(eslint@9.39.4(jiti@2.7.0)):
     dependencies:
@@ -14647,7 +14630,7 @@ snapshots:
       espree: 9.6.1
       esquery: 1.7.0
       lodash: 4.18.1
-      semver: 7.8.1
+      semver: 7.8.2
     transitivePeerDependencies:
       - supports-color
 
