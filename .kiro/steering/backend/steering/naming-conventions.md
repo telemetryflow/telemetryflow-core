@@ -1,6 +1,6 @@
 # Naming Conventions
 
-Based on TelemetryFlow Platform standards, this document defines consistent naming patterns across the TelemetryFlow Core codebase.
+Based on TelemetryFlow Platform standards, this document defines consistent naming patterns across the TelemetryFlow Platform codebase.
 
 ## Core Principles
 
@@ -21,7 +21,7 @@ Based on TelemetryFlow Platform standards, this document defines consistent nami
 | **Domain Event**         | `{Entity}{Action}.event.ts` | `UserCreated.event.ts`  | ~~`user-created.event.ts`~~        |
 | **Repository Interface** | `I{Entity}Repository.ts`    | `IUserRepository.ts`    | ~~`user.repository.interface.ts`~~ |
 
-**Rules for TelemetryFlow Core**:
+**Rules for TelemetryFlow Platform**:
 
 - ✅ **PascalCase** for domain files (matches existing codebase)
 - ✅ Use descriptive suffixes: `.event.ts` for events
@@ -201,7 +201,7 @@ SESSION_SECRET=your-session-secret-min-32-chars
 
 # OpenTelemetry
 OTEL_ENABLED=true
-OTEL_SERVICE_NAME=telemetryflow-core
+OTEL_SERVICE_NAME=telemetryflow-platform
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ```
 
@@ -260,7 +260,7 @@ Before committing code, verify:
 
 ## Quick Reference
 
-### Current TelemetryFlow Core Patterns
+### Current TelemetryFlow Platform Patterns
 
 ```
 Domain Layer:
@@ -291,4 +291,4 @@ Tests:
   ✅ User.controller.e2e.spec.ts
 ```
 
-This naming convention document ensures consistency with the existing TelemetryFlow Core codebase while providing clear guidelines for future development.
+This naming convention document ensures consistency with the existing TelemetryFlow Platform codebase while providing clear guidelines for future development.

@@ -5,6 +5,7 @@ This document defines the git hooks and automated quality checks for TelemetryFl
 ## Pre-commit Hook Implementation
 
 ### Hook Location
+
 ```bash
 .git/hooks/pre-commit
 ```
@@ -378,7 +379,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -395,6 +396,7 @@ jobs:
 ### Common Issues
 
 1. **Coverage threshold failures**
+
    ```bash
    # Check current coverage
    pnpm test --coverage
@@ -404,6 +406,7 @@ jobs:
    ```
 
 2. **Module structure violations**
+
    ```bash
    # Generate missing directories
    mkdir -p src/modules/iam/domain/{aggregates,value-objects,events,repositories}
@@ -432,6 +435,7 @@ CHANGED_MODULES=$(git diff --cached --name-only | grep "src/modules/" | cut -d'/
 ## Best Practices
 
 1. **Run checks locally before committing**
+
    ```bash
    # Test the pre-commit hook manually
    bash .git/hooks/pre-commit
