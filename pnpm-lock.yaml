@@ -52,10 +52,10 @@ importers:
         version: 0.39.0
       '@bull-board/api':
         specifier: ^7.2.1
-        version: 7.2.1(@bull-board/ui@7.2.1)
+        version: 7.2.1(@bull-board/ui@8.0.0)
       '@bull-board/express':
-        specifier: ^7.2.1
-        version: 7.2.1
+        specifier: ^8.0.0
+        version: 8.0.0
       '@clickhouse/client':
         specifier: ^1.14.0
         version: 1.18.5
@@ -744,11 +744,16 @@ packages:
     peerDependencies:
       '@bull-board/ui': 7.2.1
 
-  '@bull-board/express@7.2.1':
-    resolution: {integrity: sha512-tBr/xV5letzKYPRGRkilTQZmfoCoy3mCuUo4M2dDoDKOhbrF360mK5v9/rIcSgYSyI9c7BgEgrve80LhmexNxQ==}
+  '@bull-board/api@8.0.0':
+    resolution: {integrity: sha512-GYXJNJclgm9H5Tt/tmuNWfjyF2BuygMwl8xrRIfxxOTgcK4SB8zNUPveTcHGAOoKKtPDVotHNZCBRrFCcOAXMA==}
+    peerDependencies:
+      '@bull-board/ui': 8.0.0
 
-  '@bull-board/ui@7.2.1':
-    resolution: {integrity: sha512-O4ykrXrl2UJNHnhJrCvJxrw1ar+DlUBgyZUeZ8Ci+Ne5Wbq6rBv1gfpQH54/eu3IFbLso0S/kjc6WUGb2HPqZw==}
+  '@bull-board/express@8.0.0':
+    resolution: {integrity: sha512-NYMzcJNSnQBhVuQuxUyGvJ5U6HymuDoDN+jAX17/CN7xjEhDEGeW5twICiv4ZzWjyAdHS0T9wVyFhL7aSwjRBg==}
+
+  '@bull-board/ui@8.0.0':
+    resolution: {integrity: sha512-X/F256CmpBj9oj+fK2wOzjygkhTtjgWnc3f/SxPiUs3rQFvgYCplJLEaURh13J+Tpq46/1drAxq4Ukt4e5LelA==}
 
   '@clickhouse/client-common@1.18.5':
     resolution: {integrity: sha512-g9LwcS1dvkatKDsIjT1PwUHldsiYzwdKAB0nXfd9APLd+t4PrNJa+my+dXcqJdmcWyhWjKLP/2/ztBwgxp+sbQ==}
@@ -3487,6 +3492,11 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
+  acorn@8.17.0:
+    resolution: {integrity: sha512-xRQbDb9BnwDafYNn6Vwl839DYVjqXYb1XVGtWAZ1kcDc6iwAL4hg3B1dZlRiuENFeO2H53gFG3in621AdERVAg==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+
   after-all-results@2.0.0:
     resolution: {integrity: sha512-2zHEyuhSJOuCrmas9YV0YL/MFCWLxe1dS6k/ENhgYrb/JqyMnadLN4iIAc9kkZrbElMDyyAGH/0J18OPErOWLg==}
 
@@ -6194,6 +6204,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.8.4:
+    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   send@1.2.1:
     resolution: {integrity: sha512-1gnZf7DFcoIcajTjTwjwuDjzuz4PPcY2StKPlsGAQ1+YH20IRVrBaXSWmdjowTJ6u8Rc01PoYOGHXfP1mYcZNQ==}
     engines: {node: '>= 18'}
@@ -7673,23 +7688,28 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
 
-  '@bull-board/api@7.2.1(@bull-board/ui@7.2.1)':
+  '@bull-board/api@7.2.1(@bull-board/ui@8.0.0)':
     dependencies:
-      '@bull-board/ui': 7.2.1
+      '@bull-board/ui': 8.0.0
       redis-info: 3.1.0
 
-  '@bull-board/express@7.2.1':
+  '@bull-board/api@8.0.0(@bull-board/ui@8.0.0)':
     dependencies:
-      '@bull-board/api': 7.2.1(@bull-board/ui@7.2.1)
-      '@bull-board/ui': 7.2.1
+      '@bull-board/ui': 8.0.0
+      redis-info: 3.1.0
+
+  '@bull-board/express@8.0.0':
+    dependencies:
+      '@bull-board/api': 8.0.0(@bull-board/ui@8.0.0)
+      '@bull-board/ui': 8.0.0
       ejs: 6.0.1
       express: 5.2.1
     transitivePeerDependencies:
       - supports-color
 
-  '@bull-board/ui@7.2.1':
+  '@bull-board/ui@8.0.0':
     dependencies:
-      '@bull-board/api': 7.2.1(@bull-board/ui@7.2.1)
+      '@bull-board/api': 8.0.0(@bull-board/ui@8.0.0)
 
   '@clickhouse/client-common@1.18.5': {}
 
@@ -10953,11 +10973,17 @@ snapshots:
     dependencies:
       acorn: 8.16.0
 
+  acorn-jsx@5.3.2(acorn@8.17.0):
+    dependencies:
+      acorn: 8.17.0
+
   acorn-walk@8.3.5:
     dependencies:
       acorn: 8.16.0
 
   acorn@8.16.0: {}
+
+  acorn@8.17.0: {}
 
   after-all-results@2.0.0:
     optional: true
@@ -11948,8 +11974,8 @@ snapshots:
 
   espree@9.6.1:
     dependencies:
-      acorn: 8.16.0
-      acorn-jsx: 5.3.2(acorn@8.16.0)
+      acorn: 8.17.0
+      acorn-jsx: 5.3.2(acorn@8.17.0)
       eslint-visitor-keys: 3.4.3
 
   esprima@4.0.1: {}
@@ -13992,6 +14018,8 @@ snapshots:
 
   semver@7.8.2: {}
 
+  semver@7.8.4: {}
+
   send@1.2.1:
     dependencies:
       debug: 4.4.3
@@ -14821,7 +14849,7 @@ snapshots:
       espree: 9.6.1
       esquery: 1.7.0
       lodash: 4.18.1
-      semver: 7.8.2
+      semver: 7.8.4
     transitivePeerDependencies:
       - supports-color
 
